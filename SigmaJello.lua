@@ -870,16 +870,34 @@ print("" ..val)
 end
 })
 local ToggleInsideUI1 = button1:ToggleButtonInsideUI({
-    name = "MyFirne",
+    name = "Rotate",
     callback = function(enabled)
         if enabled then
-            print("hello")
+            local function rotateToNearestPlayer()
+                while enabled do
+                    local nearestPlayer = findNearestLivingPlayer()
+                    if nearestPlayer then
+                        local direction = (nearestPlayer.Character.HumanoidRootPart.Position - localPlayer.Character.HumanoidRootPart.Position).Unit
+                        direction = Vector3.new(direction.X, 0, direction.Z) -- Keep only the horizontal direction
+                        local rotation = CFrame.new(Vector3.new(), direction)
+                        local currentCFrame = localPlayer.Character.HumanoidRootPart.CFrame
+                        local newCFrame = CFrame.new(currentCFrame.Position) * rotation
+                        localPlayer.Character:SetPrimaryPartCFrame(newCFrame)
+                    end
+                    task.wait(0.1) -- Adjust the delay based on your preferences
+                end
+            end
+
+            spawn(rotateToNearestPlayer)
+        else
+            -- Handle the case when the button is disabled
         end
     end
 })
+
 local Dropdown = button1:Dropdown({
-    name = "Yes",
-    todo = "E",
+    name = "Cee",
+    todo = "None",
     list = {"Walk", "Run", "Sprint"},
     Default = "Walk",
     callback = function(selectedItem)
