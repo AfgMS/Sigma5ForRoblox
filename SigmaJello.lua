@@ -722,110 +722,101 @@ local RunService = game:GetService("RunService")
 createnotification("Sigma", "Welcome to Sigma, Press V", 1, true)
 
 local tab1 = Library:createTabs(CoreGui.Sigma, "Combat")
---
---KillAura
-local Players = game:GetService("Players")
-local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
+--KillAura
 local localPlayer = game.Players.LocalPlayer
 local KillauraRemote = ReplicatedStorage.rbxts_include.node_modules["@rbxts"].net.out._NetManaged.SwordHit
+local attackInterval
+
+local function isalive(plr)
+  plr = plr or localPlayer
+  if not plr.Character or not plr.Character:FindFirstChild("Head") or not plr.Character:FindFirstChild("Humanoid") then return false end
+  return true
+end
 
 local SwordInfo = {
-    { Name = "wood_sword", Display = "Wood Sword", Rank = 1 },
-    { Name = "stone_sword", Display = "Stone Sword", Rank = 2 },
-    { Name = "iron_sword", Display = "Iron Sword", Rank = 3 },
-    { Name = "diamond_sword", Display = "Diamond Sword", Rank = 4 },
-    { Name = "emerald_sword", Display = "Emerald Sword", Rank = 5 },
-    { Name = "rageblade", Display = "Rage Blade", Rank = 6 },
+  [1] = { Name = "wood_sword", Display = "Wood Sword", Rank = 1 },
+  [2] = { Name = "stone_sword", Display = "Stone Sword", Rank = 2 },
+  [3] = { Name = "iron_sword", Display = "Iron Sword", Rank = 3 },
+  [4] = { Name = "diamond_sword", Display = "Diamond Sword", Rank = 4 },
+  [5] = { Name = "emerald_sword", Display = "Emerald Sword", Rank = 5 },
+  [6] = { Name = "rageblade", Display = "Rage Blade", Rank = 6 },
 }
 
-local KillAuraEnabled = false
+local function findNearestPlayer(range)
+  local nearestPlayer
+  local nearestDistance = math.huge
 
-local function findNearestLivingPlayer()
-    local nearestPlayer
-    local nearestDistance = math.huge
-
-    for _, player in ipairs(game.Players:GetPlayers()) do
-        if player ~= localPlayer and player.Character then
-            local distance = (player.Character.HumanoidRootPart.Position - localPlayer.Character.HumanoidRootPart.Position).Magnitude
-            if distance < nearestDistance then
-                nearestPlayer = player
-                nearestDistance = distance
-            end
-        end
+  for _, player in ipairs(Players:GetPlayers()) do
+    if player ~= localPlayer and player.Character then
+      local distance = (player.Character.HumanoidRootPart.Position - localPlayer.Character.HumanoidRootPart.Position).Magnitude
+      if distance <= range and distance < nearestDistance then
+        nearestPlayer = player
+        nearestDistance = distance
+      end
     end
+  end
 
-    return nearestPlayer
+  return nearestPlayer
 end
 
-local function attack(target)
-    KillauraRemote:FireServer({
-        ["entityInstance"] = target.Character,
-        ["chargedAttack"] = { ["chargeRatio"] = 1 },
-        ["validate"] = {
-            ["raycast"] = {
-                ["cursorDirection"] = { value = (target.Character.HumanoidRootPart.Position - localPlayer.Character.HumanoidRootPart.Position).Unit },
-                ["cameraPosition"] = { value = target.Character.HumanoidRootPart.Position },
-            },
-            ["selfPosition"] = { value = (target.Character.HumanoidRootPart.Position - localPlayer.Character.HumanoidRootPart.Position).Unit * 2 + localPlayer.Character.HumanoidRootPart.Position },
-            ["targetPosition"] = { value = target.Character.HumanoidRootPart.Position },
-        },
-        ["weapon"] = GetBestSword(),
-    })
+local function attackValue(vec)
+  return { value = vec }
 end
 
-local function isPlayerAlive(player)
-    return player.Character and player.Character:FindFirstChild("Humanoid")
+function getcloserpos(pos1, pos2, amount)
+  local newPos = (pos2 - pos1).Unit * math.min(amount, (pos2 - pos1).Magnitude) + pos1
+  return newPos
 end
+
+local target = findNearestPlayer(20)
+local anims = 0
+local cam = game.Workspace.CurrentCamera
+local mouse = Ray.new(cam.CFrame.Position, target.Character.HumanoidRootPart.Position).Unit.Direction
 
 local function GetBestSword()
-    local bestsword = nil
-    local bestrank = 0
-
-    for _, v in pairs(localPlayer.Character.InventoryFolder.Value:GetChildren()) do
-        if v.Name:match("sword") or v.Name:match("blade") then
-            for _, data in pairs(SwordInfo) do
-                if data.Name == v.Name and bestrank <= data.Rank then
-                    bestrank = data.Rank
-                    bestsword = v
-                end
-            end
+  local bestsword = nil
+  local bestrank = 0
+  for i, v in pairs(localPlayer.Character.InventoryFolder.Value:GetChildren()) do
+    if v.Name:match("sword") or v.Name:match("blade") then
+      for _, data in pairs(SwordInfo) do
+        if data["Name"] == v.Name then
+          if bestrank <= data["Rank"] then
+            bestrank = data["Rank"]
+            bestsword = v
+          end
         end
+      end
     end
-
-    return bestsword
+  end
+  return bestsword
 end
 
-local function attackLoop()
-    while true do
-        if localPlayer.Character and KillAuraEnabled then
-            local target = findNearestLivingPlayer()
-            if target and isPlayerAlive(target) then
-                attack(target)
-            end
-        end
-        wait(0.03)
-    end
+local function attack()
+  KillauraRemote:FireServer({
+    ["entityInstance"] = target.Character,
+    ["chargedAttack"] = {
+      ["chargeRatio"] = 1
+    },
+    ["validate"] = {
+      ["raycast"] = {
+        ["cursorDirection"] = attackValue(mouse),
+        ["cameraPosition"] = attackValue(target.Character.HumanoidRootPart.Position),
+      },
+      ["selfPosition"] = attackValue(getcloserpos(localPlayer.Character.HumanoidRootPart.Position, target.Character.HumanoidRootPart.Position, 2)),
+      ["targetPosition"] = attackValue(target.Character.HumanoidRootPart.Position),
+    },
+    ["weapon"] = GetBestSword()
+  })
 end
-
-local function onPlayerAdded(player) ---chatgpt help here
-    player.CharacterAdded:Connect(function(character)
-        coroutine.wrap(attackLoop)()
-    end)
-end
-
-local function onPlayerDied(player)
-    KillAuraEnabled = false
-end
-
-Players.PlayerAdded:Connect(onPlayerAdded)
-Players.PlayerAdded:Connect(onPlayerDied) --till here tysm
 
 local KillauraButton = tab1:ToggleButton({
     name = "KillAura",
     info = "Automatically Attack Nearest Player.",
     callback = function(enabled)
-        KillAuraEnabled = enabled
+        if isalive(localPlayer) and isalive(target) then
+            attack()
+        end
     end
 })
 local SliderStuff = Killaura:Slider({ --bug fix
@@ -837,7 +828,6 @@ local SliderStuff = Killaura:Slider({ --bug fix
   end
 })
 local isRotating = false
-
 local ToggleInsideUI1 = Killaura:ToggleButtonInsideUI({
     name = "Rotation",
     callback = function(enabled)
@@ -867,12 +857,11 @@ local ToggleInsideUI1 = Killaura:ToggleButtonInsideUI({
 })
 
 local Dropdown = Killaura:Dropdown({
-    name = "RotationMode",
-    todo = "RotationMode",
-    list = {"Vanilla", "Smooth", "Autistic"},
-    Default = "Vanilla",
+    name = "E",
+    todo = "E",
+    list = {"E", "E", "E"},
+    Default = "E",
     callback = function(selectedItem)
-        rotationMode = selectedItem
         print("Rotation mode set to:", selectedItem)
     end
 })
