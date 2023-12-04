@@ -715,15 +715,108 @@ Library:createScreenGui()
 
 
 --Sigma
+local Players = game:GetService("Players")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local RunService = game:GetService("RunService")
+
 createnotification("Sigma", "Welcome to Sigma, Press V", 1, true)
 
 local tab1 = Library:createTabs(CoreGui.Sigma, "Gui")
 
+--KillAura
+local KillauraRemote = ReplicatedStorage.rbxts_include.node_modules["@rbxts"].net.out._NetManaged.SwordHit
+
+local function isalive(plr)
+  plr = plr or localPlayer
+  if not plr.Character or not plr.Character:FindFirstChild("Head") or not plr.Character:FindFirstChild("Humanoid") then
+    return false
+  end
+  return true
+end
+
+local SwordInfo = {
+    { Name = "wood_sword", Display = "Wood Sword", Rank = 1 },
+    { Name = "stone_sword", Display = "Stone Sword", Rank = 2 },
+    { Name = "iron_sword", Display = "Iron Sword", Rank = 3 },
+    { Name = "diamond_sword", Display = "Diamond Sword", Rank = 4 },
+    { Name = "emerald_sword", Display = "Emerald Sword", Rank = 5 },
+    { Name = "rageblade", Display = "Rage Blade", Rank = 6 },
+}
+
+local function findNearestPlayer(range)
+  local nearestPlayer
+  local nearestDistance = math.huge
+
+  for _, player in ipairs(Players:GetPlayers()) do
+    if player ~= localPlayer and player.Character then
+      local distance = (player.Character.HumanoidRootPart.Position - localPlayer.Character.HumanoidRootPart.Position).Magnitude
+      if distance <= range and distance < nearestDistance then
+        nearestPlayer = player
+        nearestDistance = distance
+      end
+    end
+  end
+
+  return nearestPlayer
+end
+
+local function attackValue(vec)
+  return { value = vec }
+end
+
+function getcloserpos(pos1, pos2, amount)
+  local newPos = (pos2 - pos1).Unit * math.min(amount, (pos2 - pos1).Magnitude) + pos1
+  return newPos
+end
+
+local function GetBestSword()
+  local bestsword = nil
+  local bestrank = 0
+  for i, v in pairs(localPlayer.Character.InventoryFolder.Value:GetChildren()) do
+    if v.Name:match("sword") or v.Name:match("blade") then
+      for _, data in pairs(SwordInfo) do
+        if data["Name"] == v.Name then
+          if bestrank <= data["Rank"] then
+            bestrank = data["Rank"]
+            bestsword = v
+          end
+        end
+      end
+    end
+  end
+  return bestsword
+end
+
+local function attack()
+  KillauraRemote:FireServer({
+    ["entityInstance"] = target.Character,
+    ["chargedAttack"] = {
+      ["chargeRatio"] = 1
+    },
+    ["validate"] = {
+      ["raycast"] = {
+        ["cursorDirection"] = attackValue(mouse),
+        ["cameraPosition"] = attackValue(target.Character.HumanoidRootPart.Position),
+      },
+      ["selfPosition"] = attackValue(getcloserpos(localPlayer.Character.HumanoidRootPart.Position, target.Character.HumanoidRootPart.Position, 2)),
+      ["targetPosition"] = attackValue(target.Character.HumanoidRootPart.Position),
+    },
+    ["weapon"] = GetBestSword()
+  })
+end
+
 local button1 = tab1:ToggleButton({
-    name = "Toggle 1",
-    info = "This is a toggle button with info.",
+    name = "KillAura",
+    info = "Automatically Attack Nearest Player.",
     callback = function(enabled)
-        print("cum")
+        if enabled and isalive(localPlayer) then
+            target = findNearestPlayer(20)
+            if isalive(target) then
+                attack()
+            end
+        else
+            findNearestPlayer(0)
+        end
     end
 })
 local SliderStuff = button1:Slider({
