@@ -831,27 +831,35 @@ local function attack()
   })
 end
 
+local function isPlayerAlive(player)
+    return player.Character and player.Character:FindFirstChild("Humanoid")
+end
+
 local button1 = tab1:ToggleButton({
     name = "KillAura",
     info = "Automatically Attack Nearest Player.",
     callback = function(enabled)
-        if enabled then
-            target = findNearestPlayer(20)
-            if isalive(localPlayer) then
-                local function attackLoop()
-                    while enabled and isalive(localPlayer) do
-                        attack()
-                        task.wait(0.03)
-                    end
+        local function attackLoop()
+            while enabled and localPlayer.Character do
+                local target = findNearestPlayer(20)
+                if target and target.Character then
+                    attack()
                 end
-
-                spawn(attackLoop)
+                task.wait(0.03)
             end
-        else
-            target = findNearestPlayer(-1)
+        end
+
+        if enabled and localPlayer.Character then
+            spawn(attackLoop)
         end
     end
 })
+
+Players.PlayerAdded:Connect(function(player) -- chatgpt again ty 
+    player.CharacterAdded:Connect(function(character)
+        button1:SetEnabled(false) 
+    end)
+end)
 local SliderStuff = button1:Slider({
   title = "Walkspeed",
   min = 10,
