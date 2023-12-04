@@ -843,7 +843,7 @@ local Killaura = tab1:ToggleButton({
       while enabled and localPlayer.Character do
         local target = findNearestLivingPlayer(20)
         if target and target.Character then
-          attack(target) -- Replace with your actual attack function
+          attack(target)
         end
         task.wait(0.03)
       end
@@ -869,8 +869,7 @@ end
 
 Players.PlayerAdded:Connect(onPlayerDied)
 
-local SliderStuff = Killaura:Slider({
-  -- Replace with your actual fix for the "gay bug"
+local SliderStuff = Killaura:Slider({ --bug fix
   title = "HolderFix",
   min = 0,
   max = 0,
@@ -879,46 +878,50 @@ local SliderStuff = Killaura:Slider({
   end
 })
 
-local rotationMode = "Vanilla"
-
+local rotationMode = "Vanilla" 
 local function rotateToNearestPlayer()
-  while enabled do -- Added check for enabled state
-    local nearestPlayer = findNearestLivingPlayer()
-    if nearestPlayer then
-      local direction = (nearestPlayer.Character.HumanoidRootPart.Position - localPlayer.Character.HumanoidRootPart.Position).Unit
-      direction = Vector3.new(direction.X, 0, direction.Z)
-      local rotation = CFrame.new(Vector3.new(), direction)
+    while enabled do
+        if localPlayer.Character and localPlayer.Character:FindFirstChild("HumanoidRootPart") then
+            local nearestPlayer = findNearestLivingPlayer()
+            if nearestPlayer and nearestPlayer.Character and nearestPlayer.Character:FindFirstChild("HumanoidRootPart") then
+                local direction = (nearestPlayer.Character.HumanoidRootPart.Position - localPlayer.Character.HumanoidRootPart.Position).Unit
+                direction = Vector3.new(direction.X, 0, direction.Z)
+                local rotation = CFrame.new(Vector3.new(), direction)
+                
+                if rotationMode == "Smooth" then
+                    local lookAt = (nearestPlayer.Character.HumanoidRootPart.Position - localPlayer.Character.HumanoidRootPart.Position).Unit
+                    rotation = CFrame.new(Vector3.new(), lookAt)
+                elseif rotationMode == "Autistic" then
+                    rotation = CFrame.Angles(0, tick() * 3, 0)
+                end
 
-      if rotationMode == "Smooth" then
-        local lookAt = (nearestPlayer.Character.HumanoidRootPart.Position - localPlayer.Character.HumanoidRootPart.Position).Unit
-        rotation = CFrame.new(Vector3.new(), lookAt)
-      elseif rotationMode == "Autistic" then
-        rotation = CFrame.Angles(0, tick() * 3, 0)
-      end
-
-      localPlayer.Character:SetPrimaryPartCFrame(newCFrame) -- Changed to directly assign CFrame
+                local currentCFrame = localPlayer.Character.HumanoidRootPart.CFrame
+                local newCFrame = CFrame.new(currentCFrame.Position) * rotation
+                localPlayer.Character:SetPrimaryPartCFrame(newCFrame)
+            end
+        end
+        task.wait(0.1)
     end
-    task.wait(0.1)
-  end
 end
 
-local ToggleInsideUI1 = Killaura:ToggleButtonInsideUI({
-  name = "Rotate",
-  callback = function(enabled)
-    if enabled then
-      spawn(rotateToNearestPlayer)
+local Dropdown = Killaura:Dropdown({
+    name = "RotationMode",
+    todo = "RotationMode",
+    list = {"Vanilla", "Smooth", "Autistic"},
+    Default = "Vanilla",
+    callback = function(selectedItem)
+        rotationMode = selectedItem
+        print("Rotation mode set to:", selectedItem)
     end
-  end
 })
 
-local Dropdown = Killaura:Dropdown({
-  name = "RotationMode",
-  list = {"Vanilla", "Smooth", "Autistic"},
-  Default = "Vanilla",
-  callback = function(selectedItem)
-    rotationMode = selectedItem
-    print("Rotation mode set to:", selectedItem)
-  end
+local ToggleInsideUI1 = Killaura:ToggleButtonInsideUI({
+    name = "Rotate",
+    callback = function(enabled)
+        if enabled then
+            spawn(rotateToNearestPlayer)
+        end
+    end
 })
 --Uninject 
 local button99 = tab1:ToggleButton({
