@@ -98,8 +98,8 @@ function createnotification(title, text, delay2, toggled)
         Background.Parent = ScreenGuitwo
         Background.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
         Background.BorderSizePixel = 0
-        Background.BackgroundTransparency = 0.35
-        Background.Position = UDim2.new(1, -220, 1, -85)
+        Background.BackgroundTransparency = 0.15
+        Background.Position = UDim2.new(1, -85, 1, -85)
         Background.Size = UDim2.new(0, 215, 0, 55)
 
         local TextLabel = Instance.new("TextLabel")
@@ -112,7 +112,7 @@ function createnotification(title, text, delay2, toggled)
         TextLabel.Size = UDim2.new(0, 155, 0, 25)
         TextLabel.Font = Enum.Font.SourceSans
         TextLabel.Text = text
-        TextLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+        TextLabel.TextColor3 = Color3.fromRGB(195, 195, 195)
         TextLabel.TextSize = 15.000
         TextLabel.TextXAlignment = Enum.TextXAlignment.Left
 
@@ -126,7 +126,7 @@ function createnotification(title, text, delay2, toggled)
         TextLabel_2.Size = UDim2.new(0, 155, 0, 25)
         TextLabel_2.Font = Enum.Font.SourceSans
         TextLabel_2.Text = title
-        TextLabel_2.TextColor3 = Color3.fromRGB(255, 255, 255)
+        TextLabel_2.TextColor3 = Color3.fromRGB(195, 195, 195)
         TextLabel_2.TextSize = 20.000
         TextLabel_2.TextXAlignment = Enum.TextXAlignment.Left
 
@@ -134,25 +134,26 @@ function createnotification(title, text, delay2, toggled)
         ImageLabel.AnchorPoint = Vector2.new(0, 1)
         ImageLabel.Parent = Background
         ImageLabel.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-        ImageLabel.BackgroundTransparency = 1.000
+        ImageLabel.BackgroundTransparency = 1
         ImageLabel.BorderColor3 = Color3.fromRGB(0, 0, 0)
         ImageLabel.BorderSizePixel = 0
         ImageLabel.Position = UDim2.new(0, 10, 0, 45)
         ImageLabel.Size = UDim2.new(0, 35, 0, 35)
         ImageLabel.Image = "rbxassetid://7733964719"
+        ImageLabel.ImageTransparency = 0.25
 
         local textSizeX = math.max(TextLabel.TextBounds.X, TextLabel_2.TextBounds.X) + 60
         Background.Size = UDim2.new(0, 215, 0, 55)
 
         if toggled then
             Background.Position = UDim2.new(1, -textSizeX - 10, 1, -70)
-            Background:TweenPosition(UDim2.new(1, -220, 1, -85), Enum.EasingDirection.Out, Enum.EasingStyle.Quart, 0.5)
+            Background:TweenPosition(UDim2.new(1, -220, 1, -85), Enum.EasingDirection.In, Enum.EasingStyle.Quart, 0.5)
         end
 
         wait(delay2)
 
         if Background then
-            Background:TweenPosition(UDim2.new(1, -260, 1, -70), Enum.EasingDirection.In, Enum.EasingStyle.Quart, 0.5, false, function()
+            Background:TweenPosition(UDim2.new(1, -85, 1, -85), Enum.EasingDirection.In, Enum.EasingStyle.Quart, 0.5, false, function()
                 Background:Destroy()
             end)
         end
@@ -275,6 +276,15 @@ function Library:createTabs(parentFrame, tabName)
     local UIListLayout = Instance.new("UIListLayout", TAB.ScrollingModules)
     UIListLayout.SortOrder = Enum.SortOrder.LayoutOrder
 
+UserInputService.InputBegan:Connect(function(input, gameProcessedEvent)
+    if not gameProcessedEvent then
+        if input.KeyCode == Enum.KeyCode.V then
+            TAB.Tabs.Visible = not isVisible
+            isVisible = not isVisible
+        end
+    end
+end)
+
     if Library.totalWidth < 10 * TAB.Tabs.Size.X.Offset then
         local newX = UDim2.new(0, Library.totalWidth * 1.03, 0, 0)
         Library.totalWidth = Library.totalWidth + TAB.Tabs.Size.X.Offset
@@ -286,16 +296,6 @@ function Library:createTabs(parentFrame, tabName)
         warn("Reached the maximum number of tabs. Cannot create more tabs.")
         createnotification("Sigma", "You can't add more tabs", 5, true)
     end
-
-    local function toggleUIVisibility()
-        TAB.Tabs.Visible = not TAB.Tabs.Visible
-    end
-
-    UserInputService.InputBegan:Connect(function(input, gameProcessedEvent)
-        if not gameProcessedEvent and input.KeyCode == Enum.KeyCode.V then
-            toggleUIVisibility()
-        end
-    end)
 
 function TAB:ToggleButton(options)
     options = Library:validate({
@@ -310,6 +310,7 @@ function TAB:ToggleButton(options)
     local newButton = Instance.new("TextButton", TAB.ScrollingModules)
     newButton.BorderSizePixel = 0
     newButton.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+    newButton.AutoButtonColor = false
     newButton.TextXAlignment = Enum.TextXAlignment.Left
     newButton.Font = Enum.Font.SourceSans
     newButton.TextSize = 15
@@ -344,6 +345,7 @@ function TAB:ToggleButton(options)
     ButtonsMenuInner.ScrollBarImageColor3 = Color3.fromRGB(0, 0, 0)
     ButtonsMenuInner.BorderColor3 = Color3.fromRGB(0, 0, 0)
     ButtonsMenuInner.ScrollBarThickness = 3
+    ButtonsMenuInner.Visible = false
     ButtonsMenuInner.Name = "SettingsScroll"
 
     local ButtonsMenuInnerCorner = Instance.new("UICorner", ButtonsMenuInner)
@@ -539,53 +541,56 @@ function ToggleButton:ToggleButtonInsideUI(options)
         name = "Error404",
         callback = function(enabled) end
     }, options or {})
-
+    
     local ToggleButtonInsideUI = {
         Enabled = false
     }
 
-    local newToggle = Instance.new("TextButton", ButtonsMenuInner)
-    newToggle.BorderSizePixel = 0
-    newToggle.Text = " "
-    newToggle.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-    newToggle.BackgroundTransparency = 1
-    newToggle.Size = UDim2.new(0, 145, 0, 30)
-    newToggle.BorderColor3 = Color3.fromRGB(0, 0, 0)
-    newToggle.Position = UDim2.new(0, 0, 0.10571428388357162, 0)
-    newToggle.Name = "ToggleInsideUI"
+    local newTugel = Instance.new("TextButton", ButtonsMenuInner)
+    newTugel.BorderSizePixel = 0
+    newTugel.Text = " "
+    newTugel.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+    newTugel.BackgroundTransparency = 1
+    newTugel.Size = UDim2.new(0, 145, 0, 30)
+	newTugel.ZIndex = 5
+    newTugel.BorderColor3 = Color3.fromRGB(0, 0, 0)
+    newTugel.Position = UDim2.new(0, 0, 0.10571428388357162, 0)
+    newTugel.Name = "ToggleInsideUI"
 
-    local newToggleName = Instance.new("TextLabel", newToggle)
-    newToggleName.BorderSizePixel = 0
-    newToggleName.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-    newToggleName.TextXAlignment = Enum.TextXAlignment.Left
-    newToggleName.Font = Enum.Font.SourceSans
-    newToggleName.TextSize = 15
-    newToggleName.TextColor3 = Color3.fromRGB(25, 25, 25)
-    newToggleName.Size = UDim2.new(0, 80, 0, 15)
-    newToggleName.BorderColor3 = Color3.fromRGB(0, 0, 0)
-    newToggleName.Text = options.name
-    newToggleName.BackgroundTransparency = 1
-    newToggleName.Position = UDim2.new(0.04827586188912392, 0, 0.2571428716182709, 0)
+    local newTugelName = Instance.new("TextLabel", newTugel)
+    newTugelName.BorderSizePixel = 0
+    newTugelName.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+    newTugelName.TextXAlignment = Enum.TextXAlignment.Left
+    newTugelName.Font = Enum.Font.SourceSans
+    newTugelName.TextSize = 15
+    newTugelName.TextColor3 = Color3.fromRGB(25, 25, 25)
+    newTugelName.Size = UDim2.new(0, 80, 0, 15)
+    newTugelName.BorderColor3 = Color3.fromRGB(0, 0, 0)
+    newTugelName.Text = options.name
+    newTugelName.BackgroundTransparency = 1
+	newTugelName.ZIndex = 5
+    newTugelName.Position = UDim2.new(0.04827586188912392, 0, 0.2571428716182709, 0)
 
-    local newToggleThingy = Instance.new("Frame", newToggle)
-    newToggleThingy.BorderSizePixel = 0
-    newToggleThingy.BackgroundColor3 = Color3.fromRGB(220, 220, 220)
-    newToggleThingy.Size = UDim2.new(0, 14, 0, 14)
-    newToggleThingy.BorderColor3 = Color3.fromRGB(0, 0, 0)
-    newToggleThingy.Position = UDim2.new(0, 105, 0, 10)
-    newToggleThingy.Name = "CheckmarkHolder"
+    local newTugelThingy = Instance.new("Frame", newTugel)
+    newTugelThingy.BorderSizePixel = 0
+    newTugelThingy.BackgroundColor3 = Color3.fromRGB(220, 220, 220)
+    newTugelThingy.Size = UDim2.new(0, 14, 0, 14)
+    newTugelThingy.BorderColor3 = Color3.fromRGB(0, 0, 0)
+    newTugelThingy.Position = UDim2.new(0, 105, 0, 10)
+    newTugelThingy.Name = "CheckmarkHolder"
+	newTugelThingy.ZIndex = 5
 
-    local newToggleThingyCorner = Instance.new("UICorner", newToggleThingy)
+    local newTugelThingyCorner = Instance.new("UICorner", newTugelThingy)
 
     local function UpdateCheckMark()
         if ToggleButtonInsideUI.Enabled then
-            Library:tween(newToggleThingy, {BackgroundColor3 = Color3.fromRGB(115, 185, 255)})
+            Library:tween(newTugelThingy, {BackgroundColor3 = Color3.fromRGB(115, 185, 255)})
         else
-            Library:tween(newToggleThingy, {BackgroundColor3 = Color3.fromRGB(220, 220, 220)})
+            Library:tween(newTugelThingy, {BackgroundColor3 = Color3.fromRGB(220, 220, 220)})
         end
     end
 
-    newToggle.MouseButton1Down:Connect(function()
+    newTugel.MouseButton1Down:Connect(function()
         ToggleButtonInsideUI.Enabled = not ToggleButtonInsideUI.Enabled
         UpdateCheckMark()
 
@@ -627,21 +632,22 @@ function ToggleButton:Dropdown(options)
     DropdownInfo.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
 
     local DropdownHolders = Instance.new("TextButton", DropdownInfo)
-    DropdownHolders.BorderSizePixel = 0
-    DropdownHolders.BackgroundColor3 = Color3.fromRGB(250, 250, 250)
+    DropdownHolders.BorderSizePixel = 0.85
+    DropdownHolders.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
     DropdownHolders.Size = UDim2.new(0, 70, 0, 15)
     DropdownHolders.BorderColor3 = Color3.fromRGB(0, 0, 0)
     DropdownHolders.Text = options.name
+    DropdownHolders.AutoButtonColor = false
     DropdownHolders.Position = UDim2.new(0, 75, 0, 0)
     DropdownHolders.Name = "DropdownHolders"
     
     local DropdownMenu = Instance.new("Frame", DropdownHolders)
-    DropdownMenu.BorderSizePixel = 0
+    DropdownMenu.BorderSizePixel = 0.85
     DropdownMenu.BackgroundColor3 = Color3.fromRGB(250, 250, 250)
-    DropdownMenu.Size = UDim2.new(0, 69, 0, 85)
+    DropdownMenu.Size = UDim2.new(0, 70, 0, 85)
     DropdownMenu.Visible = false
     DropdownMenu.BorderColor3 = Color3.fromRGB(0, 0, 0)
-    DropdownMenu.Position = UDim2.new(0, 0, 1, 0)
+    DropdownMenu.Position = UDim2.new(0, 1, 0, 0)
     DropdownMenu.Name = "DropdownMenu"
     
     local DropdownMenuListHolder = Instance.new("UIListLayout", DropdownMenu)
@@ -649,7 +655,7 @@ function ToggleButton:Dropdown(options)
     
     for _, item in ipairs(Dropdown.List) do
         local DropdownOption = Instance.new("TextButton", DropdownMenu)
-        DropdownOption.BorderSizePixel = 0
+        DropdownOption.BorderSizePixel = 0.85
         DropdownOption.BackgroundColor3 = Color3.fromRGB(245, 245, 245)
         DropdownOption.BackgroundTransparency = 1
         DropdownOption.Size = UDim2.new(0, 70, 0, 15)
@@ -712,6 +718,7 @@ Library:createScreenGui()
 createnotification("Sigma", "Welcome to Sigma, Press V", 1, true)
 
 local tab1 = Library:createTabs(CoreGui.Sigma, "Gui")
+
 local button1 = tab1:ToggleButton({
     name = "Toggle 1",
     info = "This is a toggle button with info.",
@@ -719,7 +726,32 @@ local button1 = tab1:ToggleButton({
         print("cum")
     end
 })
-
+local SliderStuff = button1:Slider({
+  title = "Walkspeed",
+  min = 10,
+  max = 200,
+  default = 5,
+  callback = function(val)
+print("" ..val)
+end
+})
+local ToggleInsideUI1 = button1:ToggleButtonInsideUI({
+    name = "MyFirne",
+    callback = function(enabled)
+        if enabled then
+            print("hello")
+        end
+    end
+})
+local Dropdown = button1:Dropdown({
+    name = "Yes",
+    todo = "E",
+    list = {"Walk", "Run", "Sprint"},
+    Default = "Walk",
+    callback = function(selectedItem)
+        print("Movement type set to:", selectedItem)
+    end
+})
 local button99 = tab1:ToggleButton({
     name = "UninjectShit",
     info = "Click to uninject the Sigma hack.",
