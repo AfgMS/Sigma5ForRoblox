@@ -721,8 +721,8 @@ local RunService = game:GetService("RunService")
 
 createnotification("Sigma", "Welcome to Sigma, Press V", 1, true)
 
-local tab1 = Library:createTabs(CoreGui.Sigma, "Gui")
-
+local tab1 = Library:createTabs(CoreGui.Sigma, "Combat")
+--
 --KillAura
 local localPlayer = game.Players.LocalPlayer
 local KillauraRemote = ReplicatedStorage.rbxts_include.node_modules["@rbxts"].net.out._NetManaged.SwordHit
@@ -835,7 +835,7 @@ local function isPlayerAlive(player)
     return player.Character and player.Character:FindFirstChild("Humanoid")
 end
 
-local button1 = tab1:ToggleButton({
+local Killaura = tab1:ToggleButton({
     name = "KillAura",
     info = "Automatically Attack Nearest Player.",
     callback = function(enabled)
@@ -855,55 +855,80 @@ local button1 = tab1:ToggleButton({
     end
 })
 
-Players.PlayerAdded:Connect(function(player) -- chatgpt again ty 
-    player.CharacterAdded:Connect(function(character)
-        button1:SetEnabled(false) 
-    end)
-end)
-local SliderStuff = button1:Slider({
-  title = "Walkspeed",
-  min = 10,
-  max = 200,
-  default = 5,
+local function onPlayerAdded(player) -- Chatgpt ty again fr, from here
+    local function onCharacterAdded(character)
+        Killaura:SetEnabled(true)
+    end
+
+    player.CharacterAdded:Connect(onCharacterAdded)
+
+    player.Character:Wait()
+    onCharacterAdded(player.Character)
+end
+
+Players.PlayerAdded:Connect(onPlayerAdded)
+
+local function onPlayerDied(player)
+    Killaura:SetEnabled(false)
+end
+
+Players.PlayerAdded:Connect(onPlayerDied) -- till here
+
+local SliderStuff = Killaura:Slider({ --fix some gay bug
+  title = "HolderFix",
+  min = 0,
+  max = 0,
+  default = 0,
   callback = function(val)
-print("" ..val)
 end
 })
-local ToggleInsideUI1 = button1:ToggleButtonInsideUI({
+
+local rotationMode = "Vanilla"
+local function rotateToNearestPlayer()
+    while enabled do
+        local nearestPlayer = findNearestLivingPlayer()
+        if nearestPlayer then
+            if rotationMode == "Vanilla" then
+                local direction = (nearestPlayer.Character.HumanoidRootPart.Position - localPlayer.Character.HumanoidRootPart.Position).Unit
+                direction = Vector3.new(direction.X, 0, direction.Z)
+                local rotation = CFrame.new(Vector3.new(), direction)
+                local currentCFrame = localPlayer.Character.HumanoidRootPart.CFrame
+                local newCFrame = CFrame.new(currentCFrame.Position) * rotation
+                localPlayer.Character:SetPrimaryPartCFrame(newCFrame)
+            elseif rotationMode == "Smooth" then
+                local lookAt = (nearestPlayer.Character.HumanoidRootPart.Position - localPlayer.Character.HumanoidRootPart.Position).Unit
+                local rotation = CFrame.new(Vector3.new(), lookAt)
+                local currentCFrame = localPlayer.Character.HumanoidRootPart.CFrame
+                local newCFrame = CFrame.new(currentCFrame.Position) * rotation
+                localPlayer.Character:SetPrimaryPartCFrame(newCFrame)
+            elseif rotationMode == "Autistic" then
+                localPlayer.Character:SetPrimaryPartCFrame(CFrame.Angles(0, tick() * 3, 0))
+            end
+        end
+        task.wait(0.1)
+    end
+end
+
+local Dropdown = Killaura:Dropdown({
+    name = "RotationMode",
+    todo = "RotationMode",
+    list = {"Vanilla", "Smooth", "Autistic"},
+    Default = "Vanilla",
+    callback = function(selectedItem)
+        rotationMode = selectedItem
+        print("Rotation mode set to:", selectedItem)
+    end
+})
+
+local ToggleInsideUI1 = Killaura:ToggleButtonInsideUI({
     name = "Rotate",
     callback = function(enabled)
         if enabled then
-            local function rotateToNearestPlayer()
-                while enabled do
-                    local nearestPlayer = findNearestLivingPlayer()
-                    if nearestPlayer then
-                        local direction = (nearestPlayer.Character.HumanoidRootPart.Position - localPlayer.Character.HumanoidRootPart.Position).Unit
-                        direction = Vector3.new(direction.X, 0, direction.Z) -- Keep only the horizontal direction
-                        local rotation = CFrame.new(Vector3.new(), direction)
-                        local currentCFrame = localPlayer.Character.HumanoidRootPart.CFrame
-                        local newCFrame = CFrame.new(currentCFrame.Position) * rotation
-                        localPlayer.Character:SetPrimaryPartCFrame(newCFrame)
-                    end
-                    task.wait(0.1) -- Adjust the delay based on your preferences
-                end
-            end
-
             spawn(rotateToNearestPlayer)
-        else
-            -- Handle the case when the button is disabled
         end
     end
 })
-
-local Dropdown = button1:Dropdown({
-    name = "Cee",
-    todo = "None",
-    list = {"Walk", "Run", "Sprint"},
-    Default = "Walk",
-    callback = function(selectedItem)
-        print("Movement type set to:", selectedItem)
-    end
-})
+--Uninject 
 local button99 = tab1:ToggleButton({
     name = "UninjectShit",
     info = "Click to uninject the Sigma hack.",
