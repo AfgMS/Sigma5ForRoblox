@@ -819,13 +819,14 @@ local KillauraButton = tab1:ToggleButton({
         end
     end
 })
-local SliderStuff = Killaura:Slider({ --bug fix
-  title = "HolderFix",
+local SliderStuff = Killaura:Slider({
+  title = "Test",
   min = 0,
   max = 0,
   default = 0,
   callback = function(val)
-  end
+print("" ..val)
+end
 })
 local isRotating = false
 local ToggleInsideUI1 = Killaura:ToggleButtonInsideUI({
