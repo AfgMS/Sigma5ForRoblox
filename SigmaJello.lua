@@ -830,15 +830,22 @@ local function attack()
     ["weapon"] = GetBestSword()
   })
 end
+
 local button1 = tab1:ToggleButton({
     name = "KillAura",
     info = "Automatically Attack Nearest Player.",
     callback = function(enabled)
         if enabled then
             target = findNearestPlayer(20)
-            if isalive(plr) then
-            while task.wait() do
-                attack()
+            if isalive(localPlayer) then
+                local function attackLoop()
+                    while enabled and isalive(localPlayer) do
+                        attack()
+                        task.wait(0.03)
+                    end
+                end
+
+                spawn(attackLoop)
             end
         else
             target = findNearestPlayer(-1)
