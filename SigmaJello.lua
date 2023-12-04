@@ -729,7 +729,29 @@ local KillauraRemote = ReplicatedStorage.rbxts_include.node_modules["@rbxts"].ne
 
 local function isalive(plr)
   plr = plr or localPlayer
-  if not plr.Character or not plr.Character:FindFirstChild("Head") or not plr.Character:FindFirstChild("Humanoid") then return false end
+  if not plr then
+    print("Player is nil.")
+    return false
+  end
+  
+  if not plr.Character then
+    print("Player has no character.")
+    return false
+  end
+  
+  local head = plr.Character:FindFirstChild("Head")
+  local humanoid = plr.Character:FindFirstChild("Humanoid")
+  
+  if not head then
+    print("Player's character has no head.")
+    return false
+  end
+  
+  if not humanoid then
+    print("Player's character has no humanoid.")
+    return false
+  end
+  
   return true
 end
 
@@ -812,9 +834,9 @@ local button1 = tab1:ToggleButton({
     name = "KillAura",
     info = "Automatically Attack Nearest Player.",
     callback = function(enabled)
-        if enabled and isalive(localPlayer) then
+        if enabled then
             target = findNearestPlayer(20)
-            if isalive(target) then
+            if isalive(plr) then
                 attack()
             end
         else
