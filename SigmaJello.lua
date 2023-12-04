@@ -724,23 +724,22 @@ createnotification("Sigma", "Welcome to Sigma, Press V", 1, true)
 local tab1 = Library:createTabs(CoreGui.Sigma, "Gui")
 
 --KillAura
+local localPlayer = game.Players.LocalPlayer
 local KillauraRemote = ReplicatedStorage.rbxts_include.node_modules["@rbxts"].net.out._NetManaged.SwordHit
 
 local function isalive(plr)
   plr = plr or localPlayer
-  if not plr.Character or not plr.Character:FindFirstChild("Head") or not plr.Character:FindFirstChild("Humanoid") then
-    return false
-  end
+  if not plr.Character or not plr.Character:FindFirstChild("Head") or not plr.Character:FindFirstChild("Humanoid") then return false end
   return true
 end
 
 local SwordInfo = {
-    { Name = "wood_sword", Display = "Wood Sword", Rank = 1 },
-    { Name = "stone_sword", Display = "Stone Sword", Rank = 2 },
-    { Name = "iron_sword", Display = "Iron Sword", Rank = 3 },
-    { Name = "diamond_sword", Display = "Diamond Sword", Rank = 4 },
-    { Name = "emerald_sword", Display = "Emerald Sword", Rank = 5 },
-    { Name = "rageblade", Display = "Rage Blade", Rank = 6 },
+  [1] = { Name = "wood_sword", Display = "Wood Sword", Rank = 1 },
+  [2] = { Name = "stone_sword", Display = "Stone Sword", Rank = 2 },
+  [3] = { Name = "iron_sword", Display = "Iron Sword", Rank = 3 },
+  [4] = { Name = "diamond_sword", Display = "Diamond Sword", Rank = 4 },
+  [5] = { Name = "emerald_sword", Display = "Emerald Sword", Rank = 5 },
+  [6] = { Name = "rageblade", Display = "Rage Blade", Rank = 6 },
 }
 
 local function findNearestPlayer(range)
@@ -768,6 +767,11 @@ function getcloserpos(pos1, pos2, amount)
   local newPos = (pos2 - pos1).Unit * math.min(amount, (pos2 - pos1).Magnitude) + pos1
   return newPos
 end
+
+local target = findNearestPlayer(20)
+local anims = 0
+local cam = game.Workspace.CurrentCamera
+local mouse = Ray.new(cam.CFrame.Position, target.Character.HumanoidRootPart.Position).Unit.Direction
 
 local function GetBestSword()
   local bestsword = nil
@@ -804,7 +808,6 @@ local function attack()
     ["weapon"] = GetBestSword()
   })
 end
-
 local button1 = tab1:ToggleButton({
     name = "KillAura",
     info = "Automatically Attack Nearest Player.",
@@ -815,7 +818,7 @@ local button1 = tab1:ToggleButton({
                 attack()
             end
         else
-            findNearestPlayer(0)
+            target = findNearestPlayer(-1)
         end
     end
 })
