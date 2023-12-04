@@ -909,6 +909,15 @@ local function rotateToNearestPlayer()
     end
 end
 
+local ToggleInsideUI1 = Killaura:ToggleButtonInsideUI({
+    name = "Rotate",
+    callback = function(enabled)
+        if enabled then
+            spawn(rotateToNearestPlayer)
+        end
+    end
+})
+
 local Dropdown = Killaura:Dropdown({
     name = "RotationMode",
     todo = "RotationMode",
@@ -920,14 +929,6 @@ local Dropdown = Killaura:Dropdown({
     end
 })
 
-local ToggleInsideUI1 = Killaura:ToggleButtonInsideUI({
-    name = "Rotate",
-    callback = function(enabled)
-        if enabled then
-            spawn(rotateToNearestPlayer)
-        end
-    end
-})
 --Uninject 
 local button99 = tab1:ToggleButton({
     name = "UninjectShit",
