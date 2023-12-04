@@ -903,7 +903,14 @@ local function rotateToNearestPlayer()
         task.wait(0.1)
     end
 end
-
+local ToggleInsideUI1 = Killaura:ToggleButtonInsideUI({
+    name = "Rotate",
+    callback = function(enabled)
+        if enabled then
+            spawn(rotateToNearestPlayer)
+        end
+    end
+})
 local Dropdown = Killaura:Dropdown({
     name = "RotationMode",
     todo = "RotationMode",
@@ -912,15 +919,6 @@ local Dropdown = Killaura:Dropdown({
     callback = function(selectedItem)
         rotationMode = selectedItem
         print("Rotation mode set to:", selectedItem)
-    end
-})
-
-local ToggleInsideUI1 = Killaura:ToggleButtonInsideUI({
-    name = "Rotate",
-    callback = function(enabled)
-        if enabled then
-            spawn(rotateToNearestPlayer)
-        end
     end
 })
 --Uninject 
