@@ -734,7 +734,7 @@ local function isalive(plr)
     return false
   end
   
-  if not plr.Character then
+  if not plr.Character then -- credit to chatgpt am retarded
     print("Player has no character.")
     return false
   end
@@ -837,6 +837,7 @@ local button1 = tab1:ToggleButton({
         if enabled then
             target = findNearestPlayer(20)
             if isalive(plr) then
+            while task.wait() do
                 attack()
             end
         else
