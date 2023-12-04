@@ -885,7 +885,7 @@ end
 
 local isRotating = false
 local ToggleInsideUI1 = button1:ToggleButtonInsideUI({
-    name = "MyFirne",
+    name = "Rotation",
     callback = function(enabled)
         if enabled then
             local function rotateToNearestPlayer()
@@ -913,10 +913,10 @@ local ToggleInsideUI1 = button1:ToggleButtonInsideUI({
 })
 
 local Dropdown = Killaura:Dropdown({
-    name = "Default",
-    todo = "RotationMode",
-    list = {"Vanilla", "Smooth", "Autistic"},
-    Default = "Vanilla",
+    name = "E",
+    todo = "E",
+    list = {"E", "E", "E"},
+    Default = "E",
     callback = function(selectedItem)
         print("Rotation mode set to:", selectedItem)
     end
