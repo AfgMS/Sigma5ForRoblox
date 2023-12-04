@@ -764,14 +764,14 @@ local SwordInfo = {
   [6] = { Name = "rageblade", Display = "Rage Blade", Rank = 6 },
 }
 
-local function findNearestPlayer(range)
+local function findNearestLivingPlayer()
   local nearestPlayer
   local nearestDistance = math.huge
 
-  for _, player in ipairs(Players:GetPlayers()) do
-    if player ~= localPlayer and player.Character then
+  for _, player in ipairs(game.Players:GetPlayers()) do
+    if player ~= localPlayer and isalive(player) then
       local distance = (player.Character.HumanoidRootPart.Position - localPlayer.Character.HumanoidRootPart.Position).Magnitude
-      if distance <= range and distance < nearestDistance then
+      if distance < nearestDistance then
         nearestPlayer = player
         nearestDistance = distance
       end
@@ -790,7 +790,7 @@ function getcloserpos(pos1, pos2, amount)
   return newPos
 end
 
-local target = findNearestPlayer(20)
+local target = findNearestLivingPlayer(20)
 local anims = 0
 local cam = game.Workspace.CurrentCamera
 local mouse = Ray.new(cam.CFrame.Position, target.Character.HumanoidRootPart.Position).Unit.Direction
@@ -841,7 +841,7 @@ local button1 = tab1:ToggleButton({
     callback = function(enabled)
         local function attackLoop()
             while enabled and localPlayer.Character do
-                local target = findNearestPlayer(20)
+                local target = findNearestLivingPlayer(20)
                 if target and target.Character then
                     attack()
                 end
