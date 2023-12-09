@@ -6,7 +6,7 @@ local Font = game:GetService("TextService")
 local SigmaLibrary = {}
 local TABS = {}
 TABS.Modules = {}
-TABS.totalWidth = 0 -- Added totalWidth initialization
+TABS.totalWidth = 0 
 
 function SigmaLibrary:tween(object, properties)
 	local tweenInfo = TweenInfo.new(properties.time or 0.10, properties.easingStyle or Enum.EasingStyle.Quad, properties.easingDirection or Enum.EasingDirection.Out)
