@@ -225,7 +225,7 @@ end
 
 function Library:createTAB(parentFrame, tabName)
 
-	local TAB = Instance.new("Frame", parentFrame)
+	local TAB = Instance.new("Frame", CoreGui.Sigma)
 	TAB.TAB.Name = "TAB"
 	TAB.BackgroundColor3 = Color3.fromRGB(250, 250, 250)
 	TAB.BackgroundTransparency = 0.050
