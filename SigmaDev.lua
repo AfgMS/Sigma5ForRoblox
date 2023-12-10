@@ -303,22 +303,19 @@ function Library:createTAB(parentFrame, tabName)
 			Enabled = false
 		}
 
-		local newButton = Instance.new("TextButton", TAB.ScrollingModules)
-		newButton.BorderSizePixel = 0
-		newButton.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-		newButton.AutoButtonColor = false
-		newButton.TextXAlignment = Enum.TextXAlignment.Left
-		newButton.Font = Enum.Font.SourceSans
-		newButton.TextSize = 15
-		newButton.TextColor3 = Color3.fromRGB(35, 35, 35)
-		newButton.Size = UDim2.new(0, 135, 0, 35)
-		newButton.BorderColor3 = Color3.fromRGB(0, 0, 0)
-		newButton.Text = "   " .. options.ModulesName
-		newButton.ZIndex = 3
-		newButton.Name = options.ModulesName
-		newButton.Position = UDim2.new(0, 3, 0, 0)
-
-		Modules["Button"] = newButton
+		local ModuelsToggle  = Instance.new("TextButton", TAB.ModulesHolder)
+		ModuelsToggle.Name = options.ModulesName
+		ModuelsToggle.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+		ModuelsToggle.BorderColor3 = Color3.fromRGB(0, 0, 0)
+		ModuelsToggle.BorderSizePixel = 0
+		ModuelsToggle.Size = UDim2.new(1, 0, 0, 20)
+		ModuelsToggle.AutoButtonColor = false
+		ModuelsToggle.Font = Enum.Font.Roboto
+		ModuelsToggle.Text = "     " ..options.ModulesName
+		ModuelsToggle.TextColor3 = Color3.fromRGB(15, 15, 15)
+		ModuelsToggle.TextSize = 15.000
+		ModuelsToggle.TextTransparency = 0.250
+		ModuelsToggle.TextXAlignment = Enum.TextXAlignment.Left
 
 		-- RightClickStuff
 		local ButtonsMenuFrame = Instance.new("Frame", CoreGui.Sigma)
@@ -386,19 +383,19 @@ function Library:createTAB(parentFrame, tabName)
 
 		local function updateColors()
 			if Modules.Enabled then
-				Library:tween(newButton, {BackgroundColor3 = Color3.fromRGB(115, 185, 255)})
-				Library:tween(newButton, {TextColor3 = Color3.fromRGB(255, 255, 255)})
+				Library:tween(ModuelsToggle, {BackgroundColor3 = Color3.fromRGB(115, 185, 255)})
+				Library:tween(ModuelsToggle, {TextColor3 = Color3.fromRGB(255, 255, 255)})
 				AddArrayList(options.ModulesName)
 				playContinuousSound(soundIds.enabled)
 			else
-				Library:tween(newButton, {BackgroundColor3 = Color3.fromRGB(255, 255, 255)})
-				Library:tween(newButton, {TextColor3 = Color3.fromRGB(35, 35, 35)})
+				Library:tween(ModuelsToggle, {BackgroundColor3 = Color3.fromRGB(255, 255, 255)})
+				Library:tween(ModuelsToggle, {TextColor3 = Color3.fromRGB(35, 35, 35)})
 				RemoveArraylist(options.ModulesName)
 				playContinuousSound(soundIds.disabled)
 			end
 		end
 
-		newButton.MouseButton1Click:Connect(function()
+		ModuelsToggle.MouseButton1Click:Connect(function()
 			Modules.Enabled = not Modules.Enabled
 			updateColors()
 
