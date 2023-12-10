@@ -98,8 +98,8 @@ function createnotification(title, text, delay2, toggled)
 		Background.Parent = ScreenGuitwo
 		Background.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
 		Background.BorderSizePixel = 0
-		Background.BackgroundTransparency = 0.15
-		Background.Position = UDim2.new(1, -85, 1, -85)
+		Background.BackgroundTransparency = 0.35
+		Background.Position = UDim2.new(1, -220, 1, -85)
 		Background.Size = UDim2.new(0, 215, 0, 55)
 
 		local TextLabel = Instance.new("TextLabel")
@@ -112,7 +112,7 @@ function createnotification(title, text, delay2, toggled)
 		TextLabel.Size = UDim2.new(0, 155, 0, 25)
 		TextLabel.Font = Enum.Font.SourceSans
 		TextLabel.Text = text
-		TextLabel.TextColor3 = Color3.fromRGB(195, 195, 195)
+		TextLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
 		TextLabel.TextSize = 15.000
 		TextLabel.TextXAlignment = Enum.TextXAlignment.Left
 
@@ -126,7 +126,7 @@ function createnotification(title, text, delay2, toggled)
 		TextLabel_2.Size = UDim2.new(0, 155, 0, 25)
 		TextLabel_2.Font = Enum.Font.SourceSans
 		TextLabel_2.Text = title
-		TextLabel_2.TextColor3 = Color3.fromRGB(195, 195, 195)
+		TextLabel_2.TextColor3 = Color3.fromRGB(255, 255, 255)
 		TextLabel_2.TextSize = 20.000
 		TextLabel_2.TextXAlignment = Enum.TextXAlignment.Left
 
@@ -134,26 +134,25 @@ function createnotification(title, text, delay2, toggled)
 		ImageLabel.AnchorPoint = Vector2.new(0, 1)
 		ImageLabel.Parent = Background
 		ImageLabel.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-		ImageLabel.BackgroundTransparency = 1
+		ImageLabel.BackgroundTransparency = 1.000
 		ImageLabel.BorderColor3 = Color3.fromRGB(0, 0, 0)
 		ImageLabel.BorderSizePixel = 0
 		ImageLabel.Position = UDim2.new(0, 10, 0, 45)
 		ImageLabel.Size = UDim2.new(0, 35, 0, 35)
 		ImageLabel.Image = "rbxassetid://7733964719"
-		ImageLabel.ImageTransparency = 0.25
 
 		local textSizeX = math.max(TextLabel.TextBounds.X, TextLabel_2.TextBounds.X) + 60
 		Background.Size = UDim2.new(0, 215, 0, 55)
 
 		if toggled then
 			Background.Position = UDim2.new(1, -textSizeX - 10, 1, -70)
-			Background:TweenPosition(UDim2.new(1, -220, 1, -85), Enum.EasingDirection.In, Enum.EasingStyle.Quart, 0.5)
+			Background:TweenPosition(UDim2.new(1, -220, 1, -85), Enum.EasingDirection.Out, Enum.EasingStyle.Quart, 0.5)
 		end
 
 		wait(delay2)
 
 		if Background then
-			Background:TweenPosition(UDim2.new(1, -85, 1, -85), Enum.EasingDirection.In, Enum.EasingStyle.Quart, 0.5, false, function()
+			Background:TweenPosition(UDim2.new(1, -260, 1, -70), Enum.EasingDirection.In, Enum.EasingStyle.Quart, 0.5, false, function()
 				Background:Destroy()
 			end)
 		end
@@ -223,98 +222,100 @@ function Library:createScreenGui()
 	return screenGui
 end
 
-function Library:createTAB(parentFrame, tabName)
+function Library:createTabs(parentFrame, tabName)
+	local TAB = {}
+	TAB.Buttons = {}
 
-	local TAB = Instance.new("Frame", CoreGui.Sigma)
-	TAB.BackgroundColor3 = Color3.fromRGB(250, 250, 250)
-	TAB.BackgroundTransparency = 0.050
-	TAB.BorderColor3 = Color3.fromRGB(0, 0, 0)
-	TAB.BorderSizePixel = 0
-	TAB.Position = UDim2.new(0.03152666240930557 + (Library.totalWidth * 0.5), 0, 0.020082522183656693, 0)
-	TAB.Size = UDim2.new(0, 133, 0, 40)
+	TAB.Tabs = Instance.new("Frame", parentFrame)
+	TAB.Tabs.BorderSizePixel = 0
+	TAB.Tabs.BackgroundColor3 = Color3.fromRGB(250, 250, 250)
+	TAB.Tabs.BackgroundTransparency = 0.050
+	TAB.Tabs.Size = UDim2.new(0, 133, 0, 40)
+	TAB.Tabs.BorderColor3 = Color3.fromRGB(0, 0, 0)
+	TAB.Tabs.ZIndex = 2
+	TAB.Tabs.Position = UDim2.new(0.03152666240930557 + (Library.totalWidth * 0.5), 0, 0.020082522183656693, 0)
+	TAB.Tabs.Name = "Tabs"
 
-	local Name = Instance.new("TextLabel", TAB.TAB)
-	TAB.Name.Name = "Name"
-	TAB.Name.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-	TAB.Name.BackgroundTransparency = 1.000
-	TAB.Name.BorderColor3 = Color3.fromRGB(0, 0, 0)
-	TAB.Name.BorderSizePixel = 0
-	TAB.Name.Size = UDim2.new(1, 0, 1, 0)
-	TAB.Name.Font = Enum.Font.Roboto
-	TAB.Name.Text = "    "..tabName
-	TAB.Name.TextColor3 = Color3.fromRGB(95, 95, 95)
-	TAB.Name.TextSize = 18.000
-	TAB.Name.TextStrokeTransparency = 0.990
-	TAB.Name.TextTransparency = 0.350
-	TAB.Name.TextXAlignment = Enum.TextXAlignment.Left
+	TAB.TabsName = Instance.new("TextLabel", TAB.Tabs)
+	TAB.TabsName.BorderSizePixel = 0
+	TAB.TabsName.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+	TAB.TabsName.TextXAlignment = Enum.TextXAlignment.Left
+	TAB.TabsName.Font = Enum.Font.Roboto
+	TAB.TabsName.TextSize = 18.000
+	TAB.TabsName.ZIndex = 2
+	TAB.TabsName.TextColor3 = Color3.fromRGB(95, 95, 95)
+	TAB.TabsName.Size = UDim2.new(1, 0, 1, 0)
+	TAB.TabsName.BorderColor3 = Color3.fromRGB(0, 0, 0)
+	TAB.TabsName.Text = "    "..tabName
+	TAB.TabsName.Name = "TabsName"
+	TAB.TabsName.TextTransparency = 0.350
+	TAB.TabsName.Position = UDim2.new(0, 20, 0, 20)
+	TAB.TabsName.TextStrokeTransparency = 0.990
 
-	local ScrollHolder = Instance.new("Frame", TAB.TAB)
-	TAB.ScrollHolder.Name = "ScrollHolder"
-	TAB.ScrollHolder.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-	TAB.ScrollHolder.BackgroundTransparency = 1.000
-	TAB.ScrollHolder.BorderColor3 = Color3.fromRGB(0, 0, 0)
-	TAB.ScrollHolder.BorderSizePixel = 0
-	TAB.ScrollHolder.Position = UDim2.new(0, -15, 0, 40)
-	TAB.ScrollHolder.Size = UDim2.new(0, 133, 0, 250)
+	TAB.ScrollingPart = Instance.new("Frame", TAB.Tabs)
+	TAB.ScrollingPart.BorderSizePixel = 0
+	TAB.ScrollingPart.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+	TAB.ScrollingPart.BackgroundTransparency = 1.000
+	TAB.ScrollingPart.Size = UDim2.new(0, 133, 0, 250)
+	TAB.ScrollingPart.BorderColor3 = Color3.fromRGB(0, 0, 0)
+	TAB.ScrollingPart.ZIndex = 2
+	TAB.ScrollingPart.Position = UDim2.new(0, -15, 0, 40)
+	TAB.ScrollingPart.Name = "ScrollingPart"
 
-	local ModulesHolder = Instance.new("ScrollingFrame", TAB.ScrollHolder)
-	TAB.ModulesHolder.Name = "ModulesHolder"
-	TAB.ModulesHolder.Active = true
-	TAB.ModulesHolder.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-	TAB.ModulesHolder.BorderColor3 = Color3.fromRGB(0, 0, 0)
-	TAB.ModulesHolder.BorderSizePixel = 0
-	TAB.ModulesHolder.Size = UDim2.new(0, 133, 0, 173)
-	TAB.ModulesHolder.CanvasSize = UDim2.new(0, 0, 1, 0)
-	TAB.ModulesHolder.ScrollBarThickness = 3
+	TAB.ScrollingModules = Instance.new("ScrollingFrame", TAB.ScrollingPart)
+	TAB.ScrollingModules.Active = true
+	TAB.ScrollingModules.BorderSizePixel = 0
+	TAB.ScrollingModules.ZIndex = 3
+	TAB.ScrollingModules.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+	TAB.ScrollingModules.Size = UDim2.new(0, 133, 0, 173)
+	TAB.ScrollingModules.ScrollBarImageColor3 = Color3.fromRGB(0, 0, 0)
+	TAB.ScrollingModules.BorderColor3 = Color3.fromRGB(0, 0, 0)
+	TAB.ScrollingModules.ScrollBarThickness = 3
+	TAB.ScrollingModules.CanvasSize = UDim2.new(0, 0, 1, 0)
+	TAB.ScrollingModules.Name = "ScrollingModules"
 
-	local UIListLayout = Instance.new("UIListLayout", TAB.ModulesHolder)
-	TAB.UIListLayout.SortOrder = Enum.SortOrder.LayoutOrder
+	local UIListLayout = Instance.new("UIListLayout", TAB.ScrollingModules)
+	UIListLayout.SortOrder = Enum.SortOrder.LayoutOrder
 
-	local UIListLayout_2 = Instance.new("UIListLayout", TAB.TAB)
-	UIListLayout_2.SortOrder = Enum.SortOrder.LayoutOrder
-
-	UserInputService.InputBegan:Connect(function(input, gameProcessedEvent)
-		if not gameProcessedEvent then
-			if input.KeyCode == Enum.KeyCode.V then
-				TAB.TAB.Visible = not TAB.TAB.Visible
-			end
-		end
-	end)
-
-	if Library.totalWidth < 10 * TAB.TAB.Size.X.Offset then
+	if Library.totalWidth < 10 * TAB.Tabs.Size.X.Offset then
 		local newX = UDim2.new(0, Library.totalWidth * 1.03, 0, 0)
-		Library.totalWidth = Library.totalWidth + Library.TAB.Size.X.Offset
+		Library.totalWidth = Library.totalWidth + TAB.Tabs.Size.X.Offset
 
-		TAB.TAB.Position = newX
+		TAB.Tabs.Position = newX
 
-		makeDraggable(TAB.TAB)
+		makeDraggable(TAB.Tabs)
 	else
-		warn("Reached the maximum number of TAB. Cannot create more TAB.")
+		warn("Reached the maximum number of tabs. Cannot create more tabs.")
+		createnotification("Sigma", "You can't add more tabs", 5, true)
 	end
 
-	function TAB:Modules(options)
+	function TAB:ToggleButton(options)
 		options = Library:validate({
-			ModulesName = "Error404",
-			HoverText = "Error404",
+			name = "Error404",
+			info = "Error404",
 		}, options or {})
 
-		local Modules = {
+		local ToggleButton = {
 			Enabled = false
 		}
 
-		local ModuelsToggle  = Instance.new("TextButton", TAB.ModulesHolder)
-		ModuelsToggle.Name = options.ModulesName
-		ModuelsToggle.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-		ModuelsToggle.BorderColor3 = Color3.fromRGB(0, 0, 0)
-		ModuelsToggle.BorderSizePixel = 0
-		ModuelsToggle.Size = UDim2.new(1, 0, 0, 20)
-		ModuelsToggle.AutoButtonColor = false
-		ModuelsToggle.Font = Enum.Font.Roboto
-		ModuelsToggle.Text = "     " ..options.ModulesName
-		ModuelsToggle.TextColor3 = Color3.fromRGB(15, 15, 15)
-		ModuelsToggle.TextSize = 15.000
-		ModuelsToggle.TextTransparency = 0.250
-		ModuelsToggle.TextXAlignment = Enum.TextXAlignment.Left
+		local newButton = Instance.new("TextButton", TAB.ScrollingModules)
+		newButton.BorderSizePixel = 0
+		newButton.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+		newButton.TextXAlignment = Enum.TextXAlignment.Left
+		newButton.Font = Enum.Font.Roboto
+		newButton.TextSize = 15.000
+		newButton.TextColor3 = Color3.fromRGB(15, 15, 15)
+		newButton.Size = UDim2.new(1, 0, 0, 20)
+		newButton.BorderColor3 = Color3.fromRGB(0, 0, 0)
+		newButton.Text = "     " .. options.name
+		newButton.ZIndex = 3
+		newButton.Name = options.name
+		newButton.Position = UDim2.new(0, 3, 0, 0)
+		newButton.AutoButtonColor = false
+		newButton.TextTransparency = 0.250
+
+		ToggleButton["Button"] = newButton
 
 		-- RightClickStuff
 		local ButtonsMenuFrame = Instance.new("Frame", CoreGui.Sigma)
@@ -322,7 +323,7 @@ function Library:createTAB(parentFrame, tabName)
 		ButtonsMenuFrame.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
 		ButtonsMenuFrame.Size = UDim2.new(0, 295, 0, 145)
 		ButtonsMenuFrame.Position = UDim2.new(0.5, -150, 0.5, -100)
-		ButtonsMenuFrame.Name = options.ModulesName
+		ButtonsMenuFrame.Name = options.name
 		ButtonsMenuFrame.Visible = false
 
 		local ButtonsMenuFrameCorner = Instance.new("UICorner", ButtonsMenuFrame)
@@ -337,7 +338,6 @@ function Library:createTAB(parentFrame, tabName)
 		ButtonsMenuInner.ScrollBarImageColor3 = Color3.fromRGB(0, 0, 0)
 		ButtonsMenuInner.BorderColor3 = Color3.fromRGB(0, 0, 0)
 		ButtonsMenuInner.ScrollBarThickness = 3
-		ButtonsMenuInner.Visible = false
 		ButtonsMenuInner.Name = "SettingsScroll"
 
 		local ButtonsMenuInnerCorner = Instance.new("UICorner", ButtonsMenuInner)
@@ -356,8 +356,8 @@ function Library:createTAB(parentFrame, tabName)
 		ButtonsMenuTitle.TextColor3 = Color3.fromRGB(75, 75, 75)
 		ButtonsMenuTitle.Size = UDim2.new(0, 75, 0, 15)
 		ButtonsMenuTitle.BorderColor3 = Color3.fromRGB(0, 0, 0)
-		ButtonsMenuTitle.Text = "" .. options.HoverText
-		ButtonsMenuTitle.Name = options.ModulesName
+		ButtonsMenuTitle.Text = "" .. options.info
+		ButtonsMenuTitle.Name = options.name
 		ButtonsMenuTitle.BackgroundTransparency = 1
 		ButtonsMenuTitle.Position = UDim2.new(0, 5, 0, 5)
 
@@ -372,45 +372,47 @@ function Library:createTAB(parentFrame, tabName)
 		ButtonsMenuTitleText.TextColor3 = Color3.fromRGB(255, 255, 255)
 		ButtonsMenuTitleText.Size = UDim2.new(0, 65, 0, 10)
 		ButtonsMenuTitleText.BorderColor3 = Color3.fromRGB(0, 0, 0)
-		ButtonsMenuTitleText.Text = options.ModulesName
-		ButtonsMenuTitleText.Name = options.ModulesName
+		ButtonsMenuTitleText.Text = options.name
+		ButtonsMenuTitleText.Name = options.name
 		ButtonsMenuTitleText.BackgroundTransparency = 1
 		ButtonsMenuTitleText.Position = UDim2.new(0, 0, 0, -20)
 		ButtonsMenuTitleText.TextXAlignment = Enum.TextXAlignment.Left
 
-		Modules.MenuFrame = ButtonsMenuFrame
+		ToggleButton.MenuFrame = ButtonsMenuFrame
 
 		local function updateColors()
-			if Modules.Enabled then
-				Library:tween(ModuelsToggle, {BackgroundColor3 = Color3.fromRGB(115, 185, 255)})
-				Library:tween(ModuelsToggle, {TextColor3 = Color3.fromRGB(255, 255, 255)})
-				AddArrayList(options.ModulesName)
+			if ToggleButton.Enabled then
+				Library:tween(newButton, {BackgroundColor3 = Color3.fromRGB(115, 185, 255)})
+				Library:tween(newButton, {TextColor3 = Color3.fromRGB(255, 255, 255)})
+				newButton.Text = "       " .. options.name
+				AddArrayList(options.name)
 				playContinuousSound(soundIds.enabled)
 			else
-				Library:tween(ModuelsToggle, {BackgroundColor3 = Color3.fromRGB(255, 255, 255)})
-				Library:tween(ModuelsToggle, {TextColor3 = Color3.fromRGB(35, 35, 35)})
-				RemoveArraylist(options.ModulesName)
+				Library:tween(newButton, {BackgroundColor3 = Color3.fromRGB(255, 255, 255)})
+				Library:tween(newButton, {TextColor3 = Color3.fromRGB(15, 15, 15)})
+				newButton.Text = "     " .. options.name
+				RemoveArraylist(options.name)
 				playContinuousSound(soundIds.disabled)
 			end
 		end
 
-		ModuelsToggle.MouseButton1Click:Connect(function()
-			Modules.Enabled = not Modules.Enabled
+		newButton.MouseButton1Click:Connect(function()
+			ToggleButton.Enabled = not ToggleButton.Enabled
 			updateColors()
 
 			if options.callback then
-				options.callback(Modules.Enabled)
+				options.callback(ToggleButton.Enabled)
 			end
 		end)
 
-		Modules.Button.MouseButton2Click:Connect(function()
+		ToggleButton.Button.MouseButton2Click:Connect(function()
 			ButtonsMenuFrame.Visible = not ButtonsMenuFrame.Visible
 			ButtonsMenuInner.Visible = not ButtonsMenuInner.Visible
 		end)
 
 		updateColors()
 
-		function Modules:Slider(options)
+		function ToggleButton:Slider(options)
 			options = Library:validate({
 				title = "Error404",
 				min = 0,
@@ -528,72 +530,69 @@ function Library:createTAB(parentFrame, tabName)
 
 			Slider.SliderHolder = SlidersHolder
 
-			function Modules:ModulesInsideUI(options)
+			function ToggleButton:ToggleButtonInsideUI(options)
 				options = Library:validate({
 					name = "Error404",
 					callback = function(enabled) end
 				}, options or {})
 
-				local ModulesInsideUI = {
+				local ToggleButtonInsideUI = {
 					Enabled = false
 				}
 
-				local newTugel = Instance.new("TextButton", ButtonsMenuInner)
-				newTugel.BorderSizePixel = 0
-				newTugel.Text = " "
-				newTugel.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-				newTugel.BackgroundTransparency = 1
-				newTugel.Size = UDim2.new(0, 145, 0, 30)
-				newTugel.ZIndex = 5
-				newTugel.BorderColor3 = Color3.fromRGB(0, 0, 0)
-				newTugel.Position = UDim2.new(0, 0, 0.10571428388357162, 0)
-				newTugel.Name = "ToggleInsideUI"
+				local newToggle = Instance.new("TextButton", ButtonsMenuInner)
+				newToggle.BorderSizePixel = 0
+				newToggle.Text = " "
+				newToggle.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+				newToggle.BackgroundTransparency = 1
+				newToggle.Size = UDim2.new(0, 145, 0, 30)
+				newToggle.BorderColor3 = Color3.fromRGB(0, 0, 0)
+				newToggle.Position = UDim2.new(0, 0, 0.10571428388357162, 0)
+				newToggle.Name = "ToggleInsideUI"
 
-				local newTugelName = Instance.new("TextLabel", newTugel)
-				newTugelName.BorderSizePixel = 0
-				newTugelName.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-				newTugelName.TextXAlignment = Enum.TextXAlignment.Left
-				newTugelName.Font = Enum.Font.SourceSans
-				newTugelName.TextSize = 15
-				newTugelName.TextColor3 = Color3.fromRGB(25, 25, 25)
-				newTugelName.Size = UDim2.new(0, 80, 0, 15)
-				newTugelName.BorderColor3 = Color3.fromRGB(0, 0, 0)
-				newTugelName.Text = options.name
-				newTugelName.BackgroundTransparency = 1
-				newTugelName.ZIndex = 5
-				newTugelName.Position = UDim2.new(0.04827586188912392, 0, 0.2571428716182709, 0)
+				local newToggleName = Instance.new("TextLabel", newToggle)
+				newToggleName.BorderSizePixel = 0
+				newToggleName.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+				newToggleName.TextXAlignment = Enum.TextXAlignment.Left
+				newToggleName.Font = Enum.Font.SourceSans
+				newToggleName.TextSize = 15
+				newToggleName.TextColor3 = Color3.fromRGB(25, 25, 25)
+				newToggleName.Size = UDim2.new(0, 80, 0, 15)
+				newToggleName.BorderColor3 = Color3.fromRGB(0, 0, 0)
+				newToggleName.Text = options.name
+				newToggleName.BackgroundTransparency = 1
+				newToggleName.Position = UDim2.new(0.04827586188912392, 0, 0.2571428716182709, 0)
 
-				local newTugelThingy = Instance.new("Frame", newTugel)
-				newTugelThingy.BorderSizePixel = 0
-				newTugelThingy.BackgroundColor3 = Color3.fromRGB(220, 220, 220)
-				newTugelThingy.Size = UDim2.new(0, 14, 0, 14)
-				newTugelThingy.BorderColor3 = Color3.fromRGB(0, 0, 0)
-				newTugelThingy.Position = UDim2.new(0, 105, 0, 10)
-				newTugelThingy.Name = "CheckmarkHolder"
-				newTugelThingy.ZIndex = 5
+				local newToggleThingy = Instance.new("Frame", newToggle)
+				newToggleThingy.BorderSizePixel = 0
+				newToggleThingy.BackgroundColor3 = Color3.fromRGB(220, 220, 220)
+				newToggleThingy.Size = UDim2.new(0, 14, 0, 14)
+				newToggleThingy.BorderColor3 = Color3.fromRGB(0, 0, 0)
+				newToggleThingy.Position = UDim2.new(0, 105, 0, 10)
+				newToggleThingy.Name = "CheckmarkHolder"
 
-				local newTugelThingyCorner = Instance.new("UICorner", newTugelThingy)
+				local newToggleThingyCorner = Instance.new("UICorner", newToggleThingy)
 
 				local function UpdateCheckMark()
-					if ModulesInsideUI.Enabled then
-						Library:tween(newTugelThingy, {BackgroundColor3 = Color3.fromRGB(115, 185, 255)})
+					if ToggleButtonInsideUI.Enabled then
+						Library:tween(newToggleThingy, {BackgroundColor3 = Color3.fromRGB(115, 185, 255)})
 					else
-						Library:tween(newTugelThingy, {BackgroundColor3 = Color3.fromRGB(220, 220, 220)})
+						Library:tween(newToggleThingy, {BackgroundColor3 = Color3.fromRGB(220, 220, 220)})
 					end
 				end
 
-				newTugel.MouseButton1Down:Connect(function()
-					ModulesInsideUI.Enabled = not ModulesInsideUI.Enabled
+				newToggle.MouseButton1Down:Connect(function()
+					ToggleButtonInsideUI.Enabled = not ToggleButtonInsideUI.Enabled
 					UpdateCheckMark()
 
 					if options.callback then
-						options.callback(ModulesInsideUI.Enabled)
+						options.callback(ToggleButtonInsideUI.Enabled)
 					end
 				end)
 
 				UpdateCheckMark()
 
-				function Modules:Dropdown(options)
+				function ToggleButton:Dropdown(options)
 					options = Library:validate({
 						name = "Error404",
 						todo = "MovementType",
@@ -624,22 +623,21 @@ function Library:createTAB(parentFrame, tabName)
 					DropdownInfo.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
 
 					local DropdownHolders = Instance.new("TextButton", DropdownInfo)
-					DropdownHolders.BorderSizePixel = 0.85
-					DropdownHolders.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+					DropdownHolders.BorderSizePixel = 0
+					DropdownHolders.BackgroundColor3 = Color3.fromRGB(250, 250, 250)
 					DropdownHolders.Size = UDim2.new(0, 70, 0, 15)
 					DropdownHolders.BorderColor3 = Color3.fromRGB(0, 0, 0)
 					DropdownHolders.Text = options.name
-					DropdownHolders.AutoButtonColor = false
 					DropdownHolders.Position = UDim2.new(0, 75, 0, 0)
 					DropdownHolders.Name = "DropdownHolders"
 
 					local DropdownMenu = Instance.new("Frame", DropdownHolders)
-					DropdownMenu.BorderSizePixel = 0.85
+					DropdownMenu.BorderSizePixel = 0
 					DropdownMenu.BackgroundColor3 = Color3.fromRGB(250, 250, 250)
-					DropdownMenu.Size = UDim2.new(0, 70, 0, 85)
+					DropdownMenu.Size = UDim2.new(0, 69, 0, 85)
 					DropdownMenu.Visible = false
 					DropdownMenu.BorderColor3 = Color3.fromRGB(0, 0, 0)
-					DropdownMenu.Position = UDim2.new(0, 1, 0, 0)
+					DropdownMenu.Position = UDim2.new(0, 0, 1, 0)
 					DropdownMenu.Name = "DropdownMenu"
 
 					local DropdownMenuListHolder = Instance.new("UIListLayout", DropdownMenu)
@@ -647,7 +645,7 @@ function Library:createTAB(parentFrame, tabName)
 
 					for _, item in ipairs(Dropdown.List) do
 						local DropdownOption = Instance.new("TextButton", DropdownMenu)
-						DropdownOption.BorderSizePixel = 0.85
+						DropdownOption.BorderSizePixel = 0
 						DropdownOption.BackgroundColor3 = Color3.fromRGB(245, 245, 245)
 						DropdownOption.BackgroundTransparency = 1
 						DropdownOption.Size = UDim2.new(0, 70, 0, 15)
@@ -671,13 +669,13 @@ function Library:createTAB(parentFrame, tabName)
 					return Dropdown
 				end
 
-				return ModulesInsideUI
+				return ToggleButtonInsideUI
 			end
 
 			return Slider
 		end
 
-		return Modules
+		return ToggleButton
 	end
 
 	return TAB
@@ -707,189 +705,20 @@ Library:createScreenGui()
 
 
 --Sigma
-local Players = game:GetService("Players")
-local ReplicatedStorage = game:GetService("ReplicatedStorage")
-local RunService = game:GetService("RunService")
-
 createnotification("Sigma", "Welcome to Sigma, Press V", 1, true)
 
-local tab1 = Library:createTAB(CoreGui.Sigma, "Gui")
-
---KillAura
-local localPlayer = game.Players.LocalPlayer
-local KillauraRemote = ReplicatedStorage.rbxts_include.node_modules["@rbxts"].net.out._NetManaged.SwordHit
-
-local function isalive(plr)
-	plr = plr or localPlayer
-	if not plr then
-		print("Player is nil.")
-		return false
-	end
-
-	if not plr.Character then -- credit to chatgpt am retarded
-		print("Player has no character.")
-		return false
-	end
-
-	local head = plr.Character:FindFirstChild("Head")
-	local humanoid = plr.Character:FindFirstChild("Humanoid")
-
-	if not head then
-		print("Player's character has no head.")
-		return false
-	end
-
-	if not humanoid then
-		print("Player's character has no humanoid.")
-		return false
-	end
-
-	return true
-end
-
-local SwordInfo = {
-	[1] = { Name = "wood_sword", Display = "Wood Sword", Rank = 1 },
-	[2] = { Name = "stone_sword", Display = "Stone Sword", Rank = 2 },
-	[3] = { Name = "iron_sword", Display = "Iron Sword", Rank = 3 },
-	[4] = { Name = "diamond_sword", Display = "Diamond Sword", Rank = 4 },
-	[5] = { Name = "emerald_sword", Display = "Emerald Sword", Rank = 5 },
-	[6] = { Name = "rageblade", Display = "Rage Blade", Rank = 6 },
-}
-
-local function findNearestLivingPlayer()
-	local nearestPlayer
-	local nearestDistance = math.huge
-
-	for _, player in ipairs(game.Players:GetPlayers()) do
-		if player ~= localPlayer and isalive(player) then
-			local distance = (player.Character.HumanoidRootPart.Position - localPlayer.Character.HumanoidRootPart.Position).Magnitude
-			if distance < nearestDistance then
-				nearestPlayer = player
-				nearestDistance = distance
-			end
-		end
-	end
-
-	return nearestPlayer
-end
-
-local function attackValue(vec)
-	return { value = vec }
-end
-
-function getcloserpos(pos1, pos2, amount)
-	local newPos = (pos2 - pos1).Unit * math.min(amount, (pos2 - pos1).Magnitude) + pos1
-	return newPos
-end
-
-local target = findNearestLivingPlayer(20)
-local anims = 0
-local cam = game.Workspace.CurrentCamera
-local mouse = Ray.new(cam.CFrame.Position, target.Character.HumanoidRootPart.Position).Unit.Direction
-
-local function GetBestSword()
-	local bestsword = nil
-	local bestrank = 0
-	for i, v in pairs(localPlayer.Character.InventoryFolder.Value:GetChildren()) do
-		if v.Name:match("sword") or v.Name:match("blade") then
-			for _, data in pairs(SwordInfo) do
-				if data["Name"] == v.Name then
-					if bestrank <= data["Rank"] then
-						bestrank = data["Rank"]
-						bestsword = v
-					end
-				end
-			end
-		end
-	end
-	return bestsword
-end
-
-local function attack()
-	KillauraRemote:FireServer({
-		["entityInstance"] = target.Character,
-		["chargedAttack"] = {
-			["chargeRatio"] = 1
-		},
-		["validate"] = {
-			["raycast"] = {
-				["cursorDirection"] = attackValue(mouse),
-				["cameraPosition"] = attackValue(target.Character.HumanoidRootPart.Position),
-			},
-			["selfPosition"] = attackValue(getcloserpos(localPlayer.Character.HumanoidRootPart.Position, target.Character.HumanoidRootPart.Position, 2)),
-			["targetPosition"] = attackValue(target.Character.HumanoidRootPart.Position),
-		},
-		["weapon"] = GetBestSword()
-	})
-end
-
-local function isPlayerAlive(player)
-	return player.Character and player.Character:FindFirstChild("Humanoid")
-end
-
-local button1 = tab1:Modules({
-	ModulesName = "KillAura",
-	HoverText = "Automatically Attack Nearest Player.",
+local tab1 = Library:createTabs(CoreGui.Sigma, "Gui")
+local button1 = tab1:ToggleButton({
+	name = "Toggle 1",
+	info = "This is a toggle button with info.",
 	callback = function(enabled)
-		local function attackLoop()
-			while enabled and localPlayer.Character do
-				local target = findNearestLivingPlayer(20)
-				if target and target.Character then
-					attack()
-				end
-				task.wait(0.03)
-			end
-		end
-
-		if enabled and localPlayer.Character then
-			spawn(attackLoop)
-		end
+		print("cum")
 	end
 })
 
-Players.PlayerAdded:Connect(function(player) -- chatgpt again ty 
-	player.CharacterAdded:Connect(function(character)
-		button1:SetEnabled(false) 
-	end)
-end)
-local SliderStuff = button1:Slider({
-	title = "Fix",
-	min = 0,
-	max = 0,
-	default = 0,
-	callback = function(val)
-	end
-})
-local ToggleInsideUI1 = button1:ModulesInsideUI({
-	name = "Rotate",
-	callback = function(enabled)
-		if enabled then
-			local function rotateToNearestPlayer()
-				while enabled do
-					local nearestPlayer = findNearestLivingPlayer()
-					if nearestPlayer then
-						local direction = (nearestPlayer.Character.HumanoidRootPart.Position - localPlayer.Character.HumanoidRootPart.Position).Unit
-						direction = Vector3.new(direction.X, 0, direction.Z) -- Keep only the horizontal direction
-						local rotation = CFrame.new(Vector3.new(), direction)
-						local currentCFrame = localPlayer.Character.HumanoidRootPart.CFrame
-						local newCFrame = CFrame.new(currentCFrame.Position) * rotation
-						localPlayer.Character:SetPrimaryPartCFrame(newCFrame)
-					end
-					task.wait(0.1)
-				end
-			end
-
-			spawn(rotateToNearestPlayer)
-		else
-			print("noshit im retarded")
-		end
-	end
-})
-
---Uninject
-local button99 = tab1:Modules({
-	ModulesName = "UninjectShit",
-	HoverText = "Click to uninject the Sigma hack.",
+local button99 = tab1:ToggleButton({
+	name = "UninjectShit",
+	info = "Click to uninject the Sigma hack.",
 	callback = function(enabled)
 		if enabled then
 			CoreGui.Sigma:Destroy()
