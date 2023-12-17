@@ -233,7 +233,7 @@ function Library:createTabs(parentFrame, tabName)
 	TAB.Tabs.Size = UDim2.new(0, 133, 0, 40)
 	TAB.Tabs.BorderColor3 = Color3.fromRGB(0, 0, 0)
 	TAB.Tabs.ZIndex = 2
-	TAB.Tabs.Position = UDim2.new(0.03152666240930557 + (Library.totalWidth * 0.5), 0, 0.020082522183656693, 0)
+	TAB.Tabs.Position = UDim2.new(0, 25, 0, 15)
 	TAB.Tabs.Name = "Tabs"
 
 	TAB.TabsName = Instance.new("TextLabel", TAB.Tabs)
