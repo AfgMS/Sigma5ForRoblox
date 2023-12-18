@@ -427,6 +427,12 @@ function Library:createTabs(parentFrame, tabName)
 			ButtonsMenuInner.Visible = not ButtonsMenuInner.Visible
 		end)
 
+
+		openmenu.MouseButton1Click:Connect(function()
+			ButtonsMenuFrame.Visible = not ButtonsMenuFrame.Visible
+			ButtonsMenuInner.Visible = not ButtonsMenuInner.Visible
+		end)
+			
 		updateColors()
 
 		function ToggleButton:Slider(options)
