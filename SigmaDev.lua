@@ -330,7 +330,7 @@ function Library:createTabs(parentFrame, tabName)
 		openmenu.BackgroundTransparency = 0.050
 		openmenu.ZIndex = 3
 		openmenu.Name = "MobileSupport"
-		openmenu.Position = UDim2.new(0, 110, 0, 0)
+		openmenu.Position = UDim2.new(0, 113, 0, 0)
 		openmenu.AutoButtonColor = false
 		openmenu.TextTransparency = 0.250
 
