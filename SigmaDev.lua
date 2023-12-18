@@ -298,28 +298,6 @@ function Library:createTabs(parentFrame, tabName)
 		createnotification("Sigma", "You can't add more tabs", 5, true)
 	end
 	
-	function Library:RShift()
-		local OpenGUI = Instance.new("TextButton", CoreGui.Sigma)
-		OpenGUI.BorderSizePixel = 0
-		OpenGUI.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-		OpenGUI.TextXAlignment = Enum.TextXAlignment.Left
-		OpenGUI.Font = Enum.Font.Roboto
-		OpenGUI.TextSize = 15.000
-		OpenGUI.TextColor3 = Color3.fromRGB(15, 15, 15)
-		OpenGUI.Size = UDim2.new(0, 25, 0, 25)
-		OpenGUI.BorderColor3 = Color3.fromRGB(0, 0, 0)
-		OpenGUI.Text = "+"
-		OpenGUI.ZIndex = 3
-		OpenGUI.Name = "SigmaRShift"
-		OpenGUI.Position = UDim2.new(1, -35, 0.5, -155)
-		OpenGUI.AutoButtonColor = false
-		OpenGUI.TextTransparency = 0.250
-		
-		OpenGUI.MouseButton1Click:Connect(function()
-			TAB.Tabs.Visible = not TAB.Tabs.Visible
-		end)
-	end
-	
 	function TAB:ToggleButton(options)
 		options = Library:validate({
 			name = "Error404",
@@ -737,9 +715,6 @@ function Library:createTabs(parentFrame, tabName)
 end
 
 Library:createScreenGui()
-wait(0.01)
-Library:RShift()
-
 
 
 
