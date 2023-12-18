@@ -318,6 +318,22 @@ function Library:createTabs(parentFrame, tabName)
 
 		ToggleButton["Button"] = newButton
 
+		local openmenu = Instance.new("TextButton", newButton)
+		openmenu.BorderSizePixel = 0
+		openmenu.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+		openmenu.Font = Enum.Font.Roboto
+		openmenu.TextSize = 15.000
+		openmenu.TextColor3 = Color3.fromRGB(15, 15, 15)
+		openmenu.Size = UDim2.new(0, 0, 1, 0)
+		openmenu.BorderColor3 = Color3.fromRGB(0, 0, 0)
+		openmenu.Text = "+"
+		openmenu.BackgroundTransparency = 0.050
+		openmenu.ZIndex = 3
+		openmenu.Name = options.name
+		openmenu.Position = UDim2.new(0, -15, 0, 0)
+		openmenu.AutoButtonColor = false
+		openmenu.TextTransparency = 0.250
+
 		-- RightClickStuff
 		local ButtonsMenuFrame = Instance.new("Frame", CoreGui.Sigma)
 		ButtonsMenuFrame.BorderSizePixel = 0
