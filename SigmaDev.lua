@@ -249,8 +249,9 @@ function Library:createTabs(parentFrame, tabName)
 	TAB.TabsName.Text = "    "..tabName
 	TAB.TabsName.Name = "TabsName"
 	TAB.TabsName.TextTransparency = 0.350
-	TAB.TabsName.Position = UDim2.new(0, 20, 0, 20)
+	TAB.TabsName.Position = UDim2.new(0, 0, 0, 0)
 	TAB.TabsName.TextStrokeTransparency = 0.990
+	TAB.TabsName.BackgroundTransparency = 1.000
 
 	TAB.ScrollingPart = Instance.new("Frame", TAB.Tabs)
 	TAB.ScrollingPart.BorderSizePixel = 0
@@ -259,7 +260,7 @@ function Library:createTabs(parentFrame, tabName)
 	TAB.ScrollingPart.Size = UDim2.new(0, 133, 0, 250)
 	TAB.ScrollingPart.BorderColor3 = Color3.fromRGB(0, 0, 0)
 	TAB.ScrollingPart.ZIndex = 2
-	TAB.ScrollingPart.Position = UDim2.new(0, -15, 0, 40)
+	TAB.ScrollingPart.Position = UDim2.new(0, 0, 0, 40)
 	TAB.ScrollingPart.Name = "ScrollingPart"
 
 	TAB.ScrollingModules = Instance.new("ScrollingFrame", TAB.ScrollingPart)
