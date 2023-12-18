@@ -347,7 +347,7 @@ function Library:createTabs(parentFrame, tabName)
 		ButtonsMenuFrame.BorderSizePixel = 0
 		ButtonsMenuFrame.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
 		ButtonsMenuFrame.Size = UDim2.new(0, 295, 0, 250)
-		ButtonsMenuFrame.Position = UDim2.new(0.5, -150, 0.5, -100)
+		ButtonsMenuFrame.Position = UDim2.new(0.5, -150, 0.5, -130)
 		ButtonsMenuFrame.Name = options.name
 		ButtonsMenuFrame.Visible = false
 
@@ -364,6 +364,7 @@ function Library:createTabs(parentFrame, tabName)
 		ButtonsMenuInner.BorderColor3 = Color3.fromRGB(0, 0, 0)
 		ButtonsMenuInner.ScrollBarThickness = 3
 		ButtonsMenuInner.Name = "SettingsScroll"
+		ButtonsMenuInner.BackgroundTransparency = 1.000
 		ButtonsMenuInner.Visible = false
 
 		local ButtonsMenuInnerCorner = Instance.new("UICorner", ButtonsMenuInner)
