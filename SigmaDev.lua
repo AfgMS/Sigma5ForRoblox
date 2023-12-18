@@ -329,7 +329,7 @@ function Library:createTabs(parentFrame, tabName)
 		openmenu.Text = "+"
 		openmenu.BackgroundTransparency = 0.050
 		openmenu.ZIndex = 3
-		openmenu.Name = options.name
+		openmenu.Name = "Dugong"
 		openmenu.Position = UDim2.new(0, 0, 0, 0)
 		openmenu.AutoButtonColor = false
 		openmenu.TextTransparency = 0.250
