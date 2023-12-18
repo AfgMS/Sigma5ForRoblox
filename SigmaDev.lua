@@ -8,45 +8,45 @@ local soundObjects = {}
 Library.totalWidth = 15
 
 local function makeDraggable(frame, dragSpeedFactor)
-    dragSpeedFactor = dragSpeedFactor or 0.8
+	dragSpeedFactor = dragSpeedFactor or 0.8
 
-    local dragging = false
-    local dragInput
-    local dragStart
-    local startPos
+	local dragging = false
+	local dragInput
+	local dragStart
+	local startPos
 
-    local function onTouchInput(input)
-        if dragging then
-            local delta = (input.Position - dragStart) * dragSpeedFactor
-            frame.Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X, startPos.Y.Scale, startPos.Y.Offset + delta.Y)
-        end
-    end
+	local function onTouchInput(input)
+		if dragging then
+			local delta = (input.Position - dragStart) * dragSpeedFactor
+			frame.Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X, startPos.Y.Scale, startPos.Y.Offset + delta.Y)
+		end
+	end
 
-    frame.InputBegan:Connect(function(input)
-        if input.UserInputType == Enum.UserInputType.Touch then
-            dragging = true
-            dragStart = input.Position
-            startPos = frame.Position
+	frame.InputBegan:Connect(function(input)
+		if input.UserInputType == Enum.UserInputType.Touch then
+			dragging = true
+			dragStart = input.Position
+			startPos = frame.Position
 
-            input.Changed:Connect(function()
-                if input.UserInputState == Enum.UserInputState.End then
-                    dragging = false
-                end
-            end)
-        end
-    end)
+			input.Changed:Connect(function()
+				if input.UserInputState == Enum.UserInputState.End then
+					dragging = false
+				end
+			end)
+		end
+	end)
 
-    frame.InputChanged:Connect(function(input)
-        if input.UserInputType == Enum.UserInputType.Touch and dragging then
-            onTouchInput(input)
-        end
-    end)
+	frame.InputChanged:Connect(function(input)
+		if input.UserInputType == Enum.UserInputType.Touch and dragging then
+			onTouchInput(input)
+		end
+	end)
 
-    frame.InputEnded:Connect(function(input)
-        if input.UserInputType == Enum.UserInputType.Touch then
-            dragging = false
-        end
-    end)
+	frame.InputEnded:Connect(function(input)
+		if input.UserInputType == Enum.UserInputType.Touch then
+			dragging = false
+		end
+	end)
 end
 
 
@@ -226,6 +226,23 @@ end
 function Library:createScreenGui()
 	local screenGui = Instance.new("ScreenGui", CoreGui)
 	screenGui.Name = "Sigma"
+
+	local OpenGUI = Instance.new("TextButton", CoreGui.Sigma)
+	OpenGUI.BorderSizePixel = 0
+	OpenGUI.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+	OpenGUI.TextXAlignment = Enum.TextXAlignment.Left
+	OpenGUI.Font = Enum.Font.Roboto
+	OpenGUI.TextSize = 15.000
+	OpenGUI.TextColor3 = Color3.fromRGB(15, 15, 15)
+	OpenGUI.Size = UDim2.new(1, 0, 0, 20)
+	OpenGUI.BorderColor3 = Color3.fromRGB(0, 0, 0)
+	OpenGUI.Text = "Open"
+	OpenGUI.ZIndex = 3
+	OpenGUI.Name = "SigmaRShift"
+	OpenGUI.Position = UDim2.new(0, 0, 0, 0)
+	OpenGUI.AutoButtonColor = false
+	OpenGUI.TextTransparency = 0.250
+	
 	return screenGui
 end
 
@@ -441,7 +458,7 @@ function Library:createTabs(parentFrame, tabName)
 			ButtonsMenuFrame.Visible = not ButtonsMenuFrame.Visible
 			ButtonsMenuInner.Visible = not ButtonsMenuInner.Visible
 		end)
-			
+
 		updateColors()
 
 		function ToggleButton:Slider(options)
@@ -748,30 +765,30 @@ local button1 = tab1:ToggleButton({
 	end
 })
 local SliderStuff = button1:Slider({
-  title = "Walkspeed",
-  min = 10,
-  max = 200,
-  default = 5,
-  callback = function(val)
-print("" ..val)
-end
+	title = "Walkspeed",
+	min = 10,
+	max = 200,
+	default = 5,
+	callback = function(val)
+		print("" ..val)
+	end
 })
 local ToggleInsideUI1 = button1:ToggleButtonInsideUI({
-    name = "MyFirne",
-    callback = function(enabled)
-        if enabled then
-            print("hello")
-        end
-    end
+	name = "MyFirne",
+	callback = function(enabled)
+		if enabled then
+			print("hello")
+		end
+	end
 })
 local Dropdown = button1:Dropdown({
-    name = "Yes",
-    todo = "E",
-    list = {"Walk", "Run", "Sprint"},
-    Default = "Walk",
-    callback = function(selectedItem)
-        print("Movement type set to:", selectedItem)
-    end
+	name = "Yes",
+	todo = "E",
+	list = {"Walk", "Run", "Sprint"},
+	Default = "Walk",
+	callback = function(selectedItem)
+		print("Movement type set to:", selectedItem)
+	end
 })
 local button99 = tab1:ToggleButton({
 	name = "UninjectShit",
