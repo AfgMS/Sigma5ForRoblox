@@ -371,23 +371,25 @@ function Library:createTabs(parentFrame, tabName)
 		local UIListLayout = Instance.new("UIListLayout", ButtonsMenuInner)
 		UIListLayout.SortOrder = Enum.SortOrder.LayoutOrder
 
-		local ButtonsMenuTitle = Instance.new("TextLabel", ButtonsMenuInner)
-		ButtonsMenuTitle.BorderSizePixel = 0
-		ButtonsMenuTitle.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-		ButtonsMenuTitle.TextXAlignment = Enum.TextXAlignment.Left
-		ButtonsMenuTitle.Font = Enum.Font.SourceSans
-		ButtonsMenuTitle.TextSize = 13
-		ButtonsMenuTitle.Visible = true
-		ButtonsMenuTitle.TextColor3 = Color3.fromRGB(75, 75, 75)
-		ButtonsMenuTitle.Size = UDim2.new(0, 75, 0, 15)
-		ButtonsMenuTitle.BorderColor3 = Color3.fromRGB(0, 0, 0)
-		ButtonsMenuTitle.Text = "" .. options.info
-		ButtonsMenuTitle.Name = options.name
-		ButtonsMenuTitle.BackgroundTransparency = 1
-		ButtonsMenuTitle.Position = UDim2.new(0, 5, 0, 5)
+		local ButtonsMenuInfo = Instance.new("TextLabel", ButtonsMenuInner)
+		ButtonsMenuInfo.BorderSizePixel = 0
+		ButtonsMenuInfo.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+		ButtonsMenuInfo.TextXAlignment = Enum.TextXAlignment.Left
+		ButtonsMenuInfo.Font = Enum.Font.SourceSans
+		ButtonsMenuInfo.TextSize = 13
+		ButtonsMenuInfo.Visible = true
+		ButtonsMenuInfo.TextColor3 = Color3.fromRGB(75, 75, 75)
+		ButtonsMenuInfo.Size = UDim2.new(0, 75, 0, 15)
+		ButtonsMenuInfo.BorderColor3 = Color3.fromRGB(0, 0, 0)
+		ButtonsMenuInfo.Text = ..options.info
+		ButtonsMenuInfo.Name = options.name
+		ButtonsMenuInfo.BackgroundTransparency = 1
+		ButtonsMenuInfo.Position = UDim2.new(0, 5, 0, 5)
 
-		local ButtonsMenuTitleCorner = Instance.new("UICorner", ButtonsMenuTitle)
-		ButtonsMenuTitleCorner.CornerRadius = UDim.new(0, 5)
+		local ButtonsMenuInfoCorner = Instance.new("UICorner", ButtonsMenuInfo)
+		ButtonsMenuInfoCorner.CornerRadius = UDim.new(0, 5)
+
+		ButtonsMenuTitleText
 
 		local ButtonsMenuTitleText = Instance.new("TextLabel", ButtonsMenuFrame)
 		ButtonsMenuTitleText.BorderSizePixel = 0
@@ -400,7 +402,7 @@ function Library:createTabs(parentFrame, tabName)
 		ButtonsMenuTitleText.Text = options.name
 		ButtonsMenuTitleText.Name = options.name
 		ButtonsMenuTitleText.BackgroundTransparency = 1
-		ButtonsMenuTitleText.Position = UDim2.new(0, 0, 0, -20)
+		ButtonsMenuTitleText.Position = UDim2.new(0, 0, 0, -25)
 		ButtonsMenuTitleText.TextXAlignment = Enum.TextXAlignment.Left
 		ButtonsMenuTitleText.Visible = true
 
