@@ -324,13 +324,13 @@ function Library:createTabs(parentFrame, tabName)
 		openmenu.Font = Enum.Font.Roboto
 		openmenu.TextSize = 15.000
 		openmenu.TextColor3 = Color3.fromRGB(15, 15, 15)
-		openmenu.Size = UDim2.new(1, 0, 1, 0)
+		openmenu.Size = UDim2.new(0, 20, 0, 20)
 		openmenu.BorderColor3 = Color3.fromRGB(0, 0, 0)
 		openmenu.Text = "+"
 		openmenu.BackgroundTransparency = 0.050
 		openmenu.ZIndex = 3
-		openmenu.Name = "Dugong"
-		openmenu.Position = UDim2.new(0, 0, 0, 0)
+		openmenu.Name = "MobileSupport"
+		openmenu.Position = UDim2.new(0, 110, 0, 0)
 		openmenu.AutoButtonColor = false
 		openmenu.TextTransparency = 0.250
 
