@@ -226,25 +226,24 @@ end
 function Library:createScreenGui()
 	local screenGui = Instance.new("ScreenGui", CoreGui)
 	screenGui.Name = "Sigma"
-
-	local OpenGUI = Instance.new("TextButton", CoreGui.Sigma)
-	OpenGUI.BorderSizePixel = 0
-	OpenGUI.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-	OpenGUI.TextXAlignment = Enum.TextXAlignment.Left
-	OpenGUI.Font = Enum.Font.Roboto
-	OpenGUI.TextSize = 15.000
-	OpenGUI.TextColor3 = Color3.fromRGB(15, 15, 15)
-	OpenGUI.Size = UDim2.new(1, 0, 0, 20)
-	OpenGUI.BorderColor3 = Color3.fromRGB(0, 0, 0)
-	OpenGUI.Text = "Open"
-	OpenGUI.ZIndex = 3
-	OpenGUI.Name = "SigmaRShift"
-	OpenGUI.Position = UDim2.new(0, 0, 0, 0)
-	OpenGUI.AutoButtonColor = false
-	OpenGUI.TextTransparency = 0.250
-	
 	return screenGui
 end
+
+local OpenGUI = Instance.new("TextButton", CoreGui.Sigma)
+OpenGUI.BorderSizePixel = 0
+OpenGUI.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+OpenGUI.TextXAlignment = Enum.TextXAlignment.Left
+OpenGUI.Font = Enum.Font.Roboto
+OpenGUI.TextSize = 15.000
+OpenGUI.TextColor3 = Color3.fromRGB(15, 15, 15)
+OpenGUI.Size = UDim2.new(0, 25, 0, 25)
+OpenGUI.BorderColor3 = Color3.fromRGB(0, 0, 0)
+OpenGUI.Text = "+"
+OpenGUI.ZIndex = 3
+OpenGUI.Name = "SigmaRShift"
+OpenGUI.Position = UDim2.new(1, -35, 0.5, -155)
+OpenGUI.AutoButtonColor = false
+OpenGUI.TextTransparency = 0.250
 
 function Library:createTabs(parentFrame, tabName)
 	local TAB = {}
