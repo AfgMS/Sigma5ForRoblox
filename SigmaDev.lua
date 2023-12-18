@@ -8,40 +8,47 @@ local soundObjects = {}
 Library.totalWidth = 15
 
 local function makeDraggable(frame, dragSpeedFactor)
-	dragSpeedFactor = dragSpeedFactor or 0.8
+    dragSpeedFactor = dragSpeedFactor or 0.8
 
-	local dragging = false
-	local dragInput
-	local dragStart
-	local startPos
+    local dragging = false
+    local dragInput
+    local dragStart
+    local startPos
 
-	frame.InputBegan:Connect(function(input)
-		if input.UserInputType == Enum.UserInputType.MouseButton1 then
-			dragging = true
-			dragStart = input.Position
-			startPos = frame.Position
+    local function onTouchInput(input)
+        if dragging then
+            local delta = (input.Position - dragStart) * dragSpeedFactor
+            frame.Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X, startPos.Y.Scale, startPos.Y.Offset + delta.Y)
+        end
+    end
 
-			input.Changed:Connect(function()
-				if input.UserInputState == Enum.UserInputState.End then
-					dragging = false
-				end
-			end)
-		end
-	end)
+    frame.InputBegan:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.Touch then
+            dragging = true
+            dragStart = input.Position
+            startPos = frame.Position
 
-	frame.InputChanged:Connect(function(input)
-		if input.UserInputType == Enum.UserInputType.MouseMovement then
-			dragInput = input
-		end
-	end)
+            input.Changed:Connect(function()
+                if input.UserInputState == Enum.UserInputState.End then
+                    dragging = false
+                end
+            end)
+        end
+    end)
 
-	UserInputService.InputChanged:Connect(function(input)
-		if input == dragInput and dragging then
-			local delta = (input.Position - dragStart) * dragSpeedFactor
-			frame.Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X, startPos.Y.Scale, startPos.Y.Offset + delta.Y)
-		end
-	end)
+    frame.InputChanged:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.Touch and dragging then
+            onTouchInput(input)
+        end
+    end)
+
+    frame.InputEnded:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.Touch then
+            dragging = false
+        end
+    end)
 end
+
 
 function Library:validate(defaults, options)
 	for i, v in pairs(defaults) do
@@ -338,7 +345,7 @@ function Library:createTabs(parentFrame, tabName)
 		local ButtonsMenuFrame = Instance.new("Frame", CoreGui.Sigma)
 		ButtonsMenuFrame.BorderSizePixel = 0
 		ButtonsMenuFrame.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-		ButtonsMenuFrame.Size = UDim2.new(0, 295, 0, 145)
+		ButtonsMenuFrame.Size = UDim2.new(0, 295, 0, 250)
 		ButtonsMenuFrame.Position = UDim2.new(0.5, -150, 0.5, -100)
 		ButtonsMenuFrame.Name = options.name
 		ButtonsMenuFrame.Visible = false
@@ -350,7 +357,7 @@ function Library:createTabs(parentFrame, tabName)
 		ButtonsMenuInner.Active = true
 		ButtonsMenuInner.BorderSizePixel = 0
 		ButtonsMenuInner.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-		ButtonsMenuInner.Size = UDim2.new(0, 290, 0, 140)
+		ButtonsMenuInner.Size = UDim2.new(1, 0, 1, 0)
 		ButtonsMenuInner.Position = UDim2.new(0, 3, 0, 2)
 		ButtonsMenuInner.ScrollBarImageColor3 = Color3.fromRGB(0, 0, 0)
 		ButtonsMenuInner.BorderColor3 = Color3.fromRGB(0, 0, 0)
