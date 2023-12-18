@@ -346,8 +346,8 @@ function Library:createTabs(parentFrame, tabName)
 		local ButtonsMenuFrame = Instance.new("Frame", CoreGui.Sigma)
 		ButtonsMenuFrame.BorderSizePixel = 0
 		ButtonsMenuFrame.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-		ButtonsMenuFrame.Size = UDim2.new(0, 295, 0, 250)
-		ButtonsMenuFrame.Position = UDim2.new(0.5, -150, 0.5, -130)
+		ButtonsMenuFrame.Size = UDim2.new(0, 375, 0, 275)
+		ButtonsMenuFrame.Position = UDim2.new(0.5, -185, 0.5, -140)
 		ButtonsMenuFrame.Name = options.name
 		ButtonsMenuFrame.Visible = false
 
@@ -740,8 +740,8 @@ createnotification("Sigma", "Welcome to Sigma, Press V", 1, true)
 
 local tab1 = Library:createTabs(CoreGui.Sigma, "Gui")
 local button1 = tab1:ToggleButton({
-	name = "Toggle 1",
-	info = "This is a toggle button with info.",
+	name = "Hendro",
+	info = "QuACK Quack",
 	callback = function(enabled)
 		print("cum")
 	end
