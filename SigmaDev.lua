@@ -284,6 +284,7 @@ function Library:createTabs(parentFrame, tabName)
 	TAB.ScrollingModules.Name = "ScrollingModules"
 
 	TAB.TestingShit = Instance.new("TextButton", parentFrame)
+	TAB.TestingShit.Size = UDim2.new(0, 125, 0, 35)
 	
 	local UIListLayout = Instance.new("UIListLayout", TAB.ScrollingModules)
 	UIListLayout.SortOrder = Enum.SortOrder.LayoutOrder
