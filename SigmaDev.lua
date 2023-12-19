@@ -282,6 +282,21 @@ function Library:createTabs(parentFrame, tabName)
 	TAB.ScrollingModules.ScrollBarThickness = 3
 	TAB.ScrollingModules.CanvasSize = UDim2.new(0, 0, 1, 0)
 	TAB.ScrollingModules.Name = "ScrollingModules"
+
+	TAB.opengui = Instance.new("TextButton", parentFrame)
+	TAB.opengui.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+	TAB.opengui.TextXAlignment = Enum.TextXAlignment.Left
+	TAB.opengui.Font = Enum.Font.Roboto
+	TAB.opengui.TextSize = 15.000
+	TAB.opengui.TextColor3 = Color3.fromRGB(15, 15, 15)
+	TAB.opengui.Size = UDim2.new(1, 0, 0, 20)
+	TAB.opengui.BorderColor3 = Color3.fromRGB(0, 0, 0)
+	TAB.opengui.Text = "+"
+	TAB.opengui.ZIndex = 2
+	TAB.opengui.Name = "OpenUI
+	TAB.opengui.Position = UDim2.new(0, 0, 0, 0)
+	TAB.opengui.AutoButtonColor = false
+	TAB.opengui.TextTransparency = 0.250
 	
 	local UIListLayout = Instance.new("UIListLayout", TAB.ScrollingModules)
 	UIListLayout.SortOrder = Enum.SortOrder.LayoutOrder
@@ -334,7 +349,7 @@ function Library:createTabs(parentFrame, tabName)
 		openmenu.TextColor3 = Color3.fromRGB(15, 15, 15)
 		openmenu.Size = UDim2.new(0, 20, 0, 20)
 		openmenu.BorderColor3 = Color3.fromRGB(0, 0, 0)
-		openmenu.Text = "+"
+		openmenu.Text = ":"
 		openmenu.BackgroundTransparency = 0.050
 		openmenu.ZIndex = 3
 		openmenu.Name = "MobileSupport"
