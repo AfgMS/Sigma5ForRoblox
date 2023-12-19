@@ -328,7 +328,7 @@ function Library:createTabs(parentFrame, tabName)
 
 		local openmenu = Instance.new("TextButton", newButton)
 		openmenu.BorderSizePixel = 0
-		openmenu.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+		openmenu.BackgroundColor3 = Color3.fromRGB(235, 235, 235)
 		openmenu.Font = Enum.Font.Roboto
 		openmenu.TextSize = 15.000
 		openmenu.TextColor3 = Color3.fromRGB(15, 15, 15)
