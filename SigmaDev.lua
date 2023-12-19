@@ -226,21 +226,8 @@ end
 function Library:createScreenGui()
 	local screenGui = Instance.new("ScreenGui", CoreGui)
 	screenGui.Name = "Sigma"
-	
 	return screenGui
 end
-
-	
-local OPENUI = Instance.new("TextButton", CoreGui.Sigma)
-OPENUI.Size = UDim2.new(0, 25, 0, 25)
-OPENUI.AutoButtonColor = false
-OPENUI.Position = UDim2.new(0.963096738, 0, 0.351765305, 0)
-OPENUI.Text = "+"
-OPENUI.Name = "OpenUI"
-OPENUI.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-
-local OpenUICorner = Instance.new("UICorner", OPENUI)
-OpenUICorner.CornerRadius = UDim.new(0, 5)
 
 function Library:createTabs(parentFrame, tabName)
 	local TAB = {}
@@ -296,12 +283,21 @@ function Library:createTabs(parentFrame, tabName)
 	TAB.ScrollingModules.ScrollBarThickness = 3
 	TAB.ScrollingModules.CanvasSize = UDim2.new(0, 0, 1, 0)
 	TAB.ScrollingModules.Name = "ScrollingModules"
+
+	TAB.OPENUI = Instance.new("TextButton", parentFrame)
+	TAB.OPENUI.Size = UDim2.new(0, 25, 0, 25)
+	TAB.OPENUI.AutoButtonColor = false
+	TAB.OPENUI.Position = UDim2.new(0.963096738, 0, 0.351765305, 0)
+	TAB.OPENUI.Text = "+"
+	TAB.OPENUI.Name = "OpenUI"
+	TAB.OPENUI.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+
+	local OpenUICorner = Instance.new("UICorner", TAB.OPENUI)
+	OpenUICorner.CornerRadius = UDim.new(0, 5)
 	
 	local UIListLayout = Instance.new("UIListLayout", TAB.ScrollingModules)
 	UIListLayout.SortOrder = Enum.SortOrder.LayoutOrder
 
-	TAB.OPENUI = OPENUI
-	
 	TAB.OPENUI.MouseButton1Click:Connect(function()
 		TAB.Tabs.Visible = not TAB.Tabs.Visible
 		TAB.ScrollingPart.Visible = not TAB.ScrollingPart.Visible
