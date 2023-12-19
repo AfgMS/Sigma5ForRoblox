@@ -758,6 +758,7 @@ Library:createScreenGui()
 createnotification("Sigma", "Welcome to Sigma, Press V", 1, true)
 
 local tab1 = Library:createTabs(CoreGui.Sigma, "Gui")
+local tab2 = Library:createTabs(CoreGui.Sigma, "Combat")
 local button1 = tab1:ToggleButton({
 	name = "Hendro",
 	info = "QuACK Quack",
@@ -791,7 +792,7 @@ local Dropdown = button1:Dropdown({
 		print("Movement type set to:", selectedItem)
 	end
 })
-local button99 = tab1:ToggleButton({
+local button99 = tab2:ToggleButton({
 	name = "UninjectShit",
 	info = "Click to uninject the Sigma hack.",
 	callback = function(enabled)
