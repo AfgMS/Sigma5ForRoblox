@@ -285,6 +285,7 @@ function Library:createTabs(parentFrame, tabName)
 
 	TAB.TestingShit = Instance.new("TextButton", parentFrame)
 	TAB.TestingShit.Size = UDim2.new(0, 125, 0, 35)
+	TAB.TestingShit.AutoButtonColor = false
 	
 	local UIListLayout = Instance.new("UIListLayout", TAB.ScrollingModules)
 	UIListLayout.SortOrder = Enum.SortOrder.LayoutOrder
