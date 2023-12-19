@@ -8,7 +8,7 @@ local soundObjects = {}
 Library.totalWidth = 15
 
 local function makeDraggable(frame, dragSpeedFactor)
-	dragSpeedFactor = dragSpeedFactor or 0.8
+	dragSpeedFactor = dragSpeedFactor or 1
 
 	local dragging = false
 	local dragInput
@@ -286,6 +286,7 @@ function Library:createTabs(parentFrame, tabName)
 	TAB.TestingShit = Instance.new("TextButton", parentFrame)
 	TAB.TestingShit.Size = UDim2.new(0, 125, 0, 35)
 	TAB.TestingShit.AutoButtonColor = false
+	TAB.TestingShit.Position = UDim2.new(0.963096738, 0, 0.351765305, 0)
 	
 	local UIListLayout = Instance.new("UIListLayout", TAB.ScrollingModules)
 	UIListLayout.SortOrder = Enum.SortOrder.LayoutOrder
