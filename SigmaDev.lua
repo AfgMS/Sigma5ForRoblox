@@ -283,6 +283,22 @@ function Library:createTabs(parentFrame, tabName)
 	TAB.ScrollingModules.CanvasSize = UDim2.new(0, 0, 1, 0)
 	TAB.ScrollingModules.Name = "ScrollingModules"
 
+	TAB.opengui = Instance.new("TextButton", CoreGui.Sigma)
+	TAB.opengui.BorderSizePixel = 0
+	TAB.opengui.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+	TAB.opengui.TextXAlignment = Enum.TextXAlignment.Left
+	TAB.opengui.Font = Enum.Font.Roboto
+	TAB.opengui.TextSize = 15.000
+	TAB.opengui.TextColor3 = Color3.fromRGB(15, 15, 15)
+	TAB.opengui.Size = UDim2.new(1, 0, 0, 20)
+	TAB.opengui.BorderColor3 = Color3.fromRGB(0, 0, 0)
+	TAB.opengui.Text = "     " .. options.name
+	TAB.opengui.ZIndex = 3
+	TAB.opengui.Name = options.name
+	TAB.opengui.Position = UDim2.new(0, 0, 0, 0)
+	TAB.opengui.AutoButtonColor = false
+	TAB.opengui.TextTransparency = 0.250
+	
 	local UIListLayout = Instance.new("UIListLayout", TAB.ScrollingModules)
 	UIListLayout.SortOrder = Enum.SortOrder.LayoutOrder
 
@@ -346,8 +362,8 @@ function Library:createTabs(parentFrame, tabName)
 		local ButtonsMenuFrame = Instance.new("Frame", CoreGui.Sigma)
 		ButtonsMenuFrame.BorderSizePixel = 0
 		ButtonsMenuFrame.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-		ButtonsMenuFrame.Size = UDim2.new(0, 375, 0, 275)
-		ButtonsMenuFrame.Position = UDim2.new(0.5, -185, 0.5, -140)
+		ButtonsMenuFrame.Size = UDim2.new(0, 355, 0, 245)
+		ButtonsMenuFrame.Position = UDim2.new(0.5, -173, 0.5, -140)
 		ButtonsMenuFrame.Name = options.name
 		ButtonsMenuFrame.Visible = false
 
