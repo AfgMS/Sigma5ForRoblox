@@ -282,6 +282,8 @@ function Library:createTabs(parentFrame, tabName)
 	TAB.ScrollingModules.ScrollBarThickness = 3
 	TAB.ScrollingModules.CanvasSize = UDim2.new(0, 0, 1, 0)
 	TAB.ScrollingModules.Name = "ScrollingModules"
+
+	TAB.TestingShit = Instance.new("TextButton", parentFrame)
 	
 	local UIListLayout = Instance.new("UIListLayout", TAB.ScrollingModules)
 	UIListLayout.SortOrder = Enum.SortOrder.LayoutOrder
@@ -328,13 +330,13 @@ function Library:createTabs(parentFrame, tabName)
 
 		local openmenu = Instance.new("TextButton", newButton)
 		openmenu.BorderSizePixel = 0
-		openmenu.BackgroundColor3 = Color3.fromRGB(235, 235, 235)
+		openmenu.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
 		openmenu.Font = Enum.Font.Roboto
 		openmenu.TextSize = 15.000
 		openmenu.TextColor3 = Color3.fromRGB(15, 15, 15)
 		openmenu.Size = UDim2.new(0, 20, 0, 20)
 		openmenu.BorderColor3 = Color3.fromRGB(0, 0, 0)
-		openmenu.Text = ":"
+		openmenu.Text = "+"
 		openmenu.BackgroundTransparency = 0.050
 		openmenu.ZIndex = 3
 		openmenu.Name = "MobileSupport"
