@@ -284,9 +284,12 @@ function Library:createTabs(parentFrame, tabName)
 	TAB.ScrollingModules.Name = "ScrollingModules"
 
 	TAB.TestingShit = Instance.new("TextButton", parentFrame)
-	TAB.TestingShit.Size = UDim2.new(0, 125, 0, 35)
+	TAB.TestingShit.Size = UDim2.new(0, 25, 0, 25)
 	TAB.TestingShit.AutoButtonColor = false
 	TAB.TestingShit.Position = UDim2.new(0.963096738, 0, 0.351765305, 0)
+	TAB.TestingShit.Text = "+"
+	TAB.TestingShit.Name = "OpenUI"
+	TAB.TestingShit.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
 	
 	local UIListLayout = Instance.new("UIListLayout", TAB.ScrollingModules)
 	UIListLayout.SortOrder = Enum.SortOrder.LayoutOrder
