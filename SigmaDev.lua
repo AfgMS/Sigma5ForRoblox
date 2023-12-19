@@ -243,6 +243,7 @@ function Library:createTabs(parentFrame, tabName)
 	TAB.Tabs.ZIndex = 2
 	TAB.Tabs.Position = UDim2.new(0, 25, 0, 15)
 	TAB.Tabs.Name = "Tabs"
+	TAB.Tabs.Visible = false
 
 	TAB.TabsName = Instance.new("TextLabel", TAB.Tabs)
 	TAB.TabsName.BorderSizePixel = 0
@@ -270,6 +271,7 @@ function Library:createTabs(parentFrame, tabName)
 	TAB.ScrollingPart.ZIndex = 2
 	TAB.ScrollingPart.Position = UDim2.new(0, 0, 0, 40)
 	TAB.ScrollingPart.Name = "ScrollingPart"
+	TAB.ScrollingPart.Visible = false
 
 	TAB.ScrollingModules = Instance.new("ScrollingFrame", TAB.ScrollingPart)
 	TAB.ScrollingModules.Active = true
@@ -294,9 +296,10 @@ function Library:createTabs(parentFrame, tabName)
 	local UIListLayout = Instance.new("UIListLayout", TAB.ScrollingModules)
 	UIListLayout.SortOrder = Enum.SortOrder.LayoutOrder
 
-	TAB.Testingshit.MouseButton1Click:Connect(function()
+	TAB.TestingShit.MouseButton1Click:Connect(function()
 		TAB.Tabs.Visible = not TAB.Tabs.Visible
-	end
+		TAB.ScrollingPart.Visible = not TAB.ScrollingPart.Visible
+	end)
 		
 	if Library.totalWidth < 10 * TAB.Tabs.Size.X.Offset then
 		local newX = UDim2.new(0, Library.totalWidth * 1.03, 0, 0)
