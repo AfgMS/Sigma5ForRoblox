@@ -233,19 +233,6 @@ end
 function Library:createTabs(parentFrame, tabName)
 	local TAB = {}
 	TAB.Buttons = {}
-
-	TAB.opengui = Instance.new("TextButton", parentFrame)
-	TAB.opengui.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-	TAB.opengui.Font = Enum.Font.Roboto
-	TAB.opengui.TextSize = 20
-	TAB.opengui.TextColor3 = Color3.fromRGB(15, 15, 15)
-	TAB.opengui.Size = UDim2.new(0, 20, 0, 20)
-	TAB.opengui.BorderColor3 = Color3.fromRGB(0, 0, 0)
-	TAB.opengui.Text = "+"
-	TAB.opengui.ZIndex = 2
-	TAB.opengui.Name = "OpenUI
-	TAB.opengui.Position = UDim2.new(0, 0, 0, 0)
-	TAB.opengui.AutoButtonColor = false
 	
 	TAB.Tabs = Instance.new("Frame", parentFrame)
 	TAB.Tabs.BorderSizePixel = 0
