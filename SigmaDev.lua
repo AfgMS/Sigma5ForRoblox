@@ -470,7 +470,8 @@ ButtonsMenuTitle.ZIndex = 2
 			SlidersHolder.BorderSizePixel = 0
 			SlidersHolder.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
 			SlidersHolder.BorderColor3 = Color3.fromRGB(0, 0, 0)
-
+			SlidersHolderZIndex = 2
+			
 			local SliderValueLabel = Instance.new("TextLabel", SlidersHolder)
 			SliderValueLabel.Name = "Value"
 			SliderValueLabel.Size = UDim2.new(0, 15, 0, 15)
@@ -481,7 +482,8 @@ ButtonsMenuTitle.ZIndex = 2
 			SliderValueLabel.Font = Enum.Font.Roboto
 			SliderValueLabel.BackgroundTransparency = 1
 			SliderValueLabel.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-
+			SliderValueLabel.ZIndex = 2
+			
 			local SliderBack = Instance.new("Frame", SlidersHolder)
 			SliderBack.Name = "SliderBack"
 			SliderBack.Size = UDim2.new(0, 90, 0, 4)
@@ -489,7 +491,8 @@ ButtonsMenuTitle.ZIndex = 2
 			SliderBack.BorderSizePixel = 0
 			SliderBack.BackgroundColor3 = Color3.fromRGB(205, 235, 255)
 			SliderBack.BorderColor3 = Color3.fromRGB(0, 0, 0)
-
+			SliderBack.ZIndex = 2
+			
 			local SliderBackCorner = Instance.new("UICorner", SliderBack)
 			SliderBackCorner.CornerRadius = UDim.new(0, 15)
 
@@ -500,7 +503,8 @@ ButtonsMenuTitle.ZIndex = 2
 			SliderFill.BorderSizePixel = 0
 			SliderFill.BackgroundColor3 = Color3.fromRGB(116, 184, 255)
 			SliderFill.BorderColor3 = Color3.fromRGB(0, 0, 0)
-
+			SliderFill.ZIndex = 2
+			
 			local SliderFillCorner = Instance.new("UICorner", SliderFill)
 			SliderFillCorner.CornerRadius = UDim.new(0, 15)
 
@@ -515,7 +519,8 @@ ButtonsMenuTitle.ZIndex = 2
 			UISliderButton.AutoButtonColor = false
 			UISliderButton.ZIndex = 1
 			UISliderButton.ClipsDescendants = true
-
+			UISliderButton.ZIndex = 2
+			
 			local UICorner = Instance.new("UICorner", UISliderButton)
 			UICorner.CornerRadius = UDim.new(1, 0)
 
@@ -580,38 +585,33 @@ ButtonsMenuTitle.ZIndex = 2
 					Enabled = false
 				}
 
-				local newToggle = Instance.new("TextButton", ButtonsMenuInner)
-				newToggle.BorderSizePixel = 0
-				newToggle.Text = " "
-				newToggle.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-				newToggle.BackgroundTransparency = 1
-				newToggle.Size = UDim2.new(0, 145, 0, 30)
-				newToggle.BorderColor3 = Color3.fromRGB(0, 0, 0)
-				newToggle.Position = UDim2.new(0, 0, 0.10571428388357162, 0)
-				newToggle.Name = "ToggleInsideUI"
-
-				local newToggleName = Instance.new("TextLabel", newToggle)
-				newToggleName.BorderSizePixel = 0
-				newToggleName.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-				newToggleName.TextXAlignment = Enum.TextXAlignment.Left
-				newToggleName.Font = Enum.Font.Roboto
-				newToggleName.TextSize = 15
-				newToggleName.TextColor3 = Color3.fromRGB(25, 25, 25)
-				newToggleName.Size = UDim2.new(0, 80, 0, 15)
-				newToggleName.BorderColor3 = Color3.fromRGB(0, 0, 0)
-				newToggleName.Text = options.name
-				newToggleName.BackgroundTransparency = 1
-				newToggleName.Position = UDim2.new(0.04827586188912392, 0, 0.2571428716182709, 0)
-
-				local newToggleThingy = Instance.new("Frame", newToggle)
-				newToggleThingy.BorderSizePixel = 0
-				newToggleThingy.BackgroundColor3 = Color3.fromRGB(220, 220, 220)
-				newToggleThingy.Size = UDim2.new(0, 14, 0, 14)
-				newToggleThingy.BorderColor3 = Color3.fromRGB(0, 0, 0)
-				newToggleThingy.Position = UDim2.new(0, 105, 0, 10)
-				newToggleThingy.Name = "CheckmarkHolder"
-
-				local newToggleThingyCorner = Instance.new("UICorner", newToggleThingy)
+local newToggleName = Instance.new("TextLabel", ButtonsMenuInner)
+newToggleName.Name = "ToggleOnMenu"
+newToggleName.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+newToggleName.BorderColor3 = Color3.fromRGB(0, 0, 0)
+newToggleName.BorderSizePixel = 0
+newToggleName.Size = UDim2.new(1, 0, 0, 25)
+newToggleName.Font = Enum.Font.Roboto
+newToggleName.Text = "      " .. options.name
+newToggleName.TextColor3 = Color3.fromRGB(0, 0, 0)
+newToggleName.TextSize = 16.000
+newToggleName.TextXAlignment = Enum.TextXAlignment.Left
+newToggleName.ZIndex = 2
+				
+local newToggleThingy = Instance.new("Frame", newToggle)
+newToggleThingy.BackgroundColor3 = Color3.fromRGB(215, 215, 215)
+newToggleThingy.BorderColor3 = Color3.fromRGB(0, 0, 0)
+newToggleThingy.BorderSizePixel = 0
+newToggleThingy.Position = UDim2.new(0, 320, 0, 3)
+newToggleThingy.Size = UDim2.new(0, 18, 0, 18)
+newToggleThingy.Font = Enum.Font.SourceSans
+newToggleThingy.Text = ""
+newToggleThingy.TextColor3 = Color3.fromRGB(0, 0, 0)
+newToggleThingy.TextSize = 1.000
+newToggleThingy.ZIndex = 2
+				
+local newToggleThingyCorner = Instance.new("UICorner", newToggleThingy)
+newToggleThingyCorner.CornerRadius = UDim.new(0, 10)
 
 				local function UpdateCheckMark()
 					if ToggleButtonInsideUI.Enabled then
