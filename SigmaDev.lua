@@ -746,6 +746,7 @@ createnotification("Sigma", "Welcome to Sigma, Press V", 1, true)
 
 local tab1 = Library:createTabs(CoreGui.Sigma, "Gui")
 local tab2 = Library:createTabs(CoreGui.Sigma, "Combat")
+
 local button1 = tab1:ToggleButton({
 	name = "Hendro",
 	info = "QuACK Quack",
@@ -789,5 +790,31 @@ local button99 = tab2:ToggleButton({
 			CoreGui.SigmaVisualStuff:Destroy()
 			print("Destroyed Notif")
 		end
+	end
+})
+local SliderStuff = button99:Slider({
+	title = "Walkspeed",
+	min = 10,
+	max = 200,
+	default = 5,
+	callback = function(val)
+		print("" ..val)
+	end
+})
+local ToggleInsideUI1 = button99:ToggleButtonInsideUI({
+	name = "MyFirne",
+	callback = function(enabled)
+		if enabled then
+			print("hello")
+		end
+	end
+})
+local Dropdown = button99:Dropdown({
+	name = "Yes",
+	todo = "E",
+	list = {"Walk", "Run", "Sprint"},
+	Default = "Walk",
+	callback = function(selectedItem)
+		print("Movement type set to:", selectedItem)
 	end
 })
