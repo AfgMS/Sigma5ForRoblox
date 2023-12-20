@@ -585,32 +585,38 @@ ButtonsMenuTitle.ZIndex = 2
 					Enabled = false
 				}
 
-local newToggleName = Instance.new("TextLabel", ButtonsMenuInner)
-newToggleName.Name = "ToggleOnMenu"
-newToggleName.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-newToggleName.BorderColor3 = Color3.fromRGB(0, 0, 0)
-newToggleName.BorderSizePixel = 0
-newToggleName.Size = UDim2.new(1, 0, 0, 25)
-newToggleName.Font = Enum.Font.Roboto
-newToggleName.Text = "      " .. options.name
-newToggleName.TextColor3 = Color3.fromRGB(0, 0, 0)
-newToggleName.TextSize = 16.000
-newToggleName.TextXAlignment = Enum.TextXAlignment.Left
-newToggleName.ZIndex = 2
-newToggleName.Visible = true
-				
-local newToggleThingy = Instance.new("Frame", newToggle)
-newToggleThingy.BackgroundColor3 = Color3.fromRGB(215, 215, 215)
-newToggleThingy.BorderColor3 = Color3.fromRGB(0, 0, 0)
-newToggleThingy.BorderSizePixel = 0
-newToggleThingy.Position = UDim2.new(0, 320, 0, 3)
-newToggleThingy.Size = UDim2.new(0, 18, 0, 18)
-newToggleThingy.Font = Enum.Font.SourceSans
-newToggleThingy.Text = ""
-newToggleThingy.TextColor3 = Color3.fromRGB(0, 0, 0)
-newToggleThingy.TextSize = 1.000
-newToggleThingy.ZIndex = 2
-newToggleThingy.Visible = true
+				local newToggle = Instance.new("TextButton", ButtonsMenuInner)
+				newToggle.BorderSizePixel = 0
+				newToggle.Text = " "
+				newToggle.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+				newToggle.BackgroundTransparency = 1
+				newToggle.Size = UDim2.new(0, 145, 0, 30)
+				newToggle.BorderColor3 = Color3.fromRGB(0, 0, 0)
+				newToggle.Position = UDim2.new(0, 0, 0.10571428388357162, 0)
+				newToggle.Name = "ToggleInsideUI"
+
+				local newToggleName = Instance.new("TextLabel", newToggle)
+				newToggleName.BorderSizePixel = 0
+				newToggleName.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+				newToggleName.TextXAlignment = Enum.TextXAlignment.Left
+				newToggleName.Font = Enum.Font.Roboto
+				newToggleName.TextSize = 15
+				newToggleName.TextColor3 = Color3.fromRGB(25, 25, 25)
+				newToggleName.Size = UDim2.new(0, 80, 0, 15)
+				newToggleName.BorderColor3 = Color3.fromRGB(0, 0, 0)
+				newToggleName.Text = options.name
+				newToggleName.BackgroundTransparency = 1
+				newToggleName.Position = UDim2.new(0.04827586188912392, 0, 0.2571428716182709, 0)
+
+				local newToggleThingy = Instance.new("Frame", newToggle)
+				newToggleThingy.BorderSizePixel = 0
+				newToggleThingy.BackgroundColor3 = Color3.fromRGB(220, 220, 220)
+				newToggleThingy.Size = UDim2.new(0, 14, 0, 14)
+				newToggleThingy.BorderColor3 = Color3.fromRGB(0, 0, 0)
+				newToggleThingy.Position = UDim2.new(0, 105, 0, 10)
+				newToggleThingy.Name = "CheckmarkHolder"
+
+				local newToggleThingyCorner = Instance.new("UICorner", newToggleThingy)
 				
 local newToggleThingyCorner = Instance.new("UICorner", newToggleThingy)
 newToggleThingyCorner.CornerRadius = UDim.new(0, 10)
