@@ -284,16 +284,29 @@ function Library:createTabs(parentFrame, tabName)
 	TAB.ScrollingModules.CanvasSize = UDim2.new(0, 0, 1, 0)
 	TAB.ScrollingModules.Name = "ScrollingModules"
 	
+	TAB.OPENUI = Instance.new("TextButton", parentFrame)
+	TAB.OPENUI.Size = UDim2.new(0, 25, 0, 25)
+	TAB.OPENUI.AutoButtonColor = false
+	TAB.OPENUI.Position = UDim2.new(0.963096738, 0, 0.351765305, 0)
+	TAB.OPENUI.Text = "+"
+	TAB.OPENUI.Name = "OpenUI"
+	TAB.OPENUI.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+
+	local OpenUICorner = Instance.new("UICorner", TAB.OPENUI)
+	OpenUICorner.CornerRadius = UDim.new(0, 5)
+
 	local UIListLayout = Instance.new("UIListLayout", TAB.ScrollingModules)
 	UIListLayout.SortOrder = Enum.SortOrder.LayoutOrder
 	
-	game:GetService("UserInputService").InputBegan:Connect(function(input, gameProcessedEvent)
-			if input.KeyCode == Enum.KeyCode.V and not gameProcessedEvent then
-				TAB.Tabs.Visible = not TAB.Tabs.Visible
-				TAB.ScrollingPart.Visible = not TAB.ScrollingPart.Visible
-			end
-		end)
-		
+	TAB.OPENUI.MouseButton1Click:Connect(function()
+			for _, tab in pairs(TAB) do
+			if tab.Tabs and tab.ScrollingPart then
+					tab.Tabs.Visible = true
+					tab.ScrollingPart.Visible = true
+				end
+				end
+			end)
+	
 	if Library.totalWidth < 10 * TAB.Tabs.Size.X.Offset then
 		local newX = UDim2.new(0, Library.totalWidth * 1.03, 0, 0)
 		Library.totalWidth = Library.totalWidth + TAB.Tabs.Size.X.Offset
@@ -305,28 +318,6 @@ function Library:createTabs(parentFrame, tabName)
 		warn("Reached the maximum number of tabs. Cannot create more tabs.")
 		createnotification("Sigma", "You can't add more tabs", 5, true)
 	end
-
-	local Keybindsttuff = Instance.new("ScreenGui")
-	Keybindsttuff.Parent = game:WaitForChild("CoreGui")
-	Keybindsttuff.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
-	Keybindsttuff.Name = "SigmaKeybind"
-
-	local OPENUI = Instance.new("TextButton", parentFrame)
-	OPENUI.Size = UDim2.new(0, 25, 0, 25)
-	OPENUI.AutoButtonColor = false
-	OPENUI.Position = UDim2.new(0.963096738, 0, 0.351765305, 0)
-	OPENUI.Text = "+"
-	OPENUI.Name = "OpenUI"
-	OPENUI.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-	OPENUI.Parent = Keybindsttuff
-
-	local OpenUICorner = Instance.new("UICorner", OPENUI)
-	OpenUICorner.CornerRadius = UDim.new(0, 5)
-	
-	OPENUI.MouseButton1Click:Connect(function()
-			TAB.Tabs.Visible = not TAB.Tabs.Visible
-			TAB.ScrollingPart.Visible = not TAB.ScrollingPart.Visible
-		end)
 	
 	function TAB:ToggleButton(options)
 		options = Library:validate({
