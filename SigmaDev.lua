@@ -464,18 +464,19 @@ ButtonsMenuTitle.ZIndex = 2
 			local Slider = {}
 
 			local SlidersHolder = Instance.new("Frame", ButtonsMenuInner)
-			SlidersHolder.Name = "Slider"
+			SlidersHolder.Name = "SliderHolder"
 			SlidersHolder.Size = UDim2.new(1, 0, 0, 30)
 			SlidersHolder.Position = UDim2.new(0, 0, 0, 0)
 			SlidersHolder.BorderSizePixel = 0
 			SlidersHolder.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
 			SlidersHolder.BorderColor3 = Color3.fromRGB(0, 0, 0)
 			SlidersHolderZIndex = 2
+			SlidersHolder.BackgroundTransparency = 1
 			
 			local SliderValueLabel = Instance.new("TextLabel", SlidersHolder)
-			SliderValueLabel.Name = "Value"
+			SliderValueLabel.Name = "Sliders Value"
 			SliderValueLabel.Size = UDim2.new(0, 15, 0, 15)
-			SliderValueLabel.Position = UDim2.new(0, 5, 0, 13)
+			SliderValueLabel.Position = UDim2.new(0, 215, 0, 8)
 			SliderValueLabel.Text = tostring(options.default)
 			SliderValueLabel.TextColor3 = Color3.fromRGB(0, 0, 0)
 			SliderValueLabel.TextSize = 13
@@ -483,11 +484,23 @@ ButtonsMenuTitle.ZIndex = 2
 			SliderValueLabel.BackgroundTransparency = 1
 			SliderValueLabel.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
 			SliderValueLabel.ZIndex = 2
+
+			local SliderNameLabel = Instance.new("TextLabel", SlidersHolder)
+			SliderNameLabel.Name = "Slider For" .. options.title
+			SliderNameLabel.Size = UDim2.new(0, 15, 0, 15)
+			SliderNameLabel.Position = UDim2.new(0, 5, 0, 8)
+			SliderNameLabel.Text = "      " .. options.title
+			SliderNameLabel.TextColor3 = Color3.fromRGB(0, 0, 0)
+			SliderNameLabel.TextSize = 13
+			SliderNameLabel.Font = Enum.Font.Roboto
+			SliderNameLabel.BackgroundTransparency = 1
+			SliderNameLabel.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+			SliderNameLabel.ZIndex = 2
 			
 			local SliderBack = Instance.new("Frame", SlidersHolder)
 			SliderBack.Name = "SliderBack"
 			SliderBack.Size = UDim2.new(0, 90, 0, 4)
-			SliderBack.Position = UDim2.new(0, 25, 0, 20)
+			SliderBack.Position = UDim2.new(0, 255, 0, 13)
 			SliderBack.BorderSizePixel = 0
 			SliderBack.BackgroundColor3 = Color3.fromRGB(205, 235, 255)
 			SliderBack.BorderColor3 = Color3.fromRGB(0, 0, 0)
@@ -763,9 +776,9 @@ local button1 = tab1:ToggleButton({
 	end
 })
 local SliderStuff = button1:Slider({
-	title = "Walkspeed",
-	min = 10,
-	max = 200,
+	title = "Dugong",
+	min = 5,
+	max = 10,
 	default = 5,
 	callback = function(val)
 		print("" ..val)
