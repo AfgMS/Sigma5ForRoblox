@@ -389,7 +389,7 @@ ButtonsMenuInner.BorderColor3 = Color3.fromRGB(0, 0, 0)
 ButtonsMenuInner.BorderSizePixel = 0
 ButtonsMenuInner.Size = UDim2.new(1, 0, 1, 0)
 ButtonsMenuInner.ScrollBarThickness = 0
-ButtonsMenuInner.Visible = true
+ButtonsMenuInner.Visible = false
 		
 local UIListLayout = Instance.new("UIListLayout", ButtonsMenuInner)
 UIListLayout.SortOrder = Enum.SortOrder.LayoutOrder
