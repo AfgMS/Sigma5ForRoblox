@@ -239,7 +239,7 @@ function Library:createTabs(parentFrame, tabName)
 	TAB.Tabs.BackgroundTransparency = 0.050
 	TAB.Tabs.Size = UDim2.new(0, 133, 0, 40)
 	TAB.Tabs.BorderColor3 = Color3.fromRGB(0, 0, 0)
-	TAB.Tabs.ZIndex = 2
+	TAB.Tabs.ZIndex = 3
 	TAB.Tabs.Position = UDim2.new(0, 25, 0, 15)
 	TAB.Tabs.Name = "Tabs"
 	TAB.Tabs.Visible = false
@@ -250,7 +250,7 @@ function Library:createTabs(parentFrame, tabName)
 	TAB.TabsName.TextXAlignment = Enum.TextXAlignment.Left
 	TAB.TabsName.Font = Enum.Font.Roboto
 	TAB.TabsName.TextSize = 18.000
-	TAB.TabsName.ZIndex = 2
+	TAB.TabsName.ZIndex = 3
 	TAB.TabsName.TextColor3 = Color3.fromRGB(95, 95, 95)
 	TAB.TabsName.Size = UDim2.new(1, 0, 1, 0)
 	TAB.TabsName.BorderColor3 = Color3.fromRGB(0, 0, 0)
@@ -260,14 +260,14 @@ function Library:createTabs(parentFrame, tabName)
 	TAB.TabsName.Position = UDim2.new(0, 0, 0, 0)
 	TAB.TabsName.TextStrokeTransparency = 0.990
 	TAB.TabsName.BackgroundTransparency = 1.000
-
+	
 	TAB.ScrollingPart = Instance.new("Frame", TAB.Tabs)
 	TAB.ScrollingPart.BorderSizePixel = 0
 	TAB.ScrollingPart.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
 	TAB.ScrollingPart.BackgroundTransparency = 1.000
 	TAB.ScrollingPart.Size = UDim2.new(0, 133, 0, 250)
 	TAB.ScrollingPart.BorderColor3 = Color3.fromRGB(0, 0, 0)
-	TAB.ScrollingPart.ZIndex = 2
+	TAB.ScrollingPart.ZIndex = 3
 	TAB.ScrollingPart.Position = UDim2.new(0, 0, 0, 40)
 	TAB.ScrollingPart.Name = "ScrollingPart"
 	TAB.ScrollingPart.Visible = false
