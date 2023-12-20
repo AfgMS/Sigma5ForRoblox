@@ -243,7 +243,15 @@ function Library:createTabs(parentFrame, tabName)
 	TAB.Tabs.Position = UDim2.new(0, 25, 0, 15)
 	TAB.Tabs.Name = "Tabs"
 	TAB.Tabs.Visible = false
-
+	
+	TAB.FakeBlur = Instance.new("Frame", parentFrame)
+	TAB.FakeBlur.Position = UDim2.new(0, 0, 0, 0)
+	TAB.FakeBlur.Size = UDim2.new(1, 0, 1, 0)
+	TAB.FakeBlur.BackgroundTransparency = 0.45
+	TAB.FakeBlur.Name = "FakeBlur"
+	TAB.FakeBlur.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+	TAB.FakeBlur.Visible = false
+	
 	TAB.TabsName = Instance.new("TextLabel", TAB.Tabs)
 	TAB.TabsName.BorderSizePixel = 0
 	TAB.TabsName.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
@@ -291,6 +299,7 @@ function Library:createTabs(parentFrame, tabName)
 			if input.KeyCode == Enum.KeyCode.V and not gameProcessedEvent then
 				TAB.Tabs.Visible = not TAB.Tabs.Visible
 				TAB.ScrollingPart.Visible = not TAB.ScrollingPart.Visible
+				TAB.FakeBlur.Visible = not TAB.FakeBlur.Visible
 			end
 		end)
 	
