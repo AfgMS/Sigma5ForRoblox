@@ -375,9 +375,6 @@ function Library:createTabs(parentFrame, tabName)
 		ButtonsMenuInner.BackgroundTransparency = 1.000
 		ButtonsMenuInner.Visible = false
 
-		local ButtonsMenuInnerCorner = Instance.new("UICorner", ButtonsMenuInner)
-		ButtonsMenuInnerCorner.CornerRadius = UDim.new(0, 5)
-
 		local UIListLayout = Instance.new("UIListLayout", ButtonsMenuInner)
 		UIListLayout.SortOrder = Enum.SortOrder.LayoutOrder
 
@@ -389,15 +386,12 @@ function Library:createTabs(parentFrame, tabName)
 		ButtonsMenuTitle.TextSize = 13
 		ButtonsMenuTitle.Visible = true
 		ButtonsMenuTitle.TextColor3 = Color3.fromRGB(75, 75, 75)
-		ButtonsMenuTitle.Size = UDim2.new(0, 75, 0, 15)
+		ButtonsMenuTitle.Size = UDim2.new(1, 0, 0, 20)
 		ButtonsMenuTitle.BorderColor3 = Color3.fromRGB(0, 0, 0)
 		ButtonsMenuTitle.Text = "   " .. options.info
 		ButtonsMenuTitle.Name = options.name
 		ButtonsMenuTitle.BackgroundTransparency = 1
-		ButtonsMenuTitle.Position = UDim2.new(0, 5, 0, 5)
-
-		local ButtonsMenuTitleCorner = Instance.new("UICorner", ButtonsMenuTitle)
-		ButtonsMenuTitleCorner.CornerRadius = UDim.new(0, 5)
+		ButtonsMenuTitle.Position = UDim2.new(0, 0, 0, 0)
 
 		local ButtonsMenuTitleText = Instance.new("TextLabel", ButtonsMenuFrame)
 		ButtonsMenuTitleText.BorderSizePixel = 0
