@@ -597,6 +597,7 @@ newToggleName.TextColor3 = Color3.fromRGB(0, 0, 0)
 newToggleName.TextSize = 16.000
 newToggleName.TextXAlignment = Enum.TextXAlignment.Left
 newToggleName.ZIndex = 2
+newToggleName.Visible = true
 				
 local newToggleThingy = Instance.new("Frame", newToggle)
 newToggleThingy.BackgroundColor3 = Color3.fromRGB(215, 215, 215)
@@ -609,6 +610,7 @@ newToggleThingy.Text = ""
 newToggleThingy.TextColor3 = Color3.fromRGB(0, 0, 0)
 newToggleThingy.TextSize = 1.000
 newToggleThingy.ZIndex = 2
+newToggleThingy.Visible = true
 				
 local newToggleThingyCorner = Instance.new("UICorner", newToggleThingy)
 newToggleThingyCorner.CornerRadius = UDim.new(0, 10)
