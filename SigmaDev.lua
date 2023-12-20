@@ -305,6 +305,28 @@ function Library:createTabs(parentFrame, tabName)
 		warn("Reached the maximum number of tabs. Cannot create more tabs.")
 		createnotification("Sigma", "You can't add more tabs", 5, true)
 	end
+
+	local Keybindsttuff = Instance.new("ScreenGui")
+	Keybindsttuff.Parent = game:WaitForChild("CoreGui")
+	Keybindsttuff.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+	Keybindsttuff.Name = "SigmaKeybind"
+
+	local OPENUI = Instance.new("TextButton", parentFrame)
+	OPENUI.Size = UDim2.new(0, 25, 0, 25)
+	OPENUI.AutoButtonColor = false
+	OPENUI.Position = UDim2.new(0.963096738, 0, 0.351765305, 0)
+	OPENUI.Text = "+"
+	OPENUI.Name = "OpenUI"
+	OPENUI.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+	OPENUI.Parent = Keybindsttuff
+
+	local OpenUICorner = Instance.new("UICorner", OPENUI)
+	OpenUICorner.CornerRadius = UDim.new(0, 5)
+	
+	OPENUI.MouseButton1Click:Connect(function()
+			TAB.Tabs.Visible = not TAB.Tabs.Visible
+			TAB.ScrollingPart.Visible = not TAB.ScrollingPart.Visible
+		end)
 	
 	function TAB:ToggleButton(options)
 		options = Library:validate({
