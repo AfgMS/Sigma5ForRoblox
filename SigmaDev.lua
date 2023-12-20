@@ -248,7 +248,6 @@ function Library:createTabs(parentFrame, tabName)
 	TAB.FakeBlur.Position = UDim2.new(0, 0, 0, 0)
 	TAB.FakeBlur.Size = UDim2.new(1, 0, 1, 0)
 	TAB.FakeBlur.BackgroundTransparency = 0.45
-	TAB.FakeBlur.Name = "FakeBlur"
 	TAB.FakeBlur.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
 	TAB.FakeBlur.Visible = false
 	
@@ -360,62 +359,60 @@ function Library:createTabs(parentFrame, tabName)
 		openmenu.TextTransparency = 0.250
 
 		-- RightClickStuff
-		local ButtonsMenuFrame = Instance.new("Frame", CoreGui.Sigma)
-		ButtonsMenuFrame.BorderSizePixel = 0
-		ButtonsMenuFrame.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-		ButtonsMenuFrame.Size = UDim2.new(0, 355, 0, 245)
-		ButtonsMenuFrame.Position = UDim2.new(0.5, -173, 0.5, -140)
-		ButtonsMenuFrame.Name = options.name
-		ButtonsMenuFrame.Visible = false
+		
+local ButtonsMenuFrame = Instance.new("Frame", CoreGui.Sigma)
+ButtonsMenuFrame.Name = "Holder"
+ButtonsMenuFrame.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+ButtonsMenuFrame.BorderColor3 = Color3.fromRGB(0, 0, 0)
+ButtonsMenuFrame.BorderSizePixel = 0
+ButtonsMenuFrame.Position = UDim2.new(0.5, -173, 0.5, -140)
+ButtonsMenuFrame.Size = UDim2.new(0, 355, 0, 245)
+ButtonsMenuFrame.ZIndex = 2
+ButtonsMenuFrame.Visible = false
+		
+local ButtonsMenuFrameCorner = Instance.new("UICorner", ButtonsMenuFrame)
+ButtonsMenuFrameCorner.CornerRadius = UDim.new(0, 8)
 
-		local ButtonsMenuFrameCorner = Instance.new("UICorner", ButtonsMenuFrame)
-		ButtonsMenuFrameCorner.CornerRadius = UDim.new(0, 5)
+local ButtonsMenuTitleText = Instance.new("TextLabel", ButtonsMenuFrame)
+ButtonsMenuTitleText.Name = "Menu For" .. options.name
+ButtonsMenuTitleText.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+ButtonsMenuTitleText.BackgroundTransparency = 1.000
+ButtonsMenuTitleText.BorderColor3 = Color3.fromRGB(0, 0, 0)
+ButtonsMenuTitleText.BorderSizePixel = 0
+ButtonsMenuTitleText.Position = UDim2.new(0, 0, 0, -50)
+ButtonsMenuTitleText.Size = UDim2.new(0, 200, 0, 50)
+ButtonsMenuTitleText.Font = Enum.Font.Roboto
+ButtonsMenuTitleText.Text = options.name
+ButtonsMenuTitleText.TextColor3 = Color3.fromRGB(255, 255, 255)
+ButtonsMenuTitleText.TextSize = 30.000
+ButtonsMenuTitleText.TextXAlignment = Enum.TextXAlignment.Left
 
-		local ButtonsMenuInner = Instance.new("ScrollingFrame", ButtonsMenuFrame)
-		ButtonsMenuInner.Active = true
-		ButtonsMenuInner.BorderSizePixel = 0
-		ButtonsMenuInner.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-		ButtonsMenuInner.Size = UDim2.new(1, 0, 1, 0)
-		ButtonsMenuInner.Position = UDim2.new(0, 3, 0, 2)
-		ButtonsMenuInner.ScrollBarImageColor3 = Color3.fromRGB(0, 0, 0)
-		ButtonsMenuInner.BorderColor3 = Color3.fromRGB(0, 0, 0)
-		ButtonsMenuInner.ScrollBarThickness = 3
-		ButtonsMenuInner.Name = "SettingsScroll"
-		ButtonsMenuInner.BackgroundTransparency = 1.000
-		ButtonsMenuInner.Visible = false
+local ButtonsMenuInner = Instance.new("ScrollingFrame", ButtonsMenuFrame)
+ButtonsMenuInner.Name = "ScrollHolder"
+ButtonsMenuInner.Active = true
+ButtonsMenuInner.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+ButtonsMenuInner.BackgroundTransparency = 1.000
+ButtonsMenuInner.BorderColor3 = Color3.fromRGB(0, 0, 0)
+ButtonsMenuInner.BorderSizePixel = 0
+ButtonsMenuInner.Size = UDim2.new(1, 0, 1, 0)
+ButtonsMenuInner.ScrollBarThickness = 0
 
-		local UIListLayout = Instance.new("UIListLayout", ButtonsMenuInner)
-		UIListLayout.SortOrder = Enum.SortOrder.LayoutOrder
+local UIListLayout = Instance.new("UIListLayout", ButtonsMenuInner)
+UIListLayout.SortOrder = Enum.SortOrder.LayoutOrder
 
-		local ButtonsMenuTitle = Instance.new("TextLabel", ButtonsMenuInner)
-		ButtonsMenuTitle.BorderSizePixel = 0
-		ButtonsMenuTitle.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-		ButtonsMenuTitle.TextXAlignment = Enum.TextXAlignment.Left
-		ButtonsMenuTitle.Font = Enum.Font.Roboto
-		ButtonsMenuTitle.TextSize = 13
-		ButtonsMenuTitle.Visible = true
-		ButtonsMenuTitle.TextColor3 = Color3.fromRGB(75, 75, 75)
-		ButtonsMenuTitle.Size = UDim2.new(1, 0, 0, 20)
-		ButtonsMenuTitle.BorderColor3 = Color3.fromRGB(0, 0, 0)
-		ButtonsMenuTitle.Text = "   " .. options.info
-		ButtonsMenuTitle.Name = options.name
-		ButtonsMenuTitle.BackgroundTransparency = 1
-		ButtonsMenuTitle.Position = UDim2.new(0, 0, 0, 0)
-
-		local ButtonsMenuTitleText = Instance.new("TextLabel", ButtonsMenuFrame)
-		ButtonsMenuTitleText.BorderSizePixel = 0
-		ButtonsMenuTitleText.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-		ButtonsMenuTitleText.Font = Enum.Font.Roboto
-		ButtonsMenuTitleText.TextSize = 30
-		ButtonsMenuTitleText.TextColor3 = Color3.fromRGB(255, 255, 255)
-		ButtonsMenuTitleText.Size = UDim2.new(0, 65, 0, 10)
-		ButtonsMenuTitleText.BorderColor3 = Color3.fromRGB(0, 0, 0)
-		ButtonsMenuTitleText.Text = options.name
-		ButtonsMenuTitleText.Name = options.name
-		ButtonsMenuTitleText.BackgroundTransparency = 1
-		ButtonsMenuTitleText.Position = UDim2.new(0, 0, 0, -25)
-		ButtonsMenuTitleText.TextXAlignment = Enum.TextXAlignment.Left
-		ButtonsMenuTitleText.Visible = true
+local ButtonsMenuTitle = Instance.new("TextLabel", ButtonsMenuInner)
+ButtonsMenuTitle.Name = "Info for" ..options.name
+ButtonsMenuTitle.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+ButtonsMenuTitle.BackgroundTransparency = 1.000
+ButtonsMenuTitle.BorderColor3 = Color3.fromRGB(0, 0, 0)
+ButtonsMenuTitle.BorderSizePixel = 0
+ButtonsMenuTitle.Size = UDim2.new(1, 0, 0, 35)
+ButtonsMenuTitle.Font = Enum.Font.Roboto
+ButtonsMenuTitle.Text = "      " .. options.info
+ButtonsMenuTitle.TextColor3 = Color3.fromRGB(85, 85, 85)
+ButtonsMenuTitle.TextSize = 15.000
+ButtonsMenuTitle.TextWrapped = true
+ButtonsMenuTitle.TextXAlignment = Enum.TextXAlignment.Left
 
 		ToggleButton.MenuFrame = ButtonsMenuFrame
 
