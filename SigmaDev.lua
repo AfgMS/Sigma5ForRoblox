@@ -391,7 +391,7 @@ function Library:createTabs(parentFrame, tabName)
 		ButtonsMenuTitle.TextColor3 = Color3.fromRGB(75, 75, 75)
 		ButtonsMenuTitle.Size = UDim2.new(0, 75, 0, 15)
 		ButtonsMenuTitle.BorderColor3 = Color3.fromRGB(0, 0, 0)
-		ButtonsMenuTitle.Text = "" .. options.info
+		ButtonsMenuTitle.Text = "   " .. options.info
 		ButtonsMenuTitle.Name = options.name
 		ButtonsMenuTitle.BackgroundTransparency = 1
 		ButtonsMenuTitle.Position = UDim2.new(0, 5, 0, 5)
@@ -407,7 +407,7 @@ function Library:createTabs(parentFrame, tabName)
 		ButtonsMenuTitleText.TextColor3 = Color3.fromRGB(255, 255, 255)
 		ButtonsMenuTitleText.Size = UDim2.new(0, 65, 0, 10)
 		ButtonsMenuTitleText.BorderColor3 = Color3.fromRGB(0, 0, 0)
-		ButtonsMenuTitleText.Text = "   "..options.name
+		ButtonsMenuTitleText.Text = options.name
 		ButtonsMenuTitleText.Name = options.name
 		ButtonsMenuTitleText.BackgroundTransparency = 1
 		ButtonsMenuTitleText.Position = UDim2.new(0, 0, 0, -25)
