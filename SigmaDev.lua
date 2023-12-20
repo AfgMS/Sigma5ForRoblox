@@ -298,14 +298,15 @@ function Library:createTabs(parentFrame, tabName)
 	local UIListLayout = Instance.new("UIListLayout", TAB.ScrollingModules)
 	UIListLayout.SortOrder = Enum.SortOrder.LayoutOrder
 	
-	TAB.OPENUI.MouseButton1Click:Connect(function()
-			for _, tab in pairs(TAB) do
-			if tab.Tabs and tab.ScrollingPart then
-					tab.Tabs.Visible = true
-					tab.ScrollingPart.Visible = true
-				end
-				end
-			end)
+TAB.OPENUI.MouseButton1Click:Connect(function()
+    for _, TAB in pairs(TAB) do
+        if TAB.Tabs and TAB.ScrollingPart then
+            TAB.Tabs.Visible = not TAB.Tabs.Visible
+            TAB.ScrollingPart.Visible = not TAB.ScrollingPart.Visible
+        end
+    end
+end)
+
 	
 	if Library.totalWidth < 10 * TAB.Tabs.Size.X.Offset then
 		local newX = UDim2.new(0, Library.totalWidth * 1.03, 0, 0)
