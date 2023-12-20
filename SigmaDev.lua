@@ -379,6 +379,7 @@ ButtonsMenuTitleText.TextColor3 = Color3.fromRGB(255, 255, 255)
 ButtonsMenuTitleText.TextSize = 30.000
 ButtonsMenuTitleText.TextXAlignment = Enum.TextXAlignment.Left
 ButtonsMenuTitleText.Visible = true
+ButtonsMenuTitleText.ZIndex = 2
 
 local ButtonsMenuInner = Instance.new("ScrollingFrame", ButtonsMenuFrame)
 ButtonsMenuInner.Name = "ScrollHolder"
@@ -390,7 +391,8 @@ ButtonsMenuInner.BorderSizePixel = 0
 ButtonsMenuInner.Size = UDim2.new(1, 0, 1, 0)
 ButtonsMenuInner.ScrollBarThickness = 0
 ButtonsMenuInner.Visible = false
-		
+ButtonsMenuInner.ZIndex = 2
+
 local UIListLayout = Instance.new("UIListLayout", ButtonsMenuInner)
 UIListLayout.SortOrder = Enum.SortOrder.LayoutOrder
 
@@ -408,7 +410,8 @@ ButtonsMenuTitle.TextSize = 15.000
 ButtonsMenuTitle.TextWrapped = true
 ButtonsMenuTitle.TextXAlignment = Enum.TextXAlignment.Left
 ButtonsMenuTitle.Visible = true
-		
+ButtonsMenuTitle.ZIndex = 2
+
 		ToggleButton.MenuFrame = ButtonsMenuFrame
 
 		local function updateColors()
