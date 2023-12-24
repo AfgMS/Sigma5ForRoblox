@@ -554,8 +554,14 @@ ButtonsMenuTitle.ZIndex = 2
         end
     end
 
+    local function onTouchPan(panInfo)
+        if dragging and panInfo.UserInputType == Enum.UserInputType.Touch then
+            updateSlider(panInfo.Position.X)
+        end
+    end
+
     UISliderButton.InputBegan:Connect(function(input)
-        if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+        if input.UserInputType == Enum.UserInputType.MouseButton1 then
             dragging = true
             dragStart = input.Position.X
             startPos = UISliderButton.AbsolutePosition.X
@@ -563,17 +569,13 @@ ButtonsMenuTitle.ZIndex = 2
     end)
 
     UISliderButton.InputEnded:Connect(function(input)
-        if dragging and (input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch) then
+        if dragging and input.UserInputType == Enum.UserInputType.MouseButton1 then
             dragging = false
         end
     end)
 
-    UISliderButton.InputChanged:Connect(function(input)
-        if dragging and (input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch) then
-            updateSlider(input.Position.X)
-        end
-    end)
-    
+    UserInputService.TouchPan:Connect(onTouchPan)
+
     Slider.SliderHolder = SlidersHolder
 
 			function ToggleButton:ToggleButtonInsideUI(options)
