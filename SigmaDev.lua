@@ -66,8 +66,7 @@ function Library:tween(object, properties)
 end
 
 local function calculateSliderValue(mouseX, sliderBack)
-	local relativeX = math.clamp((mouseX - sliderBack.AbsolutePosition.X) / sliderBack.AbsoluteSize.X, 0, 1)
-	return relativeX
+    return math.clamp((mouseX - sliderBack.AbsolutePosition.X) / sliderBack.AbsoluteSize.X, 0, 1)
 end
 
 local soundIds = {
@@ -452,139 +451,126 @@ ButtonsMenuTitle.ZIndex = 2
 
 		updateColors()
 
-		function ToggleButton:Slider(options)
-			options = Library:validate({
-				title = "Error404",
-				min = 0,
-				max = 100,
-				default = 50,
-				callback = function(value) print(value) end
-			}, options or {})
+local function createSlider(options)
+    options = Library:validate({
+        title = "Error404",
+        min = 0,
+        max = 100,
+        default = 50,
+        callback = function(value) print(value) end
+    }, options or {})
 
-			local Slider = {}
+    local Slider = {}
 
-			local SlidersHolder = Instance.new("Frame", ButtonsMenuInner)
-			SlidersHolder.Name = "SliderHolder"
-			SlidersHolder.Size = UDim2.new(1, 0, 0, 30)
-			SlidersHolder.Position = UDim2.new(0, 0, 0, 0)
-			SlidersHolder.BorderSizePixel = 0
-			SlidersHolder.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-			SlidersHolder.BorderColor3 = Color3.fromRGB(0, 0, 0)
-			SlidersHolderZIndex = 2
-			SlidersHolder.BackgroundTransparency = 1
-			
-			local SliderValueLabel = Instance.new("TextLabel", SlidersHolder)
-			SliderValueLabel.Name = "Sliders Value"
-			SliderValueLabel.Size = UDim2.new(0, 15, 0, 15)
-			SliderValueLabel.Position = UDim2.new(0, 215, 0, 8)
-			SliderValueLabel.Text = tostring(options.default)
-			SliderValueLabel.TextColor3 = Color3.fromRGB(0, 0, 0)
-			SliderValueLabel.TextSize = 13
-			SliderValueLabel.Font = Enum.Font.Roboto
-			SliderValueLabel.BackgroundTransparency = 1
-			SliderValueLabel.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-			SliderValueLabel.ZIndex = 2
+    local SlidersHolder = Instance.new("Frame", ButtonsMenuInner)
+    SlidersHolder.Name = "SliderHolder"
+    SlidersHolder.Size = UDim2.new(1, 0, 0, 30)
+    SlidersHolder.Position = UDim2.new(0, 0, 0, 0)
+    SlidersHolder.BorderSizePixel = 0
+    SlidersHolder.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+    SlidersHolder.BorderColor3 = Color3.fromRGB(0, 0, 0)
+    SlidersHolder.ZIndex = 2
+    SlidersHolder.BackgroundTransparency = 1
 
-			local SliderNameLabel = Instance.new("TextLabel", SlidersHolder)
-			SliderNameLabel.Name = "Slider For" .. options.title
-			SliderNameLabel.Size = UDim2.new(0, 15, 0, 15)
-			SliderNameLabel.Position = UDim2.new(0, 5, 0, 8)
-			SliderNameLabel.Text = "      " .. options.title
-			SliderNameLabel.TextColor3 = Color3.fromRGB(0, 0, 0)
-			SliderNameLabel.TextSize = 13
-			SliderNameLabel.Font = Enum.Font.Roboto
-			SliderNameLabel.BackgroundTransparency = 1
-			SliderNameLabel.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-			SliderNameLabel.ZIndex = 2
-			
-			local SliderBack = Instance.new("Frame", SlidersHolder)
-			SliderBack.Name = "SliderBack"
-			SliderBack.Size = UDim2.new(0, 90, 0, 4)
-			SliderBack.Position = UDim2.new(0, 255, 0, 13)
-			SliderBack.BorderSizePixel = 0
-			SliderBack.BackgroundColor3 = Color3.fromRGB(205, 235, 255)
-			SliderBack.BorderColor3 = Color3.fromRGB(0, 0, 0)
-			SliderBack.ZIndex = 2
-			
-			local SliderBackCorner = Instance.new("UICorner", SliderBack)
-			SliderBackCorner.CornerRadius = UDim.new(0, 15)
+    local SliderValueLabel = Instance.new("TextLabel", SlidersHolder)
+    SliderValueLabel.Name = "Sliders Value"
+    SliderValueLabel.Size = UDim2.new(0, 15, 0, 15)
+    SliderValueLabel.Position = UDim2.new(0, 215, 0, 8)
+    SliderValueLabel.Text = tostring(options.default)
+    SliderValueLabel.TextColor3 = Color3.fromRGB(0, 0, 0)
+    SliderValueLabel.TextSize = 13
+    SliderValueLabel.Font = Enum.Font.Roboto
+    SliderValueLabel.BackgroundTransparency = 1
+    SliderValueLabel.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+    SliderValueLabel.ZIndex = 2
 
-			local SliderFill = Instance.new("Frame", SliderBack)
-			SliderFill.Name = "SliderFill"
-			SliderFill.Size = UDim2.new(options.default / options.max, 0, 1, 0)
-			SliderFill.Position = UDim2.new(0, 0, 0, 0)
-			SliderFill.BorderSizePixel = 0
-			SliderFill.BackgroundColor3 = Color3.fromRGB(116, 184, 255)
-			SliderFill.BorderColor3 = Color3.fromRGB(0, 0, 0)
-			SliderFill.ZIndex = 2
-			
-			local SliderFillCorner = Instance.new("UICorner", SliderFill)
-			SliderFillCorner.CornerRadius = UDim.new(0, 15)
+    local SliderNameLabel = Instance.new("TextLabel", SlidersHolder)
+    SliderNameLabel.Name = "SliderFor" .. options.title
+    SliderNameLabel.Size = UDim2.new(0, 15, 0, 15)
+    SliderNameLabel.Position = UDim2.new(0, 5, 0, 8)
+    SliderNameLabel.Text = "      " .. options.title
+    SliderNameLabel.TextColor3 = Color3.fromRGB(0, 0, 0)
+    SliderNameLabel.TextSize = 13
+    SliderNameLabel.Font = Enum.Font.Roboto
+    SliderNameLabel.BackgroundTransparency = 1
+    SliderNameLabel.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+    SliderNameLabel.ZIndex = 2
 
-			local UISliderButton = Instance.new("TextButton", SliderFill)
-			UISliderButton.Name = "UISliderButton"
-			UISliderButton.Size = UDim2.new(0, 13, 0, 13)
-			UISliderButton.AnchorPoint = Vector2.new(1, 0.5)
-			UISliderButton.Position = UDim2.new(1, 0, 0.5, 0)
-			UISliderButton.Text = ""
-			UISliderButton.BackgroundColor3 = Color3.fromRGB(235, 235, 235)
-			UISliderButton.BorderSizePixel = 0
-			UISliderButton.AutoButtonColor = false
-			UISliderButton.ZIndex = 1
-			UISliderButton.ClipsDescendants = true
-			UISliderButton.ZIndex = 2
-			
-			local UICorner = Instance.new("UICorner", UISliderButton)
-			UICorner.CornerRadius = UDim.new(1, 0)
+    local SliderBack = Instance.new("Frame", SlidersHolder)
+    SliderBack.Name = "SliderBack"
+    SliderBack.Size = UDim2.new(0, 90, 0, 4)
+    SliderBack.Position = UDim2.new(0, 255, 0, 13)
+    SliderBack.BorderSizePixel = 0
+    SliderBack.BackgroundColor3 = Color3.fromRGB(205, 235, 255)
+    SliderBack.BorderColor3 = Color3.fromRGB(0, 0, 0)
+    SliderBack.ZIndex = 2
 
-			local dragging = false
+    local SliderBackCorner = Instance.new("UICorner", SliderBack)
+    SliderBackCorner.CornerRadius = UDim.new(0, 15)
 
-			UISliderButton.MouseButton1Down:Connect(function()
-				dragging = true
-				dragStart = UserInputService:GetMouseLocation().X
-				startPos = UISliderButton.AbsolutePosition.X
-			end)
+    local SliderFill = Instance.new("Frame", SliderBack)
+    SliderFill.Name = "SliderFill"
+    SliderFill.Size = UDim2.new(options.default / options.max, 0, 1, 0)
+    SliderFill.Position = UDim2.new(0, 0, 0, 0)
+    SliderFill.BorderSizePixel = 0
+    SliderFill.BackgroundColor3 = Color3.fromRGB(116, 184, 255)
+    SliderFill.BorderColor3 = Color3.fromRGB(0, 0, 0)
+    SliderFill.ZIndex = 2
 
-			UISliderButton.MouseButton1Up:Connect(function()
-				if dragging then
-					dragging = false
-				end
-			end)
+    local SliderFillCorner = Instance.new("UICorner", SliderFill)
+    SliderFillCorner.CornerRadius = UDim.new(0, 15)
 
-			UISliderButton.MouseEnter:Connect(function()
-				if not dragging then
-					UISliderButton.BackgroundColor3 = Color3.fromRGB(245, 245, 245)
-				end
-			end)
+    local UISliderButton = Instance.new("TextButton", SliderFill)
+    UISliderButton.Name = "UISliderButton"
+    UISliderButton.Size = UDim2.new(0, 13, 0, 13)
+    UISliderButton.AnchorPoint = Vector2.new(1, 0.5)
+    UISliderButton.Position = UDim2.new(1, 0, 0.5, 0)
+    UISliderButton.Text = ""
+    UISliderButton.BackgroundColor3 = Color3.fromRGB(235, 235, 235)
+    UISliderButton.BorderSizePixel = 0
+    UISliderButton.AutoButtonColor = false
+    UISliderButton.ZIndex = 1
+    UISliderButton.ClipsDescendants = true
+    UISliderButton.ZIndex = 2
 
-			UISliderButton.MouseLeave:Connect(function()
-				if not dragging then
-					UISliderButton.BackgroundColor3 = Color3.fromRGB(235, 235, 235)
-				end
-			end)
+    local UICorner = Instance.new("UICorner", UISliderButton)
+    UICorner.CornerRadius = UDim.new(1, 0)
 
-			UserInputService.InputChanged:Connect(function(input)
-				if dragging and input.UserInputType == Enum.UserInputType.MouseMovement then
-					local newX = calculateSliderValue(UserInputService:GetMouseLocation().X, SliderBack)
-					local newValue = options.min + newX * (options.max - options.min)
-					SliderValueLabel.Text = tostring(math.floor(newValue))
+    local dragging = false
 
-					local maxDelta = (UISliderButton.Size.X.Offset / SliderBack.AbsoluteSize.X)
-					local delta = math.clamp(newX, 0, 1 - maxDelta)
-					SliderFill.Size = UDim2.new(delta, 0, 1, 0)
-					UISliderButton.Position = UDim2.new(delta + maxDelta, 0, 0.5, 0)
+    local function updateSlider(mouseX)
+        local newX = calculateSliderValue(mouseX, SliderBack)
+        local newValue = options.min + newX * (options.max - options.min)
+        SliderValueLabel.Text = tostring(math.floor(newValue))
 
-					if options.callback then
-						options.callback(newValue)
-					end
-				end
-			end)
+        local maxDelta = (UISliderButton.Size.X.Offset / SliderBack.AbsoluteSize.X)
+        local delta = math.clamp(newX, 0, 1 - maxDelta)
+        SliderFill.Size = UDim2.new(delta, 0, 1, 0)
+        UISliderButton.Position = UDim2.new(delta + maxDelta, 0, 0.5, 0)
 
-			UserInputService.InputEnded:Connect(function(input)
-				if dragging and input.UserInputType == Enum.UserInputType.MouseButton1 then
-					dragging = false
-				end
-			end)
+        if options.callback then
+            options.callback(newValue)
+        end
+    end
+
+    UISliderButton.InputBegan:Connect(function(input, gameProcessed)
+        if not gameProcessed and input.UserInputType == Enum.UserInputType.Touch then
+            dragging = true
+            updateSlider(input.Position.X)
+        end
+    end)
+
+    UISliderButton.InputChanged:Connect(function(input)
+        if dragging and input.UserInputType == Enum.UserInputType.Touch then
+            updateSlider(input.Position.X)
+        end
+    end)
+
+    UISliderButton.InputEnded:Connect(function(input)
+        if dragging and input.UserInputType == Enum.UserInputType.Touch then
+            dragging = false
+        end
+    end)
 
 			Slider.SliderHolder = SlidersHolder
 
