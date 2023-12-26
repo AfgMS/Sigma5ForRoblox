@@ -478,11 +478,11 @@ ButtonsMenuTitle.ZIndex = 2
 
 			local SliderValueLabel = Instance.new("TextLabel", SliderNameLabel)
 			SliderValueLabel.Name = "Sliders Value"
-			SliderValueLabel.Size = UDim2.new(0, 15, 0, 15)
-			SliderValueLabel.Position = UDim2.new(0, 215, 0, 8)
+			SliderValueLabel.Size = UDim2.new(0, 30, 0, 30)
+			SliderValueLabel.Position = UDim2.new(0, 220, 0, 3)
 			SliderValueLabel.Text = tostring(options.default)
-			SliderValueLabel.TextColor3 = Color3.fromRGB(0, 0, 0)
-			SliderValueLabel.TextSize = 13
+			SliderValueLabel.TextColor3 = Color3.fromRGB(85, 85, 85)
+			SliderValueLabel.TextSize = 10
 			SliderValueLabel.Font = Enum.Font.Roboto
 			SliderValueLabel.BackgroundTransparency = 1
 			SliderValueLabel.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
@@ -490,15 +490,16 @@ ButtonsMenuTitle.ZIndex = 2
 
 			local SliderBack = Instance.new("Frame", SliderNameLabel)
 			SliderBack.Name = "SliderBack"
-			SliderBack.Size = UDim2.new(0, 90, 0, 4)
-			SliderBack.Position = UDim2.new(0, 255, 0, 13)
+			SliderBack.Size = UDim2.new(0, 75, 0, 5)
+			SliderBack.Position = UDim2.new(0, 255, 0, 15)
 			SliderBack.BorderSizePixel = 0
 			SliderBack.BackgroundColor3 = Color3.fromRGB(205, 235, 255)
+			SliderBack.BackgroundTransparency = 0.45
 			SliderBack.BorderColor3 = Color3.fromRGB(0, 0, 0)
 			SliderBack.ZIndex = 2
 
 			local SliderBackCorner = Instance.new("UICorner", SliderBack)
-			SliderBackCorner.CornerRadius = UDim.new(0, 15)
+			SliderBackCorner.CornerRadius = UDim.new(1, 0)
 
 			local SliderFill = Instance.new("Frame", SliderBack)
 			SliderFill.Name = "SliderFill"
@@ -510,7 +511,7 @@ ButtonsMenuTitle.ZIndex = 2
 			SliderFill.ZIndex = 2
 
 			local SliderFillCorner = Instance.new("UICorner", SliderFill)
-			SliderFillCorner.CornerRadius = UDim.new(0, 15)
+			SliderFillCorner.CornerRadius = UDim.new(1, 0)
 
 			local UISliderButton = Instance.new("TextButton", SliderFill)
 			UISliderButton.Name = "UISliderButton"
