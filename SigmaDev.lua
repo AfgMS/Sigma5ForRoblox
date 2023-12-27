@@ -465,7 +465,7 @@ ButtonsMenuTitle.ZIndex = 2
 
 			local SliderNameLabel = Instance.new("TextLabel", ButtonsMenuInner)
 			SliderNameLabel.Name = "Slider For" .. options.title
-			SliderNameLabel.Size = UDim2.new(1, 0, 0, 35)
+			SliderNameLabel.Size = UDim2.new(1, 0, 0, 30)
 			SliderNameLabel.Position = UDim2.new(0, 0, 0, 0)
 			SliderNameLabel.Text = "      " .. options.title
 			SliderNameLabel.TextColor3 = Color3.fromRGB(0, 0, 0)
