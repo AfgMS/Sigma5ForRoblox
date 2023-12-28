@@ -536,7 +536,7 @@ ButtonsMenuTitle.ZIndex = 2
 				MouseDown = false
 				repeat
 					task.wait()
-					Percent = (Mouse.X-SliderBack.AbsolutePosition.X)/SliderBack.AbosoluteSize.X,0,1)
+					Percent = math.clamp((Mouse.X - SliderBack.AbsolutePosition.X) / SliderBack.AbsoluteSize.X, 0, 1)
 					SliderValueLabel.Text = math.round(Percent*100)
 					SliderFill.Size = UDim2.fromScale(Percent,1)
 			until MouseDown == false
