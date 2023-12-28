@@ -533,26 +533,28 @@ ButtonsMenuTitle.ZIndex = 2
 			local UICorner = Instance.new("UICorner", UISliderButton)
 			UICorner.CornerRadius = UDim.new(1, 0)
 
-    function Update(input)
-        if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
-            MouseDown = true
-            repeat
-                task.wait()
-                local inputPosition
-                if input.UserInputType == Enum.UserInputType.MouseButton1 then
-                    inputPosition = Vector2.new(Mouse.X, Mouse.Y)
-                elseif input.UserInputType == Enum.UserInputType.Touch then
-                    inputPosition = Vector2.new(input.Position.X, input.Position.Y)
-                end
-                local percent = math.clamp((inputPosition.X - SliderBack.AbsolutePosition.X) / SliderBack.AbsoluteSize.X, 0, 1)
-                SliderValueLabel.Text = math.round(percent * 100)
-                SliderFill.Size = UDim2.fromScale(percent, 1)
-            until not MouseDown
-        end
+    local function Update(input)
+        MouseDown = true
+        repeat
+            task.wait()
+
+            local inputPosition
+            if input.UserInputType == Enum.UserInputType.MouseMovement then
+                inputPosition = input.Position
+            elseif input.UserInputType == Enum.UserInputType.Touch then
+                inputPosition = input.Position
+            end
+
+            if inputPosition then
+                Percent = math.clamp((inputPosition.X - SliderBack.AbsolutePosition.X) / SliderBack.AbsoluteSize.X, 0, 1)
+                SliderValueLabel.Text = math.round(Percent * 100)
+                SliderFill.Size = UDim2.fromScale(Percent, 1)
+            end
+        until not MouseDown
     end
 
     UISliderButton.MouseButton1Down:Connect(function()
-        Update({UserInputType = Enum.UserInputType.MouseButton1})
+        Update(game:GetService("UserInputService").InputChanged:Wait())
     end)
 
     game:GetService("UserInputService").InputEnded:Connect(function(input)
