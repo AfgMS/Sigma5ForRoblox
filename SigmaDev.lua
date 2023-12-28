@@ -464,7 +464,9 @@ ButtonsMenuTitle.ZIndex = 2
 
 			local Slider = {}
 			local Percent
-			local MouseDown = false
+			local InputBeganConnection
+			local InputChangedConnection
+			local InputEndedConnection
 			
 			local SliderNameLabel = Instance.new("TextLabel", ButtonsMenuInner)
 			SliderNameLabel.Name = "Slider For" .. options.title
@@ -532,23 +534,37 @@ ButtonsMenuTitle.ZIndex = 2
 			local UICorner = Instance.new("UICorner", UISliderButton)
 			UICorner.CornerRadius = UDim.new(1, 0)
 
-			function Update()
-				MouseDown = false
-				repeat
-					task.wait()
-					Percent = math.clamp((Mouse.X - SliderBack.AbsolutePosition.X) / SliderBack.AbsoluteSize.X, 0, 1)
-					SliderValueLabel.Text = math.round(Percent*100)
-					SliderFill.Size = UDim2.fromScale(Percent,1)
-			until MouseDown == false
-		end
+    local function Update()
+        Percent = math.clamp((Input.Position.X - SliderBack.AbsolutePosition.X) / SliderBack.AbsoluteSize.X, 0, 1)
+        SliderValueLabel.Text = math.round(Percent * 100)
+        SliderFill.Size = UDim2.fromScale(Percent, 1)
+    end
 
-		UISliderButton.MouseButton1Down:Connect(Update)
+    local function InputBegan(input)
+        if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+            Update()
+            InputChangedConnection = input.Changed:Connect(function()
+                if input.UserInputState == Enum.UserInputState.Changed then
+                    Update()
+                end
+            end)
+            InputEndedConnection = input.Changed:Connect(function()
+                if input.UserInputState == Enum.UserInputState.End then
+                    InputChangedConnection:Disconnect()
+                    InputEndedConnection:Disconnect()
+                end
+            end)
+        end
+    end
 
-		game:GetService("UserInputService").InputEnded:Connect(function(input)
-				if input.UserInputType == Enum.UserInputType.MouseButton1 then
-					MouseDown = false
-				end
-			end)
+    UISliderButton.InputBegan:Connect(InputBegan)
+
+    game:GetService("UserInputService").InputEnded:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+            InputChangedConnection:Disconnect()
+            InputEndedConnection:Disconnect()
+        end
+    end)
 
 			function ToggleButton:ToggleButtonInsideUI(options)
 				options = Library:validate({
