@@ -515,11 +515,11 @@ ButtonsMenuTitle.ZIndex = 2
 
 			local UISliderButton = Instance.new("TextButton", SliderFill)
 			UISliderButton.Name = "UISliderButton"
-			UISliderButton.Size = UDim2.new(0, 13, 0, 13)
+			UISliderButton.Size = UDim2.new(0, 15, 0, 15)
 			UISliderButton.AnchorPoint = Vector2.new(1, 0.5)
 			UISliderButton.Position = UDim2.new(1, 0, 0.5, 0)
 			UISliderButton.Text = ""
-			UISliderButton.BackgroundColor3 = Color3.fromRGB(235, 235, 235)
+			UISliderButton.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
 			UISliderButton.BorderSizePixel = 0
 			UISliderButton.AutoButtonColor = false
 			UISliderButton.ZIndex = 1
