@@ -3,6 +3,7 @@ local CoreGui = game:GetService("CoreGui")
 local UserInputService = game:GetService("UserInputService")
 local Font = game:GetService("TextService")
 local Mouse = game.Players.LocalPlayer:GetMouse()
+local TouchInput = game:GetService("TouchInputService")
 
 local Library = {}
 local soundObjects = {}
@@ -464,9 +465,7 @@ ButtonsMenuTitle.ZIndex = 2
 
 			local Slider = {}
 			local Percent
-			local InputBeganConnection
-			local InputChangedConnection
-			local InputEndedConnection
+			local MouseDown = false
 			
 			local SliderNameLabel = Instance.new("TextLabel", ButtonsMenuInner)
 			SliderNameLabel.Name = "Slider For" .. options.title
@@ -534,38 +533,33 @@ ButtonsMenuTitle.ZIndex = 2
 			local UICorner = Instance.new("UICorner", UISliderButton)
 			UICorner.CornerRadius = UDim.new(1, 0)
 
-    local function Update()
-        Percent = math.clamp((Input.Position.X - SliderBack.AbsolutePosition.X) / SliderBack.AbsoluteSize.X, 0, 1)
-        SliderValueLabel.Text = math.round(Percent * 100)
-        SliderFill.Size = UDim2.fromScale(Percent, 1)
-    end
-
-    local function InputBegan(input)
+    function Update(input)
         if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
-            Update()
-            InputChangedConnection = input.Changed:Connect(function()
-                if input.UserInputState == Enum.UserInputState.Changed then
-                    Update()
+            MouseDown = true
+            repeat
+                task.wait()
+                local inputPosition
+                if input.UserInputType == Enum.UserInputType.MouseButton1 then
+                    inputPosition = Vector2.new(Mouse.X, Mouse.Y)
+                elseif input.UserInputType == Enum.UserInputType.Touch then
+                    inputPosition = Vector2.new(input.Position.X, input.Position.Y)
                 end
-            end)
-            InputEndedConnection = input.Changed:Connect(function()
-                if input.UserInputState == Enum.UserInputState.End then
-                    InputChangedConnection:Disconnect()
-                    InputEndedConnection:Disconnect()
-                end
-            end)
+                local percent = math.clamp((inputPosition.X - SliderBack.AbsolutePosition.X) / SliderBack.AbsoluteSize.X, 0, 1)
+                SliderValueLabel.Text = math.round(percent * 100)
+                SliderFill.Size = UDim2.fromScale(percent, 1)
+            until not MouseDown
         end
     end
 
-    UISliderButton.InputBegan:Connect(InputBegan)
+    UISliderButton.MouseButton1Down:Connect(function()
+        Update({UserInputType = Enum.UserInputType.MouseButton1})
+    end)
 
     game:GetService("UserInputService").InputEnded:Connect(function(input)
         if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
-            InputChangedConnection:Disconnect()
-            InputEndedConnection:Disconnect()
+            MouseDown = false
         end
     end)
-
 			function ToggleButton:ToggleButtonInsideUI(options)
 				options = Library:validate({
 					name = "Error404",
