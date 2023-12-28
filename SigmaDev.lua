@@ -2,6 +2,7 @@ local TweenService = game:GetService("TweenService")
 local CoreGui = game:GetService("CoreGui")
 local UserInputService = game:GetService("UserInputService")
 local Font = game:GetService("TextService")
+local Mouse = game.Players.LocalPlayer:GetMouse()
 
 local Library = {}
 local soundObjects = {}
@@ -462,7 +463,9 @@ ButtonsMenuTitle.ZIndex = 2
 			}, options or {})
 
 			local Slider = {}
-
+			local Percent
+			local MouseDown = false
+			
 			local SliderNameLabel = Instance.new("TextLabel", ButtonsMenuInner)
 			SliderNameLabel.Name = "Slider For" .. options.title
 			SliderNameLabel.Size = UDim2.new(1, 0, 0, 30)
@@ -480,7 +483,7 @@ ButtonsMenuTitle.ZIndex = 2
 			SliderValueLabel.Name = "Sliders Value"
 			SliderValueLabel.Size = UDim2.new(0, 30, 0, 30)
 			SliderValueLabel.Position = UDim2.new(0, 195, 0, 5)
-			SliderValueLabel.Text = tostring(options.default)
+			SliderValueLabel.Text = ""
 			SliderValueLabel.TextColor3 = Color3.fromRGB(85, 85, 85)
 			SliderValueLabel.TextSize = 10
 			SliderValueLabel.Font = Enum.Font.Roboto
@@ -529,46 +532,23 @@ ButtonsMenuTitle.ZIndex = 2
 			local UICorner = Instance.new("UICorner", UISliderButton)
 			UICorner.CornerRadius = UDim.new(1, 0)
 
-    local dragging = false
+			function Update()
+				MouseDown = false
+				repeat
+					task.wait()
+					Percent = (Mouse.X-SliderBack.AbsolutePosition.X)/SliderBack.AbosoluteSize.X,0,1)
+					SliderValueLabel.Text = math.round(Percent*100)
+					SliderFill.Size = UDim2.fromScale(Percent,1)
+			until MouseDown == false
+		end
 
-    local function updateSlider(inputPosition)
-        local newX = calculateSliderValue(inputPosition, SliderBack)
-        local newValue = options.min + newX * (options.max - options.min)
-        SliderValueLabel.Text = tostring(math.floor(newValue))
+		UISliderButton.MouseButton1Down:Connect(Update)
 
-        local maxDelta = (UISliderButton.Size.X.Offset / SliderBack.AbsoluteSize.X)
-        local delta = math.clamp(newX, 0, 1 - maxDelta)
-        SliderFill.Size = UDim2.new(delta, 0, 1, 0)
-        UISliderButton.Position = UDim2.new(delta + maxDelta, 0, 0.5, 0)
-
-        if options.callback then
-            options.callback(newValue)
-        end
-    end
-
-    local function onTouchPan(panInfo)
-        if dragging and panInfo.UserInputType == Enum.UserInputType.Touch then
-            updateSlider(panInfo.Position.X)
-        end
-    end
-
-    UISliderButton.InputBegan:Connect(function(input)
-        if input.UserInputType == Enum.UserInputType.MouseButton1 then
-            dragging = true
-            dragStart = input.Position.X
-            startPos = UISliderButton.AbsolutePosition.X
-        end
-    end)
-
-    UISliderButton.InputEnded:Connect(function(input)
-        if dragging and input.UserInputType == Enum.UserInputType.MouseButton1 then
-            dragging = false
-        end
-    end)
-
-    UserInputService.TouchPan:Connect(onTouchPan)
-
-    Slider.SliderHolder = SlidersHolder
+		game:GetService("UserInputService").InputEnded:Connect(function(input)
+				if input.UserInputType == Enum.UserInputType.MouseButton1 then
+					MouseDown = false
+				end
+			end)
 
 			function ToggleButton:ToggleButtonInsideUI(options)
 				options = Library:validate({
