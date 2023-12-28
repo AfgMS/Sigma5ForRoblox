@@ -755,7 +755,7 @@ local SliderStuff = button1:Slider({
 	max = 10,
 	default = 5,
 	callback = function(val)
-		print("" ..val)
+		game.Players.LocalPlayer.Character.Humanoid.WalkSpeed = val
 	end
 })
 local ToggleInsideUI1 = button1:ToggleButtonInsideUI({
