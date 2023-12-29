@@ -1,11 +1,11 @@
-local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/AfgMS/Simga345/main/SigmaDev.lua", true))()
+local SigmaLibrary = loadstring(game:HttpGet("https://raw.githubusercontent.com/AfgMS/Simga345/main/SigmaDev.lua", true))()
 
-local screenGui = Library:createScreenGui()
+SigmaLibrary:createScreenGui()
 
 createnotification("Simga", "Welcome to Sigma, Press V", 3, true)
 
-local tab1 = Library:createTabs(CoreGui.Sigma, "Gui")
-local tab2 = Library:createTabs(CoreGui.Sigma, "Combat")
+local tab1 = SigmaLibrary:createTabs(CoreGui.Sigma, "Gui")
+local tab2 = SigmaLibrary:createTabs(CoreGui.Sigma, "Combat")
 
 local button1 = tab1:ToggleButton({
 	name = "Hendro",
