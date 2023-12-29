@@ -701,11 +701,9 @@ ButtonsMenuTitle.ZIndex = 2
 					DropdownHolders.MouseButton1Click:Connect(function() 
 						DropdownMenu.Visible = not DropdownMenu.Visible
 					end)
-
 					return Dropdown
 				end
-
-				return ToggleButtonInsideUI
+					return ToggleButtonInsideUI
 			end
 
 			return Slider
@@ -716,3 +714,6 @@ ButtonsMenuTitle.ZIndex = 2
 
 	return TAB
 end
+	return Library
+end
+
