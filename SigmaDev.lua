@@ -373,7 +373,7 @@ ButtonsMenuTitleText.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
 ButtonsMenuTitleText.BackgroundTransparency = 1.000
 ButtonsMenuTitleText.BorderColor3 = Color3.fromRGB(0, 0, 0)
 ButtonsMenuTitleText.BorderSizePixel = 0
-ButtonsMenuTitleText.Position = UDim2.new(0, 0, 0, -50)
+ButtonsMenuTitleText.Position = UDim2.new(0, 0, 0, -52)
 ButtonsMenuTitleText.Size = UDim2.new(0, 200, 0, 50)
 ButtonsMenuTitleText.Font = Enum.Font.Roboto
 ButtonsMenuTitleText.Text = options.name
@@ -581,6 +581,7 @@ ButtonsMenuTitle.ZIndex = 2
 				newToggle.BorderColor3 = Color3.fromRGB(0, 0, 0)
 				newToggle.Position = UDim2.new(0, 0, 0.10571428388357162, 0)
 				newToggle.Name = "ToggleInsideUI"
+				newToggle.ZIndex = 2
 
 				local newToggleName = Instance.new("TextLabel", newToggle)
 				newToggleName.BorderSizePixel = 0
@@ -594,7 +595,8 @@ ButtonsMenuTitle.ZIndex = 2
 				newToggleName.Text = options.name
 				newToggleName.BackgroundTransparency = 1
 				newToggleName.Position = UDim2.new(0.04827586188912392, 0, 0.2571428716182709, 0)
-
+				newToggleName.ZIndex = 2
+				
 				local newToggleThingy = Instance.new("Frame", newToggle)
 				newToggleThingy.BorderSizePixel = 0
 				newToggleThingy.BackgroundColor3 = Color3.fromRGB(220, 220, 220)
@@ -602,11 +604,10 @@ ButtonsMenuTitle.ZIndex = 2
 				newToggleThingy.BorderColor3 = Color3.fromRGB(0, 0, 0)
 				newToggleThingy.Position = UDim2.new(0, 105, 0, 10)
 				newToggleThingy.Name = "CheckmarkHolder"
-
-				local newToggleThingyCorner = Instance.new("UICorner", newToggleThingy)
+				newToggleThingy.ZIndex = 2
 				
-local newToggleThingyCorner = Instance.new("UICorner", newToggleThingy)
-newToggleThingyCorner.CornerRadius = UDim.new(0, 10)
+				local newToggleThingyCorner = Instance.new("UICorner", newToggleThingy)
+				newToggleThingyCorner.CornerRadius = UDim.new(0, 10)
 
 				local function UpdateCheckMark()
 					if ToggleButtonInsideUI.Enabled then
@@ -715,101 +716,3 @@ newToggleThingyCorner.CornerRadius = UDim.new(0, 10)
 
 	return TAB
 end
-
-Library:createScreenGui()
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
---Sigma
-createnotification("Sigma", "Welcome to Sigma, Press V", 1, true)
-
-local tab1 = Library:createTabs(CoreGui.Sigma, "Gui")
-local tab2 = Library:createTabs(CoreGui.Sigma, "Combat")
-
-local button1 = tab1:ToggleButton({
-	name = "Hendro",
-	info = "QuACK Quack",
-	callback = function(enabled)
-		print("cum")
-	end
-})
-local SliderStuff = button1:Slider({
-	title = "Dugong",
-	min = 5,
-	max = 10,
-	default = 5,
-	callback = function(val)
-		game.Players.LocalPlayer.Character.Humanoid.WalkSpeed = val
-	end
-})
-local ToggleInsideUI1 = button1:ToggleButtonInsideUI({
-	name = "MyFirne",
-	callback = function(enabled)
-		if enabled then
-			print("hello")
-		end
-	end
-})
-local Dropdown = button1:Dropdown({
-	name = "Yes",
-	todo = "E",
-	list = {"Walk", "Run", "Sprint"},
-	Default = "Walk",
-	callback = function(selectedItem)
-		print("Movement type set to:", selectedItem)
-	end
-})
-local button99 = tab2:ToggleButton({
-	name = "UninjectShit",
-	info = "Click to uninject the Sigma hack.",
-	callback = function(enabled)
-		if enabled then
-			CoreGui.Sigma:Destroy()
-			print("Destroyed Main")
-			CoreGui.SigmaVisualStuff:Destroy()
-			print("Destroyed Notif")
-		end
-	end
-})
-local SliderStuff = button99:Slider({
-	title = "Walkspeed",
-	min = 10,
-	max = 200,
-	default = 5,
-	callback = function(val)
-		print("" ..val)
-	end
-})
-local ToggleInsideUI1 = button99:ToggleButtonInsideUI({
-	name = "MyFirne",
-	callback = function(enabled)
-		if enabled then
-			print("hello")
-		end
-	end
-})
-local Dropdown = button99:Dropdown({
-	name = "Yes",
-	todo = "E",
-	list = {"Walk", "Run", "Sprint"},
-	Default = "Walk",
-	callback = function(selectedItem)
-		print("Movement type set to:", selectedItem)
-	end
-})
