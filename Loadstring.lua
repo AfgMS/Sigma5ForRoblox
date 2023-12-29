@@ -1,8 +1,7 @@
 local SigmaLibrary = loadstring(game:HttpGet("https://raw.githubusercontent.com/AfgMS/Simga345/main/SigmaDev.lua", true))()
 
-SigmaLibrary:createScreenGui()
-
-createnotification("Simga", "Welcome to Sigma, Press V", 3, true)
+if SigmaLibrary then
+    SigmaLibrary:createScreenGui()
 
 local tab1 = SigmaLibrary:createTabs(CoreGui.Sigma, "Gui")
 local tab2 = SigmaLibrary:createTabs(CoreGui.Sigma, "Combat")
@@ -78,3 +77,6 @@ local Dropdown = button99:Dropdown({
 		print("Movement type set to:", selectedItem)
 	end
 })
+else
+    warn("SigmaLibrary is nil. Make sure the external script is loaded correctly.")
+end
