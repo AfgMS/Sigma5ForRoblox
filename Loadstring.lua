@@ -1,6 +1,6 @@
 local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/AfgMS/Simga345/main/SigmaDev.lua", true))()
 
-local screenGui = Library:LoadScreenGUI()
+local screenGui = Library:createScreenGui()
 
 createnotification("Simga", "Welcome to Sigma, Press V", 3, true)
 
