@@ -588,7 +588,7 @@ ButtonsMenuTitle.ZIndex = 2
 			local newToggleThingy = Instance.new("TextButton", newToggle)
 			newToggleThingy.BorderSizePixel = 0
 			newToggleThingy.BackgroundColor3 = Color3.fromRGB(235, 235, 235)
-			newToggleThingy.TextSize = 8
+			newToggleThingy.TextSize = 5
 			newToggleThingy.TextColor3 = Color3.fromRGB(255, 255, 255)
 			newToggleThingy.Size = UDim2.new(0, 15, 0, 15)
 			newToggleThingy.BorderColor3 = Color3.fromRGB(0, 0, 0)
@@ -626,7 +626,7 @@ ButtonsMenuTitle.ZIndex = 2
 				function ToggleButton:Dropdown(options)
 					options = Library:validate({
 						name = "Error404",
-						todo = "MovementType",
+						default = "Error404",
 						callback = function(selectedItem) end
 					}, options or {})
 
@@ -635,35 +635,30 @@ ButtonsMenuTitle.ZIndex = 2
 						List = options.list or {},
 						Selected = options.Default or "",
 					}
-
-					local DropdownActualHolder = Instance.new("Frame", ButtonsMenuInner)
-					DropdownActualHolder.Name = "HolderReal"
-					DropdownActualHolder.Size = UDim2.new(0, 15, 0, 15)
-					DropdownActualHolder.BackgroundTransparency = 1 
-					DropdownActualHolder.ZIndex = 2
 					
-					local DropdownInfo = Instance.new("TextLabel", DropdownActualHolder)
-					DropdownInfo.Name = options.todo
-					DropdownInfo.Size = UDim2.new(0, 15, 0, 15)
-					DropdownInfo.Position = UDim2.new(0, 8, 0, 0)
-					DropdownInfo.Text = options.todo
-					DropdownInfo.TextColor3 = Color3.fromRGB(0, 0, 0)
-					DropdownInfo.TextSize = 15
-					DropdownInfo.Font = Enum.Font.Roboto
-					DropdownInfo.BackgroundTransparency = 1
-					DropdownInfo.TextXAlignment = Enum.TextXAlignment.Left
-					DropdownInfo.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-					DropdownInfo.ZIndex = 2
-
-					local DropdownHolders = Instance.new("TextButton", DropdownInfo)
+					local DropdownName = Instance.new("TextLabel", ButtonsMenuInner)
+					DropdownName.Name = "Dropdown For" .. options.name
+					DropdownName.Size = UDim2.new(1, 0, 0, 30)
+					DropdownName.Position = UDim2.new(0, 0, 0, 0)
+					DropdownName.Text = "      " .. options.name
+					DropdownName.TextColor3 = Color3.fromRGB(0, 0, 0)
+					DropdownName.TextSize = 15
+					DropdownName.Font = Enum.Font.Roboto
+					DropdownName.BackgroundTransparency = 1
+					DropdownName.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+					DropdownName.ZIndex = 2
+					DropdownName.TextXAlignment = Enum.TextXAlignment.Left
+					
+					local DropdownHolders = Instance.new("TextButton", DropdownName)
 					DropdownHolders.BorderSizePixel = 0
-					DropdownHolders.BackgroundColor3 = Color3.fromRGB(250, 250, 250)
+					DropdownHolders.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
 					DropdownHolders.Size = UDim2.new(0, 70, 0, 15)
 					DropdownHolders.BorderColor3 = Color3.fromRGB(0, 0, 0)
-					DropdownHolders.Text = options.name
-					DropdownHolders.Position = UDim2.new(0, 75, 0, 0)
-					DropdownHolders.Name = "DropdownHolders"
+					DropdownHolders.Text = options.default
+					DropdownHolders.Position = UDim2.new(0, 225, 0, 0)
+					DropdownHolders.Name = "DropdownHolder"
 					DropdownHolders.ZIndex = 2
+					DropdownHolders.TextXAlignment = Enum.TextXAlignment.Left
 					
 					local DropdownMenu = Instance.new("Frame", DropdownHolders)
 					DropdownMenu.BorderSizePixel = 0
@@ -769,8 +764,8 @@ local ToggleInsideUI1 = button1:ToggleButtonInsideUI({
 	end
 })
 local Dropdown = button1:Dropdown({
-	name = "Yes",
-	todo = "E",
+	name = "Testing",
+	default = "Test",
 	list = {"Walk", "Run", "Sprint"},
 	Default = "Walk",
 	callback = function(selectedItem)
