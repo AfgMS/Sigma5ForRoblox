@@ -599,18 +599,20 @@ ButtonsMenuTitle.ZIndex = 2
 			newToggleThingy.AutoButtonColor = false
 			newToggleThingy.TextTransparency = 0.250
 				
-				local newToggleThingyCorner = Instance.new("UICorner", newToggleThingy)
-				newToggleThingyCorner.CornerRadius = UDim.new(0, 10)
+			local newToggleThingyCorner = Instance.new("UICorner", newToggleThingy)
+			newToggleThingyCorner.CornerRadius = UDim.new(1, 0)
 
 				local function UpdateCheckMark()
 					if ToggleButtonInsideUI.Enabled then
-						Library:tween(newToggleThingy, {BackgroundColor3 = Color3.fromRGB(115, 185, 255)})
+						newToggleThingy.BackgroundColor3 = Color3.fromRGB(115, 185, 255)
+						newToggleThingy.Text = "✔️"
 					else
-						Library:tween(newToggleThingy, {BackgroundColor3 = Color3.fromRGB(235, 235, 235)})
+						newToggleThingy.BackgroundColor3 = Color3.fromRGB(235, 235, 235)
+						newToggleThingy.Text = ""
 					end
 				end
 
-				newToggle.MouseButton1Down:Connect(function()
+				newToggleThingy.MouseButton1Click:Connect(function()
 					ToggleButtonInsideUI.Enabled = not ToggleButtonInsideUI.Enabled
 					UpdateCheckMark()
 
