@@ -588,7 +588,7 @@ ButtonsMenuTitle.ZIndex = 2
 			local newToggleThingy = Instance.new("TextButton", newToggle)
 			newToggleThingy.BorderSizePixel = 0
 			newToggleThingy.BackgroundColor3 = Color3.fromRGB(235, 235, 235)
-			newToggleThingy.TextSize = 15
+			newToggleThingy.TextSize = 8
 			newToggleThingy.TextColor3 = Color3.fromRGB(255, 255, 255)
 			newToggleThingy.Size = UDim2.new(0, 15, 0, 15)
 			newToggleThingy.BorderColor3 = Color3.fromRGB(0, 0, 0)
@@ -640,7 +640,8 @@ ButtonsMenuTitle.ZIndex = 2
 					DropdownActualHolder.Name = "HolderReal"
 					DropdownActualHolder.Size = UDim2.new(0, 15, 0, 15)
 					DropdownActualHolder.BackgroundTransparency = 1 
-
+					DropdownActualHolder.ZIndex = 2
+					
 					local DropdownInfo = Instance.new("TextLabel", DropdownActualHolder)
 					DropdownInfo.Name = options.todo
 					DropdownInfo.Size = UDim2.new(0, 15, 0, 15)
@@ -652,6 +653,7 @@ ButtonsMenuTitle.ZIndex = 2
 					DropdownInfo.BackgroundTransparency = 1
 					DropdownInfo.TextXAlignment = Enum.TextXAlignment.Left
 					DropdownInfo.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+					DropdownInfo.ZIndex = 2
 
 					local DropdownHolders = Instance.new("TextButton", DropdownInfo)
 					DropdownHolders.BorderSizePixel = 0
@@ -661,7 +663,8 @@ ButtonsMenuTitle.ZIndex = 2
 					DropdownHolders.Text = options.name
 					DropdownHolders.Position = UDim2.new(0, 75, 0, 0)
 					DropdownHolders.Name = "DropdownHolders"
-
+					DropdownHolders.ZIndex = 2
+					
 					local DropdownMenu = Instance.new("Frame", DropdownHolders)
 					DropdownMenu.BorderSizePixel = 0
 					DropdownMenu.BackgroundColor3 = Color3.fromRGB(250, 250, 250)
@@ -670,6 +673,7 @@ ButtonsMenuTitle.ZIndex = 2
 					DropdownMenu.BorderColor3 = Color3.fromRGB(0, 0, 0)
 					DropdownMenu.Position = UDim2.new(0, 0, 1, 0)
 					DropdownMenu.Name = "DropdownMenu"
+					DropdownMenu.ZIndex = 2
 
 					local DropdownMenuListHolder = Instance.new("UIListLayout", DropdownMenu)
 					DropdownMenuListHolder.SortOrder = Enum.SortOrder.LayoutOrder
@@ -684,7 +688,8 @@ ButtonsMenuTitle.ZIndex = 2
 						DropdownOption.Visible = true
 						DropdownOption.Text = item
 						DropdownOption.Name = item
-
+						DropdownOption.ZIndex = 2
+						
 						DropdownOption.MouseButton1Click:Connect(function()
 							Dropdown.Selected = item
 							DropdownHolders.Text = item
