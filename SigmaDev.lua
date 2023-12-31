@@ -687,10 +687,11 @@ ButtonsMenuTitle.ZIndex = 2
 						DropdownOption.Text = "  " .. item
 						DropdownOption.Name = item
 						DropdownOption.ZIndex = 2
+						DropdownOption.TextXAlignment = Enum.TextXAlignment.Left
 						
 						DropdownOption.MouseButton1Click:Connect(function()
 							Dropdown.Selected = item
-							DropdownHolders.Text = item
+							DropdownHolders.Text = "  " .. item
 							DropdownMenu.Visible = false
 							options.callback(item)
 						end)
