@@ -356,7 +356,7 @@ function Library:createTabs(parentFrame, tabName)
 		
 local ButtonsMenuFrame = Instance.new("Frame", CoreGui.Sigma)
 ButtonsMenuFrame.Name = "Holder"
-ButtonsMenuFrame.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+ButtonsMenuFrame.BackgroundColor3 = Color3.fromRGB(245, 245, 245)
 ButtonsMenuFrame.BorderColor3 = Color3.fromRGB(0, 0, 0)
 ButtonsMenuFrame.BorderSizePixel = 0
 ButtonsMenuFrame.Position = UDim2.new(0.497, -155, 0.521, -158)
@@ -523,7 +523,7 @@ ButtonsMenuTitle.ZIndex = 2
 			UISliderButton.AnchorPoint = Vector2.new(1, 0.5)
 			UISliderButton.Position = UDim2.new(1, 0, 0.5, 0)
 			UISliderButton.Text = ""
-			UISliderButton.BackgroundColor3 = Color3.fromRGB(250, 250, 250)
+			UISliderButton.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
 			UISliderButton.BorderSizePixel = 0
 			UISliderButton.AutoButtonColor = false
 			UISliderButton.ZIndex = 1
@@ -595,7 +595,7 @@ ButtonsMenuTitle.ZIndex = 2
 			newToggleThingy.Text = " "
 			newToggleThingy.ZIndex = 2
 			newToggleThingy.Name = "Checkmark"
-			newToggleThingy.Position = UDim2.new(0, 290, 0, 8)
+			newToggleThingy.Position = UDim2.new(0, 285, 0, 8)
 			newToggleThingy.AutoButtonColor = false
 			newToggleThingy.TextTransparency = 0.250
 				
@@ -651,19 +651,19 @@ ButtonsMenuTitle.ZIndex = 2
 					
 					local DropdownHolders = Instance.new("TextButton", DropdownName)
 					DropdownHolders.BorderSizePixel = 0
-					DropdownHolders.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-					DropdownHolders.Size = UDim2.new(0, 70, 0, 15)
+					DropdownHolders.BackgroundColor3 = Color3.fromRGB(245, 245, 245)
+					DropdownHolders.Size = UDim2.new(0, 75, 0, 15)
 					DropdownHolders.BorderColor3 = Color3.fromRGB(0, 0, 0)
 					DropdownHolders.Text = options.default
-					DropdownHolders.Position = UDim2.new(0, 225, 0, 0)
+					DropdownHolders.Position = UDim2.new(0, 225, 0, 8)
 					DropdownHolders.Name = "DropdownHolder"
 					DropdownHolders.ZIndex = 2
 					DropdownHolders.TextXAlignment = Enum.TextXAlignment.Left
 					
 					local DropdownMenu = Instance.new("Frame", DropdownHolders)
 					DropdownMenu.BorderSizePixel = 0
-					DropdownMenu.BackgroundColor3 = Color3.fromRGB(250, 250, 250)
-					DropdownMenu.Size = UDim2.new(0, 69, 0, 85)
+					DropdownMenu.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+					DropdownMenu.Size = UDim2.new(0, 75, 1, 0)
 					DropdownMenu.Visible = false
 					DropdownMenu.BorderColor3 = Color3.fromRGB(0, 0, 0)
 					DropdownMenu.Position = UDim2.new(0, 0, 1, 0)
@@ -672,7 +672,7 @@ ButtonsMenuTitle.ZIndex = 2
 
 					local DropdownMenuListHolder = Instance.new("UIListLayout", DropdownMenu)
 					DropdownMenuListHolder.SortOrder = Enum.SortOrder.LayoutOrder
-
+				
 					for _, item in ipairs(Dropdown.List) do
 						local DropdownOption = Instance.new("TextButton", DropdownMenu)
 						DropdownOption.BorderSizePixel = 0
@@ -692,8 +692,17 @@ ButtonsMenuTitle.ZIndex = 2
 							options.callback(item)
 						end)
 					end
+						
+				local function ChangeColor()
+					if Dropdown.Enabled then
+						DropdownHolders.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+					else
+						DropdownHolders.BackgroundColor3 = Color3.fromRGB(245, 245, 245)
+						end
+					end
 
 					DropdownHolders.MouseButton1Click:Connect(function() 
+						Dropdown.Enabled = not Dropdown.Enabled
 						DropdownMenu.Visible = not DropdownMenu.Visible
 					end)
 
