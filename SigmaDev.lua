@@ -356,7 +356,7 @@ function Library:createTabs(parentFrame, tabName)
 		
 local ButtonsMenuFrame = Instance.new("Frame", CoreGui.Sigma)
 ButtonsMenuFrame.Name = "Holder"
-ButtonsMenuFrame.BackgroundColor3 = Color3.fromRGB(245, 245, 245)
+ButtonsMenuFrame.BackgroundColor3 = Color3.fromRGB(250, 250, 250)
 ButtonsMenuFrame.BorderColor3 = Color3.fromRGB(0, 0, 0)
 ButtonsMenuFrame.BorderSizePixel = 0
 ButtonsMenuFrame.Position = UDim2.new(0.497, -155, 0.521, -158)
@@ -651,10 +651,10 @@ ButtonsMenuTitle.ZIndex = 2
 					
 					local DropdownHolders = Instance.new("TextButton", DropdownName)
 					DropdownHolders.BorderSizePixel = 0
-					DropdownHolders.BackgroundColor3 = Color3.fromRGB(245, 245, 245)
+					DropdownHolders.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
 					DropdownHolders.Size = UDim2.new(0, 75, 0, 15)
 					DropdownHolders.BorderColor3 = Color3.fromRGB(0, 0, 0)
-					DropdownHolders.Text = options.default
+					DropdownHolders.Text = "  " .. options.default
 					DropdownHolders.Position = UDim2.new(0, 225, 0, 8)
 					DropdownHolders.Name = "DropdownHolder"
 					DropdownHolders.ZIndex = 2
@@ -676,29 +676,22 @@ ButtonsMenuTitle.ZIndex = 2
 					for _, item in ipairs(Dropdown.List) do
 						local DropdownOption = Instance.new("TextButton", DropdownMenu)
 						DropdownOption.BorderSizePixel = 0
-						DropdownOption.BackgroundColor3 = Color3.fromRGB(245, 245, 245)
-						DropdownOption.BackgroundTransparency = 1
+						DropdownOption.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+						DropdownOption.BackgroundTransparency = 0
 						DropdownOption.Size = UDim2.new(0, 70, 0, 15)
+						DropdownOption.TextColor3 = Color3.fromRGB(85, 85, 85)
 						DropdownOption.BorderColor3 = Color3.fromRGB(0, 0, 0)
 						DropdownOption.Visible = true
-						DropdownOption.Text = item
+						DropdownOption.Text = "  " .. item
 						DropdownOption.Name = item
 						DropdownOption.ZIndex = 2
 						
 						DropdownOption.MouseButton1Click:Connect(function()
 							Dropdown.Selected = item
 							DropdownHolders.Text = item
-							DropdownMenu.Visible = false  -- Hide the menu after selecting an option
+							DropdownMenu.Visible = false
 							options.callback(item)
 						end)
-					end
-						
-				local function ChangeColor()
-					if Dropdown.Enabled then
-						DropdownHolders.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-					else
-						DropdownHolders.BackgroundColor3 = Color3.fromRGB(245, 245, 245)
-						end
 					end
 
 					DropdownHolders.MouseButton1Click:Connect(function() 
