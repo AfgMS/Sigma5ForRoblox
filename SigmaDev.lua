@@ -588,13 +588,11 @@ ButtonsMenuTitle.ZIndex = 2
 			local newToggleThingy = Instance.new("TextButton", newToggle)
 			newToggleThingy.BorderSizePixel = 0
 			newToggleThingy.BackgroundColor3 = Color3.fromRGB(235, 235, 235)
-			newToggleThingy.TextXAlignment = Enum.TextXAlignment.Left
-			newToggleThingy.Font = Enum.Font.Roboto
-			newToggleThingy.TextSize = 15.000
+			newToggleThingy.TextSize = 15
 			newToggleThingy.TextColor3 = Color3.fromRGB(255, 255, 255)
 			newToggleThingy.Size = UDim2.new(0, 15, 0, 15)
 			newToggleThingy.BorderColor3 = Color3.fromRGB(0, 0, 0)
-			newToggleThingy.Text = ""
+			newToggleThingy.Text = " "
 			newToggleThingy.ZIndex = 2
 			newToggleThingy.Name = "Checkmark"
 			newToggleThingy.Position = UDim2.new(0, 290, 0, 8)
@@ -607,10 +605,8 @@ ButtonsMenuTitle.ZIndex = 2
 				local function UpdateCheckMark()
 					if ToggleButtonInsideUI.Enabled then
 						Library:tween(newToggleThingy, {BackgroundColor3 = Color3.fromRGB(115, 185, 255)})
-						Library:tween(newToggleThingy, {Text = "✔️"})
 					else
 						Library:tween(newToggleThingy, {BackgroundColor3 = Color3.fromRGB(235, 235, 235)})
-						Library:tween(newToggleThingy, {Text = ""})
 					end
 				end
 
