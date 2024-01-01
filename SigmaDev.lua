@@ -745,10 +745,10 @@ local tab1 = Library:createTabs(CoreGui.Sigma, "Gui")
 local tab2 = Library:createTabs(CoreGui.Sigma, "Combat")
 
 local button1 = tab1:ToggleButton({
-	name = "Hendro",
-	info = "QuACK Quack",
+	name = "ActiveMods",
+	info = "Arraylist goes brrr",
 	callback = function(enabled)
-		print("cum")
+		HolderArrayList.Visible = not HolderArrayList.Visible
 	end
 })
 local SliderStuff = button1:Slider({
@@ -777,6 +777,27 @@ local Dropdown = button1:Dropdown({
 		print("Movement type set to:", selectedItem)
 	end
 })
+local button2 = tab1:ToggleButton({
+	name = "TabGUI",
+	info = "Wtf even is this lmao",
+	callback = function(enabled)
+		print("cum")
+	end
+})
+local button3 = tab1:ToggleButton({
+	name = "Killaura",
+	info = "QuACK Quack",
+	callback = function(enabled)
+		print("cum")
+	end
+})
+local button1 = tab1:ToggleButton({
+	name = "AnticheatResetVL",
+	info = "QuACK Quack",
+	callback = function(enabled)
+		print("cum")
+	end
+})
 local button99 = tab2:ToggleButton({
 	name = "UninjectShit",
 	info = "Click to uninject the Sigma hack.",
@@ -787,31 +808,5 @@ local button99 = tab2:ToggleButton({
 			CoreGui.SigmaVisualStuff:Destroy()
 			print("Destroyed Notif")
 		end
-	end
-})
-local SliderStuff = button99:Slider({
-	title = "Walkspeed",
-	min = 10,
-	max = 200,
-	default = 5,
-	callback = function(val)
-		print("" ..val)
-	end
-})
-local ToggleInsideUI1 = button99:ToggleButtonInsideUI({
-	name = "MyFirne",
-	callback = function(enabled)
-		if enabled then
-			print("hello")
-		end
-	end
-})
-local Dropdown = button99:Dropdown({
-	name = "Yes",
-	todo = "E",
-	list = {"Walk", "Run", "Sprint"},
-	Default = "Walk",
-	callback = function(selectedItem)
-		print("Movement type set to:", selectedItem)
 	end
 })
