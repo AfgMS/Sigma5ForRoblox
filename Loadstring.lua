@@ -1,7 +1,13 @@
 local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/AfgMS/Simga345/main/SigmaDev.lua", true))()
+local CoreGui = game:WaitForChild("CoreGui")
 
 Library:createScreenGui()
 
+local SigmaCheck = CoreGui:FindFirstChild("Sigma")
+if not SigmaCheck then
+    print("Error: Sigma ScreenGui not found in CoreGui.")
+    return
+end
 createnotification("Sigma", "Welcome to Sigma, Press V", 1, true)
 
 local tab1 = Library:createTabs(CoreGui.Sigma, "Gui")
