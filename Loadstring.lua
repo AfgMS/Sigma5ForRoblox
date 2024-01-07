@@ -7,16 +7,22 @@ local function LibraryCheck()
     
     if not SigmaCheck then
         print("Error: Sigma ScreenGui not found in CoreGui.")
+    elseif SigmaCheck then
+        print("Debug: SigmaCheck Found")
     elseif not SigmaVisualCheck then
         print("Error: SigmaVisualStuff ScreenGui not found in CoreGui.")
-    else
+    elseif SigmaVisualCheck then
+        print("Debug: SigmaVisualCheck Found")
         local ArraylistCheck = SigmaVisualCheck:FindFirstChild("ArrayListHolder")
         if not ArraylistCheck then
-            print("Error: Arraylist Holder not found in SigmaVisualStuff.")
+            print("Error: ArrayList Holder not found in SigmaVisualStuff.")
+        elseif ArraylistCheck then
+            print("Debug: ArrayList Found")
             return
         end
     end
 end
+
 
 Library:createScreenGui()
 LibraryCheck()
@@ -25,11 +31,13 @@ createnotification("Sigma", "Welcome to Sigma, Press V", 1, true)
 local tab1 = Library:createTabs(CoreGui.Sigma, "Gui")
 local tab2 = Library:createTabs(CoreGui.Sigma, "Combat")
 
+--ActiveMods
+local ArraylistHolder = SigmaVisualStuff.ArrayListHolder
 local toggleButton1 = tab1:ToggleButton({
     name = "ActiveMods",
     info = "Arraylist goes brrr",
     callback = function(enabled)
-        SigmaVisualStuff.ArrayListHolder.Visible = not SigmaVisualStuff.ArrayListHolder.Visible
+        ArraylistHolder.Visible = not ArraylistHolder.Visible
     end
 })
 
