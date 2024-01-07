@@ -1,23 +1,19 @@
 local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/AfgMS/Simga345/main/SigmaDev.lua", true))()
 local CoreGui = game:WaitForChild("CoreGui")
 
+
 local function LibraryCheck()
     local SigmaCheck = CoreGui:FindFirstChild("Sigma")
     local SigmaVisualCheck = CoreGui:FindFirstChild("SigmaVisualStuff")
     
     if not SigmaCheck then
         print("Error: Sigma ScreenGui not found in CoreGui.")
-    elseif SigmaCheck then
-        print("Debug: SigmaCheck Found")
     elseif not SigmaVisualCheck then
         print("Error: SigmaVisualStuff ScreenGui not found in CoreGui.")
-    elseif SigmaVisualCheck then
-        print("Debug: SigmaVisualCheck Found")
+    else
         local ArraylistCheck = SigmaVisualCheck:FindFirstChild("ArrayListHolder")
         if not ArraylistCheck then
-            print("Error: ArrayList Holder not found in SigmaVisualStuff.")
-        elseif ArraylistCheck then
-            print("Debug: ArrayList Found")
+            print("Error: Arraylist Holder not found in SigmaVisualStuff.")
             return
         end
     end
