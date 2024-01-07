@@ -240,7 +240,7 @@ FrameBlur.Size = UDim2.new(1, 0, 1, 0)
 FrameBlur.ZIndex = 1
 FrameBlur.Visible = false
 FrameBlur.BackgroundTransparency = 1
-FrameBlur.Image = "rbxassetid://7733964719"
+FrameBlur.Image = "rbxassetid://15905182112"
 
 function Library:createTabs(parentFrame, tabName)
 	local TAB = {}
