@@ -231,7 +231,7 @@ function Library:createScreenGui()
 	return screenGui
 end
 
-local FrameBlur = Instance.new("ImageLabel", CoreGui.Sigma)
+local FrameBlur = Instance.new("ImageLabel", ScreenGuitwo)
 FrameBlur.Name = "BlurHolder"
 FrameBlur.BorderColor3 = Color3.fromRGB(0, 0, 0)
 FrameBlur.BorderSizePixel = 0
