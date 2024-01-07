@@ -190,7 +190,7 @@ HolderArrayList.Position = UDim2.new(1, -210, 0, 0)
 HolderArrayList.Parent = ScreenGuitwo
 
 local TheListThingy = Instance.new("UIListLayout")
-TheListThingy.Padding = UDim.new(0, -15)
+TheListThingy.Padding = UDim.new(0, -10)
 TheListThingy.SortOrder = Enum.SortOrder.LayoutOrder
 TheListThingy.Parent = HolderArrayList
 
@@ -204,7 +204,7 @@ local function AddArrayList(name)
 	ModulesName.TextSize = 18.5
 	ModulesName.Text = name
 	ModulesName.TextColor3 = Color3.fromRGB(255, 255, 255)
-	ModulesName.Size = UDim2.new(0, 195, 0, 30)
+	ModulesName.Size = UDim2.new(1, 0, 0, 30)
 	ModulesName.BorderColor3 = Color3.fromRGB(0, 0, 0)
 
 	ModulesName.LayoutOrder = -#name
