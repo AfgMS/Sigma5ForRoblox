@@ -4,10 +4,12 @@ local CoreGui = game:WaitForChild("CoreGui")
 Library:createScreenGui()
 
 local SigmaCheck = CoreGui:FindFirstChild("Sigma")
-if not SigmaCheck then
+local SigmaVisualCheck = CoreGui:FindFirstChild("SigmaVisualStuff")
+if not SigmaCheck or not SigmaVisualCheck then
     print("Error: Sigma ScreenGui not found in CoreGui.")
     return
 end
+
 createnotification("Sigma", "Welcome to Sigma, Press V", 1, true)
 
 local tab1 = Library:createTabs(CoreGui.Sigma, "Gui")
@@ -17,7 +19,7 @@ local toggleButton1 = tab1:ToggleButton({
     name = "ActiveMods",
     info = "Arraylist goes brrr",
     callback = function(enabled)
-        HolderArrayList.Visible = not HolderArrayList.Visible
+        SigmaVisualStuff.ArrayListHolder.Visible = not ArrayListHolder.Visible
     end
 })
 
@@ -26,8 +28,8 @@ local sliderStuff = toggleButton1:Slider({
     min = 5,
     max = 10,
     default = 5,
-    callback = function(val)
-        game.Players.LocalPlayer.Character.Humanoid.WalkSpeed = val
+    callback = function(value)
+        print("current value rn is" .. value)
     end
 })
 
