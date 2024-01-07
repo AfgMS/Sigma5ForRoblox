@@ -533,25 +533,29 @@ ButtonsMenuTitle.ZIndex = 2
 			local UICorner = Instance.new("UICorner", UISliderButton)
 			UICorner.CornerRadius = UDim.new(1, 0)
 
-    local function Update(input)
-        MouseDown = true
-        repeat
-            task.wait()
+local function Update(input)
+    MouseDown = true
+    repeat
+        task.wait()
 
-            local inputPosition
-            if input.UserInputType == Enum.UserInputType.MouseMovement then
-                inputPosition = input.Position
-            elseif input.UserInputType == Enum.UserInputType.Touch then
-                inputPosition = input.Position
-            end
+        local inputPosition
+        if input.UserInputType == Enum.UserInputType.MouseMovement then
+            inputPosition = input.Position
+        elseif input.UserInputType == Enum.UserInputType.Touch then
+            inputPosition = input.Position
+        end
 
-            if inputPosition then
-                Percent = math.clamp((inputPosition.X - SliderBack.AbsolutePosition.X) / SliderBack.AbsoluteSize.X, 0, 1)
-                SliderValueLabel.Text = math.round(Percent * 100)
-                SliderFill.Size = UDim2.fromScale(Percent, 1)
-            end
-        until not MouseDown
-    end
+        if inputPosition then
+            Percent = math.clamp((inputPosition.X - SliderBack.AbsolutePosition.X) / SliderBack.AbsoluteSize.X, 0, 1)
+            local sliderValue = math.round(Percent * 100)
+            SliderValueLabel.Text = sliderValue
+            SliderFill.Size = UDim2.fromScale(Percent, 1)
+
+            options.callback(sliderValue)
+        end
+    until not MouseDown
+end
+
 
     UISliderButton.MouseButton1Down:Connect(function()
         Update(game:GetService("UserInputService").InputChanged:Wait())
