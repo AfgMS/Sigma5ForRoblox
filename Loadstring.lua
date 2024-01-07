@@ -1,15 +1,25 @@
 local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/AfgMS/Simga345/main/SigmaDev.lua", true))()
 local CoreGui = game:WaitForChild("CoreGui")
 
-Library:createScreenGui()
-
-local SigmaCheck = CoreGui:FindFirstChild("Sigma")
-local SigmaVisualCheck = CoreGui:FindFirstChild("SigmaVisualStuff")
-if not SigmaCheck or not SigmaVisualCheck then
-    print("Error: Sigma ScreenGui not found in CoreGui.")
-    return
+local function LibraryCheck()
+    local SigmaCheck = CoreGui:FindFirstChild("Sigma")
+    local SigmaVisualCheck = CoreGui:FindFirstChild("SigmaVisualStuff")
+    
+    if not SigmaCheck then
+        print("Error: Sigma ScreenGui not found in CoreGui.")
+    elseif not SigmaVisualCheck then
+        print("Error: SigmaVisualStuff ScreenGui not found in CoreGui.")
+    else
+        local ArraylistCheck = SigmaVisualCheck:FindFirstChild("ArrayListHolder")
+        if not ArraylistCheck then
+            print("Error: Arraylist Holder not found in SigmaVisualStuff.")
+            return
+        end
+    end
 end
 
+Library:createScreenGui()
+LibraryCheck()
 createnotification("Sigma", "Welcome to Sigma, Press V", 1, true)
 
 local tab1 = Library:createTabs(CoreGui.Sigma, "Gui")
@@ -19,7 +29,7 @@ local toggleButton1 = tab1:ToggleButton({
     name = "ActiveMods",
     info = "Arraylist goes brrr",
     callback = function(enabled)
-        SigmaVisualStuff.ArrayListHolder.Visible = not ArrayListHolder.Visible
+        SigmaVisualStuff.ArrayListHolder.Visible = not SigmaVisualStuff.ArrayListHolder.Visible
     end
 })
 
