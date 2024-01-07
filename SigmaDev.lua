@@ -231,6 +231,17 @@ function Library:createScreenGui()
 	return screenGui
 end
 
+local FrameBlur = Instance.new("ImageLabel", CoreGui.Sigma)
+FrameBlur.Name = "BlurHolder"
+FrameBlur.BorderColor3 = Color3.fromRGB(0, 0, 0)
+FrameBlur.BorderSizePixel = 0
+FrameBlur.Position = UDim2.new(0, 0, 0, 0)
+FrameBlur.Size = UDim2.new(1, 0, 1, 0)
+FrameBlur.ZIndex = 1
+FrameBlur.Visible = false
+FrameBlur.BackgroundTransparency = 1
+FrameBlur.Image = "rbxassetid://7733964719"
+
 function Library:createTabs(parentFrame, tabName)
 	local TAB = {}
 	TAB.Buttons = {}
@@ -293,6 +304,7 @@ function Library:createTabs(parentFrame, tabName)
 			if input.KeyCode == Enum.KeyCode.V and not gameProcessedEvent then
 				TAB.Tabs.Visible = not TAB.Tabs.Visible
 				TAB.ScrollingPart.Visible = not TAB.ScrollingPart.Visible
+				FrameBlur.Visible = not FrameBlur.Visible
 			end
 		end)
 	
