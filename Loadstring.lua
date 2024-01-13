@@ -3,7 +3,6 @@ local CoreGui = game:WaitForChild("CoreGui")
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local localPlayer = game.Players.LocalPlayer
-local RunService = game:GetService("RunService")
 
 --Remote
 local KARemote = ReplicatedStorage.rbxts_include.node_modules["@rbxts"].net.out._NetManaged.SwordHit
@@ -51,28 +50,20 @@ local function isAlive(localPlayer)
 end
 
 local function findNearestLivingPlayer()
-    local nearestPlayer
-    local nearestDistance = math.huge
+  local nearestPlayer
+  local nearestDistance = math.huge
 
-    while wait(0.28) do
-        for _, player in ipairs(game.Players:GetPlayers()) do
-            if player ~= localPlayer and isAlive(player) then
-                local character = player.Character
-                if character and character:IsA("Model") and character:FindFirstChild("HumanoidRootPart") then
-                    local humanoidRootPart = character.HumanoidRootPart
-                    if humanoidRootPart:IsA("BasePart") then
-                        local distance = (humanoidRootPart.Position - localPlayer.Character.HumanoidRootPart.Position).Magnitude
-                        if distance < nearestDistance then
-                            nearestPlayer = player
-                            nearestDistance = distance
-                        end
-                    end
-                end
-            end
-        end
+  for _, player in ipairs(game.Players:GetPlayers()) do
+    if player ~= localPlayer and isAlive(player) then
+      local distance = (player.Character.HumanoidRootPart.Position - localPlayer.Character.HumanoidRootPart.Position).Magnitude
+      if distance < nearestDistance then
+        nearestPlayer = player
+        nearestDistance = distance
+      end
     end
+  end
 
-    return nearestPlayer
+  return nearestPlayer
 end
 
 local function attackValue(vec)
@@ -102,29 +93,27 @@ local function getBestSword()
   return bestsword
 end
 
+local target = findNearestLivingPlayer(20)
 local cam = game.Workspace.CurrentCamera
+local mouse = Ray.new(cam.CFrame.Position, target.Character.HumanoidRootPart.Position).Unit.Direction
+local AttackDelay = 0.03
+
 local function KillAuraAttack()
-    local target = findNearestLivingPlayer()
-
-    if target and target.Character then
-        local mouse = Ray.new(game.Workspace.CurrentCamera.CFrame.Position, target.Character.HumanoidRootPart.Position).Unit.Direction
-
-        KARemote:FireServer({
-            ["entityInstance"] = target.Character,
-            ["chargedAttack"] = {
-                ["chargeRatio"] = 1
-            },
-            ["validate"] = {
-                ["raycast"] = {
-                    ["cursorDirection"] = attackValue(mouse),
-                    ["cameraPosition"] = attackValue(target.Character.HumanoidRootPart.Position),
-                },
-                ["selfPosition"] = attackValue(getcloserpos(localPlayer.Character.HumanoidRootPart.Position, target.Character.HumanoidRootPart.Position, 2)),
-                ["targetPosition"] = attackValue(target.Character.HumanoidRootPart.Position),
-            },
-            ["weapon"] = getBestSword()
-        })
-    end
+  KARemote:FireServer({
+    ["entityInstance"] = target.Character,
+    ["chargedAttack"] = {
+      ["chargeRatio"] = 1
+    },
+    ["validate"] = {
+      ["raycast"] = {
+        ["cursorDirection"] = attackValue(mouse),
+        ["cameraPosition"] = attackValue(target.Character.HumanoidRootPart.Position),
+      },
+      ["selfPosition"] = attackValue(getcloserpos(localPlayer.Character.HumanoidRootPart.Position, target.Character.HumanoidRootPart.Position, 2)),
+      ["targetPosition"] = attackValue(target.Character.HumanoidRootPart.Position),
+    },
+    ["weapon"] = getBestSword()
+  })
 end
 
 local function KALoop()
