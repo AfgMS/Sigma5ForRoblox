@@ -205,6 +205,7 @@ local function AddArrayList(name)
 	ModulesName.Text = name
 	ModulesName.TextColor3 = Color3.fromRGB(255, 255, 255)
 	ModulesName.Size = UDim2.new(1, 0, 0, 30)
+	ModulesName.ZIndex = 5
 	ModulesName.BorderColor3 = Color3.fromRGB(0, 0, 0)
 
 	ModulesName.LayoutOrder = -#name
