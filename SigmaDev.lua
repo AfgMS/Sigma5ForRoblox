@@ -242,7 +242,7 @@ function Library:createTabs(parentFrame, tabName)
 	TAB.Tabs.Size = UDim2.new(0, 133, 0, 40)
 	TAB.Tabs.BorderColor3 = Color3.fromRGB(0, 0, 0)
 	TAB.Tabs.ZIndex = 3
-	TAB.Tabs.Position = UDim2.new(0, 25, 0, 15)
+	TAB.Tabs.Position = UDim2.new(0, 25, 0, 25)
 	TAB.Tabs.Name = "Tabs"
 	TAB.Tabs.Visible = false
 	
@@ -292,14 +292,14 @@ function Library:createTabs(parentFrame, tabName)
 	local MobileSupportUI = Instance.new("TextButton", parentFrame)
 	MobileSupportUI.BorderSizePixel = 0
 	MobileSupportUI.BackgroundColor3 = Color3.fromRGB(235, 235, 235)
-	MobileSupportUI.TextSize = 5
-	MobileSupportUI.TextColor3 = Color3.fromRGB(255, 255, 255)
+	MobileSupportUI.TextSize = 8
+	MobileSupportUI.TextColor3 = Color3.fromRGB(0, 0, 0)
 	MobileSupportUI.Size = UDim2.new(0, 23, 0, 23)
 	MobileSupportUI.BorderColor3 = Color3.fromRGB(0, 0, 0)
 	MobileSupportUI.Text = "+"
 	MobileSupportUI.ZIndex = 2
 	MobileSupportUI.Name = "MobileOpenUI"
-	MobileSupportUI.Position = UDim2.new(0, 0, 0, 0)
+	MobileSupportUI.Position = UDim2.new(0, 18, 0, 8)
 	MobileSupportUI.AutoButtonColor = false
 	MobileSupportUI.TextTransparency = 0.250
 
