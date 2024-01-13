@@ -1,6 +1,24 @@
 local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/AfgMS/Simga345/main/SigmaDev.lua", true))()
 local CoreGui = game:WaitForChild("CoreGui")
+local Players = game:GetService("Players")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local RunService = game:GetService("RunService")
+local localPlayer = game.Players.LocalPlayer
 
+--Remote
+local KARemote = ReplicatedStorage.rbxts_include.node_modules["@rbxts"].net.out._NetManaged.SwordHit
+
+--Stuff
+local SwordInfo = {
+    [1] = { Name = "wood_sword", Display = "Wood Sword", Rank = 1 },
+    [2] = { Name = "stone_sword", Display = "Stone Sword", Rank = 2 },
+    [3] = { Name = "iron_sword", Display = "Iron Sword", Rank = 3 },
+    [4] = { Name = "diamond_sword", Display = "Diamond Sword", Rank = 4 },
+    [5] = { Name = "emerald_sword", Display = "Emerald Sword", Rank = 5 },
+    [6] = { Name = "rageblade", Display = "Rage Blade", Rank = 6 },
+}
+
+--Function
 local function LibraryCheck()
     local SigmaCheck = CoreGui:FindFirstChild("Sigma")
     local SigmaVisualCheck = CoreGui:FindFirstChild("SigmaVisualStuff")
@@ -23,81 +41,21 @@ local function LibraryCheck()
     end
 end
 
+local function isAlive(localPlayer)
+    if not localPlayer or not localPlayer.Character or not localPlayer.Character:FindFirstChild("Head") or not localPlayer.Character:FindFirstChild("Humanoid") then
+        warn("Bruh")
+        return false
+    end
 
-Library:createScreenGui()
-LibraryCheck()
-createnotification("Sigma", "Welcome to Sigma, Press V", 1, true)
+    return true
+end
 
-local tab1 = Library:createTabs(CoreGui.Sigma, "Gui")
-local tab2 = Library:createTabs(CoreGui.Sigma, "Combat")
-
---ActiveMods
-local toggleButton1 = tab1:ToggleButton({
-    name = "ActiveMods",
-    info = "Arraylist goes brrr",
-    callback = function(enabled)
-            CoreGui.SigmaVisualStuff.ArrayListHolder.Visible = not CoreGui.SigmaVisualStuff.ArrayListHolder.Visible
-    end
-})
-local sliderStuff = toggleButton1:Slider({
-    title = "Dugong",
-    min = 5,
-    max = 10,
-    default = 5,
-    callback = function(value)
-        print("current value rn is" .. value)
-    end
-})
-local toggleInsideUI1 = toggleButton1:ToggleButtonInsideUI({
-    name = "MyFirne",
-    callback = function(enabled)
-        if enabled then
-            print("hello")
-        end
-    end
-})
-local dropdown = toggleButton1:Dropdown({
-    name = "Testing",
-    default = "Test",
-    list = {"Walk", "Run", "Sprint"},
-    callback = function(selectedItem)
-        print("Movement type set to:", selectedItem)
-    end
-})
-local tabGUIButton = tab1:ToggleButton({
-    name = "TabGUI",
-    info = "Wtf even is this lmao",
-    callback = function(enabled)
-        print("cum")
-    end
-})
-local anticheatResetButton = tab1:ToggleButton({
-    name = "AnticheatResetVL",
-    info = "QuACK Quack",
-    callback = function(enabled)
-        print("cum")
-    end
-})
-
-local uninjectButton = tab2:ToggleButton({
-    name = "UninjectShit",
-    info = "Click to uninject the Sigma hack.",
-    callback = function(enabled)
-        if enabled then
-            CoreGui.Sigma:Destroy()
-            print("Destroyed Main")
-            CoreGui.SigmaVisualStuff:Destroy()
-            print("Destroyed Notif")
-        end
-    end
-})
---Rotate
 local function findNearestLivingPlayer()
   local nearestPlayer
   local nearestDistance = math.huge
 
   for _, player in ipairs(game.Players:GetPlayers()) do
-    if player ~= localPlayer and isalive(player) then
+    if player ~= localPlayer and isAlive(player) then
       local distance = (player.Character.HumanoidRootPart.Position - localPlayer.Character.HumanoidRootPart.Position).Magnitude
       if distance < nearestDistance then
         nearestPlayer = player
@@ -113,37 +71,130 @@ local function attackValue(vec)
   return { value = vec }
 end
 
-function getcloserpos(pos1, pos2, amount)
+local function getcloserpos(pos1, pos2, amount)
   local newPos = (pos2 - pos1).Unit * math.min(amount, (pos2 - pos1).Magnitude) + pos1
   return newPos
 end
 
-isRotating = false
-local RotateStuff = tab2:ToggleButton({
-    name = "Rotate",
-    info = "Honk Rotate",
+local function getBestSword()
+    local bestSword = nil
+    local bestRank = 0
+
+    for _, sword in pairs(localPlayer.Character.InventoryFolder:GetChildren()) do
+        local swordName = sword.Name
+
+        if swordName:match("sword") or swordName:match("blade") then
+            for _, data in pairs(SwordInfo) do
+                if data.Name == swordName and bestRank <= data.Rank then
+                    bestRank = data.Rank
+                    bestSword = sword
+                end
+            end
+        end
+    end
+
+    return bestSword
+end
+
+local target = findNearestLivingPlayer(20)
+local cam = game.Workspace.CurrentCamera
+local mouse = Ray.new(cam.CFrame.Position, target.Character.HumanoidRootPart.Position).Unit.Direction
+
+local function KillAuraAttack()
+  KARemote:FireServer({
+    ["entityInstance"] = target.Character,
+    ["chargedAttack"] = {
+      ["chargeRatio"] = 1
+    },
+    ["validate"] = {
+      ["raycast"] = {
+        ["cursorDirection"] = attackValue(mouse),
+        ["cameraPosition"] = attackValue(target.Character.HumanoidRootPart.Position),
+      },
+      ["selfPosition"] = attackValue(getcloserpos(localPlayer.Character.HumanoidRootPart.Position, target.Character.HumanoidRootPart.Position, 2)),
+      ["targetPosition"] = attackValue(target.Character.HumanoidRootPart.Position),
+    },
+    ["weapon"] = getBestSword()
+  })
+end
+
+
+--SigmaUI
+Library:createScreenGui()
+LibraryCheck()
+createnotification("Sigma", "Welcome to Sigma, Press V", 1, true)
+
+local tab1 = Library:createTabs(CoreGui.Sigma, "Gui")
+local tab2 = Library:createTabs(CoreGui.Sigma, "Combat")
+
+--ActiveMods
+local ActiveMods = tab1:ToggleButton({
+    name = "ActiveMods",
+    info = "Arraylist goes brrr",
+    callback = function(enabled)
+            CoreGui.SigmaVisualStuff.ArrayListHolder.Visible = not CoreGui.SigmaVisualStuff.ArrayListHolder.Visible
+    end
+})
+local sliderStuff = ActiveMods:Slider({
+    title = "Dugong",
+    min = 5,
+    max = 10,
+    default = 5,
+    callback = function(value)
+        print("current value rn is" .. value)
+    end
+})
+local toggleInsideUI1 = ActiveMods:ToggleButtonInsideUI({
+    name = "MyFirne",
     callback = function(enabled)
         if enabled then
-            local function rotateToNearestPlayer()
-                isRotating = true
-                while enabled and isRotating do
-                    local nearestPlayer = findNearestLivingPlayer()
-                    if nearestPlayer then
-                        local direction = (nearestPlayer.Character.HumanoidRootPart.Position - localPlayer.Character.HumanoidRootPart.Position).Unit
-                        direction = Vector3.new(direction.X, 0, direction.Z)
-                        local rotation = CFrame.new(Vector3.new(), direction)
-                        local currentCFrame = localPlayer.Character.HumanoidRootPart.CFrame
-                        local newCFrame = CFrame.new(currentCFrame.Position) * rotation
-                        localPlayer.Character:SetPrimaryPartCFrame(newCFrame)
-                    end
-                    task.wait(0.1)
-                end
-                isRotating = false
-            end
+            print("hello")
+        end
+    end
+})
+local dropdown = ActiveMods:Dropdown({
+    name = "Testing",
+    default = "Test",
+    list = {"Walk", "Run", "Sprint"},
+    callback = function(selectedItem)
+        print("Movement type set to:", selectedItem)
+    end
+})
 
-            spawn(rotateToNearestPlayer)
-        else
-            isRotating = false
+--Uninject
+local Uninject = tab1:ToggleButton({
+    name = "UninjectTest",
+    info = "Fuck Sigma",
+    callback = function(enabled)
+        if enabled then
+            CoreGui.Sigma:Destroy()
+            print("Destroyed Main")
+            CoreGui.SigmaVisualStuff:Destroy()
+            print("Destroyed Notif")
+        end
+    end
+})
+
+--KillAura
+local AttackDelay = 0.03
+
+local KillAura = tab2:ToggleButton({
+    name = "KillAura",
+    info = "KillAura Testing",
+    callback = function(enabled)
+        if enabled then
+                AttackDelay = 0.03
+                if localPlayer.Character and isAlive(localPlayer) then
+                    local function KALoop()
+                    local target = findNearestLivingPlayer(20)
+            
+                    if target and target.Character then
+                            while task.wait(AttackDelay) do
+                                KillAuraAttack()
+                    end
+                    KALoop()
+            else
+                    AttackDelay = 86400
         end
     end
 })
