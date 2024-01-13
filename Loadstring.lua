@@ -57,11 +57,14 @@ local function findNearestLivingPlayer()
     for _, player in ipairs(game.Players:GetPlayers()) do
         if player ~= localPlayer and isAlive(player) then
             local character = player.Character
-            if character and character:FindFirstChild("HumanoidRootPart") then
-                local distance = (character.HumanoidRootPart.Position - localPlayer.Character.HumanoidRootPart.Position).Magnitude
-                if distance < nearestDistance then
-                    nearestPlayer = player
-                    nearestDistance = distance
+            if character and character:IsA("Model") and character:FindFirstChild("HumanoidRootPart") then
+                local humanoidRootPart = character.HumanoidRootPart
+                if humanoidRootPart:IsA("BasePart") then
+                    local distance = (humanoidRootPart.Position - localPlayer.Character.HumanoidRootPart.Position).Magnitude
+                    if distance < nearestDistance then
+                        nearestPlayer = player
+                        nearestDistance = distance
+                    end
                 end
             end
         end
