@@ -242,7 +242,7 @@ function Library:createTabs(parentFrame, tabName)
 	TAB.Tabs.Size = UDim2.new(0, 133, 0, 40)
 	TAB.Tabs.BorderColor3 = Color3.fromRGB(0, 0, 0)
 	TAB.Tabs.ZIndex = 3
-	TAB.Tabs.Position = UDim2.new(0, 25, 0, 25)
+	TAB.Tabs.Position = UDim2.new(0, 25, 0, 10)
 	TAB.Tabs.Name = "Tabs"
 	TAB.Tabs.Visible = false
 	
@@ -302,12 +302,19 @@ function Library:createTabs(parentFrame, tabName)
 	MobileSupportUI.Position = UDim2.new(0, 18, 0, 8)
 	MobileSupportUI.AutoButtonColor = false
 	MobileSupportUI.TextTransparency = 0.250
+	
+	MobileSupportUI.MouseButton1Click:Connect(function()
+	for _, tab in pairs(parentFrame:GetChildren()) do
+        if tab.Name == "Tabs" and tab:IsA("Frame") then
+            tab.Visible = not tab.Visible
+        end
+    end
+end)
 
 		game:GetService("UserInputService").InputBegan:Connect(function(input, gameProcessedEvent)
 			if input.KeyCode == Enum.KeyCode.V and not gameProcessedEvent then
 				TAB.Tabs.Visible = not TAB.Tabs.Visible
 				TAB.ScrollingPart.Visible = not TAB.ScrollingPart.Visible
-				FrameBlur.Visible = not FrameBlur.Visible
 			end
 		end)
 	
