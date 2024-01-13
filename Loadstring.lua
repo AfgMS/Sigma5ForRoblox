@@ -91,6 +91,33 @@ local uninjectButton = tab2:ToggleButton({
         end
     end
 })
+--Rotate
+local function findNearestLivingPlayer()
+  local nearestPlayer
+  local nearestDistance = math.huge
+
+  for _, player in ipairs(game.Players:GetPlayers()) do
+    if player ~= localPlayer and isalive(player) then
+      local distance = (player.Character.HumanoidRootPart.Position - localPlayer.Character.HumanoidRootPart.Position).Magnitude
+      if distance < nearestDistance then
+        nearestPlayer = player
+        nearestDistance = distance
+      end
+    end
+  end
+
+  return nearestPlayer
+end
+
+local function attackValue(vec)
+  return { value = vec }
+end
+
+function getcloserpos(pos1, pos2, amount)
+  local newPos = (pos2 - pos1).Unit * math.min(amount, (pos2 - pos1).Magnitude) + pos1
+  return newPos
+end
+
 isRotating = false
 local RotateStuff = tab2:ToggleButton({
     name = "Rotate",
