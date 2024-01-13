@@ -304,12 +304,16 @@ function Library:createTabs(parentFrame, tabName)
 	MobileSupportUI.TextTransparency = 0.250
 	
 	MobileSupportUI.MouseButton1Click:Connect(function()
-	for _, tab in pairs(parentFrame:GetChildren()) do
-        if tab.Name == "Tabs" and tab:IsA("Frame") then
-            tab.Visible = not tab.Visible
-        end
-    end
-end)
+		for _, tab in pairs(parentFrame:GetChildren()) do
+		if tab.Name == "Tabs" and tab:IsA("Frame") then
+				tab.Visible = not tab.Visible
+				if tab.ScrollingPart then
+					tab.ScrollingPart.Visible = not tab.ScrollingPart.Visible
+				end
+			end
+		end
+	end)
+
 
 		game:GetService("UserInputService").InputBegan:Connect(function(input, gameProcessedEvent)
 			if input.KeyCode == Enum.KeyCode.V and not gameProcessedEvent then
