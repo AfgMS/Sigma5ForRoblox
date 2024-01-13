@@ -99,6 +99,7 @@ end
 local target = findNearestLivingPlayer(20)
 local cam = game.Workspace.CurrentCamera
 local mouse = Ray.new(cam.CFrame.Position, target.Character.HumanoidRootPart.Position).Unit.Direction
+local AttackDelay = 0.03
 
 local function KillAuraAttack()
   KARemote:FireServer({
@@ -118,6 +119,14 @@ local function KillAuraAttack()
   })
 end
 
+local function KALoop()
+    local target = findNearestLivingPlayer(20)
+    if target and target.Character then
+        while task.wait(AttackDelay) do
+            KillAuraAttack()
+        end
+    end
+end
 
 --SigmaUI
 Library:createScreenGui()
@@ -176,8 +185,6 @@ local Uninject = tab1:ToggleButton({
 })
 
 --KillAura
-local AttackDelay = 0.03
-
 local KillAura = tab2:ToggleButton({
     name = "KillAura",
     info = "KillAura Testing",
@@ -185,19 +192,9 @@ local KillAura = tab2:ToggleButton({
         if enabled then
             AttackDelay = 0.03
             if localPlayer.Character and isAlive(localPlayer) then
-                local function KALoop()
-                    local target = findNearestLivingPlayer(20)
-
-                    if target and target.Character then
-                        while wait(AttackDelay) do
-                            KillAuraAttack()
-                        end
-                    else
-                        AttackDelay = 86400
-                    end
-                end
-                KALoop()
-            end
+        KALoop()
+    else
+        AttackDelay = 86400
         end
     end
 })
