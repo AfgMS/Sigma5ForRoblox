@@ -76,23 +76,21 @@ local function getcloserpos(pos1, pos2, amount)
 end
 
 local function getBestSword()
-    local bestSword = nil
-    local bestRank = 0
-
-    for _, sword in pairs(localPlayer.Character.InventoryFolder:GetChildren()) do
-        local swordName = sword.Name
-
-        if swordName:match("sword") or swordName:match("blade") then
-            for _, data in pairs(SwordInfo) do
-                if data.Name == swordName and bestRank <= data.Rank then
-                    bestRank = data.Rank
-                    bestSword = sword
-                end
-            end
+  local bestsword = nil
+  local bestrank = 0
+  for i, v in pairs(localPlayer.Character.InventoryFolder.Value:GetChildren()) do
+    if v.Name:match("sword") or v.Name:match("blade") then
+      for _, data in pairs(SwordInfo) do
+        if data["Name"] == v.Name then
+          if bestrank <= data["Rank"] then
+            bestrank = data["Rank"]
+            bestsword = v
+          end
         end
+      end
     end
-
-    return bestSword
+  end
+  return bestsword
 end
 
 local target = findNearestLivingPlayer(20)
