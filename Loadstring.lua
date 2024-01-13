@@ -93,7 +93,7 @@ local function getBestSword()
   return bestsword
 end
 
-local target = findNearestLivingPlayer(20)
+local target = findNearestLivingPlayer(23)
 local cam = game.Workspace.CurrentCamera
 local mouse = Ray.new(cam.CFrame.Position, target.Character.HumanoidRootPart.Position).Unit.Direction
 local AttackDelay = 0.03
@@ -117,7 +117,7 @@ local function KillAuraAttack()
 end
 
 local function KALoop()
-    local target = findNearestLivingPlayer(20)
+    local target = findNearestLivingPlayer(23)
     if target and target.Character then
         while wait(AttackDelay) do
             KillAuraAttack()
