@@ -289,6 +289,20 @@ function Library:createTabs(parentFrame, tabName)
 	local UIListLayout = Instance.new("UIListLayout", TAB.ScrollingModules)
 	UIListLayout.SortOrder = Enum.SortOrder.LayoutOrder
 
+	local MobileSupportUI = Instance.new("TextButton", parentFrame)
+	MobileSupportUI.BorderSizePixel = 0
+	MobileSupportUI.BackgroundColor3 = Color3.fromRGB(235, 235, 235)
+	MobileSupportUI.TextSize = 5
+	MobileSupportUI.TextColor3 = Color3.fromRGB(255, 255, 255)
+	MobileSupportUI.Size = UDim2.new(0, 23, 0, 23)
+	MobileSupportUI.BorderColor3 = Color3.fromRGB(0, 0, 0)
+	MobileSupportUI.Text = "+"
+	MobileSupportUI.ZIndex = 2
+	MobileSupportUI.Name = "MobileOpenUI"
+	MobileSupportUI.Position = UDim2.new(0, 0, 0, 0)
+	MobileSupportUI.AutoButtonColor = false
+	MobileSupportUI.TextTransparency = 0.250
+
 		game:GetService("UserInputService").InputBegan:Connect(function(input, gameProcessedEvent)
 			if input.KeyCode == Enum.KeyCode.V and not gameProcessedEvent then
 				TAB.Tabs.Visible = not TAB.Tabs.Visible
