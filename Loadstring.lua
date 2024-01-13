@@ -39,7 +39,6 @@ local toggleButton1 = tab1:ToggleButton({
             CoreGui.SigmaVisualStuff.ArrayListHolder.Visible = not CoreGui.SigmaVisualStuff.ArrayListHolder.Visible
     end
 })
-
 local sliderStuff = toggleButton1:Slider({
     title = "Dugong",
     min = 5,
@@ -49,7 +48,6 @@ local sliderStuff = toggleButton1:Slider({
         print("current value rn is" .. value)
     end
 })
-
 local toggleInsideUI1 = toggleButton1:ToggleButtonInsideUI({
     name = "MyFirne",
     callback = function(enabled)
@@ -58,7 +56,6 @@ local toggleInsideUI1 = toggleButton1:ToggleButtonInsideUI({
         end
     end
 })
-
 local dropdown = toggleButton1:Dropdown({
     name = "Testing",
     default = "Test",
@@ -192,7 +189,7 @@ local function isPlayerAlive(player)
     return player.Character and player.Character:FindFirstChild("Humanoid")
 end
 
-local KillAura = tab2:ToggleButton({
+local KillAuraButton = tab2:ToggleButton({
     name = "KillAura",
     info = "Attack Players",
     callback = function(enabled)
@@ -206,6 +203,22 @@ local KillAura = tab2:ToggleButton({
     end
 })
 local isRotating = false
+local RotationMiniToggle = KillAuraButton:ToggleButtonInsideUI({
+    name = "MyFirne",
+    callback = function(enabled)
+        if enabled then
+            print("hello")
+        end
+    end
+})
+local SliderFix = toggleButton1:Slider({
+    title = "FixingTest",
+    min = 1,
+    max = 1,
+    default = 1,
+    callback = function(value)
+    end
+})
 local Rotation = KillAura:ToggleButtonInsideUI({
     name = "Rotation",
     callback = function(enabled)
