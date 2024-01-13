@@ -2,7 +2,6 @@ local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/AfgMS
 local CoreGui = game:WaitForChild("CoreGui")
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
-local RunService = game:GetService("RunService")
 local localPlayer = game.Players.LocalPlayer
 
 --Remote
@@ -192,9 +191,10 @@ local KillAura = tab2:ToggleButton({
         if enabled then
             AttackDelay = 0.03
             if localPlayer.Character and isAlive(localPlayer) then
-        KALoop()
-    else
-        AttackDelay = 86400
+                spawn(KALoop)
+            else
+                AttackDelay = 86400
+            end
         end
     end
 })
