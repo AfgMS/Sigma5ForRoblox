@@ -3,6 +3,7 @@ local CoreGui = game:WaitForChild("CoreGui")
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local localPlayer = game.Players.LocalPlayer
+local RunService = game:GetService("RunService")
 
 --Remote
 local KARemote = ReplicatedStorage.rbxts_include.node_modules["@rbxts"].net.out._NetManaged.SwordHit
@@ -50,20 +51,23 @@ local function isAlive(localPlayer)
 end
 
 local function findNearestLivingPlayer()
-  local nearestPlayer
-  local nearestDistance = math.huge
+    local nearestPlayer
+    local nearestDistance = math.huge
 
-  for _, player in ipairs(game.Players:GetPlayers()) do
-    if player ~= localPlayer and isAlive(player) then
-      local distance = (player.Character.HumanoidRootPart.Position - localPlayer.Character.HumanoidRootPart.Position).Magnitude
-      if distance < nearestDistance then
-        nearestPlayer = player
-        nearestDistance = distance
-      end
+    for _, player in ipairs(game.Players:GetPlayers()) do
+        if player ~= localPlayer and isAlive(player) then
+            local character = player.Character
+            if character and character:FindFirstChild("HumanoidRootPart") then
+                local distance = (character.HumanoidRootPart.Position - localPlayer.Character.HumanoidRootPart.Position).Magnitude
+                if distance < nearestDistance then
+                    nearestPlayer = player
+                    nearestDistance = distance
+                end
+            end
+        end
     end
-  end
 
-  return nearestPlayer
+    return nearestPlayer
 end
 
 local function attackValue(vec)
