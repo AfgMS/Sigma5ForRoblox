@@ -107,7 +107,7 @@ local function KillAuraAttack()
     ["validate"] = {
       ["raycast"] = {
         ["cursorDirection"] = attackValue(mouse),
-        ["cameraPosition"] = attackValue(target.Character.HumanoidRootPart.Position),
+        ["cameraPosition"] = attackValue(target.Character.Position),
       },
       ["selfPosition"] = attackValue(getcloserpos(localPlayer.Character.HumanoidRootPart.Position, target.Character.HumanoidRootPart.Position, 2)),
       ["targetPosition"] = attackValue(target.Character.HumanoidRootPart.Position),
