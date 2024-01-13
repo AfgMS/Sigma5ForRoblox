@@ -75,129 +75,124 @@ local tabGUIButton = tab1:ToggleButton({
         print("cum")
     end
 })
-
 --KillAura
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local localPlayer = game.Players.LocalPlayer
 local KillauraRemote = ReplicatedStorage.rbxts_include.node_modules["@rbxts"].net.out._NetManaged.SwordHit
 
-local function isalive(plr)
-  plr = plr or localPlayer
-  if not plr then
-    print("Player is nil.")
-    return false
-  end
-  
-  if not plr.Character then -- credit to chatgpt am retarded
-    print("Player has no character.")
-    return false
-  end
-  
-  local head = plr.Character:FindFirstChild("Head")
-  local humanoid = plr.Character:FindFirstChild("Humanoid")
-  
-  if not head then
-    print("Player's character has no head.")
-    return false
-  end
-  
-  if not humanoid then
-    print("Player's character has no humanoid.")
-    return false
-  end
-  
-  return true
+local function isAlive(player)
+    player = player or localPlayer
+
+    if not player or not player.Character then
+        print("Player is invalid or has no character.")
+        return false
+    end
+
+    local humanoid = player.Character:FindFirstChild("Humanoid")
+
+    if not humanoid or humanoid.Health <= 0 then
+        print("Player is not alive.")
+        return false
+    end
+
+    return true
 end
 
 local SwordInfo = {
-  [1] = { Name = "wood_sword", Display = "Wood Sword", Rank = 1 },
-  [2] = { Name = "stone_sword", Display = "Stone Sword", Rank = 2 },
-  [3] = { Name = "iron_sword", Display = "Iron Sword", Rank = 3 },
-  [4] = { Name = "diamond_sword", Display = "Diamond Sword", Rank = 4 },
-  [5] = { Name = "emerald_sword", Display = "Emerald Sword", Rank = 5 },
-  [6] = { Name = "rageblade", Display = "Rage Blade", Rank = 6 },
+    { Name = "wood_sword", Display = "Wood Sword", Rank = 1 },
+    { Name = "stone_sword", Display = "Stone Sword", Rank = 2 },
+    { Name = "iron_sword", Display = "Iron Sword", Rank = 3 },
+    { Name = "diamond_sword", Display = "Diamond Sword", Rank = 4 },
+    { Name = "emerald_sword", Display = "Emerald Sword", Rank = 5 },
+    { Name = "rageblade", Display = "Rage Blade", Rank = 6 },
 }
 
-local function findNearestLivingPlayer()
-  local nearestPlayer
-  local nearestDistance = math.huge
+local function findNearestLivingPlayer(radius)
+    local nearestPlayer
+    local nearestDistance = math.huge
+    local localRootPosition = localPlayer.Character and localPlayer.Character:FindFirstChild("HumanoidRootPart") and localPlayer.Character.HumanoidRootPart.Position
 
-  for _, player in ipairs(game.Players:GetPlayers()) do
-    if player ~= localPlayer and isalive(player) then
-      local distance = (player.Character.HumanoidRootPart.Position - localPlayer.Character.HumanoidRootPart.Position).Magnitude
-      if distance < nearestDistance then
-        nearestPlayer = player
-        nearestDistance = distance
-      end
+    if not localRootPosition then
+        return nil
     end
-  end
 
-  return nearestPlayer
+    for _, player in ipairs(game.Players:GetPlayers()) do
+        if player ~= localPlayer and isAlive(player) then
+            local playerRootPart = player.Character and player.Character:FindFirstChild("HumanoidRootPart")
+
+            if playerRootPart then
+                local distance = (playerRootPart.Position - localRootPosition).Magnitude
+
+                if distance < radius and distance < nearestDistance then
+                    nearestPlayer = player
+                    nearestDistance = distance
+                end
+            end
+        end
+    end
+
+    return nearestPlayer
 end
 
 local function attackValue(vec)
-  return { value = vec }
+    return vec
 end
 
-function getcloserpos(pos1, pos2, amount)
-  local newPos = (pos2 - pos1).Unit * math.min(amount, (pos2 - pos1).Magnitude) + pos1
-  return newPos
+local function getCloserPos(pos1, pos2, amount)
+    return pos1 + (pos2 - pos1).Unit * math.min(amount, (pos2 - pos1).Magnitude)
 end
 
-local target = findNearestLivingPlayer(20)
-local anims = 0
-local cam = game.Workspace.CurrentCamera
-local mouse = Ray.new(cam.CFrame.Position, target.Character.HumanoidRootPart.Position).Unit.Direction
+local function getBestSword()
+    local bestSword = nil
+    local bestRank = 0
 
-local function GetBestSword()
-  local bestsword = nil
-  local bestrank = 0
-  for i, v in pairs(localPlayer.Character.InventoryFolder.Value:GetChildren()) do
-    if v.Name:match("sword") or v.Name:match("blade") then
-      for _, data in pairs(SwordInfo) do
-        if data["Name"] == v.Name then
-          if bestrank <= data["Rank"] then
-            bestrank = data["Rank"]
-            bestsword = v
-          end
+    for _, sword in pairs(localPlayer.Character.InventoryFolder:GetChildren()) do
+        local swordName = sword.Name
+
+        if swordName:match("sword") or swordName:match("blade") then
+            for _, data in pairs(SwordInfo) do
+                if data.Name == swordName and bestRank <= data.Rank then
+                    bestRank = data.Rank
+                    bestSword = sword
+                end
+            end
         end
-      end
     end
-  end
-  return bestsword
+
+    return bestSword
 end
 
 local function attack()
-  KillauraRemote:FireServer({
-    ["entityInstance"] = target.Character,
-    ["chargedAttack"] = {
-      ["chargeRatio"] = 1
-    },
-    ["validate"] = {
-      ["raycast"] = {
-        ["cursorDirection"] = attackValue(mouse),
-        ["cameraPosition"] = attackValue(target.Character.HumanoidRootPart.Position),
-      },
-      ["selfPosition"] = attackValue(getcloserpos(localPlayer.Character.HumanoidRootPart.Position, target.Character.HumanoidRootPart.Position, 2)),
-      ["targetPosition"] = attackValue(target.Character.HumanoidRootPart.Position),
-    },
-    ["weapon"] = GetBestSword()
-  })
+    local target = findNearestLivingPlayer(20)
+
+    if target and target.Character then
+        KillauraRemote:FireServer({
+            entityInstance = target.Character,
+            chargedAttack = { chargeRatio = 1 },
+            validate = {
+                raycast = {
+                    cursorDirection = attackValue(target.Character.HumanoidRootPart.Position),
+                    cameraPosition = attackValue(cam.CFrame.Position),
+                },
+                selfPosition = attackValue(getCloserPos(localPlayer.Character.HumanoidRootPart.Position, target.Character.HumanoidRootPart.Position, 2)),
+                targetPosition = attackValue(target.Character.HumanoidRootPart.Position),
+            },
+            weapon = getBestSword()
+        })
+    end
 end
 
 local function isPlayerAlive(player)
     return player.Character and player.Character:FindFirstChild("Humanoid")
 end
 
-local button1 = tab1:ToggleButton({
+local KillAura = tab1:ToggleButton({
     name = "KillAura",
-    info = "Automatically Attack Nearest Player.",
+    info = "sex",
     callback = function(enabled)
         local function attackLoop()
             while enabled and localPlayer.Character do
-                local target = findNearestLivingPlayer(20)
-                if target and target.Character then
-                    attack()
-                end
+                attack()
                 task.wait(0.03)
             end
         end
@@ -206,34 +201,6 @@ local button1 = tab1:ToggleButton({
             spawn(attackLoop)
         end
     end
-})
-
-local function onPlayerAdded(player) -- Chatgpt ty again fr, from here
-    local function onCharacterAdded(character)
-        Killaura:SetEnabled(true)
-    end
-
-    player.CharacterAdded:Connect(onCharacterAdded)
-
-    player.Character:Wait()
-    onCharacterAdded(player.Character)
-end
-
-Players.PlayerAdded:Connect(onPlayerAdded)
-
-local function onPlayerDied(player)
-    Killaura:SetEnabled(false)
-end
-
-Players.PlayerAdded:Connect(onPlayerDied) -- till here
-
-local SliderStuff = Killaura:Slider({ --fix some gay bug
-  title = "HolderFix",
-  min = 0,
-  max = 0,
-  default = 0,
-  callback = function(val)
-end
 })
 
 local isRotating = false
