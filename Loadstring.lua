@@ -183,18 +183,21 @@ local KillAura = tab2:ToggleButton({
     info = "KillAura Testing",
     callback = function(enabled)
         if enabled then
-                AttackDelay = 0.03
-                if localPlayer.Character and isAlive(localPlayer) then
-                    local function KALoop()
+            AttackDelay = 0.03
+            if localPlayer.Character and isAlive(localPlayer) then
+                local function KALoop()
                     local target = findNearestLivingPlayer(20)
-            
+
                     if target and target.Character then
-                            while task.wait(AttackDelay) do
-                                KillAuraAttack()
+                        while wait(AttackDelay) do
+                            KillAuraAttack()
+                        end
+                    else
+                        AttackDelay = 86400
                     end
-                    KALoop()
-            else
-                    AttackDelay = 86400
+                end
+                KALoop()
+            end
         end
     end
 })
