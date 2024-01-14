@@ -90,8 +90,6 @@ local function getBestSword()
   return bestsword
 end
 
-
-
 --SigmaUI
 Library:createScreenGui()
 LibraryCheck()
@@ -147,20 +145,19 @@ local Uninject = tab1:ToggleButton({
         end
     end
 })
-
+    
 --KillAura
-local target
+local target = findNearestLivingPlayer(20)
 local cam = game.Workspace.CurrentCamera
 local mouse = Ray.new(cam.CFrame.Position, target.Character.HumanoidRootPart.Position).Unit.Direction
 local AttackDelay = 0.03
-
+    
 local KillAura = tab2:ToggleButton({
     name = "KillAura",
     info = "KillAura Testing",
     callback = function(enabled)
         if enabled then
             if localPlayer.Character and isAlive(localPlayer) then
-                target = findNearestLivingPlayer(20)
                 if target and target.Character then
                     while wait(AttackDelay) do
                         KewAuraUwU:FireServer({
