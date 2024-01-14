@@ -148,18 +148,17 @@ local Uninject = tab1:ToggleButton({
 })
     
 --KillAura
-local target = findNearestLivingPlayer(20)
-local cam = game.Workspace.CurrentCamera
-local mouse = Ray.new(cam.CFrame.Position, target.Character.HumanoidRootPart.Position).Unit.Direction
-local AttackDelay = 0.03
-    
 local KillAura = tab2:ToggleButton({
     name = "KillAura",
     info = "KillAura Testing",
     callback = function(enabled)
         if enabled then
+            local AttackDelay = 0.03
             if localPlayer.Character and isAlive(localPlayer) then
+                local target = findNearestLivingPlayer(20)
                 if target and target.Character then
+                    local cam = game.Workspace.CurrentCamera
+                    local mouse = Ray.new(cam.CFrame.Position, target.Character.HumanoidRootPart.Position).Unit.Direction
                     while wait(AttackDelay) do
                         KewAuraUwU:FireServer({
                             ["entityInstance"] = target.Character,
