@@ -50,21 +50,30 @@ local function isAlive(localPlayer)
 end
 
 local function findNearestLivingPlayer()
-  local nearestPlayer
-  local nearestDistance = math.huge
+    while true do
+        local nearestPlayer
+        local nearestDistance = math.huge
 
-  for _, player in ipairs(game.Players:GetPlayers()) do
-    if player ~= localPlayer and isAlive(player) then
-      local distance = (player.Character.HumanoidRootPart.Position - localPlayer.Character.HumanoidRootPart.Position).Magnitude
-      if distance < nearestDistance then
-        nearestPlayer = player
-        nearestDistance = distance
-      end
+        for _, player in ipairs(game.Players:GetPlayers()) do
+            if player ~= localPlayer and isAlive(player) then
+                local character = player.Character
+                if character and character:IsA("Model") and character:FindFirstChild("HumanoidRootPart") then
+                    local humanoidRootPart = character.HumanoidRootPart
+                    if humanoidRootPart:IsA("BasePart") then
+                        local distance = (humanoidRootPart.Position - localPlayer.Character.HumanoidRootPart.Position).Magnitude
+                        if distance < nearestDistance then
+                            nearestPlayer = player
+                            nearestDistance = distance
+                        end
+                    end
+                end
+            end
+        end
+
+        wait(0.38)  -- Adjust the wait time as needed
     end
-  end
-
-  return nearestPlayer
 end
+
 
 local function attackValue(vec)
   return { value = vec }
@@ -97,7 +106,6 @@ local target = findNearestLivingPlayer(20)
 local cam = game.Workspace.CurrentCamera
 local mouse = Ray.new(cam.CFrame.Position, target.Character.HumanoidRootPart.Position).Unit.Direction
 local AttackDelay = 0.03
-local PlayerCheckTime = 0.1
 
 local function KillAuraAttack()
   KARemote:FireServer({
@@ -118,15 +126,10 @@ local function KillAuraAttack()
 end
 
 local function KALoop()
-    while wait(PlayerCheckTime) do
-        local target = findNearestLivingPlayer(20)
-        if target and target.Character then
-            AttackDelay = 0.03
-            while wait(AttackDelay) do
-                KillAuraAttack()
-            end
-        else
-            AttackDelay = 86400
+    local target = findNearestLivingPlayer(20)
+    if target and target.Character then
+        while wait(AttackDelay) do
+            KillAuraAttack()
         end
     end
 end
