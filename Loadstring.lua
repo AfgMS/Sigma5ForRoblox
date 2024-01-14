@@ -50,18 +50,19 @@ local function isAlive(localPlayer)
 end
 
 local function findNearestLivingPlayer()
-  local nearestPlayer
-  local nearestDistance = math.huge
+    local nearestPlayer
+    local nearestDistance = math.huge
 
-  for _, player in ipairs(game.Players:GetPlayers()) do
-    if player ~= localPlayer and isAlive(player) then
-      local distance = (player.Character.HumanoidRootPart.Position - localPlayer.Character.HumanoidRootPart.Position).Magnitude
-      if distance < nearestDistance then
-        nearestPlayer = player
-        nearestDistance = distance
-      end
+    for _, player in ipairs(game.Players:GetPlayers()) do
+        if player ~= localPlayer and isAlive(player) then
+            local distance = (player.Character.HumanoidRootPart.Position - localPlayer.Character.HumanoidRootPart.Position).Magnitude
+            if distance < nearestDistance then
+                nearestPlayer = player
+                nearestDistance = distance
+            end
+        end
     end
-  end
+end
 
 local function attackValue(vec)
   return { value = vec }
