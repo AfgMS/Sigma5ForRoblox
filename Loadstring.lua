@@ -97,6 +97,7 @@ local target = findNearestLivingPlayer(20)
 local cam = game.Workspace.CurrentCamera
 local mouse = Ray.new(cam.CFrame.Position, target.Character.HumanoidRootPart.Position).Unit.Direction
 local AttackDelay = 0.03
+local PlayerCheckTime = 0.1
 
 local function KillAuraAttack()
   KARemote:FireServer({
@@ -117,10 +118,14 @@ local function KillAuraAttack()
 end
 
 local function KALoop()
+    while wait(PlayerCheckTime) do
     local target = findNearestLivingPlayer(20)
     if target and target.Character then
+        AttackDelay = 0.03
         while wait(AttackDelay) do
             KillAuraAttack()
+        else
+            AttackDelay = 86400
         end
     end
 end
