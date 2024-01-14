@@ -126,11 +126,8 @@ local function KillAuraAttack()
 end
 
 local function KALoop()
-    local target = findNearestLivingPlayer(20)
-    if target and target.Character then
-        while wait(AttackDelay) do
-            KillAuraAttack()
-        end
+    while wait(AttackDelay) do
+        KillAuraAttack()
     end
 end
 
