@@ -5,7 +5,7 @@ local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local localPlayer = game.Players.LocalPlayer
 
 --Remote
-local KARemote = ReplicatedStorage.rbxts_include.node_modules["@rbxts"].net.out._NetManaged.SwordHit
+local KewAuraUwU = ReplicatedStorage.rbxts_include.node_modules["@rbxts"].net.out._NetManaged.SwordHit
 
 --Stuff
 local SwordInfo = {
@@ -90,34 +90,7 @@ local function getBestSword()
   return bestsword
 end
 
-local target = findNearestLivingPlayer(20)
-local cam = game.Workspace.CurrentCamera
-local mouse = Ray.new(cam.CFrame.Position, target.Character.HumanoidRootPart.Position).Unit.Direction
-local AttackDelay = 0.03
 
-local function KillAuraAttack()
-  KARemote:FireServer({
-    ["entityInstance"] = target.Character,
-    ["chargedAttack"] = {
-      ["chargeRatio"] = 1
-    },
-    ["validate"] = {
-      ["raycast"] = {
-        ["cursorDirection"] = attackValue(mouse),
-        ["cameraPosition"] = attackValue(target.Character.HumanoidRootPart.Position),
-      },
-      ["selfPosition"] = attackValue(getcloserpos(localPlayer.Character.HumanoidRootPart.Position, target.Character.HumanoidRootPart.Position, 2)),
-      ["targetPosition"] = attackValue(target.Character.HumanoidRootPart.Position),
-    },
-    ["weapon"] = getBestSword()
-  })
-end
-
-local function KALoop()
-    while wait(AttackDelay) do
-        KillAuraAttack()
-    end
-end
 
 --SigmaUI
 Library:createScreenGui()
@@ -176,16 +149,37 @@ local Uninject = tab1:ToggleButton({
 })
 
 --KillAura
+local target
+local cam = game.Workspace.CurrentCamera
+local mouse = Ray.new(cam.CFrame.Position, target.Character.HumanoidRootPart.Position).Unit.Direction
+local AttackDelay = 0.03
+
 local KillAura = tab2:ToggleButton({
     name = "KillAura",
     info = "KillAura Testing",
     callback = function(enabled)
         if enabled then
-            AttackDelay = 0.03
             if localPlayer.Character and isAlive(localPlayer) then
-                spawn(KALoop)
-            else
-                AttackDelay = 86400
+                target = findNearestLivingPlayer(20)
+                if target and target.Character then
+                    while wait(AttackDelay) do
+                        KewAuraUwU:FireServer({
+                            ["entityInstance"] = target.Character,
+                            ["chargedAttack"] = {
+                                ["chargeRatio"] = 1
+                            },
+                            ["validate"] = {
+                                ["raycast"] = {
+                                    ["cursorDirection"] = attackValue(mouse),
+                                    ["cameraPosition"] = attackValue(target.Character.HumanoidRootPart.Position),
+                                },
+                                ["selfPosition"] = attackValue(getcloserpos(localPlayer.Character.HumanoidRootPart.Position, target.Character.HumanoidRootPart.Position, 2)),
+                                ["targetPosition"] = attackValue(target.Character.HumanoidRootPart.Position),
+                            },
+                            ["weapon"] = getBestSword()
+                        })
+                    end
+                end
             end
         end
     end
