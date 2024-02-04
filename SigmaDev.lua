@@ -1,8 +1,10 @@
+--ImportantStuff
 local TweenService = game:GetService("TweenService")
 local CoreGui = game:GetService("CoreGui")
 local UserInputService = game:GetService("UserInputService")
 local Font = game:GetService("TextService")
 local Mouse = game.Players.LocalPlayer:GetMouse()
+local localplayer = game.Players.LocalPlayer
 local TouchInput = game:GetService("TouchInputService")
 
 local Library = {}
@@ -91,10 +93,12 @@ function playContinuousSound(soundId)
 	end)
 end
 
+--Sigma5Visual
 local ScreenGuitwo = Instance.new("ScreenGui")
 ScreenGuitwo.Parent = game:WaitForChild("CoreGui")
 ScreenGuitwo.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
 ScreenGuitwo.Name = "SigmaVisualStuff"
+ScreenGuitwo.ResetOnSpawn = false
 
 function createnotification(title, text, delay2, toggled)
 	local function createFrame()
@@ -226,6 +230,154 @@ local function RemoveArraylist(name)
 	end
 end
 
+local LeftHolder = Instance.new("Frame")
+LeftHolder.Name = "LeftHolder"
+LeftHolder.Parent = ScreenGuitwo
+LeftHolder.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+LeftHolder.BackgroundTransparency = 1
+LeftHolder.BorderColor3 = Color3.fromRGB(0, 0, 0)
+LeftHolder.BorderSizePixel = 0
+LeftHolder.Size = UDim2.new(0, 245, 1, 0)
+
+SigmaTittle.Name = "SigmaTittle"
+SigmaTittle.Parent = LeftHolder
+SigmaTittle.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+SigmaTittle.BackgroundTransparency = 1.000
+SigmaTittle.BorderColor3 = Color3.fromRGB(0, 0, 0)
+SigmaTittle.BorderSizePixel = 0
+SigmaTittle.Position = UDim2.new(0, 15, 0, 10)
+SigmaTittle.Size = UDim2.new(0, 200, 0, 50)
+SigmaTittle.Font = Enum.Font.Roboto
+SigmaTittle.Text = "Sigma"
+SigmaTittle.TextColor3 = Color3.fromRGB(255, 255, 255)
+SigmaTittle.TextScaled = true
+SigmaTittle.TextSize = 14.000
+SigmaTittle.TextTransparency = 0.380
+SigmaTittle.TextWrapped = true
+SigmaTittle.TextXAlignment = Enum.TextXAlignment.Left
+
+Jello.Name = "Jello"
+Jello.Parent = SigmaTittle
+Jello.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+Jello.BackgroundTransparency = 1.000
+Jello.BorderColor3 = Color3.fromRGB(0, 0, 0)
+Jello.BorderSizePixel = 0
+Jello.Position = UDim2.new(0, 0, 0, 43)
+Jello.Size = UDim2.new(0, 125, 0, 25)
+Jello.Font = Enum.Font.Roboto
+Jello.Text = "Jello"
+Jello.TextColor3 = Color3.fromRGB(255, 255, 255)
+Jello.TextSize = 20.000
+Jello.TextStrokeColor3 = Color3.fromRGB(255, 255, 255)
+Jello.TextTransparency = 0.380
+Jello.TextWrapped = true
+Jello.TextXAlignment = Enum.TextXAlignment.Left
+
+TabHolder.Name = "TabHolder"
+TabHolder.Parent = LeftHolder
+TabHolder.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+TabHolder.BackgroundTransparency = 1.000
+TabHolder.BorderColor3 = Color3.fromRGB(0, 0, 0)
+TabHolder.BorderSizePixel = 0
+TabHolder.Visible = false
+TabHolder.Position = UDim2.new(0, 15, 0, 85)
+TabHolder.Size = UDim2.new(0, 148, 0, 154)
+
+UIListLayout.Parent = TabHolder
+UIListLayout.SortOrder = Enum.SortOrder.LayoutOrder
+
+Movement.Name = "Movement"
+Movement.Parent = TabHolder
+Movement.BackgroundColor3 = Color3.fromRGB(168, 168, 168)
+Movement.BackgroundTransparency = 0.480
+Movement.BorderColor3 = Color3.fromRGB(0, 0, 0)
+Movement.BorderSizePixel = 0
+Movement.Size = UDim2.new(1, 0, 0, 31)
+Movement.Font = Enum.Font.Roboto
+Movement.Text = "       Movement"
+Movement.TextColor3 = Color3.fromRGB(255, 255, 255)
+Movement.TextSize = 20.000
+Movement.TextXAlignment = Enum.TextXAlignment.Left
+
+Player.Name = "Player"
+Player.Parent = TabHolder
+Player.BackgroundColor3 = Color3.fromRGB(195, 195, 195)
+Player.BackgroundTransparency = 0.480
+Player.BorderColor3 = Color3.fromRGB(0, 0, 0)
+Player.BorderSizePixel = 0
+Player.Size = UDim2.new(1, 0, 0, 31)
+Player.Font = Enum.Font.Roboto
+Player.Text = "     Player"
+Player.TextColor3 = Color3.fromRGB(255, 255, 255)
+Player.TextSize = 18.000
+Player.TextXAlignment = Enum.TextXAlignment.Left
+
+Combat.Name = "Combat"
+Combat.Parent = TabHolder
+Combat.BackgroundColor3 = Color3.fromRGB(195, 195, 195)
+Combat.BackgroundTransparency = 0.480
+Combat.BorderColor3 = Color3.fromRGB(0, 0, 0)
+Combat.BorderSizePixel = 0
+Combat.Size = UDim2.new(1, 0, 0, 31)
+Combat.Font = Enum.Font.Roboto
+Combat.Text = "     Combat"
+Combat.TextColor3 = Color3.fromRGB(255, 255, 255)
+Combat.TextSize = 18.000
+Combat.TextXAlignment = Enum.TextXAlignment.Left
+
+Render.Name = "Render"
+Render.Parent = TabHolder
+Render.BackgroundColor3 = Color3.fromRGB(195, 195, 195)
+Render.BackgroundTransparency = 0.480
+Render.BorderColor3 = Color3.fromRGB(0, 0, 0)
+Render.BorderSizePixel = 0
+Render.Size = UDim2.new(1, 0, 0, 31)
+Render.Font = Enum.Font.Roboto
+Render.Text = "     Render"
+Render.TextColor3 = Color3.fromRGB(255, 255, 255)
+Render.TextSize = 18.000
+Render.TextXAlignment = Enum.TextXAlignment.Left
+
+World.Name = "World"
+World.Parent = TabHolder
+World.BackgroundColor3 = Color3.fromRGB(195, 195, 195)
+World.BackgroundTransparency = 0.480
+World.BorderColor3 = Color3.fromRGB(0, 0, 0)
+World.BorderSizePixel = 0
+World.Size = UDim2.new(1, 0, 0, 31)
+World.Font = Enum.Font.Roboto
+World.Text = "     World"
+World.TextColor3 = Color3.fromRGB(255, 255, 255)
+World.TextSize = 18.000
+World.TextXAlignment = Enum.TextXAlignment.Left
+
+Cordinate.Name = "Cordinate"
+Cordinate.Parent = LeftHolder
+Cordinate.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+Cordinate.BackgroundTransparency = 1.000
+Cordinate.BorderColor3 = Color3.fromRGB(0, 0, 0)
+Cordinate.BorderSizePixel = 0
+Cordinate.Position = UDim2.new(0, 20, 0, 245)
+Cordinate.Size = UDim2.new(0, 138, 0, 25)
+Cordinate.Font = Enum.Font.Roboto
+Cordinate.Text = "-213 17 -143"
+Cordinate.Visible = false
+Cordinate.TextColor3 = Color3.fromRGB(255, 255, 255)
+Cordinate.TextSize = 18.000
+Cordinate.TextTransparency = 0.480
+
+local function updateCoordinates()
+    local playerPosition = localplayer.Character and localplayer.Character:FindFirstChild("HumanoidRootPart") and localplayer.Character.HumanoidRootPart.Position
+    if playerPosition then
+        Cordinate.Text = string.format("%.0f %.0f %.0f", playerPosition.X, playerPosition.Y, playerPosition.Z)
+    end
+end
+
+while wait(0.1) do
+    updateCoordinates()
+end
+
+--UILibrary
 function Library:createScreenGui()
 	local screenGui = Instance.new("ScreenGui", CoreGui)
 	screenGui.Name = "Sigma"
