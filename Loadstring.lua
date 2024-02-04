@@ -58,7 +58,7 @@ end
 --SigmaUI
 Library:createScreenGui()
 LibraryCheck()
-createnotification("Sigma", "Welcome to Sigma, Press V", 1, true)
+createnotification("Sigma5", "Loaded Successfully", 1, true)
 
 local tab1 = Library:createTabs(CoreGui.Sigma, "Gui")
 
