@@ -237,8 +237,10 @@ LeftHolder.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
 LeftHolder.BackgroundTransparency = 1
 LeftHolder.BorderColor3 = Color3.fromRGB(0, 0, 0)
 LeftHolder.BorderSizePixel = 0
+LeftHolder.Visible = true
 LeftHolder.Size = UDim2.new(0, 245, 1, 0)
 
+local SigmaTittle = Instance.new("TextLabel")
 SigmaTittle.Name = "SigmaTittle"
 SigmaTittle.Parent = LeftHolder
 SigmaTittle.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
@@ -253,9 +255,11 @@ SigmaTittle.TextColor3 = Color3.fromRGB(255, 255, 255)
 SigmaTittle.TextScaled = true
 SigmaTittle.TextSize = 14.000
 SigmaTittle.TextTransparency = 0.380
+SigmaTittle.Visible = true
 SigmaTittle.TextWrapped = true
 SigmaTittle.TextXAlignment = Enum.TextXAlignment.Left
 
+local Jello = Instance.new("TextLabel")
 Jello.Name = "Jello"
 Jello.Parent = SigmaTittle
 Jello.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
@@ -273,6 +277,7 @@ Jello.TextTransparency = 0.380
 Jello.TextWrapped = true
 Jello.TextXAlignment = Enum.TextXAlignment.Left
 
+local TabHolder = Instance.new("Frame")
 TabHolder.Name = "TabHolder"
 TabHolder.Parent = LeftHolder
 TabHolder.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
@@ -283,9 +288,11 @@ TabHolder.Visible = false
 TabHolder.Position = UDim2.new(0, 15, 0, 85)
 TabHolder.Size = UDim2.new(0, 148, 0, 154)
 
+local UIListLayout = Instance.new("UIListLayout")
 UIListLayout.Parent = TabHolder
 UIListLayout.SortOrder = Enum.SortOrder.LayoutOrder
 
+local Movement = Instance.new("TextLabel")
 Movement.Name = "Movement"
 Movement.Parent = TabHolder
 Movement.BackgroundColor3 = Color3.fromRGB(168, 168, 168)
@@ -299,6 +306,7 @@ Movement.TextColor3 = Color3.fromRGB(255, 255, 255)
 Movement.TextSize = 20.000
 Movement.TextXAlignment = Enum.TextXAlignment.Left
 
+local Player = Instance.new("TextLabel")
 Player.Name = "Player"
 Player.Parent = TabHolder
 Player.BackgroundColor3 = Color3.fromRGB(195, 195, 195)
@@ -312,6 +320,7 @@ Player.TextColor3 = Color3.fromRGB(255, 255, 255)
 Player.TextSize = 18.000
 Player.TextXAlignment = Enum.TextXAlignment.Left
 
+local Combat = Instance.new("TextLabel")
 Combat.Name = "Combat"
 Combat.Parent = TabHolder
 Combat.BackgroundColor3 = Color3.fromRGB(195, 195, 195)
@@ -325,6 +334,7 @@ Combat.TextColor3 = Color3.fromRGB(255, 255, 255)
 Combat.TextSize = 18.000
 Combat.TextXAlignment = Enum.TextXAlignment.Left
 
+local Render = Instance.new("TextLabel")
 Render.Name = "Render"
 Render.Parent = TabHolder
 Render.BackgroundColor3 = Color3.fromRGB(195, 195, 195)
@@ -338,6 +348,7 @@ Render.TextColor3 = Color3.fromRGB(255, 255, 255)
 Render.TextSize = 18.000
 Render.TextXAlignment = Enum.TextXAlignment.Left
 
+local World = Instance.new("TextLabel")
 World.Name = "World"
 World.Parent = TabHolder
 World.BackgroundColor3 = Color3.fromRGB(195, 195, 195)
@@ -351,6 +362,7 @@ World.TextColor3 = Color3.fromRGB(255, 255, 255)
 World.TextSize = 18.000
 World.TextXAlignment = Enum.TextXAlignment.Left
 
+local Cordinate = Instance.new("TextLabel")
 Cordinate.Name = "Cordinate"
 Cordinate.Parent = LeftHolder
 Cordinate.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
