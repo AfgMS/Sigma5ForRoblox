@@ -362,6 +362,18 @@ World.TextColor3 = Color3.fromRGB(255, 255, 255)
 World.TextSize = 18.000
 World.TextXAlignment = Enum.TextXAlignment.Left
 
+local localPlayer = game.Players.LocalPlayer
+local character = localPlayer.Character or localPlayer.CharacterAdded:Wait()
+local humanoidrp = character:WaitForChild("HumanoidRootPart", 10)
+
+local function UpdateCords()
+	local x = math.floor(humanoidrp.Position.X)
+	local y = math.floor(humanoidrp.Position.Y)
+	local z = math.floor(humanoidrp.Position.Z)
+
+	return x,y,z
+end
+
 local Cordinate = Instance.new("TextLabel")
 Cordinate.Name = "Cordinate"
 Cordinate.Parent = LeftHolder
@@ -372,12 +384,16 @@ Cordinate.BorderSizePixel = 0
 Cordinate.Position = UDim2.new(0, 20, 0, 245)
 Cordinate.Size = UDim2.new(0, 138, 0, 25)
 Cordinate.Font = Enum.Font.Roboto
-Cordinate.Text = "-213 17 -143"
 Cordinate.Visible = false
 Cordinate.TextColor3 = Color3.fromRGB(255, 255, 255)
 Cordinate.TextSize = 18.000
 Cordinate.TextTransparency = 0.480
 
+while wait(0.01) do
+	local xpos, ypos, zpos = UpdateCords()
+	Cordinate.Text = .. xpos .. ypos .. zpos
+end
+		
 --UILibrary
 function Library:createScreenGui()
 	local screenGui = Instance.new("ScreenGui", CoreGui)
