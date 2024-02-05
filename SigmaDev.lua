@@ -391,7 +391,7 @@ Cordinate.TextTransparency = 0.480
 
 while wait(0.01) do
 	local xpos, ypos, zpos = UpdateCords()
-	Cordinate.Text = .. xpos .. ypos .. zpos
+	Cordinate.Text = xpos .. ypos .. zpos
 end
 		
 --UILibrary
