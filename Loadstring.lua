@@ -75,7 +75,7 @@ local TabGUI = tab1:ToggleButton({
     name = "TabGUI",
     info = "Just decorations",
     callback = function(enabled)
-            CoreGui.SigmaVisualStuff.TabHolder.Visible = not CoreGui.SigmaVisualStuff.TabHolder.Visible
+            CoreGui.SigmaVisualStuff.LeftHolder.TabHolder.Visible = not CoreGui.SigmaVisualStuff.LeftHolder.TabHolder.Visible
     end
 })
 --Cords
@@ -83,7 +83,7 @@ local Cords = tab1:ToggleButton({
     name = "Cords",
     info = "Display positions",
     callback = function(enabled)
-            CoreGui.SigmaVisualStuff.Cordinate.Visible = not CoreGui.SigmaVisualStuff.Cordinate.Visible
+            CoreGui.SigmaVisualStuff.LeftHolder.Cordinate.Visible = not CoreGui.SigmaVisualStuff.LeftHolder.Cordinate.Visible
     end
 })
 --Uninject
