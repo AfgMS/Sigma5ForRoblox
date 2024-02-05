@@ -252,8 +252,7 @@ SigmaTittle.Size = UDim2.new(0, 200, 0, 50)
 SigmaTittle.Font = Enum.Font.Roboto
 SigmaTittle.Text = "Sigma"
 SigmaTittle.TextColor3 = Color3.fromRGB(255, 255, 255)
-SigmaTittle.TextScaled = true
-SigmaTittle.TextSize = 14.000
+SigmaTittle.TextSize = 28
 SigmaTittle.TextTransparency = 0.380
 SigmaTittle.Visible = true
 SigmaTittle.TextWrapped = true
@@ -361,38 +360,6 @@ World.Text = "     World"
 World.TextColor3 = Color3.fromRGB(255, 255, 255)
 World.TextSize = 18.000
 World.TextXAlignment = Enum.TextXAlignment.Left
-
-local localPlayer = game.Players.LocalPlayer
-local character = localPlayer.Character or localPlayer.CharacterAdded:Wait()
-local humanoidrp = character:WaitForChild("HumanoidRootPart", 10)
-
-local function UpdateCords()
-	local x = math.floor(humanoidrp.Position.X)
-	local y = math.floor(humanoidrp.Position.Y)
-	local z = math.floor(humanoidrp.Position.Z)
-
-	return x,y,z
-end
-
-local Cordinate = Instance.new("TextLabel")
-Cordinate.Name = "Cordinate"
-Cordinate.Parent = LeftHolder
-Cordinate.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-Cordinate.BackgroundTransparency = 1.000
-Cordinate.BorderColor3 = Color3.fromRGB(0, 0, 0)
-Cordinate.BorderSizePixel = 0
-Cordinate.Position = UDim2.new(0, 20, 0, 245)
-Cordinate.Size = UDim2.new(0, 138, 0, 25)
-Cordinate.Font = Enum.Font.Roboto
-Cordinate.Visible = false
-Cordinate.TextColor3 = Color3.fromRGB(255, 255, 255)
-Cordinate.TextSize = 18.000
-Cordinate.TextTransparency = 0.480
-
-while wait(0.01) do
-	local xpos, ypos, zpos = UpdateCords()
-	Cordinate.Text = xpos .. ypos .. zpos
-end
 		
 --UILibrary
 function Library:createScreenGui()
