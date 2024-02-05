@@ -378,17 +378,6 @@ Cordinate.TextColor3 = Color3.fromRGB(255, 255, 255)
 Cordinate.TextSize = 18.000
 Cordinate.TextTransparency = 0.480
 
-local function updateCoordinates()
-    local playerPosition = localplayer.Character and localplayer.Character:FindFirstChild("HumanoidRootPart") and localplayer.Character.HumanoidRootPart.Position
-    if playerPosition then
-        Cordinate.Text = string.format("%.0f %.0f %.0f", playerPosition.X, playerPosition.Y, playerPosition.Z)
-    end
-end
-
-while wait(0.1) do
-    updateCoordinates()
-end
-
 --UILibrary
 function Library:createScreenGui()
 	local screenGui = Instance.new("ScreenGui", CoreGui)
