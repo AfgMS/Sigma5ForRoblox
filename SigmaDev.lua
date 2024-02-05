@@ -344,7 +344,7 @@ Render.Size = UDim2.new(1, 0, 0, 23)
 Render.Font = Enum.Font.Roboto
 Render.Text = "   Render"
 Render.TextColor3 = Color3.fromRGB(255, 255, 255)
-Render.TextSize = 18.000
+Render.TextSize = 14
 Render.TextXAlignment = Enum.TextXAlignment.Left
 
 local World = Instance.new("TextLabel")
