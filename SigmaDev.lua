@@ -360,7 +360,31 @@ World.Text = "   World"
 World.TextColor3 = Color3.fromRGB(255, 255, 255)
 World.TextSize = 14
 World.TextXAlignment = Enum.TextXAlignment.Left
-		
+
+local localPlayer = game.Players.LocalPlayer
+local Character = localPlayer.Character
+local humanoid = Character:WaitForChild("HumanoidRootPart")
+
+local Cordinate = Instance.new("TextLabel")
+Cordinate.Name = "Cordinate"
+Cordinate.Parent = LeftHolder
+Cordinate.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+Cordinate.BackgroundTransparency = 1.000
+Cordinate.BorderColor3 = Color3.fromRGB(0, 0, 0)
+Cordinate.BorderSizePixel = 0
+Cordinate.Position = UDim2.new(0, 20, 0, 245)
+Cordinate.Size = UDim2.new(0, 138, 0, 25)
+Cordinate.Font = Enum.Font.Roboto
+Cordinate.Visible = false
+Cordinate.Text = ""
+Cordinate.TextColor3 = Color3.fromRGB(255, 255, 255)
+Cordinate.TextSize = 14
+Cordinate.TextTransparency = 0.480
+
+while wait(0.1) do
+    Cordinate.Text = tostring(humanoid.Position)
+end
+
 --UILibrary
 function Library:createScreenGui()
 	local screenGui = Instance.new("ScreenGui", CoreGui)
