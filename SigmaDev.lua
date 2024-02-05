@@ -453,7 +453,7 @@ function Library:createTabs(parentFrame, tabName)
 	MobileSupportUI.Text = "+"
 	MobileSupportUI.ZIndex = 2
 	MobileSupportUI.Name = "MobileOpenUI"
-	MobileSupportUI.Position = UDim2.new(0, 748, 0, 75)
+	MobileSupportUI.Position = UDim2.new(0.963096738, 0, 0.351765305, 0)
 	MobileSupportUI.AutoButtonColor = false
 	MobileSupportUI.TextTransparency = 0.250
 	
