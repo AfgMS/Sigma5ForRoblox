@@ -68,8 +68,8 @@ local Uninject = GUItab:ToggleButton({
 --CombatSection
 local COMBATtab = Library:createTabs(CoreGui.Sigma, "Combat")
 --AntiKnockback
-local HorizontalKB = 100
-local VerticalKB = 100
+local HorizontalKB = 25
+local VerticalKB = 25
 local AntiKnockback = COMBATtab:ToggleButton({
     name = "AntiKnockback",
     info = "Reduce Knockback?",
