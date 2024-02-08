@@ -33,7 +33,10 @@ LibraryCheck()
 createnotification("Sigma5", "Loaded Successfully", 1, true)
 
 local tab1 = Library:createTabs(CoreGui.Sigma, "Gui")
-
+local tab2 = Library:createTabs(CoreGui.Sigma, "Hendri")
+local tab3 = Library:createTabs(CoreGui.Sigma, "Hrotak")
+local tab4 = Library:createTabs(CoreGui.Sigma, "Azab")
+local tab5 = Library:createTabs(CoreGui.Sigma, "Dugong")
 --ActiveMods
 local ActiveMods = tab1:ToggleButton({
     name = "ActiveMods",
