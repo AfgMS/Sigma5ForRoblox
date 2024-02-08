@@ -4,6 +4,9 @@ local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local localPlayer = game.Players.LocalPlayer
 
+--Remote
+local KBRemote = ReplicatedStorage.TS.damage["knockback-util"]
+
 --Function
 local function LibraryCheck()
     local SigmaCheck = CoreGui:FindFirstChild("Sigma")
@@ -32,13 +35,9 @@ Library:createScreenGui()
 LibraryCheck()
 createnotification("Sigma5", "Loaded Successfully", 1, true)
 
-local tab1 = Library:createTabs(CoreGui.Sigma, "Gui")
-local tab2 = Library:createTabs(CoreGui.Sigma, "Hendri")
-local tab3 = Library:createTabs(CoreGui.Sigma, "Hrotak")
-local tab4 = Library:createTabs(CoreGui.Sigma, "Azab")
-local tab5 = Library:createTabs(CoreGui.Sigma, "Dugong")
+local GUItab = Library:createTabs(CoreGui.Sigma, "Gui")
 --ActiveMods
-local ActiveMods = tab1:ToggleButton({
+local ActiveMods = GUItab:ToggleButton({
     name = "ActiveMods",
     info = "Render active mods",
     callback = function(enabled)
@@ -46,31 +45,41 @@ local ActiveMods = tab1:ToggleButton({
     end
 })
 --TabGUI
-local TabGUI = tab1:ToggleButton({
+local TabGUI = GUItab:ToggleButton({
     name = "TabGUI",
     info = "Just decorations",
     callback = function(enabled)
             CoreGui.SigmaVisualStuff.LeftHolder.TabHolder.Visible = not CoreGui.SigmaVisualStuff.LeftHolder.TabHolder.Visible
     end
 })
---Cords
-local Cords = tab1:ToggleButton({
-    name = "Cords",
-    info = "Display positions",
-    callback = function(enabled)
-            CoreGui.SigmaVisualStuff.LeftHolder.Cordinate.Visible = not CoreGui.SigmaVisualStuff.LeftHolder.Cordinate.Visible
-    end
-})
 --Uninject
-local Uninject = tab1:ToggleButton({
-    name = "UninjectTest",
-    info = "Fuck Sigma",
+local Uninject = GUItab:ToggleButton({
+    name = "DeleteGUI",
+    info = "Doesnt Uninject 100%",
     callback = function(enabled)
         if enabled then
             CoreGui.Sigma:Destroy()
             print("Destroyed Main")
             CoreGui.SigmaVisualStuff:Destroy()
             print("Destroyed Notif")
+        end
+    end
+})
+--CombatSection
+local COMBATtab = Library:createTabs(CoreGui.Sigma, "Combat")
+--AntiKnockback
+local HorizontalKB = 100
+local VerticalKB = 100
+local AntiKnockback = COMBATtab:ToggleButton({
+    name = "AntiKnockback",
+    info = "Reduce Knockback?",
+    callback = function(enabled)
+        if enabled then
+            KBRemote["kbDirectionStrength"] = HorizontalKB
+            KBRemote["kbUpwardStrength"] = VerticalKB
+        else
+            KBRemote["kbDirectionStrength"] = 100
+            KBRemote["kbUpwardStrength"] = 100
         end
     end
 })
