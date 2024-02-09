@@ -90,12 +90,12 @@ local AntiKnockback = COMBATtab:ToggleButton({
             if localPlayer and localPlayer.Character then
                 debug.getupvalue(require(game:GetService("ReplicatedStorage").TS.damage["knockback-util"]).KnockbackUtil.calculateKnockbackVelocity, KnockbackValue)
             else
-                debug.getupvalue(require(game:GetService("ReplicatedStorage").TS.damage["knockback-util"]).KnockbackUtil.calculateKnockbackVelocity, 100)
+                debug.getupvalue(require(game:GetService("ReplicatedStorage").TS.damage["knockback-util"]).KnockbackUtil.calculateKnockbackVelocity, 1)
             end
         end
     end
 })
-local KnockBackValue = AntiKnockback:Slider({
+local KnockBackValueSlider = AntiKnockback:Slider({
     title = "Value",
     min = 1,
     max = 100,
@@ -136,23 +136,5 @@ local KillAura = COMBATtab:ToggleButton({
                 game:GetService("ReplicatedStorage").rbxts_include.node_modules:FindFirstChild("@rbxts").net.out._NetManaged.SwordHit:FireServer(unpack(args))
             end
         end
-    end
-})
-local KillAuraRange = KillAura:Slider({
-    title = "Range",
-    min = 0,
-    max = 20,
-    default = Range,
-    callback = function(value)
-        Range = value
-    end
-})
-local KillAuraDelay = KillAura:Slider({
-    title = "Delay",
-    min = 0.01,
-    max = 0.5,
-    default = Delay,
-    callback = function(value)
-        Delay = value
     end
 })
