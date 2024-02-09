@@ -26,7 +26,23 @@ local function LibraryCheck()
         end
     end
 end
+local function getNearestPlayer(range)
+    local nearestPlayer
+    local nearestDistance = math.huge
 
+    for _, player in ipairs(Players:GetPlayers()) do
+        if player.Character and player.Character.PrimaryPart then
+            local playerPosition = player.Character.PrimaryPart.Position
+            local distance = (playerPosition - game.Workspace.CurrentCamera.CFrame.Position).magnitude
+            if distance < nearestDistance then
+                nearestPlayer = player
+                nearestDistance = distance
+            end
+        end
+    end
+
+    return nearestPlayer
+end
 --SigmaUI
 Library:createScreenGui()
 LibraryCheck()
@@ -65,24 +81,21 @@ local Uninject = GUItab:ToggleButton({
 --CombatSection
 local COMBATtab = Library:createTabs(CoreGui.Sigma, "Combat")
 --AntiKnockback
-local KBRemote = ReplicatedStorage.TS.damage["knockback-util"]
+local KnockbackRemote = debug.getupvalue(require(game:GetService("ReplicatedStorage").TS.damage["knockback-util"]).KnockbackUtil.calculateKnockbackVelocity, 1)
 local HorizontalKB = 100
 local VerticalKB = 100
-local CheckWait
 local AntiKnockback = COMBATtab:ToggleButton({
     name = "AntiKnockback",
     info = "Reduce Knockback?",
     callback = function(enabled)
         if enabled then
-         CheckWait = 0.01   
-        while wait(CheckWait) do
-            KBRemote["kbDirectionStrength"] = HorizontalKB
-            KBRemote["kbUpwardStrength"] = VerticalKB
+            if localPlayer and localPlayer.Character then
+                KnockbackRemote["kbDirectionStrength"] = HorizontalKB
+                KnockbackRemote["kbUpwardStrength"] = VerticalKB
+            else
+                KnockbackRemote["kbDirectionStrength"] = 100
+                KnockbackRemote["kbUpwardStrength"] = 100
             end
-        else
-            CheckWait = 86400
-            KBRemote["kbDirectionStrength"] = 100
-            KBRemote["kbUpwardStrength"] = 100
         end
     end
 })
@@ -102,5 +115,56 @@ local AntiKBVertical = AntiKnockback:Slider({
     default = VerticalKB,
     callback = function(value)
         VerticalKB = value
+    end
+})
+--KillAura
+local Delay = 0.01
+local Range = 20
+local KillAura = COMBATtab:ToggleButton({
+    name = "KillAura",
+    info = "Attack Nearest Player?",
+    callback = function(enabled)
+        if enabled then
+            local NearestTarget = getNearestPlayer(Range)
+            while wait(Delay) do
+                local args = {
+                    [1] = {
+                        ["entityInstance"] = NearestTarget,
+                        ["chargedAttack"] = {
+                            ["chargeRatio"] = 0
+                        },
+                        ["validate"] = {
+                            ["targetPosition"] = {
+                                ["value"] = NearestTarget.Character:WaitForChild("Humanoid").Position
+                            },
+                            ["selfPosition"] = {
+                                ["value"] = localPlayer.Character:WaitForChild("Humanoid").Position
+                            }
+                        },
+                        ["weapon"] = game:GetService("ReplicatedStorage").Inventories.NobolineUser08.wood_sword
+                    }
+                }
+
+                game:GetService("ReplicatedStorage").rbxts_include.node_modules:FindFirstChild("@rbxts").net.out._NetManaged.SwordHit:FireServer(unpack(args))
+            end
+        end
+    end
+})
+local KillAuraRange = KillAura:Slider({
+    title = "Range",
+    min = 0,
+    max = 20,
+    default = Range,
+    callback = function(value)
+        Range = value
+    end
+})
+local KillAuraDelay = KillAura:Slider({
+    title = "Delay",
+    min = 0.01,
+    max = 0.5,
+    default = Delay,
+    callback = function(value)
+        Delay = value
     end
 })
