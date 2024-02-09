@@ -4,9 +4,6 @@ local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local localPlayer = game.Players.LocalPlayer
 
---Remote
-local KBRemote = ReplicatedStorage.TS.damage["knockback-util"]
-
 --Function
 local function LibraryCheck()
     local SigmaCheck = CoreGui:FindFirstChild("Sigma")
@@ -68,6 +65,7 @@ local Uninject = GUItab:ToggleButton({
 --CombatSection
 local COMBATtab = Library:createTabs(CoreGui.Sigma, "Combat")
 --AntiKnockback
+local KBRemote = ReplicatedStorage.TS.damage["knockback-util"]
 local HorizontalKB = 25
 local VerticalKB = 25
 local AntiKnockback = COMBATtab:ToggleButton({
