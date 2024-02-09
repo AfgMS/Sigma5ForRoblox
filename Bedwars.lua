@@ -81,27 +81,42 @@ local Uninject = GUItab:ToggleButton({
 --CombatSection
 local COMBATtab = Library:createTabs(CoreGui.Sigma, "Combat")
 --AntiKnockback
-local KnockbackValue = 100
+-- AntiKnockback
+local KnockbackRemote = debug.getupvalue(require(game:GetService("ReplicatedStorage").TS.damage["knockback-util"]).KnockbackUtil.calculateKnockbackVelocity, 1)
+local HorizontalKB = 100
+local VerticalKB = 100
+
 local AntiKnockback = COMBATtab:ToggleButton({
     name = "AntiKnockback",
     info = "Reduce Knockback?",
     callback = function(enabled)
         if enabled then
             if localPlayer and localPlayer.Character then
-                debug.getupvalue(require(game:GetService("ReplicatedStorage").TS.damage["knockback-util"]).KnockbackUtil.calculateKnockbackVelocity, KnockbackValue)
+                KnockbackRemote["kbDirectionStrength"] = HorizontalKB
+                KnockbackRemote["kbUpwardStrength"] = VerticalKB
             else
-                debug.getupvalue(require(game:GetService("ReplicatedStorage").TS.damage["knockback-util"]).KnockbackUtil.calculateKnockbackVelocity, 1)
+                KnockbackRemote["kbDirectionStrength"] = 0
+                KnockbackRemote["kbUpwardStrength"] = 0
             end
         end
     end
 })
-local KnockBackValueSlider = AntiKnockback:Slider({
-    title = "Value",
-    min = 1,
+local AntiKBHorizontal = AntiKnockback:Slider({
+    title = "Horizontal",
+    min = 0,
     max = 100,
-    default = KnockbackValue,
+    default = HorizontalKB,
     callback = function(value)
-        KnockbackValue = value
+        HorizontalKB = value
+    end
+})
+local AntiKBVertical = AntiKnockback:Slider({
+    title = "Vertical",
+    min = 0,
+    max = 100,
+    default = VerticalKB,
+    callback = function(value)
+        VerticalKB = value
     end
 })
 --KillAura
