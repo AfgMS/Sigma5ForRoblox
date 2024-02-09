@@ -66,8 +66,8 @@ local Uninject = GUItab:ToggleButton({
 local COMBATtab = Library:createTabs(CoreGui.Sigma, "Combat")
 --AntiKnockback
 local KBRemote = ReplicatedStorage.TS.damage["knockback-util"]
-local HorizontalKB = 25
-local VerticalKB = 25
+local HorizontalKB = 100
+local VerticalKB = 100
 local AntiKnockback = COMBATtab:ToggleButton({
     name = "AntiKnockback",
     info = "Reduce Knockback?",
@@ -79,5 +79,23 @@ local AntiKnockback = COMBATtab:ToggleButton({
             KBRemote["kbDirectionStrength"] = 100
             KBRemote["kbUpwardStrength"] = 100
         end
+    end
+})
+local AntiKBHorizontal = AntiKnockback:Slider({
+    title = "Horizontal",
+    min = 0,
+    max = 100,
+    default = HorizontalKB,
+    callback = function(value)
+        HorizontalKB = value
+    end
+})
+local AntiKBVertical = AntiKnockback:Slider({
+    title = "Vertical",
+    min = 0,
+    max = 100,
+    default = VerticalKB,
+    callback = function(value)
+        VerticalKB = value
     end
 })
