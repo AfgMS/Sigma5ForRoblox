@@ -68,14 +68,19 @@ local COMBATtab = Library:createTabs(CoreGui.Sigma, "Combat")
 local KBRemote = ReplicatedStorage.TS.damage["knockback-util"]
 local HorizontalKB = 100
 local VerticalKB = 100
+local CheckWait
 local AntiKnockback = COMBATtab:ToggleButton({
     name = "AntiKnockback",
     info = "Reduce Knockback?",
     callback = function(enabled)
         if enabled then
+         CheckWait = 0.01   
+        while wait(CheckWait) do
             KBRemote["kbDirectionStrength"] = HorizontalKB
             KBRemote["kbUpwardStrength"] = VerticalKB
+            end
         else
+            CheckWait = 86400
             KBRemote["kbDirectionStrength"] = 100
             KBRemote["kbUpwardStrength"] = 100
         end
