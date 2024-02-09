@@ -81,40 +81,27 @@ local Uninject = GUItab:ToggleButton({
 --CombatSection
 local COMBATtab = Library:createTabs(CoreGui.Sigma, "Combat")
 --AntiKnockback
-local KnockbackRemote = debug.getupvalue(require(game:GetService("ReplicatedStorage").TS.damage["knockback-util"]).KnockbackUtil.calculateKnockbackVelocity, 1)
-local HorizontalKB = 100
-local VerticalKB = 100
+local KnockbackValue = 100
 local AntiKnockback = COMBATtab:ToggleButton({
     name = "AntiKnockback",
     info = "Reduce Knockback?",
     callback = function(enabled)
         if enabled then
             if localPlayer and localPlayer.Character then
-                KnockbackRemote["kbDirectionStrength"] = HorizontalKB
-                KnockbackRemote["kbUpwardStrength"] = VerticalKB
+                debug.getupvalue(require(game:GetService("ReplicatedStorage").TS.damage["knockback-util"]).KnockbackUtil.calculateKnockbackVelocity, KnockbackValue)
             else
-                KnockbackRemote["kbDirectionStrength"] = 100
-                KnockbackRemote["kbUpwardStrength"] = 100
+                debug.getupvalue(require(game:GetService("ReplicatedStorage").TS.damage["knockback-util"]).KnockbackUtil.calculateKnockbackVelocity, 100)
             end
         end
     end
 })
-local AntiKBHorizontal = AntiKnockback:Slider({
-    title = "Horizontal",
-    min = 0,
+local KnockBackValue = AntiKnockback:Slider({
+    title = "Value",
+    min = 1,
     max = 100,
-    default = HorizontalKB,
+    default = KnockbackValue,
     callback = function(value)
-        HorizontalKB = value
-    end
-})
-local AntiKBVertical = AntiKnockback:Slider({
-    title = "Vertical",
-    min = 0,
-    max = 100,
-    default = VerticalKB,
-    callback = function(value)
-        VerticalKB = value
+        KnockbackValue = value
     end
 })
 --KillAura
@@ -126,6 +113,7 @@ local KillAura = COMBATtab:ToggleButton({
     callback = function(enabled)
         if enabled then
             local NearestTarget = getNearestPlayer(Range)
+            if NearestTarget then
             while wait(Delay) do
                 local args = {
                     [1] = {
