@@ -93,7 +93,7 @@ local KillAura = COMBATtab:ToggleButton({
                 if NearestPlayer and NearestPlayer.Character then
                     while wait(Delay) do
                         local args = {
-                            [1] = NearestPlayer.Character.HumanoidRootPart
+                            [1] = NearestPlayer
                         }
 
                         game:GetService("ReplicatedStorage"):FindFirstChild("events-Eqz"):FindFirstChild("5c73e2ee-c179-4b60-8be7-ef8e4a7eebaa"):FireServer(unpack(args))
@@ -101,6 +101,16 @@ local KillAura = COMBATtab:ToggleButton({
                 end
             end
         end
+    end
+})
+local HitDelay = KillAura:Slider({
+    title = "HitDelay",
+    min = 0,
+    max = 3,
+    default = 0,
+    callback = function(value)
+        print("Debug" .. value)
+        HitDelay = value
     end
 })
 local Rotation = KillAura:ToggleButtonInsideUI({
