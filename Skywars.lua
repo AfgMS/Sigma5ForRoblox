@@ -118,8 +118,11 @@ local Rotation = KillAura:ToggleButtonInsideUI({
         if enabled then
             local nearestPlayer = findNearestPlayer(20)
             if nearestPlayer then
-                game.Players.LocalPlayer.Character:WaitForChild("HumanoidRootPart").CFrame = CFrame.new(game.Players.LocalPlayer.Character:WaitForChild("HumanoidRootPart").Position, nearestPlayer.Character:WaitForChild("HumanoidRootPart").Position)
+                while wait(0.01) do
+                    game.Players.LocalPlayer.Character:WaitForChild("HumanoidRootPart").CFrame = CFrame.new(game.Players.LocalPlayer.Character:WaitForChild("HumanoidRootPart").Position, nearestPlayer.Character:WaitForChild("HumanoidRootPart").Position)
+                end
             end
         end
     end
 })
+
