@@ -136,9 +136,15 @@ local HitDelaySlider = Aimbot:Slider({
     end
 })
 --AutoQueue
-local AutoQueueDelay = 3
 local function AutoQueueOnDeath()
-    game:GetService("ReplicatedStorage").events-Eqz.a800bb9a-1030-420e-b141-21aaada3d57e:FireServer(true, "SkyWarsSolo")
+    local args = {
+        [1] = true,
+        [2] = "SkyWarsSolo"
+    }
+    local joinEvent = game:GetService("ReplicatedStorage"):FindFirstChild("events-Eqz"):FindFirstChild("a800bb9a-1030-420e-b141-21aaada3d57e")
+    if joinEvent then
+        joinEvent:FireServer(unpack(args))
+    end
 end
 local function CharacterCheck()
     if LocalPlayer.Character and LocalPlayer.Character.Parent ~= workspace then
@@ -150,20 +156,10 @@ local AutoQueue = COMBATtab:ToggleButton({
     info = "Automatically Play Again",
     callback = function(enabled)
         if enabled then
-            while true do
+            while wait(1) do
                 CharacterCheck()
-                wait(AutoQueueDelay)
             end
         end
-    end
-})
-local QueueDelaySlider = AutoQueue:Slider({
-    title = "QueueDelay",
-    min = 0,
-    max = 5,
-    default = 3,
-    callback = function(val)
-        AutoQueueDelay = val
     end
 })
 --KillAura
