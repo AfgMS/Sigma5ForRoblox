@@ -135,31 +135,39 @@ local HitDelaySlider = Aimbot:Slider({
         WaitDelay = val
     end
 })
---AutoLeave
+--AutoQueue
 local AutoQueueDelay = 5
+local function AutoQueueOnDeath()
+    wait(AutoQueueDelay)
+    local args = {
+        [1] = true,
+        [2] = "SkyWarsSolo"
+    }
+    local joinEvent = game:GetService("ReplicatedStorage"):FindFirstChild("events-Eqz"):FindFirstChild("a800bb9a-1030-420e-b141-21aaada3d57e")
+    if joinEvent then
+        joinEvent:FireServer(unpack(args))
+    end
+end
+local function HealthCheck()
+    local character = LocalPlayer.Character
+    if character then
+        local humanoid = character:FindFirstChild("Humanoid")
+        if humanoid then
+            humanoid.Died:Connect(AutoQueueOnDeath)
+        end
+    end
+end
 local AutoQueue = COMBATtab:ToggleButton({
     name = "AutoQueue",
-    info = "Automatically Play Again",
+    info = "Automatically queue on death",
     callback = function(enabled)
         if enabled then
-            local LeaveRE = game:GetService("ReplicatedStorage"):FindFirstChild("events-Eqz"):FindFirstChild("b4a59f75-3e08-4c35-aea3-d32a6267f7d8")
-            if LeaveRE then
-                LeaveRE.OnClientEvent:Connect(function()
-                    wait(AutoQueueDelay)
-                    local args = {
-                        [1] = true,
-                        [2] = "SkyWarsSolo"
-                    }
-                    local joinEvent = game:GetService("ReplicatedStorage"):FindFirstChild("events-Eqz"):FindFirstChild("a800bb9a-1030-420e-b141-21aaada3d57e")
-                    if joinEvent then
-                        joinEvent:FireServer(unpack(args))
-                    end
-                end)
-            end
+            HealthCheck()
+            LocalPlayer.CharacterAdded:Connect(HealthCheck)
         end
     end
 })
-local AutoQueueDelay = AutoQueue:Slider({
+local QueueDelaySlider = AutoQueue:Slider({
     title = "QueueDelay",
     min = 0,
     max = 5,
