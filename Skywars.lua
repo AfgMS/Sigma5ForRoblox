@@ -3,6 +3,7 @@ local CoreGui = game:WaitForChild("CoreGui")
 local Player = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local localPlayer = game.Players.LocalPlayer
+local Camera = game:GetService("Workspace").CurrentCamera
 
 --Function
 local function LibraryCheck()
@@ -43,6 +44,15 @@ local function findNearestPlayer(range)
 
     return nearestPlayer
 end
+local function aimAtNearestPlayer(range)
+    local nearestPlayer = findNearestPlayer(range)
+    if nearestPlayer then
+        local direction = (nearestPlayer.Character.HumanoidRootPart.Position - Camera.CFrame.Position).unit
+        local lookVector = Vector3.new(direction.X, 0, direction.Z).unit
+        local newLookAt = Camera.CFrame.Position + lookVector * 10
+        Camera.CFrame = CFrame.new(Camera.CFrame.Position, newLookAt)
+    end
+end
 local function attackNearestPlayer()
     local nearestPlayer = findNearestPlayer(20)
     if nearestPlayer then
@@ -50,16 +60,6 @@ local function attackNearestPlayer()
             [1] = nearestPlayer
         }
         game:GetService("ReplicatedStorage"):FindFirstChild("events-Eqz"):FindFirstChild("5c73e2ee-c179-4b60-8be7-ef8e4a7eebaa"):FireServer(unpack(args))
-    end
-end
-function CheckForNearest()
-    for i, player in ipairs(game.Players:GetPlayers()) do
-        if player then
-            local character = player.Character
-            if character and player ~= Player then
-                Player.Character.HumanoidRootPart.CFrame.LookAt = character.Humanoid.CFrame
-            end
-        end
     end
 end
 --SigmaUI
@@ -99,6 +99,43 @@ local Uninject = GUItab:ToggleButton({
 })
 --CombatSection
 local COMBATtab = Library:createTabs(CoreGui.Sigma, "Combat")
+--AimBot
+local AimRange
+local WaitDelay = 0.1
+
+local Aimbot = COMBATtab:ToggleButton({
+    name = "Aimbot",
+    info = "Aim At Nearest Player?",
+    callback = function(enabled)
+        if enabled then
+            AimRange = 20
+            while enabled do
+                aimAtNearestPlayer(AimRange)
+                wait(WaitDelay)
+            end
+        else
+            AimRange = 0
+        end
+    end
+})
+local AimRangeSlider = Aimbot:Slider({
+    title = "AimRange",
+    min = 0,
+    max = 20,
+    default = 20,
+    callback = function(val)
+        AimRange = val
+    end
+})
+local HitDelaySlider = Aimbot:Slider({
+    title = "HitDelay",
+    min = 0,
+    max = 3,
+    default = 0,
+    callback = function(val)
+        WaitDelay = val
+    end
+})
 --KillAura
 local Delay = 0.03
 local KillAura = COMBATtab:ToggleButton({
