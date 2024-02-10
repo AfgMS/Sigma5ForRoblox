@@ -78,48 +78,36 @@ local Uninject = GUItab:ToggleButton({
 --CombatSection
 local COMBATtab = Library:createTabs(CoreGui.Sigma, "Combat")
 --KillAura
-local HitDelay = 0.03
-local Range = 20
 local KillAura = COMBATtab:ToggleButton({
     name = "KillAura",
     info = "Attack Nearest Player?",
     callback = function(enabled)
         if enabled then
-            if localPlayer and localPlayer.Character then
-                local NearestPlayer = findNearestLivingPlayer(Range)
-                if NearestPlayer then
-                    while wait(Delay) do
-                        local args = {
-                            [1] = NearestPlayer.Character:WaitForChild("HumanoidRootPart")
-                        }
-
-                        game:GetService("ReplicatedStorage"):FindFirstChild("events-Eqz"):FindFirstChild("5c73e2ee-c179-4b60-8be7-ef8e4a7eebaa"):FireServer(unpack(args))
-                    end
+            local NearestPlayer = findNearestLivingPlayer(20)
+            if NearestPlayer then
+                while wait(0.03) do
+                    game:GetService("ReplicatedStorage"):FindFirstChild("events-Eqz"):FindFirstChild("5c73e2ee-c179-4b60-8be7-ef8e4a7eebaa"):FireServer(NearestPlayer or NearestPlayer.Character:WaitForChild("HumanoidRootPart"))
                 end
             end
         end
     end
 })
-local HitDelay = KillAura:Slider({
-    title = "HitDelay",
+local ButtonFix = KillAura:Slider({
+    title = "ButtonFix",
     min = 0,
-    max = 3,
+    max = 0,
     default = 0,
     callback = function(value)
-        print("Debug" .. value)
-        HitDelay = value
     end
 })
 local Rotation = KillAura:ToggleButtonInsideUI({
     name = "Rotation",
     callback = function(enabled)
         if enabled then
-            if localPlayer and localPlayer.Character then
-                local NearestPlayer = getNearestPlayer(Range)
-                if NearestPlayer then 
-                    while wait(0.1) do
-                        localPlayer.Character:WaitForChild("Humanoid").Direction = (NearestPlayer.Character:WaitForChild("HumanoidRootPart").Position - localPlayer.Character:WaitForChild("HumanoidRootPart").Position).unit
-                    end
+            local NearestPlayer = findNearestLivingPlayer(20)
+            if NearestPlayer then 
+                while wait(0.1) do
+                    localPlayer.Character:WaitForChild("Humanoid").Direction = (NearestPlayer.Character:WaitForChild("HumanoidRootPart").Position - localPlayer.Character:WaitForChild("HumanoidRootPart").Position).unit
                 end
             end
         end
