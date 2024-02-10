@@ -26,23 +26,19 @@ local function LibraryCheck()
         end
     end
 end
-local function getNearestPlayer(range)
+local function findNearestLivingPlayer()
     local nearestPlayer
     local nearestDistance = math.huge
-    local players = game:GetService("Players"):GetPlayers()
 
-    for _, player in ipairs(players) do
-        if player.Character and player.Character.PrimaryPart then
-            local playerPosition = player.Character.PrimaryPart.Position
-            local distance = (playerPosition - game.Workspace.CurrentCamera.CFrame.Position).magnitude
+    for _, player in ipairs(game.Players:GetPlayers()) do
+        if player ~= localPlayer and isAlive(player) then
+            local distance = (player.Character.HumanoidRootPart.Position - localPlayer.Character.HumanoidRootPart.Position).Magnitude
             if distance < nearestDistance then
                 nearestPlayer = player
                 nearestDistance = distance
             end
         end
     end
-
-    return nearestPlayer
 end
 --SigmaUI
 Library:createScreenGui()
@@ -90,11 +86,11 @@ local KillAura = COMBATtab:ToggleButton({
     callback = function(enabled)
         if enabled then
             if localPlayer and localPlayer.Character then
-                local NearestPlayer = getNearestPlayer(Range)
+                local NearestPlayer = findNearestLivingPlayer(Range)
                 if NearestPlayer then
                     while wait(Delay) do
                         local args = {
-                            [1] = NearestPlayer
+                            [1] = NearestPlayer.Character:WaitForChild("HumanoidRootPart")
                         }
 
                         game:GetService("ReplicatedStorage"):FindFirstChild("events-Eqz"):FindFirstChild("5c73e2ee-c179-4b60-8be7-ef8e4a7eebaa"):FireServer(unpack(args))
