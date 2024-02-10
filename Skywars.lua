@@ -52,23 +52,6 @@ local function attackNearestPlayer()
         game:GetService("ReplicatedStorage"):FindFirstChild("events-Eqz"):FindFirstChild("5c73e2ee-c179-4b60-8be7-ef8e4a7eebaa"):FireServer(unpack(args))
     end
 end
-local function rotateTowardsNearestPlayer()
-    local nearestPlayer = findNearestPlayer(20)
-    if nearestPlayer then 
-        local playerCharacter = localPlayer.Character
-        if playerCharacter then
-            local humanoid = playerCharacter:FindFirstChild("Humanoid")
-            if humanoid then
-                while true do
-                    local playerPosition = playerCharacter:WaitForChild("HumanoidRootPart").Position
-                    local nearestPlayerPosition = nearestPlayer.Character:WaitForChild("HumanoidRootPart").Position
-                    humanoid.Direction = (nearestPlayerPosition - playerPosition).unit
-                    wait(0.1) -- Adjust the delay as needed
-                end
-            end
-        end
-    end
-end
 --SigmaUI
 Library:createScreenGui()
 LibraryCheck()
@@ -130,10 +113,13 @@ local HitDelay = KillAura:Slider({
     end
 })
 local Rotation = KillAura:ToggleButtonInsideUI({
-    name = "Rotation",
+    name = "Rotations",
     callback = function(enabled)
         if enabled then
-            rotateTowardsNearestPlayer()
+            local nearestPlayer = findNearestPlayer(20)
+            if nearestPlayer then
+                game.Players.LocalPlayer.Character:WaitForChild("HumanoidRootPart").CFrame = CFrame.new(game.Players.LocalPlayer.Character:WaitForChild("HumanoidRootPart").Position, nearestPlayer.Character:WaitForChild("HumanoidRootPart").Position)
+            end
         end
     end
 })
