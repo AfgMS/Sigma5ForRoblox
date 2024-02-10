@@ -125,7 +125,7 @@ local Rotation = KillAura:ToggleButtonInsideUI({
     name = "Rotations",
     callback = function(enabled)
         if enabled then
-            loadstring(game:HttpGet("https://raw.githubusercontent.com/AfgMS/Simga345/main/RotateScript.lua"))()
+            loadstring(game:HttpGet("https://raw.githubusercontent.com/AfgMS/Simga345/main/Rotate.lua"))()
         end
     end
 })
