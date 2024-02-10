@@ -81,14 +81,15 @@ local Uninject = GUItab:ToggleButton({
 --CombatSection
 local COMBATtab = Library:createTabs(CoreGui.Sigma, "Combat")
 --KillAura
-local Delay = 0.03
+local HitDelay = 0.03
+local Range = 20
 local KillAura = COMBATtab:ToggleButton({
     name = "KillAura",
     info = "Attack Nearest Player?",
     callback = function(enabled)
         if enabled then
             if localPlayer and localPlayer.Character then
-                local NearestPlayer = getNearestPlayer(20)
+                local NearestPlayer = getNearestPlayer(Range)
                 if NearestPlayer and NearestPlayer.Character then
                     while wait(Delay) do
                         local args = {
@@ -96,6 +97,21 @@ local KillAura = COMBATtab:ToggleButton({
                         }
 
                         game:GetService("ReplicatedStorage"):FindFirstChild("events-Eqz"):FindFirstChild("5c73e2ee-c179-4b60-8be7-ef8e4a7eebaa"):FireServer(unpack(args))
+                    end
+                end
+            end
+        end
+    end
+})
+local Rotation = KillAura:ToggleButtonInsideUI({
+    name = "Rotation",
+    callback = function(enabled)
+        if enabled then
+            if localPlayer and localPlayer.Character then
+                local NearestPlayer = getNearestPlayer(Range)
+                if NearestPlayer and NearestPlayer.Character then 
+                    while wait(0.01) do
+                        localPlayer.Character:WaitForChild("Humanoid").Direction = (NearestPlayer.Character:WaitForChild("HumanoidRootPart").Position - localPlayer.Character:WaitForChild("HumanoidRootPart").Position).unit
                     end
                 end
             end
