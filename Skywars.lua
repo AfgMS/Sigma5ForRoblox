@@ -29,8 +29,9 @@ end
 local function getNearestPlayer(range)
     local nearestPlayer
     local nearestDistance = math.huge
+    local players = game:GetService("Players"):GetPlayers()
 
-    for _, player in ipairs(Players:GetPlayers()) do
+    for _, player in ipairs(players) do
         if player.Character and player.Character.PrimaryPart then
             local playerPosition = player.Character.PrimaryPart.Position
             local distance = (playerPosition - game.Workspace.CurrentCamera.CFrame.Position).magnitude
@@ -90,7 +91,7 @@ local KillAura = COMBATtab:ToggleButton({
         if enabled then
             if localPlayer and localPlayer.Character then
                 local NearestPlayer = getNearestPlayer(Range)
-                if NearestPlayer and NearestPlayer.Character then
+                if NearestPlayer then
                     while wait(Delay) do
                         local args = {
                             [1] = NearestPlayer
@@ -119,8 +120,8 @@ local Rotation = KillAura:ToggleButtonInsideUI({
         if enabled then
             if localPlayer and localPlayer.Character then
                 local NearestPlayer = getNearestPlayer(Range)
-                if NearestPlayer and NearestPlayer.Character then 
-                    while wait(0.01) do
+                if NearestPlayer then 
+                    while wait(0.1) do
                         localPlayer.Character:WaitForChild("Humanoid").Direction = (NearestPlayer.Character:WaitForChild("HumanoidRootPart").Position - localPlayer.Character:WaitForChild("HumanoidRootPart").Position).unit
                     end
                 end
