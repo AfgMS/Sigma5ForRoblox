@@ -48,11 +48,15 @@ local function aimAtNearestPlayer(range)
     local nearestPlayer = findNearestPlayer(range)
     if nearestPlayer then
         local direction = (nearestPlayer.Character.HumanoidRootPart.Position - Camera.CFrame.Position).unit
-        local lookVector = Vector3.new(direction.X, 0, direction.Z).unit
-        local newLookAt = Camera.CFrame.Position + lookVector * 10
+        local horizontalDirection = Vector3.new(direction.X, 0, direction.Z).unit
+        local verticalDirection = Vector3.new(0, direction.Y, 0).unit
+        local horizontalLookAt = Camera.CFrame.Position + horizontalDirection * 10
+        local verticalLookAt = Camera.CFrame.Position + verticalDirection * 10
+        local newLookAt = CFrame.new(horizontalLookAt, verticalLookAt).p
         Camera.CFrame = CFrame.new(Camera.CFrame.Position, newLookAt)
     end
 end
+
 local function attackNearestPlayer()
     local nearestPlayer = findNearestPlayer(20)
     if nearestPlayer then
