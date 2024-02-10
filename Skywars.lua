@@ -101,7 +101,6 @@ local Uninject = GUItab:ToggleButton({
 local COMBATtab = Library:createTabs(CoreGui.Sigma, "Combat")
 --KillAura
 local Delay = 0.03
-local RotateDelay = 0.1
 local KillAura = COMBATtab:ToggleButton({
     name = "KillAura",
     info = "Attack Nearest Player?",
@@ -114,37 +113,3 @@ local KillAura = COMBATtab:ToggleButton({
         end
     end
 })
-local RotateDelay = KillAura:Slider({
-    title = "RotateDelay",
-    min = 1,
-    max = 3,
-    default = RotateDelay,
-    callback = function(value)
-        RotateDelay = value
-    end
-})
-local Rotation = KillAura:ToggleButtonInsideUI({
-    name = "Rotations",
-    callback = function(enabled)
-        if enabled then
-            RotateDelay = 0.1
-            local function rotateToNearestPlayer()
-                while enabled do
-                    local nearestPlayer = findNearestLivingPlayer()
-                    if nearestPlayer then
-                        local direction = (nearestPlayer.Character.HumanoidRootPart.Position - localPlayer.Character.HumanoidRootPart.Position).unit
-                        local lookVector = Vector3.new(direction.X, 0, direction.Z).unit -- Keep only the horizontal direction
-                        local newCFrame = CFrame.new(localPlayer.Character.HumanoidRootPart.Position, localPlayer.Character.HumanoidRootPart.Position + lookVector)
-                        localPlayer.Character:SetPrimaryPartCFrame(newCFrame)
-                    end
-                    wait(RotateDelay)
-                end
-            end
-
-            spawn(rotateToNearestPlayer)
-        else
-            RotateDelay = 86400
-        end
-    end
-})
-
