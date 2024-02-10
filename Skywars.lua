@@ -26,18 +26,30 @@ local function LibraryCheck()
         end
     end
 end
-local function findNearestLivingPlayer()
+local function findNearestPlayer(range)
     local nearestPlayer
     local nearestDistance = math.huge
+    local localPlayer = game.Players.LocalPlayer
 
     for _, player in ipairs(game.Players:GetPlayers()) do
-        if player ~= localPlayer and isAlive(player) then
-            local distance = (player.Character.HumanoidRootPart.Position - localPlayer.Character.HumanoidRootPart.Position).Magnitude
-            if distance < nearestDistance then
+        if player ~= localPlayer and player.Character and player.Character:FindFirstChild("HumanoidRootPart") then
+            local distance = (player.Character.HumanoidRootPart.Position - localPlayer.Character.HumanoidRootPart.Position).magnitude
+            if distance < nearestDistance and distance <= range then
                 nearestPlayer = player
                 nearestDistance = distance
             end
         end
+    end
+
+    return nearestPlayer
+end
+local function attackNearestPlayer()
+    local nearestPlayer = findNearestPlayer(20)
+    if nearestPlayer then
+        local args = {
+            [1] = nearestPlayer
+        }
+        game:GetService("ReplicatedStorage"):FindFirstChild("events-Eqz"):FindFirstChild("5c73e2ee-c179-4b60-8be7-ef8e4a7eebaa"):FireServer(unpack(args))
     end
 end
 --SigmaUI
@@ -83,32 +95,9 @@ local KillAura = COMBATtab:ToggleButton({
     info = "Attack Nearest Player?",
     callback = function(enabled)
         if enabled then
-            local NearestPlayer = findNearestLivingPlayer(20)
-            if NearestPlayer then
-                while wait(0.03) do
-                    game:GetService("ReplicatedStorage"):FindFirstChild("events-Eqz"):FindFirstChild("5c73e2ee-c179-4b60-8be7-ef8e4a7eebaa"):FireServer(NearestPlayer or NearestPlayer.Character:WaitForChild("HumanoidRootPart"))
-                end
-            end
-        end
-    end
-})
-local ButtonFix = KillAura:Slider({
-    title = "ButtonFix",
-    min = 0,
-    max = 0,
-    default = 0,
-    callback = function(value)
-    end
-})
-local Rotation = KillAura:ToggleButtonInsideUI({
-    name = "Rotation",
-    callback = function(enabled)
-        if enabled then
-            local NearestPlayer = findNearestLivingPlayer(20)
-            if NearestPlayer then 
-                while wait(0.1) do
-                    localPlayer.Character:WaitForChild("Humanoid").Direction = (NearestPlayer.Character:WaitForChild("HumanoidRootPart").Position - localPlayer.Character:WaitForChild("HumanoidRootPart").Position).unit
-                end
+            while true do
+                attackNearestPlayer()
+                wait(0.03)
             end
         end
     end
