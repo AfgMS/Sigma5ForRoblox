@@ -43,6 +43,20 @@ local function getNearestPlayer(range)
 
     return nearestPlayer
 end
+local function GetSword()
+    local inventories = game:GetService("ReplicatedStorage").Inventories
+    local swordItem = nil
+    for itemName, item in pairs(inventories:GetChildren()) do
+        if string.find(itemName:lower(), "sword") then
+            swordItem = item
+            break
+        end
+    end
+
+    -- Return the found sword item
+    return swordItem
+end
+
 --SigmaUI
 Library:createScreenGui()
 LibraryCheck()
@@ -80,45 +94,6 @@ local Uninject = GUItab:ToggleButton({
 })
 --CombatSection
 local COMBATtab = Library:createTabs(CoreGui.Sigma, "Combat")
---AntiKnockback
--- AntiKnockback
-local KnockbackRemote = debug.getupvalue(require(game:GetService("ReplicatedStorage").TS.damage["knockback-util"]).KnockbackUtil.calculateKnockbackVelocity, 1)
-local HorizontalKB = 100
-local VerticalKB = 100
-
-local AntiKnockback = COMBATtab:ToggleButton({
-    name = "AntiKnockback",
-    info = "Reduce Knockback?",
-    callback = function(enabled)
-        if enabled then
-            if localPlayer and localPlayer.Character then
-                KnockbackRemote["kbDirectionStrength"] = HorizontalKB
-                KnockbackRemote["kbUpwardStrength"] = VerticalKB
-            else
-                KnockbackRemote["kbDirectionStrength"] = 0
-                KnockbackRemote["kbUpwardStrength"] = 0
-            end
-        end
-    end
-})
-local AntiKBHorizontal = AntiKnockback:Slider({
-    title = "Horizontal",
-    min = 0,
-    max = 100,
-    default = HorizontalKB,
-    callback = function(value)
-        HorizontalKB = value
-    end
-})
-local AntiKBVertical = AntiKnockback:Slider({
-    title = "Vertical",
-    min = 0,
-    max = 100,
-    default = VerticalKB,
-    callback = function(value)
-        VerticalKB = value
-    end
-})
 --KillAura
 local Delay = 0.01
 local Range = 20
@@ -144,7 +119,7 @@ local KillAura = COMBATtab:ToggleButton({
                                 ["value"] = localPlayer.Character:WaitForChild("Humanoid").Position
                             }
                         },
-                        ["weapon"] = game:GetService("ReplicatedStorage").Inventories.NobolineUser08.wood_sword
+                        ["weapon"] = GetSword()
                     }
                 }
 
