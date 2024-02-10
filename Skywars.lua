@@ -1,6 +1,6 @@
 local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/AfgMS/Simga345/main/SigmaDev.lua", true))()
 local CoreGui = game:WaitForChild("CoreGui")
-local Player = game.Players.PlayerAdded:Wait()
+local Player = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local localPlayer = game.Players.LocalPlayer
 
