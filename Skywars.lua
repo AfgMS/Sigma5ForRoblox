@@ -135,10 +135,8 @@ local HitDelaySlider = Aimbot:Slider({
         WaitDelay = val
     end
 })
---AutoQueue
-local AutoQueueDelay = 5
+local AutoQueueDelay = 3
 local function AutoQueueOnDeath()
-    wait(AutoQueueDelay)
     local args = {
         [1] = true,
         [2] = "SkyWarsSolo"
@@ -149,17 +147,14 @@ local function AutoQueueOnDeath()
     end
 end
 local function HealthCheck()
-    local character = LocalPlayer.Character
-    if character then
-        local humanoid = character:FindFirstChild("Humanoid")
-        if humanoid then
-            humanoid.Died:Connect(AutoQueueOnDeath)
-        end
+    local humanoid = LocalPlayer.Character:FindFirstChildOfClass("Humanoid")
+    if humanoid then
+        humanoid.Died:Connect(AutoQueueOnDeath)
     end
 end
 local AutoQueue = COMBATtab:ToggleButton({
     name = "AutoQueue",
-    info = "Automatically queue on death",
+    info = "Automatically Play Again",
     callback = function(enabled)
         if enabled then
             HealthCheck()
@@ -171,7 +166,7 @@ local QueueDelaySlider = AutoQueue:Slider({
     title = "QueueDelay",
     min = 0,
     max = 5,
-    default = 5,
+    default = 3,
     callback = function(val)
         AutoQueueDelay = val
     end
