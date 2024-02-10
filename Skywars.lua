@@ -1,6 +1,6 @@
 local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/AfgMS/Simga345/main/SigmaDev.lua", true))()
 local CoreGui = game:WaitForChild("CoreGui")
-local Players = game:GetService("Players")
+local Player = game.Players.PlayerAdded:Wait()
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local localPlayer = game.Players.LocalPlayer
 
@@ -50,6 +50,16 @@ local function attackNearestPlayer()
             [1] = nearestPlayer
         }
         game:GetService("ReplicatedStorage"):FindFirstChild("events-Eqz"):FindFirstChild("5c73e2ee-c179-4b60-8be7-ef8e4a7eebaa"):FireServer(unpack(args))
+    end
+end
+function CheckForNearest()
+    for i, player in ipairs(game.Players:GetPlayers()) do
+        if player then
+            local character = player.Character
+            if character and player ~= Player then
+                Player.Character.HumanoidRootPart.CFrame.LookAt = character.Humanoid.CFrame
+            end
+        end
     end
 end
 --SigmaUI
@@ -112,17 +122,26 @@ local HitDelay = KillAura:Slider({
         Delay = value
     end
 })
+function CheckForNearest()
+    for i, player in ipairs(game.Players:GetPlayers()) do
+        if player and player ~= Player then
+            local character = player.Character
+            if character then
+                Player.Character.HumanoidRootPart.CFrame = CFrame.new(Player.Character.HumanoidRootPart.Position, character.HumanoidRootPart.Position)
+            end
+        end
+    end
+end
 local Rotation = KillAura:ToggleButtonInsideUI({
     name = "Rotations",
     callback = function(enabled)
         if enabled then
             local nearestPlayer = findNearestPlayer(20)
             if nearestPlayer then
-                while wait(0.01) do
-                    game.Players.LocalPlayer.Character:WaitForChild("HumanoidRootPart").CFrame = CFrame.new(game.Players.LocalPlayer.Character:WaitForChild("HumanoidRootPart").Position, nearestPlayer.Character:WaitForChild("HumanoidRootPart").Position)
-                end
+                local Rotate = spawn(function()
+                    CheckForNearest()
+                end)
             end
         end
     end
 })
-
