@@ -135,21 +135,14 @@ local HitDelaySlider = Aimbot:Slider({
         WaitDelay = val
     end
 })
+--AutoQueue
 local AutoQueueDelay = 3
 local function AutoQueueOnDeath()
-    local args = {
-        [1] = true,
-        [2] = "SkyWarsSolo"
-    }
-    local joinEvent = game:GetService("ReplicatedStorage"):FindFirstChild("events-Eqz"):FindFirstChild("a800bb9a-1030-420e-b141-21aaada3d57e")
-    if joinEvent then
-        joinEvent:FireServer(unpack(args))
-    end
+    game:GetService("ReplicatedStorage").events-Eqz.a800bb9a-1030-420e-b141-21aaada3d57e:FireServer(true, "SkyWarsSolo")
 end
-local function HealthCheck()
-    local humanoid = LocalPlayer.Character:FindFirstChildOfClass("Humanoid")
-    if humanoid then
-        humanoid.Died:Connect(AutoQueueOnDeath)
+local function CharacterCheck()
+    if LocalPlayer.Character and LocalPlayer.Character.Parent ~= workspace then
+        AutoQueueOnDeath()
     end
 end
 local AutoQueue = COMBATtab:ToggleButton({
@@ -157,8 +150,10 @@ local AutoQueue = COMBATtab:ToggleButton({
     info = "Automatically Play Again",
     callback = function(enabled)
         if enabled then
-            HealthCheck()
-            LocalPlayer.CharacterAdded:Connect(HealthCheck)
+            while true do
+                CharacterCheck()
+                wait(AutoQueueDelay)
+            end
         end
     end
 })
