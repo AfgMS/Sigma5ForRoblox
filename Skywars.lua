@@ -100,7 +100,7 @@ local Uninject = GUItab:ToggleButton({
 local COMBATtab = Library:createTabs(CoreGui.Sigma, "Combat")
 --AimBot
 local AimRange
-local WaitDelay = 0.1
+local WaitDelay = 0.01
 
 local Aimbot = COMBATtab:ToggleButton({
     name = "Aimbot",
@@ -128,9 +128,9 @@ local AimRangeSlider = Aimbot:Slider({
 })
 local HitDelaySlider = Aimbot:Slider({
     title = "HitDelay",
-    min = 0,
-    max = 3,
-    default = 0,
+    min = 0.01,
+    max = 0,
+    default = 0.01,
     callback = function(val)
         WaitDelay = val
     end
