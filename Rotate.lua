@@ -23,7 +23,7 @@ local function rotateCharacterToNearestPlayer()
     local nearestPlayer, distance = findNearestPlayer()
     if nearestPlayer and distance <= 20 and not localPlayer.Character.Humanoid.MoveDirection.Magnitude > 0 then
         local direction = (nearestPlayer.Character.HumanoidRootPart.Position - Character.HumanoidRootPart.Position).unit
-        local lookVector = Vector3.new(direction.X, 0, direction.Z).unit -- Keep only the horizontal direction
+        local lookVector = Vector3.new(direction.X, 0, direction.Z).unit
         local newCFrame = CFrame.new(Character.HumanoidRootPart.Position, Character.HumanoidRootPart.Position + lookVector)
         Character:SetPrimaryPartCFrame(newCFrame)
     end
