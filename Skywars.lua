@@ -113,6 +113,14 @@ local KillAura = COMBATtab:ToggleButton({
         end
     end
 })
+local TableFix = KillAura:Slider({
+    title = "None",
+    min = 0,
+    max = 0,
+    default = 0,
+    callback = function(value)
+    end
+})
 local Rotation = KillAura:ToggleButtonInsideUI({
     name = "Rotations",
     callback = function(enabled)
