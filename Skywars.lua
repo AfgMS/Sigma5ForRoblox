@@ -48,15 +48,10 @@ local function aimAtNearestPlayer(range)
     local nearestPlayer = findNearestPlayer(range)
     if nearestPlayer then
         local direction = (nearestPlayer.Character.HumanoidRootPart.Position - Camera.CFrame.Position).unit
-        local horizontalDirection = Vector3.new(direction.X, 0, direction.Z).unit
-        local verticalDirection = Vector3.new(0, direction.Y, 0).unit
-        local horizontalLookAt = Camera.CFrame.Position + horizontalDirection * 10
-        local verticalLookAt = Camera.CFrame.Position + verticalDirection * 10
-        local newLookAt = CFrame.new(horizontalLookAt, verticalLookAt).p
-        Camera.CFrame = CFrame.new(Camera.CFrame.Position, newLookAt)
+        local newLookAt = CFrame.new(Camera.CFrame.Position, nearestPlayer.Character.HumanoidRootPart.Position)
+        Camera.CFrame = newLookAt
     end
 end
-
 local function attackNearestPlayer()
     local nearestPlayer = findNearestPlayer(20)
     if nearestPlayer then
@@ -138,6 +133,39 @@ local HitDelaySlider = Aimbot:Slider({
     default = 0,
     callback = function(val)
         WaitDelay = val
+    end
+})
+--AutoLeave
+local AutoQueueDelay = 5
+local AutoQueue = COMBATtab:ToggleButton({
+    name = "AutoQueue",
+    info = "Automatically Play Again",
+    callback = function(enabled)
+        if enabled then
+            local LeaveRE = game:GetService("ReplicatedStorage"):FindFirstChild("events-Eqz"):FindFirstChild("b4a59f75-3e08-4c35-aea3-d32a6267f7d8")
+            if LeaveRE then
+                LeaveRE.OnClientEvent:Connect(function()
+                    wait(AutoQueueDelay)
+                    local args = {
+                        [1] = true,
+                        [2] = "SkyWarsSolo"
+                    }
+                    local joinEvent = game:GetService("ReplicatedStorage"):FindFirstChild("events-Eqz"):FindFirstChild("a800bb9a-1030-420e-b141-21aaada3d57e")
+                    if joinEvent then
+                        joinEvent:FireServer(unpack(args))
+                    end
+                end)
+            end
+        end
+    end
+})
+local AutoQueueDelay = AutoQueue:Slider({
+    title = "QueueDelay",
+    min = 0,
+    max = 5,
+    default = 5,
+    callback = function(val)
+        AutoQueueDelay = val
     end
 })
 --KillAura
