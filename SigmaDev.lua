@@ -695,7 +695,7 @@ ButtonsMenuTitle.ZIndex = 2
 
 			local UICorner = Instance.new("UICorner", UISliderButton)
 			UICorner.CornerRadius = UDim.new(1, 0)
-
+			
 local function Update(input)
     MouseDown = true
     repeat
@@ -709,8 +709,7 @@ local function Update(input)
         end
 
         if inputPosition then
-            Percent = math.clamp((inputPosition.X - SliderBack.AbsolutePosition.X) / SliderBack.AbsoluteSize.X, 0, 1)
-            local sliderValue = math.round(Percent * 100)
+            local sliderValue = math.floor(options.min + Percent * (options.max - options.min) + 0.5) -- Adjusted calculation
             SliderValueLabel.Text = sliderValue
             SliderFill.Size = UDim2.fromScale(Percent, 1)
 
@@ -718,7 +717,6 @@ local function Update(input)
         end
     until not MouseDown
 end
-
 
     UISliderButton.MouseButton1Down:Connect(function()
         Update(game:GetService("UserInputService").InputChanged:Wait())
