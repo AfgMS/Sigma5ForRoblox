@@ -302,9 +302,9 @@ local function LongJump()
     humanoid:ChangeState(Enum.HumanoidStateType.Jumping)
     wait(0.38)
     humanoid:ChangeState(Enum.HumanoidStateType.Jumping)
-    wait(0.51)
+    wait(1)
     humanoid:ChangeState(Enum.HumanoidStateType.Jumping)
-    wait(0.51)
+    wait(1)
     humanoid:ChangeState(Enum.HumanoidStateType.Jumping)
     rootPart.Velocity = forwardVector * jumpPower * CustomMultiplier
 end
