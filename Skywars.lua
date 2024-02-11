@@ -12,33 +12,22 @@ local Settings
 local FirstExecute = true
 
 function SettingTest()
-    Settings = {
+    local Settings = {
         ActiveMods = {Value = true},
         TabGUI = {Value = true},
         Uninject = {Value = false},
         Aimbot = {Value = false},
-        KillAura = {Value = false, RotationHandler = true},
-        AutoQueue = {Value = false},    
+        KillAura = {Value = false, Rotation = false,}, 
         SpeedTemp = {Value = true},
         LongJumpToggle = {Value = false}
     }
     
     local JsonEncodeSettings = HttpService:JSONEncode(Settings)
+    print("Encoded Settings:", JsonEncodeSettings)
+    
     if writefile and makefolder then
         makefolder("Sigma5")
         writefile("Sigma5/" .. FileName, JsonEncodeSettings)
-    end
-    FirstExecute = false
-end
-local function DeleteJunk()
-    local folder = game:GetService("Players").LocalPlayer
-    local files = folder:GetChildren()
-
-    for _, file in ipairs(files) do
-        if file:IsA("File") and file.Name ~= FileName then
-            file:Destroy()
-            print("Deleted file:", file.Name)
-        end
     end
 end
 function FirstTimeExecuteCheck()
@@ -68,7 +57,6 @@ function LoadModules()
 end
 task.spawn(function()
     if FirstTimeExecuteCheck() then
-        DeleteJunk()
         SettingTest()
     end
 end)
