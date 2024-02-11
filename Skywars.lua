@@ -37,8 +37,17 @@ end
 function SaveModules()    
     if not FirstExecute then
         local JsonEncodeSettings = HttpService:JSONEncode(Settings)
+        
         if writefile then
-            writefile("Sigma5/" .. FileName, JsonEncodeSettings)
+            local success, errorMessage = pcall(function()
+                writefile("Sigma5/" .. FileName, JsonEncodeSettings)
+            end)
+            
+            if not success then
+                warn("Error saving settings:", errorMessage)
+            end
+        else
+            warn("writefile function is not available")
         end
     end
 end
@@ -100,6 +109,17 @@ local function findNearestPlayer(range)
     end
 
     return nearestPlayer
+end
+local function GetAllPlayers()
+    local allPlayers = {}
+
+    for _, player in ipairs(game.Players:GetPlayers()) do
+        if player ~= localPlayer and player.Character and player.Character:FindFirstChild("HumanoidRootPart") then
+            table.insert(allPlayers, player)
+        end
+    end
+
+    return allPlayers
 end
 local function aimAtNearestPlayer(range)
     local nearestPlayer = findNearestPlayer(range)
