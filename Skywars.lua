@@ -9,62 +9,50 @@ local UserInputService = game:GetService("UserInputService")
 --AutoSave?
 local FileName = "Sigma5Test.lua"
 local Settings
-local FirstExecute = true
 
-function SettingTest()
-    local Settings = {
-        ActiveMods = {Value = true},
-        TabGUI = {Value = true},
-        Uninject = {Value = false},
-        Aimbot = {Value = false},
-        KillAura = {Value = false, Rotation = false,}, 
-        SpeedTemp = {Value = true},
-        LongJumpToggle = {Value = false}
+local function SettingTest()
+    local DefaultSettings = {
+        ActiveMods = { Value = true },
+        TabGUI = { Value = true },
+        Uninject = { Value = false },
+        Aimbot = { Value = false },
+        KillAura = { Value = false, RotationHandler = true },
+        AutoQueue = { Value = false },    
+        SpeedTemp = { Value = true },
+        LongJumpToggle = { Value = false }
     }
     
-    local JsonEncodeSettings = HttpService:JSONEncode(Settings)
-    print("Encoded Settings:", JsonEncodeSettings)
-    
+    local JsonEncodeSettings = HttpService:JSONEncode(DefaultSettings)
     if writefile and makefolder then
         makefolder("Sigma5")
         writefile("Sigma5/" .. FileName, JsonEncodeSettings)
     end
 end
-function FirstTimeExecuteCheck()
+local function FirstTimeExecuteCheck()
     return not (readfile and isfile and isfile("Sigma5/" .. FileName))
 end
-function SaveModules()    
-    if not FirstExecute then
-        local JsonEncodeSettings = HttpService:JSONEncode(Settings)
-        
-        if writefile then
-            local success, errorMessage = pcall(function()
-                writefile("Sigma5/" .. FileName, JsonEncodeSettings)
-            end)
-            
-            if not success then
-                warn("Error saving settings:", errorMessage)
-            end
-        else
-            warn("writefile function is not available")
-        end
+local function SaveModules()
+    local JsonEncodeSettings = HttpService:JSONEncode(Settings)
+    
+    if writefile then
+        writefile("Sigma5/" .. FileName, JsonEncodeSettings)
     end
 end
-function LoadModules()
+local function LoadModules()
     if readfile and isfile and isfile("Sigma5/" .. FileName) then
-        local fileContent = readfile("Sigma5/" .. FileName)
-        if fileContent then
-            Settings = HttpService:JSONDecode(fileContent)
-            print("Loaded Settings:", Settings)
-        else
-            print("Error reading file content.")
+        Settings = HttpService:JSONDecode(readfile("Sigma5/" .. FileName))
+    end
+end
+local function DeleteJunk()
+    for _, file in ipairs(getfolder("Sigma5"):GetChildren()) do
+        if file.Name ~= FileName then
+            file:Destroy()
         end
-    else
-        print("Settings file not found.")
     end
 end
 task.spawn(function()
     if FirstTimeExecuteCheck() then
+        DeleteJunk()
         SettingTest()
     end
 end)
@@ -74,6 +62,7 @@ end)
 task.spawn(function()
     repeat
         task.wait(1)
+        
         SaveModules()
     until not game
 end)
