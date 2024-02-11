@@ -4,6 +4,7 @@ local Player = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local localPlayer = game.Players.LocalPlayer
 local Camera = game:GetService("Workspace").CurrentCamera
+local UserInputService = game:GetService("UserInputService")
 
 --Function
 local function LibraryCheck()
@@ -195,15 +196,24 @@ local SpeedTemp = PLAYERtab:ToggleButton({
         end
     end
 })
---LongJumpTemporarily
-local LongJumpTemp = PLAYERtab:ToggleButton({
-    name = "LongJumpTemp",
-    info = "Temporary gravity change",
+--LongJump
+local function LongJump()
+    for _ = 1, 5 do
+        game.Players.LocalPlayer.Character:FindFirstChildOfClass("Humanoid"):ChangeState(Enum.HumanoidStateType.Jumping)
+        wait()
+    end
+    wait(0.43)
+    game.Workspace.Gravity = 38
+    game.Players.LocalPlayer.Character:MoveTo(game.Players.LocalPlayer.Character.HumanoidRootPart.Position + Vector3.new(10, 0, 0))
+end
+local LongJumpToggle = PLAYERtab:ToggleButton({
+    name = "LongJump",
+    info = "Jump multiple times and then move forward",
     callback = function(enabled)
         if enabled then
-            game.Workspace.Gravity = 53
+            LongJump()
         else
-            game.Workspace.Gravity = 196.2
+            game.Workspace.Gravity = 196.6
         end
     end
 })
