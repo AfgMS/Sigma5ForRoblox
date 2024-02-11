@@ -52,7 +52,15 @@ function SaveModules()
 end
 function LoadModules()
     if readfile and isfile and isfile("Sigma5/" .. FileName) then
-        Settings = HttpService:JSONDecode(readfile("Sigma5/" .. FileName))
+        local fileContent = readfile("Sigma5/" .. FileName)
+        if fileContent then
+            Settings = HttpService:JSONDecode(fileContent)
+            print("Loaded Settings:", Settings)
+        else
+            print("Error reading file content.")
+        end
+    else
+        print("Settings file not found.")
     end
 end
 task.spawn(function()
