@@ -1,4 +1,5 @@
-local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/AfgMS/Simga345/main/SigmaDev.lua", true))()
+x 
+llocal Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/AfgMS/Simga345/main/SigmaDev.lua", true))()
 local CoreGui = game:WaitForChild("CoreGui")
 local Player = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
@@ -136,7 +137,7 @@ local HitDelaySlider = Aimbot:Slider({
     end
 })
 --AutoQueue
-local function AutoQueueOnDeath()
+local function FireAutoQueue()
     local args = {
         [1] = true,
         [2] = "SkyWarsSolo"
@@ -146,9 +147,11 @@ local function AutoQueueOnDeath()
         joinEvent:FireServer(unpack(args))
     end
 end
-local function CharacterCheck()
-    if LocalPlayer.Character and LocalPlayer.Character.Parent ~= workspace then
-        AutoQueueOnDeath()
+local AutoQueueDelay = 5
+local function AutoQueueLoop()
+    while true do
+        FireAutoQueue()
+        wait(AutoQueueDelay)
     end
 end
 local AutoQueue = COMBATtab:ToggleButton({
@@ -156,9 +159,7 @@ local AutoQueue = COMBATtab:ToggleButton({
     info = "Automatically Play Again",
     callback = function(enabled)
         if enabled then
-            while wait(1) do
-                CharacterCheck()
-            end
+            spawn(AutoQueueLoop)
         end
     end
 })
