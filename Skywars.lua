@@ -45,6 +45,16 @@ local function findNearestPlayer(range)
 
     return nearestPlayer
 end
+local function getAllPlayers()
+    local localPlayer = game.Players.LocalPlayer
+    local players = {}
+    for _, player in ipairs(game.Players:GetPlayers()) do
+        if player ~= localPlayer and player.Character then
+            table.insert(players, player)
+        end
+    end
+    return players
+end
 local function aimAtNearestPlayer(range)
     local nearestPlayer = findNearestPlayer(range)
     if nearestPlayer then
