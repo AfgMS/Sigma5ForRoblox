@@ -200,12 +200,22 @@ local SpeedTemp = PLAYERtab:ToggleButton({
 local function LongJump()
     game.Workspace.Gravity = 43
     game.Players.LocalPlayer.Character:FindFirstChildOfClass("Humanoid"):ChangeState(Enum.HumanoidStateType.Jumping)
-    wait(0.15)
+    while game.Players.LocalPlayer.Character:FindFirstChildOfClass("Humanoid").State ~= Enum.HumanoidStateType.Falling do
+        wait()
+    end
     game.Players.LocalPlayer.Character:FindFirstChildOfClass("Humanoid"):ChangeState(Enum.HumanoidStateType.Jumping)
-    wait(0.15)
+    while game.Players.LocalPlayer.Character:FindFirstChildOfClass("Humanoid").State ~= Enum.HumanoidStateType.Falling do
+        wait()
+    end
     game.Players.LocalPlayer.Character:FindFirstChildOfClass("Humanoid"):ChangeState(Enum.HumanoidStateType.Jumping)
-    wait(0.28)
-    game.Players.LocalPlayer.Character:MoveTo(game.Players.LocalPlayer.Character.HumanoidRootPart.Position + Vector3.new(35, 0, 0))
+    while game.Players.LocalPlayer.Character:FindFirstChildOfClass("Humanoid").State ~= Enum.HumanoidStateType.Falling do
+        wait()
+    end
+    local direction = game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame.lookVector
+    for i = 1, 11 do
+        game.Players.LocalPlayer.Character:Move(Vector3.new(direction.X * 18, 0, direction.Z * 18))
+        wait(0.18)
+    end
     wait(0.8)
     game.Workspace.Gravity = 196.2
 end
