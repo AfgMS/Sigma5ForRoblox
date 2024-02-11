@@ -190,7 +190,7 @@ local SpeedTemp = PLAYERtab:ToggleButton({
     info = "Temporary speed boost",
     callback = function(enabled)
         if enabled then
-            game.Players.LocalPlayer.Character:WaitForChild("Humanoid").WalkSpeed = 54
+            game.Players.LocalPlayer.Character:WaitForChild("Humanoid").WalkSpeed = 68
         else
             game.Players.LocalPlayer.Character:WaitForChild("Humanoid").WalkSpeed = 16
         end
@@ -199,14 +199,15 @@ local SpeedTemp = PLAYERtab:ToggleButton({
 local function LongJump()
     game.Workspace.Gravity = 43
     game.Players.LocalPlayer.Character:FindFirstChildOfClass("Humanoid"):ChangeState(Enum.HumanoidStateType.Jumping)
-    wait(2.8)
+    wait(1.8)
     game.Players.LocalPlayer.Character:FindFirstChildOfClass("Humanoid"):ChangeState(Enum.HumanoidStateType.Jumping)
-    wait(2.8)
+    wait(1.8)
     game.Players.LocalPlayer.Character:FindFirstChildOfClass("Humanoid"):ChangeState(Enum.HumanoidStateType.Jumping)
-    wait(0.5)
-    game.Players.LocalPlayer.Character:WaitForChild("Humanoid").Walkspeed = 89
-    wait(5)
-    game.Players.LocalPlayer.Character:WaitForChild("Humanoid").Walkspeed = 16
+    wait(1.8)
+    game.Players.LocalPlayer.Character:FindFirstChildOfClass("Humanoid"):ChangeState(Enum.HumanoidStateType.Jumping)
+    wait(1.8)
+    game.Players.LocalPlayer.Character:FindFirstChildOfClass("Humanoid"):ChangeState(Enum.HumanoidStateType.Jumping)
+    wait(1.8)
     game.Workspace.Gravity = 196.2
 end
 local LongJumpToggle = PLAYERtab:ToggleButton({
