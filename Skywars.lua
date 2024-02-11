@@ -125,38 +125,41 @@ local AimRangeSlider = Aimbot:Slider({
     end
 })
 --Hitbox
-local HitboxRange = 20
-local NearestPlayer = findNearestPlayer(HitboxRange)
+local HitboxStartRange = nil
+local NearestPlayer = findNearestPlayer(HitboxStartRange)
 local Hitbox = NearestPlayer.Character:FindFirstChild("Hitbox")
 local OriginalSize = Hitbox:FindFirstChild("OriginalSize")
 local HitboxSize1 = 8
 local HitboxSize2 = 8
 local HitboxSize3 = 8
-local Hitbox = COMBATtab:ToggleButton({
+local HitboxToggle = COMBATtab:ToggleButton({
     name = "Hitbox",
-    info = "Change player hitbox size",
+    info = "Change hitbox size",
     callback = function(enabled)
         if enabled then
-        if NearestPlayer then
-            Hitbox.Size = Vector3.new(HitboxSize1, HitboxSize2, HitboxSize3)
-            Hitbox.Transparency = 0.75
-            Hitbox.BrickColor = BrickColor.new(44, 101, 29) -- Green parsley color
-        else
-            Hitbox.Size = OriginalSize.Value
-            Hitbox.Transparency = 1
+            HitboxStartRange = 20
+            if NearestPlayer then
+                Hitbox.Size = Vector3.new(HitboxSize1, HitboxSize2, HitboxSize3)
+                Hitbox.Transparency = 0.75
+                Hitbox.BrickColor = BrickColor.new(44, 101, 29)
+            else
+                HitboxStartRange = 0
+                Hitbox.Size = OriginalSize.Value
+                Hitbox.Transparency = 1
+            end
         end
     end
 })
-local HitboxRange = Hitbox:Slider({
-    title = "HitboxRange",
+local HitboxStartRangeSlider = HitboxToggle:Slider({
+    title = "HitboxStart",
     min = 0,
     max = 100,
     default = 20,
     callback = function(val)
-        HitboxRange = val
+        HitboxStartRange = val
     end
 })
-local HitboxSize1Slider = Hitbox:Slider({
+local HitboxSize1Slider = HitboxToggle:Slider({
     title = "Hitbox1",
     min = 0,
     max = 100,
@@ -165,7 +168,7 @@ local HitboxSize1Slider = Hitbox:Slider({
         HitboxSize1 = val
     end
 })
-local HitboxSize2Slider = Hitbox:Slider({
+local HitboxSize2Slider = HitboxToggle:Slider({
     title = "Hitbox2",
     min = 0,
     max = 100,
@@ -174,7 +177,7 @@ local HitboxSize2Slider = Hitbox:Slider({
         HitboxSize2 = val
     end
 })
-local HitboxSize3Slider = Hitbox:Slider({
+local HitboxSize3Slider = HitboxToggle:Slider({
     title = "Hitbox3",
     min = 0,
     max = 100,
