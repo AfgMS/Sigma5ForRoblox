@@ -1,11 +1,50 @@
 local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/AfgMS/Simga345/main/SigmaDev.lua", true))()
 local CoreGui = game:WaitForChild("CoreGui")
 local Player = game:GetService("Players")
+local HttpService = game:GetService("HttpService")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local localPlayer = game.Players.LocalPlayer
 local Camera = game:GetService("Workspace").CurrentCamera
 local UserInputService = game:GetService("UserInputService")
-
+--AutoSave?
+local FileName = "Sigma5Test"
+local Settings = {
+    ActiveMods = true,
+    TabGUI = true,
+    Aimbot = false,
+    KillAura = false,
+    Rotation = false,
+    SpeedTemp = true,
+    LongJumpToggle = false
+}
+local function SaveModules()
+    local JsonEncodeSettings = HttpService:JSONEncode(Settings)
+    if HttpService:JSONEncode(Settings) then
+        pcall(function()
+            local file = io.open(FileName, "w")
+            file:write(JsonEncodeSettings)
+            file:close()
+        end)
+    else
+        print("Failed to encode settings to JSON.")
+    end
+end
+local function LoadModules()
+    local file = io.open(FileName, "r")
+    if file then
+        local content = file:read("*a")
+        Settings = HttpService:JSONDecode(content)
+        file:close()
+    else
+        print("Settings file not found.")
+    end
+end
+coroutine.wrap(function()
+    while true do
+        SaveModules()
+        wait(1)
+    end
+end)()
 --Function
 local function LibraryCheck()
     local SigmaCheck = CoreGui:FindFirstChild("Sigma")
@@ -65,6 +104,7 @@ end
 --SigmaUI
 Library:createScreenGui()
 LibraryCheck()
+LoadModules()
 createnotification("Sigma5", "Loaded Successfully", 1, true)
 
 local GUItab = Library:createTabs(CoreGui.Sigma, "Gui")
@@ -73,6 +113,7 @@ local ActiveMods = GUItab:ToggleButton({
     name = "ActiveMods",
     info = "Render active mods",
     callback = function(enabled)
+            Settings.ActiveMods = not Settings.ActiveMods
             CoreGui.SigmaVisualStuff.ArrayListHolder.Visible = not CoreGui.SigmaVisualStuff.ArrayListHolder.Visible
     end
 })
@@ -81,6 +122,7 @@ local TabGUI = GUItab:ToggleButton({
     name = "TabGUI",
     info = "Just decorations",
     callback = function(enabled)
+            Settings.TabGUI = not Settings.TabGUI
             CoreGui.SigmaVisualStuff.LeftHolder.TabHolder.Visible = not CoreGui.SigmaVisualStuff.LeftHolder.TabHolder.Visible
     end
 })
@@ -106,12 +148,14 @@ local Aimbot = COMBATtab:ToggleButton({
     info = "Aim At Nearest Player?",
     callback = function(enabled)
         if enabled then
+            Settings.Aimbot = true
             AimRange = 20
             while enabled do
                 aimAtNearestPlayer(AimRange)
                 wait(0.01)
             end
         else
+            Settings.Aimbot = false
             AimRange = 0
         end
     end
@@ -126,16 +170,21 @@ local AimRangeSlider = Aimbot:Slider({
     end
 })
 --KillAura
-local Delay = 0.03
+local Delay
 local KillAura = COMBATtab:ToggleButton({
     name = "KillAura",
     info = "Attack Nearest Player?",
     callback = function(enabled)
         if enabled then
-            while true do
+            Settings.KillAura = true
+            Delay = 0.03
+            while enabled do
                 attackNearestPlayer()
                 wait(Delay)
             end
+        else
+            Settings.KillAura = false
+            Delay = 86400
         end
     end
 })
@@ -147,80 +196,99 @@ local TableFix = KillAura:Slider({
     callback = function(value)
     end
 })
+local StartRotatingRange = nil
+local function RotateNearest()
+    local nearestPlayer = findNearestPlayer(StartRotatingRange)
+    if nearestPlayer then
+        local character = localPlayer.Character
+        local humanoidRootPart = character and character:FindFirstChild("HumanoidRootPart")
+        if humanoidRootPart then
+            local direction = (nearestPlayer.Character.HumanoidRootPart.Position - humanoidRootPart.Position).unit
+            local lookVector = Vector3.new(direction.X, 0, direction.Z).unit
+            local newCFrame = CFrame.new(humanoidRootPart.Position, humanoidRootPart.Position + lookVector)
+            character:SetPrimaryPartCFrame(newCFrame)
+        end
+    end
+end
 local Rotation = KillAura:ToggleButtonInsideUI({
     name = "Rotations",
     callback = function(enabled)
         if enabled then
-            loadstring(game:HttpGet("https://raw.githubusercontent.com/AfgMS/Simga345/main/Rotate.lua"))()
+            Settings.Rotation = true
+            StartRotatingRange = 20
+            if localPlayer.Character then
+                RotateNearest()
+            end
+        else
+            Settings.Rotation = false
+            StartRotatingRange = 0
         end
     end
 })
 --PlayerSection
 local PLAYERtab = Library:createTabs(CoreGui.Sigma, "Player")
---AutoQueue
-local function FireAutoQueue()
-    local args = {
-        [1] = true,
-        [2] = "SkyWarsSolo"
-    }
-    local joinEvent = game:GetService("ReplicatedStorage"):FindFirstChild("events-Eqz"):FindFirstChild("a800bb9a-1030-420e-b141-21aaada3d57e")
-    if joinEvent then
-        joinEvent:FireServer(unpack(args))
-    end
-end
-local AutoQueueDelay = 5
-local function AutoQueueLoop()
-    while true do
-        FireAutoQueue()
-        wait(AutoQueueDelay)
-    end
-end
-local AutoQueue = PLAYERtab:ToggleButton({
-    name = "AutoQueue",
-    info = "Automatically Play Again",
-    callback = function(enabled)
-        if enabled then
-            spawn(AutoQueueLoop)
-        end
-    end
-})
 --SpeedTemporarily
+local CustomSpeed = 58
 local SpeedTemp = PLAYERtab:ToggleButton({
     name = "SpeedTemp",
     info = "Temporary speed boost",
     callback = function(enabled)
         if enabled then
-            game.Players.LocalPlayer.Character:WaitForChild("Humanoid").WalkSpeed = 58
+            Settings.SpeedTemp = true
+            game.Players.LocalPlayer.Character:WaitForChild("Humanoid").WalkSpeed = CustomSpeed
         else
+            Settings.SpeedTemp = false
             game.Players.LocalPlayer.Character:WaitForChild("Humanoid").WalkSpeed = 16
         end
     end
 })
+local CustomSpeedSlider = SpeedTemp:Slider({
+    title = "CustomSpeed",
+    min = 0,
+    max = 100,
+    default = 58,
+    callback = function(val)
+        CustomSpeed = val
+        if Settings.SpeedTemp then
+            game.Players.LocalPlayer.Character:WaitForChild("Humanoid").WalkSpeed = CustomSpeed
+        end
+    end
+})
+--LongJump
+local CustomMultiplier = 2.8
 local function LongJump()
-    game.Workspace.Gravity = 38
-    game.Players.LocalPlayer.Character:FindFirstChildOfClass("Humanoid"):ChangeState(Enum.HumanoidStateType.Jumping)
-    wait(0.98)
-    game.Workspace.Gravity = 196.2
-    wait(0.48)
-    game.Players.LocalPlayer.Character:FindFirstChildOfClass("Humanoid"):ChangeState(Enum.HumanoidStateType.Jumping)
-    game.Workspace.Gravity = 78
-    wait(0.58)
-    game.Workspace.Gravity = 196.2
-    wait(0.18)
-    game.Players.LocalPlayer.Character:FindFirstChildOfClass("Humanoid"):ChangeState(Enum.HumanoidStateType.Jumping)
-    game.Workspace.Gravity = 112
-    wait(0.15)
-    game.Workspace.Gravity = 196.2
-    wait(0.8)
-    game.Players.LocalPlayer.Character:FindFirstChildOfClass("Humanoid"):ChangeState(Enum.HumanoidStateType.Jumping)
-    game.Workspace.Gravity = 196.2
+    local humanoid = game.Players.LocalPlayer.Character:FindFirstChildOfClass("Humanoid")
+    local rootPart = game.Players.LocalPlayer.Character:FindFirstChild("HumanoidRootPart")  
+    local forwardVector = rootPart.CFrame.lookVector
+    local jumpPower = humanoid.JumpPower
+    
+    humanoid:ChangeState(Enum.HumanoidStateType.Jumping)
+    wait(0.38)
+    humanoid:ChangeState(Enum.HumanoidStateType.Jumping)
+    wait(0.51)
+    humanoid:ChangeState(Enum.HumanoidStateType.Jumping)
+    wait(0.51)
+    humanoid:ChangeState(Enum.HumanoidStateType.Jumping)
+    rootPart.Velocity = forwardVector * jumpPower * CustomMultiplier
 end
 local LongJumpToggle = PLAYERtab:ToggleButton({
     name = "LongJump",
     info = "Jump multiple times and then move forward",
     callback = function(enabled)
         if enabled then
+            Settings.LongJumpToggle = true
             LongJump()
+        else
+            Settings.LongJumpToggle = false
         end
+    end
+})
+local CustomMultiplierSlider = LongJumpToggle:Slider({
+    title = "CustomMultiplier",
+    min = 0,
+    max = 8,
+    default = 2.8,
+    callback = function(val)
+        CustomMultiplier = val
     end
 })
