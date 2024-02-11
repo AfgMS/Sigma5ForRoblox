@@ -124,56 +124,6 @@ local AimRangeSlider = Aimbot:Slider({
         AimRange = val
     end
 })
---Hitbox
-local NearestPlayer = findNearestPlayer(35)
-local Hitbox = NearestPlayer.Character:FindFirstChild("Hitbox")
-local OriginalSize = Hitbox:FindFirstChild("OriginalSize")
-local HitboxSize1 = 8
-local HitboxSize2 = 8
-local HitboxSize3 = 8
-local HitboxToggle = COMBATtab:ToggleButton({
-    name = "Hitbox",
-    info = "Change hitbox size",
-    callback = function(enabled)
-        if enabled then
-            if Hitbox then
-                Hitbox.Size = Vector3.new(HitboxSize1, HitboxSize2, HitboxSize3)
-                Hitbox.Transparency = 0.75
-                Hitbox.BrickColor = BrickColor.new(44, 101, 29)
-            else
-                Hitbox.Size = OriginalSize.Value
-                Hitbox.Transparency = 1
-            end
-        end
-    end
-})
-local HitboxSize1Slider = HitboxToggle:Slider({
-    title = "Hitbox1",
-    min = 0,
-    max = 100,
-    default = 8,
-    callback = function(val)
-        HitboxSize1 = val
-    end
-})
-local HitboxSize2Slider = HitboxToggle:Slider({
-    title = "Hitbox2",
-    min = 0,
-    max = 100,
-    default = 8,
-    callback = function(val)
-        HitboxSize2 = val
-    end
-})
-local HitboxSize3Slider = HitboxToggle:Slider({
-    title = "Hitbox3",
-    min = 0,
-    max = 100,
-    default = 8,
-    callback = function(val)
-        HitboxSize3 = val
-    end
-})
 --KillAura
 local Delay = 0.03
 local KillAura = COMBATtab:ToggleButton({
