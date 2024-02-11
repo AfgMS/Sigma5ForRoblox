@@ -7,39 +7,39 @@ local localPlayer = game.Players.LocalPlayer
 local Camera = game:GetService("Workspace").CurrentCamera
 local UserInputService = game:GetService("UserInputService")
 --AutoSave?
-local FileName = "Sigma5/Skywars.lua"  -- Updated file name with folder path
+local FileName = "Sigma5Test.lua"
 local Settings
 local FirstExecute = true
 
-local function SettingTest()
-    local DefaultSettings = {
-        ActiveMods = { Value = true },
-        TabGUI = { Value = true },
-        Uninject = { Value = false },
-        Aimbot = { Value = false },
-        KillAura = { Value = false, Rotation = false }, 
-        SpeedTemp = { Value = true },
-        LongJumpToggle = { Value = false }
+function SettingTest()
+    local Settings = {
+        ActiveMods = {Value = true},
+        TabGUI = {Value = true},
+        Uninject = {Value = false},
+        Aimbot = {Value = false},
+        KillAura = {Value = false},  
+        SpeedTemp = {Value = true},
+        LongJumpToggle = {Value = false}
     }
     
-    local JsonEncodeSettings = HttpService:JSONEncode(DefaultSettings)
+    local JsonEncodeSettings = HttpService:JSONEncode(Settings)
     print("Encoded Settings:", JsonEncodeSettings)
     
     if writefile and makefolder then
         makefolder("Sigma5")
-        writefile(FileName, JsonEncodeSettings)  -- Changed to write directly to the specified file
+        writefile("Sigma5/" .. FileName, JsonEncodeSettings)
     end
 end
-local function FirstTimeExecuteCheck()
-    return not (readfile and isfile and isfile(FileName))  -- Updated file check to use FileName
+function FirstTimeExecuteCheck()
+    return not (readfile and isfile and isfile("Sigma5/" .. FileName))
 end
-local function SaveModules()    
+function SaveModules()    
     if not FirstExecute then
         local JsonEncodeSettings = HttpService:JSONEncode(Settings)
         
         if writefile then
             local success, errorMessage = pcall(function()
-                writefile(FileName, JsonEncodeSettings)  -- Updated to save to FileName
+                writefile("Sigma5/" .. FileName, JsonEncodeSettings)
             end)
             
             if not success then
@@ -50,9 +50,20 @@ local function SaveModules()
         end
     end
 end
-local function LoadModules()
-    if readfile and isfile and isfile(FileName) then  -- Updated to use FileName
-        local fileContent = readfile(FileName)  -- Updated to read from FileName
+local function DeleteJunk()
+    local folder = game:GetService("Players").LocalPlayer
+    local files = folder:GetChildren()
+
+    for _, file in ipairs(files) do
+        if file:IsA("File") and file.Name ~= FileName then
+            file:Destroy()
+            print("Deleted file:", file.Name)
+        end
+    end
+end
+function LoadModules()
+    if readfile and isfile and isfile("Sigma5/" .. FileName) then
+        local fileContent = readfile("Sigma5/" .. FileName)
         if fileContent then
             Settings = HttpService:JSONDecode(fileContent)
             print("Loaded Settings:", Settings)
@@ -65,12 +76,14 @@ local function LoadModules()
 end
 task.spawn(function()
     if FirstTimeExecuteCheck() then
+        DeleteJunk()
         SettingTest()
     end
 end)
 task.spawn(function()
     LoadModules()
 end)
+
 task.spawn(function()
     repeat
         task.wait(1)
@@ -157,8 +170,11 @@ local ActiveMods = GUItab:ToggleButton({
     name = "ActiveMods",
     info = "Render active mods",
     callback = function(enabled)
-            Settings.ActiveMods = not Settings.ActiveMods
+        if Settings.ActiveMods.Value then
+            enabled = true
+            Settings.ActiveMods.Value = not Settings.ActiveMods.Value
             CoreGui.SigmaVisualStuff.ArrayListHolder.Visible = not CoreGui.SigmaVisualStuff.ArrayListHolder.Visible
+        end
     end
 })
 --TabGUI
@@ -240,32 +256,11 @@ local TableFix = KillAura:Slider({
     callback = function(value)
     end
 })
-local StartRotatingRange
-local function RotateNearest()
-    local nearestPlayer = findNearestPlayer(StartRotatingRange)
-    if nearestPlayer then
-        local character = localPlayer.Character
-        local humanoidRootPart = character and character:FindFirstChild("HumanoidRootPart")
-        if humanoidRootPart then
-            local direction = (nearestPlayer.Character.HumanoidRootPart.Position - humanoidRootPart.Position).unit
-            local lookVector = Vector3.new(direction.X, 0, direction.Z).unit
-            local newCFrame = CFrame.new(humanoidRootPart.Position, humanoidRootPart.Position + lookVector)
-            character:SetPrimaryPartCFrame(newCFrame)
-        end
-    end
-end
 local Rotation = KillAura:ToggleButtonInsideUI({
     name = "Rotations",
     callback = function(enabled)
         if enabled then
-            Settings.Rotation = true
-            StartRotatingRange = 20
-            if localPlayer.Character then
-                RotateNearest()
-            end
-        else
-            Settings.Rotation = false
-            StartRotatingRange = 0
+            loadstring(game:HttpGet("https://raw.githubusercontent.com/AfgMS/Simga345/main/Rotate.lua"))()
         end
     end
 })
