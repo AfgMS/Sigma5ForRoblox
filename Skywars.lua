@@ -6,8 +6,8 @@ local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local localPlayer = game.Players.LocalPlayer
 local Camera = game:GetService("Workspace").CurrentCamera
 local UserInputService = game:GetService("UserInputService")
---AutoSave?
-local FileName = "Sigma5Test.lua"
+--SaveFile?
+local FileName = "SkywarsSettings.lua"
 local Settings
 local FirstExecute = true
 
@@ -22,10 +22,11 @@ function SettingTest()
     }
     
     local JsonEncodeSettings = HttpService:JSONEncode(Settings)
-    print("Encoded Settings:", JsonEncodeSettings)
     
     if writefile and makefolder then
-        makefolder("Sigma5")
+        if not isfolder("Sigma5") then
+            makefolder("Sigma5")
+        end
         writefile("Sigma5/" .. FileName, JsonEncodeSettings)
     end
 end
@@ -49,17 +50,6 @@ function SaveModules()
         end
     end
 end
-local function DeleteJunk()
-    local folder = game:GetService("Players").LocalPlayer
-    local files = folder:GetChildren()
-
-    for _, file in ipairs(files) do
-        if file:IsA("File") and file.Name ~= FileName then
-            file:Destroy()
-            print("Deleted file:", file.Name)
-        end
-    end
-end
 function LoadModules()
     if readfile and isfile and isfile("Sigma5/" .. FileName) then
         local fileContent = readfile("Sigma5/" .. FileName)
@@ -75,14 +65,12 @@ function LoadModules()
 end
 task.spawn(function()
     if FirstTimeExecuteCheck() then
-        DeleteJunk()
         SettingTest()
     end
 end)
 task.spawn(function()
     LoadModules()
 end)
-
 task.spawn(function()
     repeat
         task.wait(1)
