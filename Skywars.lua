@@ -190,7 +190,7 @@ local SpeedTemp = PLAYERtab:ToggleButton({
     info = "Temporary speed boost",
     callback = function(enabled)
         if enabled then
-            game.Players.LocalPlayer.Character:WaitForChild("Humanoid").WalkSpeed = 68
+            game.Players.LocalPlayer.Character:WaitForChild("Humanoid").WalkSpeed = 58
         else
             game.Players.LocalPlayer.Character:WaitForChild("Humanoid").WalkSpeed = 16
         end
