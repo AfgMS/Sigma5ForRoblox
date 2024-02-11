@@ -1,5 +1,4 @@
-x 
-llocal Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/AfgMS/Simga345/main/SigmaDev.lua", true))()
+local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/AfgMS/Simga345/main/SigmaDev.lua", true))()
 local CoreGui = game:WaitForChild("CoreGui")
 local Player = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
@@ -101,7 +100,6 @@ local Uninject = GUItab:ToggleButton({
 local COMBATtab = Library:createTabs(CoreGui.Sigma, "Combat")
 --AimBot
 local AimRange
-local WaitDelay = 0.01
 
 local Aimbot = COMBATtab:ToggleButton({
     name = "Aimbot",
@@ -111,7 +109,7 @@ local Aimbot = COMBATtab:ToggleButton({
             AimRange = 20
             while enabled do
                 aimAtNearestPlayer(AimRange)
-                wait(WaitDelay)
+                wait(0.01)
             end
         else
             AimRange = 0
@@ -125,15 +123,6 @@ local AimRangeSlider = Aimbot:Slider({
     default = 20,
     callback = function(val)
         AimRange = val
-    end
-})
-local HitDelaySlider = Aimbot:Slider({
-    title = "HitDelay",
-    min = 0.01,
-    max = 0,
-    default = 0.01,
-    callback = function(val)
-        WaitDelay = val
     end
 })
 --AutoQueue
