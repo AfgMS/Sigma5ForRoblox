@@ -709,7 +709,8 @@ local function Update(input)
         end
 
         if inputPosition then
-            local sliderValue = math.floor(options.min + Percent * (options.max - options.min) + 0.5) -- Adjusted calculation
+            Percent = math.clamp((inputPosition.X - SliderBack.AbsolutePosition.X) / SliderBack.AbsoluteSize.X, 0, 1)
+            local sliderValue = math.round(Percent * 100)
             SliderValueLabel.Text = sliderValue
             SliderFill.Size = UDim2.fromScale(Percent, 1)
 
