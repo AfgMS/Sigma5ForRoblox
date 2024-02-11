@@ -100,7 +100,6 @@ local Uninject = GUItab:ToggleButton({
 local COMBATtab = Library:createTabs(CoreGui.Sigma, "Combat")
 --AimBot
 local AimRange
-
 local Aimbot = COMBATtab:ToggleButton({
     name = "Aimbot",
     info = "Aim At Nearest Player?",
@@ -123,6 +122,54 @@ local AimRangeSlider = Aimbot:Slider({
     default = 20,
     callback = function(val)
         AimRange = val
+    end
+})
+--Hitbox
+local NearestPlayer = findNearestPlayer()
+local Hitbox = NearestPlayer.Character:FindFirstChild("Hitbox")
+local OriginalSize = Hitbox:FindFirstChild("OriginalSize")
+local HitboxSize1 = 8
+local HitboxSize2 = 8
+local HitboxSize3 = 8
+local Hitbox = COMBATtab:ToggleButton({
+    name = "Hitbox",
+    info = "Change player hitbox size",
+    callback = function(enabled)
+        if enabled then
+            Hitbox.Size = Vector3.new(HitboxSize1, HitboxSize2, HitboxSize3)
+            Hitbox.Transparency = 0.75
+            Hitbox.BrickColor = BrickColor.new(44, 101, 29) -- Green parsley color
+        else
+            Hitbox.Size = OriginalSize.Value
+            Hitbox.Transparency = 1
+        end
+    end
+})
+local HitboxSize1Slider = Hitbox:Slider({
+    title = "Hitbox1",
+    min = 0,
+    max = 100,
+    default = 8,
+    callback = function(val)
+        HitboxSize1 = val
+    end
+})
+local HitboxSize2Slider = Hitbox:Slider({
+    title = "Hitbox2",
+    min = 0,
+    max = 100,
+    default = 8,
+    callback = function(val)
+        HitboxSize2 = val
+    end
+})
+local HitboxSize3Slider = Hitbox:Slider({
+    title = "Hitbox3",
+    min = 0,
+    max = 100,
+    default = 8,
+    callback = function(val)
+        HitboxSize3 = val
     end
 })
 --AutoQueue
