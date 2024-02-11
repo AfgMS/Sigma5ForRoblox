@@ -7,39 +7,39 @@ local localPlayer = game.Players.LocalPlayer
 local Camera = game:GetService("Workspace").CurrentCamera
 local UserInputService = game:GetService("UserInputService")
 --AutoSave?
-local FileName = "Sigma5Test.lua"
+local FileName = "Sigma5/Skywars.lua"  -- Updated file name with folder path
 local Settings
 local FirstExecute = true
 
-function SettingTest()
-    local Settings = {
-        ActiveMods = {Value = true},
-        TabGUI = {Value = true},
-        Uninject = {Value = false},
-        Aimbot = {Value = false},
-        KillAura = {Value = false, Rotation = false,}, 
-        SpeedTemp = {Value = true},
-        LongJumpToggle = {Value = false}
+local function SettingTest()
+    local DefaultSettings = {
+        ActiveMods = { Value = true },
+        TabGUI = { Value = true },
+        Uninject = { Value = false },
+        Aimbot = { Value = false },
+        KillAura = { Value = false, Rotation = false }, 
+        SpeedTemp = { Value = true },
+        LongJumpToggle = { Value = false }
     }
     
-    local JsonEncodeSettings = HttpService:JSONEncode(Settings)
+    local JsonEncodeSettings = HttpService:JSONEncode(DefaultSettings)
     print("Encoded Settings:", JsonEncodeSettings)
     
     if writefile and makefolder then
         makefolder("Sigma5")
-        writefile("Sigma5/" .. FileName, JsonEncodeSettings)
+        writefile(FileName, JsonEncodeSettings)  -- Changed to write directly to the specified file
     end
 end
-function FirstTimeExecuteCheck()
-    return not (readfile and isfile and isfile("Sigma5/" .. FileName))
+local function FirstTimeExecuteCheck()
+    return not (readfile and isfile and isfile(FileName))  -- Updated file check to use FileName
 end
-function SaveModules()    
+local function SaveModules()    
     if not FirstExecute then
         local JsonEncodeSettings = HttpService:JSONEncode(Settings)
         
         if writefile then
             local success, errorMessage = pcall(function()
-                writefile("Sigma5/" .. FileName, JsonEncodeSettings)
+                writefile(FileName, JsonEncodeSettings)  -- Updated to save to FileName
             end)
             
             if not success then
@@ -50,9 +50,9 @@ function SaveModules()
         end
     end
 end
-function LoadModules()
-    if readfile and isfile and isfile("Sigma5/" .. FileName) then
-        local fileContent = readfile("Sigma5/" .. FileName)
+local function LoadModules()
+    if readfile and isfile and isfile(FileName) then  -- Updated to use FileName
+        local fileContent = readfile(FileName)  -- Updated to read from FileName
         if fileContent then
             Settings = HttpService:JSONDecode(fileContent)
             print("Loaded Settings:", Settings)
