@@ -11,29 +11,29 @@ local FileName = "SkywarsSettings.lua"
 local Settings
 local FirstExecute = true
 
-function SettingTest()
-    local Settings = {
+local function SettingTest()
+    local defaultSettings = {
         ActiveMods = {Value = true},
         TabGUI = {Value = true},
         Aimbot = {Value = false},
-        KillAura = {Value = false},  
+        KillAura = {Value = false},
         SpeedTemp = {Value = true},
         LongJumpToggle = {Value = false}
     }
-    
-    local JsonEncodeSettings = HttpService:JSONEncode(Settings)
     
     if writefile and makefolder then
         if not isfolder("Sigma5") then
             makefolder("Sigma5")
         end
+        
+        local JsonEncodeSettings = HttpService:JSONEncode(defaultSettings)
         writefile("Sigma5/" .. FileName, JsonEncodeSettings)
     end
 end
-function FirstTimeExecuteCheck()
+local function FirstTimeExecuteCheck()
     return not (readfile and isfile and isfile("Sigma5/" .. FileName))
 end
-function SaveModules()    
+local function SaveModules()    
     if not FirstExecute then
         local JsonEncodeSettings = HttpService:JSONEncode(Settings)
         
@@ -50,7 +50,7 @@ function SaveModules()
         end
     end
 end
-function LoadModules()
+local function LoadModules()
     if readfile and isfile and isfile("Sigma5/" .. FileName) then
         local fileContent = readfile("Sigma5/" .. FileName)
         if fileContent then
