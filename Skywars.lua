@@ -7,44 +7,61 @@ local localPlayer = game.Players.LocalPlayer
 local Camera = game:GetService("Workspace").CurrentCamera
 local UserInputService = game:GetService("UserInputService")
 --AutoSave?
-local FileName = "Sigma5Test.json"
-local Settings = {
-    ActiveMods = true,
-    TabGUI = true,
-    Aimbot = false,
-    KillAura = false,
-    Rotation = false,
-    SpeedTemp = true,
-    LongJumpToggle = false
-}
-local function SaveModules()
+local FileName = "Sigma5Test"
+local Settings
+local FirstExecute = true
+
+function SettingTest()
+    Settings = {
+        ActiveMods = {Value = true},
+        TabGUI = {Value = true},
+        Uninject = {Value = false},
+        Aimbot = {Value = false},
+        KillAura = {Value = false, RotationHandler = true},
+        AutoQueue = {Value = false},    
+        SpeedTemp = {Value = true},
+        LongJumpToggle = {Value = false}
+    }
+    
     local JsonEncodeSettings = HttpService:JSONEncode(Settings)
-    if HttpService:JSONEncode(Settings) then
-        pcall(function()
-            local file = io.open(FileName, "w")
-            file:write(JsonEncodeSettings)
-            file:close()
-        end)
-    else
-        print("Failed to encode settings to JSON.")
+    if writefile and makefolder then
+        makefolder("Sigma5")
+        writefile("Sigma5/" .. FileName, JsonEncodeSettings)
+    end
+    FirstExecute = false
+end
+
+function FirstTimeExecuteCheck()
+    return not (readfile and isfile and isfile("Sigma5/" .. FileName))
+end
+function SaveModules()    
+    if not FirstExecute then
+        local JsonEncodeSettings = HttpService:JSONEncode(Settings)
+        if writefile then
+            writefile("Sigma5/" .. FileName, JsonEncodeSettings)
+        end
     end
 end
-local function LoadModules()
-    local file = io.open(FileName, "r")
-    if file then
-        local content = file:read("*a")
-        Settings = HttpService:JSONDecode(content)
-        file:close()
-    else
-        print("Settings file not found.")
+function LoadModules()
+    if readfile and isfile and isfile("Sigma5/" .. FileName) then
+        Settings = HttpService:JSONDecode(readfile("Sigma5/" .. FileName))
     end
 end
-coroutine.wrap(function()
-    while true do
+task.spawn(function()
+    if FirstTimeExecuteCheck() then
+        SettingTest()
+    end
+end)
+task.spawn(function()
+    LoadModules()
+end)
+task.spawn(function()
+    repeat
+        task.wait(1)
         SaveModules()
-        wait(1)
-    end
-end)()
+    until not game
+end)
+task.wait(1)
 --Function
 local function LibraryCheck()
     local SigmaCheck = CoreGui:FindFirstChild("Sigma")
