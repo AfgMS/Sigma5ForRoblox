@@ -7,7 +7,7 @@ local localPlayer = game.Players.LocalPlayer
 local Camera = game:GetService("Workspace").CurrentCamera
 local UserInputService = game:GetService("UserInputService")
 --AutoSave?
-local FileName = "Sigma5Test"
+local FileName = "Sigma5Test.json"
 local Settings = {
     ActiveMods = true,
     TabGUI = true,
