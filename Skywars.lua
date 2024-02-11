@@ -1,83 +1,11 @@
 local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/AfgMS/Simga345/main/SigmaDev.lua", true))()
 local CoreGui = game:WaitForChild("CoreGui")
 local Player = game:GetService("Players")
-local HttpService = game:GetService("HttpService")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local localPlayer = game.Players.LocalPlayer
 local Camera = game:GetService("Workspace").CurrentCamera
 local UserInputService = game:GetService("UserInputService")
---SaveFile?
-local FileName = "SkywarsSettings.lua"
-local Settings
-local FirstExecute = true
 
-local function SettingTest()
-    local defaultSettings = {
-        ActiveMods = {Value = true},
-        TabGUI = {Value = true},
-        Aimbot = {Value = false},
-        KillAura = {Value = false},
-        SpeedTemp = {Value = true},
-        LongJumpToggle = {Value = false}
-    }
-    
-    if writefile and makefolder then
-        if not isfolder("Sigma5") then
-            makefolder("Sigma5")
-        end
-        
-        local JsonEncodeSettings = HttpService:JSONEncode(defaultSettings)
-        writefile("Sigma5/" .. FileName, JsonEncodeSettings)
-    end
-end
-local function FirstTimeExecuteCheck()
-    return not (readfile and isfile and isfile("Sigma5/" .. FileName))
-end
-local function SaveModules()    
-    if not FirstExecute then
-        local JsonEncodeSettings = HttpService:JSONEncode(Settings)
-        
-        if writefile then
-            local success, errorMessage = pcall(function()
-                writefile("Sigma5/" .. FileName, JsonEncodeSettings)
-            end)
-            
-            if not success then
-                warn("Error saving settings:", errorMessage)
-            end
-        else
-            warn("writefile function is not available")
-        end
-    end
-end
-local function LoadModules()
-    if readfile and isfile and isfile("Sigma5/" .. FileName) then
-        local fileContent = readfile("Sigma5/" .. FileName)
-        if fileContent then
-            Settings = HttpService:JSONDecode(fileContent)
-            print("Loaded Settings:", Settings)
-        else
-            print("Error reading file content.")
-        end
-    else
-        print("Settings file not found.")
-    end
-end
-task.spawn(function()
-    if FirstTimeExecuteCheck() then
-        SettingTest()
-    end
-end)
-task.spawn(function()
-    LoadModules()
-end)
-task.spawn(function()
-    repeat
-        task.wait(1)
-        SaveModules()
-    until not game
-end)
-task.wait(1)
 --Function
 local function LibraryCheck()
     local SigmaCheck = CoreGui:FindFirstChild("Sigma")
@@ -117,17 +45,6 @@ local function findNearestPlayer(range)
 
     return nearestPlayer
 end
-local function GetAllPlayers()
-    local allPlayers = {}
-
-    for _, player in ipairs(game.Players:GetPlayers()) do
-        if player ~= localPlayer and player.Character and player.Character:FindFirstChild("HumanoidRootPart") then
-            table.insert(allPlayers, player)
-        end
-    end
-
-    return allPlayers
-end
 local function aimAtNearestPlayer(range)
     local nearestPlayer = findNearestPlayer(range)
     if nearestPlayer then
@@ -148,7 +65,6 @@ end
 --SigmaUI
 Library:createScreenGui()
 LibraryCheck()
-LoadModules()
 createnotification("Sigma5", "Loaded Successfully", 1, true)
 
 local GUItab = Library:createTabs(CoreGui.Sigma, "Gui")
@@ -158,7 +74,6 @@ local ActiveMods = GUItab:ToggleButton({
     info = "Render active mods",
     callback = function(enabled)
             CoreGui.SigmaVisualStuff.ArrayListHolder.Visible = not CoreGui.SigmaVisualStuff.ArrayListHolder.Visible
-        end
     end
 })
 --TabGUI
@@ -211,19 +126,16 @@ local AimRangeSlider = Aimbot:Slider({
     end
 })
 --KillAura
-local Delay
+local Delay = 0.03
 local KillAura = COMBATtab:ToggleButton({
     name = "KillAura",
     info = "Attack Nearest Player?",
     callback = function(enabled)
         if enabled then
-            Delay = 0.03
-            while enabled do
+            while true do
                 attackNearestPlayer()
                 wait(Delay)
             end
-        else
-            Delay = 86400
         end
     end
 })
@@ -267,22 +179,20 @@ local CustomSpeedSlider = SpeedTemp:Slider({
         CustomSpeed = val
     end
 })
---LongJump
-local CustomMultiplier = 2.8
 local function LongJump()
     local humanoid = game.Players.LocalPlayer.Character:FindFirstChildOfClass("Humanoid")
     local rootPart = game.Players.LocalPlayer.Character:FindFirstChild("HumanoidRootPart")  
     local forwardVector = rootPart.CFrame.lookVector
     local jumpPower = humanoid.JumpPower
-    
+
     humanoid:ChangeState(Enum.HumanoidStateType.Jumping)
     wait(0.38)
     humanoid:ChangeState(Enum.HumanoidStateType.Jumping)
-    wait(1)
+    wait(0.63)
     humanoid:ChangeState(Enum.HumanoidStateType.Jumping)
-    wait(1)
+    wait(0.63)
     humanoid:ChangeState(Enum.HumanoidStateType.Jumping)
-    rootPart.Velocity = forwardVector * jumpPower * CustomMultiplier
+    rootPart.Velocity = forwardVector * jumpPower * 2.8
 end
 local LongJumpToggle = PLAYERtab:ToggleButton({
     name = "LongJump",
@@ -291,14 +201,5 @@ local LongJumpToggle = PLAYERtab:ToggleButton({
         if enabled then
             LongJump()
         end
-    end
-})
-local CustomMultiplierSlider = LongJumpToggle:Slider({
-    title = "CustomMultiplier",
-    min = 0,
-    max = 8,
-    default = 2.8,
-    callback = function(val)
-        CustomMultiplier = val
     end
 })
