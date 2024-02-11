@@ -153,29 +153,36 @@ createnotification("Sigma5", "Loaded Successfully", 1, true)
 
 local GUItab = Library:createTabs(CoreGui.Sigma, "Gui")
 --ActiveMods
-local ActiveMods = GUItab:ToggleButton({
+local ActiveModsEnabled = Settings.ActiveMods.Value
+local ActiveModsToggle = GUItab:ToggleButton({
     name = "ActiveMods",
     info = "Render active mods",
-    callback = function(enabled)
-            Settings.ActiveMods = not Settings.ActiveMods
-            CoreGui.SigmaVisualStuff.ArrayListHolder.Visible = not CoreGui.SigmaVisualStuff.ArrayListHolder.Visible
+    callback = function()
+        Settings.ActiveMods.Value = not Settings.ActiveMods.Value
+        ActiveModsEnabled = Settings.ActiveMods.Value
+        CoreGui.SigmaVisualStuff.ArrayListHolder.Visible = ActiveModsEnabled
     end
 })
 --TabGUI
-local TabGUI = GUItab:ToggleButton({
+local TabGUIEnabled = Settings.TabGUI.Value
+local TabGUIToggle = GUItab:ToggleButton({
     name = "TabGUI",
     info = "Just decorations",
-    callback = function(enabled)
-            Settings.TabGUI = not Settings.TabGUI
-            CoreGui.SigmaVisualStuff.LeftHolder.TabHolder.Visible = not CoreGui.SigmaVisualStuff.LeftHolder.TabHolder.Visible
+    callback = function()
+        Settings.TabGUI.Value = not Settings.TabGUI.Value
+        TabGUIEnabled = Settings.TabGUI.Value
+        CoreGui.SigmaVisualStuff.LeftHolder.TabHolder.Visible = TabGUIEnabled
     end
 })
 --Uninject
+local UninjectEnabled = Settings.Uninject.Value
 local Uninject = GUItab:ToggleButton({
     name = "DeleteGUI",
-    info = "Doesnt Uninject 100%",
-    callback = function(enabled)
-        if enabled then
+    info = "Doesn't Uninject 100%",
+    callback = function()
+        Settings.Uninject.Value = not Settings.Uninject.Value
+        UninjectEnabled = Settings.Uninject.Value
+        if UninjectEnabled then
             CoreGui.Sigma:Destroy()
             print("Destroyed Main")
             CoreGui.SigmaVisualStuff:Destroy()
@@ -186,20 +193,21 @@ local Uninject = GUItab:ToggleButton({
 --CombatSection
 local COMBATtab = Library:createTabs(CoreGui.Sigma, "Combat")
 --AimBot
-local AimRange
+local AimbotEnabled = Settings.Aimbot.Value
+local AimRange = 20
 local Aimbot = COMBATtab:ToggleButton({
     name = "Aimbot",
     info = "Aim At Nearest Player?",
-    callback = function(enabled)
-        if enabled then
-            Settings.Aimbot = true
+    callback = function()
+        Settings.Aimbot.Value = not Settings.Aimbot.Value
+        AimbotEnabled = Settings.Aimbot.Value
+        if AimbotEnabled then
             AimRange = 20
-            while enabled do
+            while AimbotEnabled do
                 aimAtNearestPlayer(AimRange)
                 wait(0.01)
             end
         else
-            Settings.Aimbot = false
             AimRange = 0
         end
     end
@@ -215,19 +223,20 @@ local AimRangeSlider = Aimbot:Slider({
 })
 --KillAura
 local Delay
+local KillAuraEnabled = Settings.KillAura.Value
 local KillAura = COMBATtab:ToggleButton({
     name = "KillAura",
     info = "Attack Nearest Player?",
-    callback = function(enabled)
-        if enabled then
-            Settings.KillAura = true
+    callback = function()
+        Settings.KillAura.Value = not Settings.KillAura.Value
+        KillAuraEnabled = Settings.KillAura.Value
+        if KillAuraEnabled then
             Delay = 0.03
-            while enabled do
+            while KillAuraEnabled do
                 attackNearestPlayer()
                 wait(Delay)
             end
         else
-            Settings.KillAura = false
             Delay = 86400
         end
     end
@@ -256,15 +265,14 @@ local function RotateNearest()
 end
 local Rotation = KillAura:ToggleButtonInsideUI({
     name = "Rotations",
-    callback = function(enabled)
-        if enabled then
-            Settings.Rotation = true
+    callback = function()
+        Settings.Rotation.Value = not Settings.Rotation.Value
+        if Settings.Rotation.Value then
             StartRotatingRange = 20
             if localPlayer.Character then
                 RotateNearest()
             end
         else
-            Settings.Rotation = false
             StartRotatingRange = 0
         end
     end
@@ -273,17 +281,14 @@ local Rotation = KillAura:ToggleButtonInsideUI({
 local PLAYERtab = Library:createTabs(CoreGui.Sigma, "Player")
 --SpeedTemporarily
 local CustomSpeed = 58
+local SpeedTempEnabled = Settings.SpeedTemp.Value
 local SpeedTemp = PLAYERtab:ToggleButton({
     name = "SpeedTemp",
     info = "Temporary speed boost",
-    callback = function(enabled)
-        if enabled then
-            Settings.SpeedTemp = true
-            game.Players.LocalPlayer.Character:WaitForChild("Humanoid").WalkSpeed = CustomSpeed
-        else
-            Settings.SpeedTemp = false
-            game.Players.LocalPlayer.Character:WaitForChild("Humanoid").WalkSpeed = 16
-        end
+    callback = function()
+        Settings.SpeedTemp.Value = not Settings.SpeedTemp.Value
+        SpeedTempEnabled = Settings.SpeedTemp.Value
+        game.Players.LocalPlayer.Character:WaitForChild("Humanoid").WalkSpeed = SpeedTempEnabled and CustomSpeed or 16
     end
 })
 local CustomSpeedSlider = SpeedTemp:Slider({
@@ -293,13 +298,14 @@ local CustomSpeedSlider = SpeedTemp:Slider({
     default = 58,
     callback = function(val)
         CustomSpeed = val
-        if Settings.SpeedTemp then
+        if SpeedTempEnabled then
             game.Players.LocalPlayer.Character:WaitForChild("Humanoid").WalkSpeed = CustomSpeed
         end
     end
 })
 --LongJump
 local CustomMultiplier = 2.8
+local LongJumpEnabled = Settings.LongJumpToggle.Value
 local function LongJump()
     local humanoid = game.Players.LocalPlayer.Character:FindFirstChildOfClass("Humanoid")
     local rootPart = game.Players.LocalPlayer.Character:FindFirstChild("HumanoidRootPart")  
@@ -318,12 +324,11 @@ end
 local LongJumpToggle = PLAYERtab:ToggleButton({
     name = "LongJump",
     info = "Jump multiple times and then move forward",
-    callback = function(enabled)
-        if enabled then
-            Settings.LongJumpToggle = true
+    callback = function()
+        Settings.LongJumpToggle.Value = not Settings.LongJumpToggle.Value
+        LongJumpEnabled = Settings.LongJumpToggle.Value
+        if LongJumpEnabled then
             LongJump()
-        else
-            Settings.LongJumpToggle = false
         end
     end
 })
