@@ -7,7 +7,7 @@ local localPlayer = game.Players.LocalPlayer
 local Camera = game:GetService("Workspace").CurrentCamera
 local UserInputService = game:GetService("UserInputService")
 --AutoSave?
-local FileName = "Sigma5Test"
+local FileName = "Sigma5Test.lua"
 local Settings
 local FirstExecute = true
 
@@ -30,7 +30,17 @@ function SettingTest()
     end
     FirstExecute = false
 end
+local function DeleteJunk()
+    local folder = game:GetService("Players").LocalPlayer
+    local files = folder:GetChildren()
 
+    for _, file in ipairs(files) do
+        if file:IsA("File") and file.Name ~= FileName then
+            file:Destroy()
+            print("Deleted file:", file.Name)
+        end
+    end
+end
 function FirstTimeExecuteCheck()
     return not (readfile and isfile and isfile("Sigma5/" .. FileName))
 end
@@ -58,6 +68,7 @@ function LoadModules()
 end
 task.spawn(function()
     if FirstTimeExecuteCheck() then
+        DeleteJunk()
         SettingTest()
     end
 end)
