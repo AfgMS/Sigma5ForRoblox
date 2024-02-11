@@ -125,7 +125,8 @@ local AimRangeSlider = Aimbot:Slider({
     end
 })
 --Hitbox
-local NearestPlayer = findNearestPlayer()
+local HitboxRange = 20
+local NearestPlayer = findNearestPlayer(HitboxRange)
 local Hitbox = NearestPlayer.Character:FindFirstChild("Hitbox")
 local OriginalSize = Hitbox:FindFirstChild("OriginalSize")
 local HitboxSize1 = 8
@@ -136,6 +137,7 @@ local Hitbox = COMBATtab:ToggleButton({
     info = "Change player hitbox size",
     callback = function(enabled)
         if enabled then
+        if NearestPlayer then
             Hitbox.Size = Vector3.new(HitboxSize1, HitboxSize2, HitboxSize3)
             Hitbox.Transparency = 0.75
             Hitbox.BrickColor = BrickColor.new(44, 101, 29) -- Green parsley color
@@ -143,6 +145,15 @@ local Hitbox = COMBATtab:ToggleButton({
             Hitbox.Size = OriginalSize.Value
             Hitbox.Transparency = 1
         end
+    end
+})
+local HitboxRange = Hitbox:Slider({
+    title = "HitboxRange",
+    min = 0,
+    max = 100,
+    default = 20,
+    callback = function(val)
+        HitboxRange = val
     end
 })
 local HitboxSize1Slider = Hitbox:Slider({
