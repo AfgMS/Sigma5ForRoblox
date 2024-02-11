@@ -201,7 +201,7 @@ local LongJumpTemp = PLAYERtab:ToggleButton({
     info = "Temporary gravity change",
     callback = function(enabled)
         if enabled then
-            game.Workspace.Gravity = 23
+            game.Workspace.Gravity = 53
         else
             game.Workspace.Gravity = 196.2
         end
