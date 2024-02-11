@@ -198,13 +198,16 @@ local SpeedTemp = PLAYERtab:ToggleButton({
 })
 --LongJump
 local function LongJump()
-    for _ = 1, 5 do
-        game.Players.LocalPlayer.Character:FindFirstChildOfClass("Humanoid"):ChangeState(Enum.HumanoidStateType.Jumping)
-        wait()
-    end
-    wait(0.43)
-    game.Workspace.Gravity = 38
-    game.Players.LocalPlayer.Character:MoveTo(game.Players.LocalPlayer.Character.HumanoidRootPart.Position + Vector3.new(10, 0, 0))
+    game.Workspace.Gravity = 43
+    game.Players.LocalPlayer.Character:FindFirstChildOfClass("Humanoid"):ChangeState(Enum.HumanoidStateType.Jumping)
+    wait(0.15)
+    game.Players.LocalPlayer.Character:FindFirstChildOfClass("Humanoid"):ChangeState(Enum.HumanoidStateType.Jumping)
+    wait(0.15)
+    game.Players.LocalPlayer.Character:FindFirstChildOfClass("Humanoid"):ChangeState(Enum.HumanoidStateType.Jumping)
+    wait(0.28)
+    game.Players.LocalPlayer.Character:MoveTo(game.Players.LocalPlayer.Character.HumanoidRootPart.Position + Vector3.new(35, 0, 0))
+    wait(0.8)
+    game.Workspace.Gravity = 196.2
 end
 local LongJumpToggle = PLAYERtab:ToggleButton({
     name = "LongJump",
@@ -212,8 +215,6 @@ local LongJumpToggle = PLAYERtab:ToggleButton({
     callback = function(enabled)
         if enabled then
             LongJump()
-        else
-            game.Workspace.Gravity = 196.6
         end
     end
 })
