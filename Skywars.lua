@@ -9,50 +9,62 @@ local UserInputService = game:GetService("UserInputService")
 --AutoSave?
 local FileName = "Sigma5Test.lua"
 local Settings
+local FirstExecute = true
 
-local function SettingTest()
-    local DefaultSettings = {
-        ActiveMods = { Value = true },
-        TabGUI = { Value = true },
-        Uninject = { Value = false },
-        Aimbot = { Value = false },
-        KillAura = { Value = false, RotationHandler = true },
-        AutoQueue = { Value = false },    
-        SpeedTemp = { Value = true },
-        LongJumpToggle = { Value = false }
+function SettingTest()
+    local Settings = {
+        ActiveMods = {Value = true},
+        TabGUI = {Value = true},
+        Uninject = {Value = false},
+        Aimbot = {Value = false},
+        KillAura = {Value = false, Rotation = false,}, 
+        SpeedTemp = {Value = true},
+        LongJumpToggle = {Value = false}
     }
     
-    local JsonEncodeSettings = HttpService:JSONEncode(DefaultSettings)
+    local JsonEncodeSettings = HttpService:JSONEncode(Settings)
+    print("Encoded Settings:", JsonEncodeSettings)
+    
     if writefile and makefolder then
         makefolder("Sigma5")
         writefile("Sigma5/" .. FileName, JsonEncodeSettings)
     end
 end
-local function FirstTimeExecuteCheck()
+function FirstTimeExecuteCheck()
     return not (readfile and isfile and isfile("Sigma5/" .. FileName))
 end
-local function SaveModules()
-    local JsonEncodeSettings = HttpService:JSONEncode(Settings)
-    
-    if writefile then
-        writefile("Sigma5/" .. FileName, JsonEncodeSettings)
-    end
-end
-local function LoadModules()
-    if readfile and isfile and isfile("Sigma5/" .. FileName) then
-        Settings = HttpService:JSONDecode(readfile("Sigma5/" .. FileName))
-    end
-end
-local function DeleteJunk()
-    for _, file in ipairs(getfolder("Sigma5"):GetChildren()) do
-        if file.Name ~= FileName then
-            file:Destroy()
+function SaveModules()    
+    if not FirstExecute then
+        local JsonEncodeSettings = HttpService:JSONEncode(Settings)
+        
+        if writefile then
+            local success, errorMessage = pcall(function()
+                writefile("Sigma5/" .. FileName, JsonEncodeSettings)
+            end)
+            
+            if not success then
+                warn("Error saving settings:", errorMessage)
+            end
+        else
+            warn("writefile function is not available")
         end
+    end
+end
+function LoadModules()
+    if readfile and isfile and isfile("Sigma5/" .. FileName) then
+        local fileContent = readfile("Sigma5/" .. FileName)
+        if fileContent then
+            Settings = HttpService:JSONDecode(fileContent)
+            print("Loaded Settings:", Settings)
+        else
+            print("Error reading file content.")
+        end
+    else
+        print("Settings file not found.")
     end
 end
 task.spawn(function()
     if FirstTimeExecuteCheck() then
-        DeleteJunk()
         SettingTest()
     end
 end)
@@ -62,7 +74,6 @@ end)
 task.spawn(function()
     repeat
         task.wait(1)
-        
         SaveModules()
     until not game
 end)
@@ -142,36 +153,29 @@ createnotification("Sigma5", "Loaded Successfully", 1, true)
 
 local GUItab = Library:createTabs(CoreGui.Sigma, "Gui")
 --ActiveMods
-local ActiveModsEnabled = Settings.ActiveMods.Value
-local ActiveModsToggle = GUItab:ToggleButton({
+local ActiveMods = GUItab:ToggleButton({
     name = "ActiveMods",
     info = "Render active mods",
-    callback = function()
-        Settings.ActiveMods.Value = not Settings.ActiveMods.Value
-        ActiveModsEnabled = Settings.ActiveMods.Value
-        CoreGui.SigmaVisualStuff.ArrayListHolder.Visible = ActiveModsEnabled
+    callback = function(enabled)
+            Settings.ActiveMods = not Settings.ActiveMods
+            CoreGui.SigmaVisualStuff.ArrayListHolder.Visible = not CoreGui.SigmaVisualStuff.ArrayListHolder.Visible
     end
 })
 --TabGUI
-local TabGUIEnabled = Settings.TabGUI.Value
-local TabGUIToggle = GUItab:ToggleButton({
+local TabGUI = GUItab:ToggleButton({
     name = "TabGUI",
     info = "Just decorations",
-    callback = function()
-        Settings.TabGUI.Value = not Settings.TabGUI.Value
-        TabGUIEnabled = Settings.TabGUI.Value
-        CoreGui.SigmaVisualStuff.LeftHolder.TabHolder.Visible = TabGUIEnabled
+    callback = function(enabled)
+            Settings.TabGUI = not Settings.TabGUI
+            CoreGui.SigmaVisualStuff.LeftHolder.TabHolder.Visible = not CoreGui.SigmaVisualStuff.LeftHolder.TabHolder.Visible
     end
 })
 --Uninject
-local UninjectEnabled = Settings.Uninject.Value
 local Uninject = GUItab:ToggleButton({
     name = "DeleteGUI",
-    info = "Doesn't Uninject 100%",
-    callback = function()
-        Settings.Uninject.Value = not Settings.Uninject.Value
-        UninjectEnabled = Settings.Uninject.Value
-        if UninjectEnabled then
+    info = "Doesnt Uninject 100%",
+    callback = function(enabled)
+        if enabled then
             CoreGui.Sigma:Destroy()
             print("Destroyed Main")
             CoreGui.SigmaVisualStuff:Destroy()
@@ -182,21 +186,20 @@ local Uninject = GUItab:ToggleButton({
 --CombatSection
 local COMBATtab = Library:createTabs(CoreGui.Sigma, "Combat")
 --AimBot
-local AimbotEnabled = Settings.Aimbot.Value
-local AimRange = 20
+local AimRange
 local Aimbot = COMBATtab:ToggleButton({
     name = "Aimbot",
     info = "Aim At Nearest Player?",
-    callback = function()
-        Settings.Aimbot.Value = not Settings.Aimbot.Value
-        AimbotEnabled = Settings.Aimbot.Value
-        if AimbotEnabled then
+    callback = function(enabled)
+        if enabled then
+            Settings.Aimbot = true
             AimRange = 20
-            while AimbotEnabled do
+            while enabled do
                 aimAtNearestPlayer(AimRange)
                 wait(0.01)
             end
         else
+            Settings.Aimbot = false
             AimRange = 0
         end
     end
@@ -212,20 +215,19 @@ local AimRangeSlider = Aimbot:Slider({
 })
 --KillAura
 local Delay
-local KillAuraEnabled = Settings.KillAura.Value
 local KillAura = COMBATtab:ToggleButton({
     name = "KillAura",
     info = "Attack Nearest Player?",
-    callback = function()
-        Settings.KillAura.Value = not Settings.KillAura.Value
-        KillAuraEnabled = Settings.KillAura.Value
-        if KillAuraEnabled then
+    callback = function(enabled)
+        if enabled then
+            Settings.KillAura = true
             Delay = 0.03
-            while KillAuraEnabled do
+            while enabled do
                 attackNearestPlayer()
                 wait(Delay)
             end
         else
+            Settings.KillAura = false
             Delay = 86400
         end
     end
@@ -238,7 +240,7 @@ local TableFix = KillAura:Slider({
     callback = function(value)
     end
 })
-local StartRotatingRange = nil
+local StartRotatingRange
 local function RotateNearest()
     local nearestPlayer = findNearestPlayer(StartRotatingRange)
     if nearestPlayer then
@@ -254,14 +256,15 @@ local function RotateNearest()
 end
 local Rotation = KillAura:ToggleButtonInsideUI({
     name = "Rotations",
-    callback = function()
-        Settings.Rotation.Value = not Settings.Rotation.Value
-        if Settings.Rotation.Value then
+    callback = function(enabled)
+        if enabled then
+            Settings.Rotation = true
             StartRotatingRange = 20
             if localPlayer.Character then
                 RotateNearest()
             end
         else
+            Settings.Rotation = false
             StartRotatingRange = 0
         end
     end
@@ -270,14 +273,17 @@ local Rotation = KillAura:ToggleButtonInsideUI({
 local PLAYERtab = Library:createTabs(CoreGui.Sigma, "Player")
 --SpeedTemporarily
 local CustomSpeed = 58
-local SpeedTempEnabled = Settings.SpeedTemp.Value
 local SpeedTemp = PLAYERtab:ToggleButton({
     name = "SpeedTemp",
     info = "Temporary speed boost",
-    callback = function()
-        Settings.SpeedTemp.Value = not Settings.SpeedTemp.Value
-        SpeedTempEnabled = Settings.SpeedTemp.Value
-        game.Players.LocalPlayer.Character:WaitForChild("Humanoid").WalkSpeed = SpeedTempEnabled and CustomSpeed or 16
+    callback = function(enabled)
+        if enabled then
+            Settings.SpeedTemp = true
+            game.Players.LocalPlayer.Character:WaitForChild("Humanoid").WalkSpeed = CustomSpeed
+        else
+            Settings.SpeedTemp = false
+            game.Players.LocalPlayer.Character:WaitForChild("Humanoid").WalkSpeed = 16
+        end
     end
 })
 local CustomSpeedSlider = SpeedTemp:Slider({
@@ -287,14 +293,13 @@ local CustomSpeedSlider = SpeedTemp:Slider({
     default = 58,
     callback = function(val)
         CustomSpeed = val
-        if SpeedTempEnabled then
+        if Settings.SpeedTemp then
             game.Players.LocalPlayer.Character:WaitForChild("Humanoid").WalkSpeed = CustomSpeed
         end
     end
 })
 --LongJump
 local CustomMultiplier = 2.8
-local LongJumpEnabled = Settings.LongJumpToggle.Value
 local function LongJump()
     local humanoid = game.Players.LocalPlayer.Character:FindFirstChildOfClass("Humanoid")
     local rootPart = game.Players.LocalPlayer.Character:FindFirstChild("HumanoidRootPart")  
@@ -313,11 +318,12 @@ end
 local LongJumpToggle = PLAYERtab:ToggleButton({
     name = "LongJump",
     info = "Jump multiple times and then move forward",
-    callback = function()
-        Settings.LongJumpToggle.Value = not Settings.LongJumpToggle.Value
-        LongJumpEnabled = Settings.LongJumpToggle.Value
-        if LongJumpEnabled then
+    callback = function(enabled)
+        if enabled then
+            Settings.LongJumpToggle = true
             LongJump()
+        else
+            Settings.LongJumpToggle = false
         end
     end
 })
