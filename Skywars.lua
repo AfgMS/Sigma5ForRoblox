@@ -15,7 +15,6 @@ function SettingTest()
     local Settings = {
         ActiveMods = {Value = true},
         TabGUI = {Value = true},
-        Uninject = {Value = false},
         Aimbot = {Value = false},
         KillAura = {Value = false},  
         SpeedTemp = {Value = true},
@@ -170,8 +169,6 @@ local ActiveMods = GUItab:ToggleButton({
     name = "ActiveMods",
     info = "Render active mods",
     callback = function(enabled)
-        if Settings.ActiveMods.Value then
-            enabled = true
             Settings.ActiveMods.Value = not Settings.ActiveMods.Value
             CoreGui.SigmaVisualStuff.ArrayListHolder.Visible = not CoreGui.SigmaVisualStuff.ArrayListHolder.Visible
         end
@@ -182,7 +179,7 @@ local TabGUI = GUItab:ToggleButton({
     name = "TabGUI",
     info = "Just decorations",
     callback = function(enabled)
-            Settings.TabGUI = not Settings.TabGUI
+            Settings.TabGUI.Value = not Settings.TabGUI.Value
             CoreGui.SigmaVisualStuff.LeftHolder.TabHolder.Visible = not CoreGui.SigmaVisualStuff.LeftHolder.TabHolder.Visible
     end
 })
@@ -208,14 +205,14 @@ local Aimbot = COMBATtab:ToggleButton({
     info = "Aim At Nearest Player?",
     callback = function(enabled)
         if enabled then
-            Settings.Aimbot = true
+            Settings.Aimbot.Value = true
             AimRange = 20
             while enabled do
                 aimAtNearestPlayer(AimRange)
                 wait(0.01)
             end
         else
-            Settings.Aimbot = false
+            Settings.Aimbot.Value = false
             AimRange = 0
         end
     end
@@ -236,14 +233,14 @@ local KillAura = COMBATtab:ToggleButton({
     info = "Attack Nearest Player?",
     callback = function(enabled)
         if enabled then
-            Settings.KillAura = true
+            Settings.KillAura.Value = true
             Delay = 0.03
             while enabled do
                 attackNearestPlayer()
                 wait(Delay)
             end
         else
-            Settings.KillAura = false
+            Settings.KillAura.Value = false
             Delay = 86400
         end
     end
@@ -273,10 +270,10 @@ local SpeedTemp = PLAYERtab:ToggleButton({
     info = "Temporary speed boost",
     callback = function(enabled)
         if enabled then
-            Settings.SpeedTemp = true
+            Settings.SpeedTemp.Value = true
             game.Players.LocalPlayer.Character:WaitForChild("Humanoid").WalkSpeed = CustomSpeed
         else
-            Settings.SpeedTemp = false
+            Settings.SpeedTemp.Value = false
             game.Players.LocalPlayer.Character:WaitForChild("Humanoid").WalkSpeed = 16
         end
     end
@@ -315,10 +312,10 @@ local LongJumpToggle = PLAYERtab:ToggleButton({
     info = "Jump multiple times and then move forward",
     callback = function(enabled)
         if enabled then
-            Settings.LongJumpToggle = true
+            Settings.LongJumpToggle.Value = true
             LongJump()
         else
-            Settings.LongJumpToggle = false
+            Settings.LongJumpToggle.Value = false
         end
     end
 })
