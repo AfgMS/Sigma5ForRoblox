@@ -174,33 +174,6 @@ local HitboxSize3Slider = HitboxToggle:Slider({
         HitboxSize3 = val
     end
 })
---AutoQueue
-local function FireAutoQueue()
-    local args = {
-        [1] = true,
-        [2] = "SkyWarsSolo"
-    }
-    local joinEvent = game:GetService("ReplicatedStorage"):FindFirstChild("events-Eqz"):FindFirstChild("a800bb9a-1030-420e-b141-21aaada3d57e")
-    if joinEvent then
-        joinEvent:FireServer(unpack(args))
-    end
-end
-local AutoQueueDelay = 5
-local function AutoQueueLoop()
-    while true do
-        FireAutoQueue()
-        wait(AutoQueueDelay)
-    end
-end
-local AutoQueue = COMBATtab:ToggleButton({
-    name = "AutoQueue",
-    info = "Automatically Play Again",
-    callback = function(enabled)
-        if enabled then
-            spawn(AutoQueueLoop)
-        end
-    end
-})
 --KillAura
 local Delay = 0.03
 local KillAura = COMBATtab:ToggleButton({
@@ -228,6 +201,59 @@ local Rotation = KillAura:ToggleButtonInsideUI({
     callback = function(enabled)
         if enabled then
             loadstring(game:HttpGet("https://raw.githubusercontent.com/AfgMS/Simga345/main/Rotate.lua"))()
+        end
+    end
+})
+--PlayerSection
+local PLAYERtab = Library:createTabs(CoreGui.Sigma, "Player")
+--AutoQueue
+local function FireAutoQueue()
+    local args = {
+        [1] = true,
+        [2] = "SkyWarsSolo"
+    }
+    local joinEvent = game:GetService("ReplicatedStorage"):FindFirstChild("events-Eqz"):FindFirstChild("a800bb9a-1030-420e-b141-21aaada3d57e")
+    if joinEvent then
+        joinEvent:FireServer(unpack(args))
+    end
+end
+local AutoQueueDelay = 5
+local function AutoQueueLoop()
+    while true do
+        FireAutoQueue()
+        wait(AutoQueueDelay)
+    end
+end
+local AutoQueue = PLAYERtab:ToggleButton({
+    name = "AutoQueue",
+    info = "Automatically Play Again",
+    callback = function(enabled)
+        if enabled then
+            spawn(AutoQueueLoop)
+        end
+    end
+})
+--SpeedTemporarily
+local SpeedTemp = PLAYERtab:ToggleButton({
+    name = "SpeedTemp",
+    info = "Temporary speed boost",
+    callback = function(enabled)
+        if enabled then
+            game.Players.LocalPlayer.Character:WaitForChild("Humanoid").WalkSpeed = 54
+        else
+            game.Players.LocalPlayer.Character:WaitForChild("Humanoid").WalkSpeed = 16
+        end
+    end
+})
+--LongJumpTemporarily
+local LongJumpTemp = PLAYERtab:ToggleButton({
+    name = "LongJumpTemp",
+    info = "Temporary gravity change",
+    callback = function(enabled)
+        if enabled then
+            game.Workspace.Gravity = 23
+        else
+            game.Workspace.Gravity = 196.2
         end
     end
 })
