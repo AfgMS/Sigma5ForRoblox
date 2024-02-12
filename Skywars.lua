@@ -202,7 +202,7 @@ local FlightTemp = PLAYERtab:ToggleButton({
 local SpeedShit = false
 local function ViperSpeed()
     while SpeedShit do
-        rootPart.Velocity = rootPart.CFrame.LookVector * humanoid.JumpPower * 0.5
+        rootPart.Velocity = rootPart.CFrame.LookVector * humanoid.JumpPower * 0.98
         wait(0.73)
     end
 end
