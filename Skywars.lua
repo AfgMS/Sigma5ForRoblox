@@ -6,6 +6,9 @@ local localPlayer = game.Players.LocalPlayer
 local Camera = game:GetService("Workspace").CurrentCamera
 local UserInputService = game:GetService("UserInputService")
 local Lighting = game:GetService("Lighting")
+local character = localPlayer.Character or localPlayer.CharacterAdded:Wait()
+local humanoid = character:WaitForChild("Humanoid")
+local rootPart = character:WaitForChild("HumanoidRootPart")
 
 --Function
 local function LibraryCheck()
@@ -171,23 +174,18 @@ local Rotation = KillAura:ToggleButtonInsideUI({
 --PlayerSection
 local PLAYERtab = Library:createTabs(CoreGui.Sigma, "Player")
 --Flight
-local character = localPlayer.Character or localPlayer.CharacterAdded:Wait()
-local humanoid = character:WaitForChild("Humanoid")
-local rootPart = character:WaitForChild("HumanoidRootPart")
 local FlyingShit = false
-
 local function LibrecraftFly()
     while FlyingShit do
-        rootPart.CFrame = CFrame.new(rootPart.Position + Vector3.new(0, 18, 0))
-        wait(0.25)
-        rootPart.Velocity = rootPart.CFrame.LookVector * humanoid.JumpPower * 1.8
-        wait(0.75)
+        rootPart.CFrame = CFrame.new(rootPart.Position + Vector3.new(0, 8, 0))
+        wait(0.18)
+        rootPart.Velocity = rootPart.CFrame.LookVector * humanoid.JumpPower * 1.3
+        wait(0.85)
     end
 end
-
 local FlightTemp = PLAYERtab:ToggleButton({
-    name = "FlightTemp",
-    info = "Temporary Flight",
+    name = "LibrecraftFly",
+    info = "Sigma5 MC Reference",
     callback = function(enabled)
         if enabled then
             FlyingShit = true
@@ -200,49 +198,25 @@ local FlightTemp = PLAYERtab:ToggleButton({
         end
     end
 })
---SpeedTemporarily
-local CustomSpeed = 58
-local SpeedTemp = PLAYERtab:ToggleButton({
-    name = "SpeedTemp",
-    info = "Temporary speed boost",
-    callback = function(enabled)
-        if enabled then
-            game.Players.LocalPlayer.Character:WaitForChild("Humanoid").WalkSpeed = CustomSpeed
-        else
-            game.Players.LocalPlayer.Character:WaitForChild("Humanoid").WalkSpeed = 16
-        end
+--Speed
+local SpeedShit = false
+local function ViperSpeed()
+    while SpeedShit do
+        rootPart.Velocity = rootPart.CFrame.LookVector * humanoid.JumpPower * 0.5
+        wait(0.73)
     end
-})
-local CustomSpeedSlider = SpeedTemp:Slider({
-    title = "CustomSpeed",
-    min = 0,
-    max = 100,
-    default = 58,
-    callback = function(val)
-        CustomSpeed = val
-    end
-})
-local function LongJump()
-    local humanoid = game.Players.LocalPlayer.Character:FindFirstChildOfClass("Humanoid")
-    local rootPart = game.Players.LocalPlayer.Character:FindFirstChild("HumanoidRootPart")  
-    local forwardVector = rootPart.CFrame.lookVector
-    local jumpPower = humanoid.JumpPower
-
-    humanoid:ChangeState(Enum.HumanoidStateType.Jumping)
-    wait(0.38)
-    humanoid:ChangeState(Enum.HumanoidStateType.Jumping)
-    wait(0.63)
-    humanoid:ChangeState(Enum.HumanoidStateType.Jumping)
-    wait(0.63)
-    humanoid:ChangeState(Enum.HumanoidStateType.Jumping)
-    rootPart.Velocity = forwardVector * jumpPower * 1.3
 end
-local LongJumpToggle = PLAYERtab:ToggleButton({
-    name = "LongJump",
-    info = "Jump multiple times and then move forward",
+local SpeedTemp = PLAYERtab:ToggleButton({
+    name = "ViperMCSpeed",
+    info = "Sigma5 MC Reference",
     callback = function(enabled)
         if enabled then
-            LongJump()
+            SpeedShit = true
+            ViperSpeed()
+            game.Players.LocalPlayer.Character:WaitForChild("Humanoid").WalkSpeed = 23
+        else
+            SpeedShit = false
+            game.Players.LocalPlayer.Character:WaitForChild("Humanoid").WalkSpeed = 16
         end
     end
 })
