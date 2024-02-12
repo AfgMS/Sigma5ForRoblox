@@ -205,11 +205,11 @@ local function AddArrayList(name)
 	ModulesName.BackgroundTransparency = 1
 	ModulesName.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
 	ModulesName.Font = Enum.Font.Roboto
-	ModulesName.TextSize = 18.5
+	ModulesName.TextSize = 15.8
 	ModulesName.Text = name
 	ModulesName.TextColor3 = Color3.fromRGB(255, 255, 255)
 	ModulesName.Size = UDim2.new(1, 0, 0, 30)
-	ModulesName.ZIndex = 5
+	ModulesName.ZIndex = 3
 	ModulesName.BorderColor3 = Color3.fromRGB(0, 0, 0)
 
 	ModulesName.LayoutOrder = -#name
@@ -534,7 +534,7 @@ ButtonsMenuFrame.BorderColor3 = Color3.fromRGB(0, 0, 0)
 ButtonsMenuFrame.BorderSizePixel = 0
 ButtonsMenuFrame.Position = UDim2.new(0.497, -155, 0.521, -158)
 ButtonsMenuFrame.Size = UDim2.new(0, 325, 0, 295)
-ButtonsMenuFrame.ZIndex = 2
+ButtonsMenuFrame.ZIndex = 4
 ButtonsMenuFrame.Visible = false
 		
 local ButtonsMenuFrameCorner = Instance.new("UICorner", ButtonsMenuFrame)
@@ -554,7 +554,7 @@ ButtonsMenuTitleText.TextColor3 = Color3.fromRGB(255, 255, 255)
 ButtonsMenuTitleText.TextSize = 30.000
 ButtonsMenuTitleText.TextXAlignment = Enum.TextXAlignment.Left
 ButtonsMenuTitleText.Visible = true
-ButtonsMenuTitleText.ZIndex = 2
+ButtonsMenuTitleText.ZIndex = 4
 
 local ButtonsMenuInner = Instance.new("ScrollingFrame", ButtonsMenuFrame)
 ButtonsMenuInner.Name = "ScrollHolder"
@@ -566,7 +566,7 @@ ButtonsMenuInner.BorderSizePixel = 0
 ButtonsMenuInner.Size = UDim2.new(1, 0, 1, 0)
 ButtonsMenuInner.ScrollBarThickness = 0
 ButtonsMenuInner.Visible = false
-ButtonsMenuInner.ZIndex = 2
+ButtonsMenuInner.ZIndex = 4
 
 local UIListLayout = Instance.new("UIListLayout", ButtonsMenuInner)
 UIListLayout.SortOrder = Enum.SortOrder.LayoutOrder
@@ -585,7 +585,7 @@ ButtonsMenuTitle.TextSize = 13
 ButtonsMenuTitle.TextWrapped = true
 ButtonsMenuTitle.TextXAlignment = Enum.TextXAlignment.Left
 ButtonsMenuTitle.Visible = true
-ButtonsMenuTitle.ZIndex = 2
+ButtonsMenuTitle.ZIndex = 4
 
 		ToggleButton.MenuFrame = ButtonsMenuFrame
 
