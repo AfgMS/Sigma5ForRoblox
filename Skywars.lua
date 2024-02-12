@@ -202,8 +202,10 @@ local FlightTemp = PLAYERtab:ToggleButton({
 local SpeedShit = false
 local function ViperSpeed()
     while SpeedShit do
-        rootPart.Velocity = rootPart.CFrame.LookVector * humanoid.JumpPower * 0.98
-        wait(0.73)
+        game.Players.LocalPlayer.Character:WaitForChild("Humanoid").WalkSpeed = 48
+        wait(0.28)
+        game.Players.LocalPlayer.Character:WaitForChild("Humanoid").WalkSpeed = 23
+        wait(1)
     end
 end
 local SpeedTemp = PLAYERtab:ToggleButton({
@@ -213,7 +215,6 @@ local SpeedTemp = PLAYERtab:ToggleButton({
         if enabled then
             SpeedShit = true
             ViperSpeed()
-            game.Players.LocalPlayer.Character:WaitForChild("Humanoid").WalkSpeed = 23
         else
             SpeedShit = false
             game.Players.LocalPlayer.Character:WaitForChild("Humanoid").WalkSpeed = 16
