@@ -594,8 +594,22 @@ ButtonsMenuTitle.TextWrapped = true
 ButtonsMenuTitle.TextXAlignment = Enum.TextXAlignment.Left
 ButtonsMenuTitle.Visible = true
 ButtonsMenuTitle.ZIndex = 4
+ToggleButton.MenuFrame = ButtonsMenuFrame
+	
+while wait(1) do
+	local visibleFrames = {}
 
-		ToggleButton.MenuFrame = ButtonsMenuFrame
+	for _, openframeshit in pairs(CoreGui.Sigma:GetChildren()) do
+		if openframeshit.Name == "ButtonsMenuFrame" and openframeshit:IsA("Frame") and openframeshit.Visible then
+			table.insert(visibleFrames, {Frame = openframeshit, Time = tick()})
+		end
+	end
+
+	if #visibleFrames > 1 then
+		table.sort(visibleFrames, function(a, b) return a.Time < b.Time end)
+		visibleFrames[1].Frame.Visible = false
+	end
+end
 
 		local function updateColors()
 			if ToggleButton.Enabled then
@@ -634,24 +648,7 @@ ButtonsMenuTitle.ZIndex = 4
 		end)
 
 		updateColors()
-		
-while true do
-    local visibleFrames = {}
 
-    for _, openframeshit in pairs(CoreGui.Sigma:GetChildren()) do
-        if openframeshit.Name == "ButtonsMenuFrame" and openframeshit:IsA("Frame") and openframeshit.Visible then
-            table.insert(visibleFrames, {Frame = openframeshit, Time = tick()})
-        end
-    end
-
-    if #visibleFrames > 1 then
-        table.sort(visibleFrames, function(a, b) return a.Time < b.Time end)
-        visibleFrames[1].Frame.Visible = false
-    end
-
-    task.wait(1)
-end
-		
 		function ToggleButton:Slider(options)
 			options = Library:validate({
 				title = "Error404",
