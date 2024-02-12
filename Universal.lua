@@ -59,11 +59,13 @@ local Cords = tab1:ToggleButton({
     end
 })
 --Uninject
+local BlurEffect = Lighting:FindFirstChild("Blur")
 local Uninject = tab1:ToggleButton({
-    name = "UninjectTest",
-    info = "Fuck Sigma",
+    name = "DeleteGUI",
+    info = "Doesnt Uninject 100%",
     callback = function(enabled)
         if enabled then
+            BlurEffect:Destroy()
             CoreGui.Sigma:Destroy()
             print("Destroyed Main")
             CoreGui.SigmaVisualStuff:Destroy()
