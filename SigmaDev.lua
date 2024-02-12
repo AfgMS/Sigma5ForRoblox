@@ -657,7 +657,7 @@ ToggleButton.MenuFrame = ButtonsMenuFrame
 			SliderNameLabel.Font = Enum.Font.Roboto
 			SliderNameLabel.BackgroundTransparency = 1
 			SliderNameLabel.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-			SliderNameLabel.ZIndex = 2
+			SliderNameLabel.ZIndex = 5
 			SliderNameLabel.TextXAlignment = Enum.TextXAlignment.Left
 
 			local SliderValueLabel = Instance.new("TextLabel", SliderNameLabel)
@@ -670,7 +670,7 @@ ToggleButton.MenuFrame = ButtonsMenuFrame
 			SliderValueLabel.Font = Enum.Font.Roboto
 			SliderValueLabel.BackgroundTransparency = 1
 			SliderValueLabel.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-			SliderValueLabel.ZIndex = 2
+			SliderValueLabel.ZIndex = 5
 
 			local SliderBack = Instance.new("Frame", SliderNameLabel)
 			SliderBack.Name = "SliderBack"
@@ -680,7 +680,7 @@ ToggleButton.MenuFrame = ButtonsMenuFrame
 			SliderBack.BackgroundColor3 = Color3.fromRGB(205, 235, 255)
 			SliderBack.BackgroundTransparency = 0.45
 			SliderBack.BorderColor3 = Color3.fromRGB(0, 0, 0)
-			SliderBack.ZIndex = 2
+			SliderBack.ZIndex = 5
 
 			local SliderBackCorner = Instance.new("UICorner", SliderBack)
 			SliderBackCorner.CornerRadius = UDim.new(1, 0)
@@ -692,7 +692,7 @@ ToggleButton.MenuFrame = ButtonsMenuFrame
 			SliderFill.BorderSizePixel = 0
 			SliderFill.BackgroundColor3 = Color3.fromRGB(116, 184, 255)
 			SliderFill.BorderColor3 = Color3.fromRGB(0, 0, 0)
-			SliderFill.ZIndex = 2
+			SliderFill.ZIndex = 5
 
 			local SliderFillCorner = Instance.new("UICorner", SliderFill)
 			SliderFillCorner.CornerRadius = UDim.new(1, 0)
@@ -706,9 +706,8 @@ ToggleButton.MenuFrame = ButtonsMenuFrame
 			UISliderButton.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
 			UISliderButton.BorderSizePixel = 0
 			UISliderButton.AutoButtonColor = false
-			UISliderButton.ZIndex = 1
 			UISliderButton.ClipsDescendants = true
-			UISliderButton.ZIndex = 2
+			UISliderButton.ZIndex = 5
 
 			local UICorner = Instance.new("UICorner", UISliderButton)
 			UICorner.CornerRadius = UDim.new(1, 0)
@@ -765,7 +764,7 @@ end
 			newToggle.Font = Enum.Font.Roboto
 			newToggle.BackgroundTransparency = 1
 			newToggle.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-			newToggle.ZIndex = 2
+			newToggle.ZIndex = 5
 			newToggle.TextXAlignment = Enum.TextXAlignment.Left
 				
 			local newToggleThingy = Instance.new("TextButton", newToggle)
@@ -776,7 +775,7 @@ end
 			newToggleThingy.Size = UDim2.new(0, 15, 0, 15)
 			newToggleThingy.BorderColor3 = Color3.fromRGB(0, 0, 0)
 			newToggleThingy.Text = " "
-			newToggleThingy.ZIndex = 2
+			newToggleThingy.ZIndex = 5
 			newToggleThingy.Name = "Checkmark"
 			newToggleThingy.Position = UDim2.new(0, 285, 0, 8)
 			newToggleThingy.AutoButtonColor = false
@@ -829,7 +828,7 @@ end
 					DropdownName.Font = Enum.Font.Roboto
 					DropdownName.BackgroundTransparency = 1
 					DropdownName.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-					DropdownName.ZIndex = 2
+					DropdownName.ZIndex = 5
 					DropdownName.TextXAlignment = Enum.TextXAlignment.Left
 					
 					local DropdownHolders = Instance.new("TextButton", DropdownName)
@@ -841,7 +840,7 @@ end
 					DropdownHolders.TextColor3 = Color3.fromRGB(85, 85, 85)
 					DropdownHolders.Position = UDim2.new(0, 225, 0, 8)
 					DropdownHolders.Name = "DropdownHolder"
-					DropdownHolders.ZIndex = 2
+					DropdownHolders.ZIndex = 5
 					DropdownHolders.TextXAlignment = Enum.TextXAlignment.Left
 					
 					local DropdownMenu = Instance.new("Frame", DropdownHolders)
@@ -853,7 +852,7 @@ end
 					DropdownMenu.Position = UDim2.new(0, 0, 1, 0)
 					DropdownMenu.BackgroundTransparency = 1
 					DropdownMenu.Name = "DropdownMenu"
-					DropdownMenu.ZIndex = 2
+					DropdownMenu.ZIndex = 5
 
 					local DropdownMenuListHolder = Instance.new("UIListLayout", DropdownMenu)
 					DropdownMenuListHolder.SortOrder = Enum.SortOrder.LayoutOrder
@@ -869,7 +868,7 @@ end
 						DropdownOption.Visible = true
 						DropdownOption.Text = "  " .. item
 						DropdownOption.Name = item
-						DropdownOption.ZIndex = 2
+						DropdownOption.ZIndex = 5
 						DropdownOption.TextXAlignment = Enum.TextXAlignment.Left
 						
 						DropdownOption.MouseButton1Click:Connect(function()
