@@ -205,7 +205,7 @@ local function LongJump()
     humanoid:ChangeState(Enum.HumanoidStateType.Jumping)
     wait(0.63)
     humanoid:ChangeState(Enum.HumanoidStateType.Jumping)
-    rootPart.Velocity = forwardVector * jumpPower * 2.8
+    rootPart.Velocity = forwardVector * jumpPower * 1.3
 end
 local LongJumpToggle = PLAYERtab:ToggleButton({
     name = "LongJump",
