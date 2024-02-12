@@ -361,12 +361,6 @@ World.TextColor3 = Color3.fromRGB(255, 255, 255)
 World.TextSize = 14
 World.TextXAlignment = Enum.TextXAlignment.Left
 
-local KeybindMobileSupport = Instance.new("Frame")
-KeybindMobileSupport.AnchorPoint = Vector2.new(0.5, 0.5)
-KeybindMobileSupport.Size = UDim2.new(1, 0, 1, 0)
-KeybindMobileSupport.Position = UDim2.new(0.5, 0, 0.5, 0)
-KeybindMobileSupport.BackgroundTransparency = 1
-
 --UILibrary
 function Library:createScreenGui()
 	local screenGui = Instance.new("ScreenGui", CoreGui)
@@ -595,28 +589,6 @@ function Library:createTabs(parentFrame, tabName)
 		ButtonsMenuTitle.Visible = true
 		ButtonsMenuTitle.ZIndex = 2
 		ToggleButton.MenuFrame = ButtonsMenuFrame
-		
-	local function mobileKeybindSupport(originalButton)
-		local clone = originalButton:Clone()
-		clone.Size = UDim2.new(0, 35, 0, 35)
-		clone.Visible = false
-    
-	UserInputService.InputBegan:Connect(function(input)
-		if input.UserInputType == Enum.UserInputType.Touch then
-			clone.Position = UDim2.new(0, input.Position.X, 0, input.Position.Y)
-			clone.Visible = true
-		end
-	end)
-
-	UserInputService.InputEnded:Connect(function(input)
-		if input.UserInputType == Enum.UserInputType.Touch then
-			clone.Visible = false
-		end
-	end)
-			
-	local originalButton = newButton
-	local cloneButton = mobileKeybindSupport(originalButton)
-	cloneButton.Parent = KeybindMobileSupport
 		
 	local function updateColors()
 		if ToggleButton.Enabled then
