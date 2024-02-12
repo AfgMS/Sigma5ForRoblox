@@ -452,6 +452,7 @@ function Library:createTabs(parentFrame, tabName)
 		for _, tab in pairs(parentFrame:GetChildren()) do
 		if tab.Name == "Tabs" and tab:IsA("Frame") then
 				tab.Visible = not tab.Visible
+				BlurUI.Enabled = not BlurUI.Enabled
 				if tab.ScrollingPart then
 					tab.ScrollingPart.Visible = not tab.ScrollingPart.Visible
 				end
