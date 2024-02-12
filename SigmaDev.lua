@@ -595,20 +595,7 @@ ButtonsMenuTitle.TextXAlignment = Enum.TextXAlignment.Left
 ButtonsMenuTitle.Visible = true
 ButtonsMenuTitle.ZIndex = 4
 ToggleButton.MenuFrame = ButtonsMenuFrame
-
-	local visibleFrames = {}
-	for _, openframeshit in pairs(CoreGui.Sigma:GetChildren()) do
-		if openframeshit.Name == "ButtonsMenuFrame" and openframeshit:IsA("Frame") and openframeshit.Visible then
-			table.insert(visibleFrames, {Frame = openframeshit, Time = tick()})
-		end
-	end
-
-	if #visibleFrames > 1 then
-		table.sort(visibleFrames, function(a, b) return a.Time < b.Time end)
-		visibleFrames[1].Frame.Visible = false
-	end
-
-
+		
 		local function updateColors()
 			if ToggleButton.Enabled then
 				Library:tween(newButton, {BackgroundColor3 = Color3.fromRGB(115, 185, 255)})
