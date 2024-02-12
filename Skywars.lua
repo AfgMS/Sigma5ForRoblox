@@ -178,10 +178,10 @@ local FlyingShit = false
 
 local function LibrecraftFly()
     while FlyingShit do
-        rootPart.CFrame = CFrame.new(rootPart.Position + Vector3.new(0, 3, 0))
-        wait(1)
+        rootPart.CFrame = CFrame.new(rootPart.Position + Vector3.new(0, 18, 0))
+        wait(0.25)
         rootPart.Velocity = rootPart.CFrame.LookVector * humanoid.JumpPower * 1.8
-        wait(3)
+        wait(0.75)
     end
 end
 
@@ -191,7 +191,7 @@ local FlightTemp = PLAYERtab:ToggleButton({
     callback = function(enabled)
         if enabled then
             FlyingShit = true
-            game.Workspace.Gravity = 18
+            game.Workspace.Gravity = 0
             LibrecraftFly()
         else
             FlyingShit = false
