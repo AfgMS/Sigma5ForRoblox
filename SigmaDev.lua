@@ -439,7 +439,11 @@ function Library:createTabs(parentFrame, tabName)
 	MobileSupportUI.Position = UDim2.new(0.963096738, 0, 0.351765305, 0)
 	MobileSupportUI.AutoButtonColor = false
 	MobileSupportUI.TextTransparency = 0.250
+	
+	local MobileCornerSupport = Instance.new("UICorner", MobileSupportUI)
+	MobileCornerSupport.CornerRadius = UDim.new(0, 8)
 
+	
 	local BlurUI = Instance.new("BlurEffect")
 	BlurUI.Parent = Lighting
 	BlurUI.Size = 28
