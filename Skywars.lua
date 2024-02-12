@@ -5,6 +5,7 @@ local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local localPlayer = game.Players.LocalPlayer
 local Camera = game:GetService("Workspace").CurrentCamera
 local UserInputService = game:GetService("UserInputService")
+local Lighting = game:GetService("Lighting")
 
 --Function
 local function LibraryCheck()
@@ -95,11 +96,13 @@ local TabGUI = GUItab:ToggleButton({
     end
 })
 --Uninject
+local BlurEffect = Lighting:FindFirstChild("Blur")
 local Uninject = GUItab:ToggleButton({
     name = "DeleteGUI",
     info = "Doesnt Uninject 100%",
     callback = function(enabled)
         if enabled then
+            BlurEffect:Destroy()
             CoreGui.Sigma:Destroy()
             print("Destroyed Main")
             CoreGui.SigmaVisualStuff:Destroy()
