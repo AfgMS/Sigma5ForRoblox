@@ -170,6 +170,44 @@ local Rotation = KillAura:ToggleButtonInsideUI({
 })
 --PlayerSection
 local PLAYERtab = Library:createTabs(CoreGui.Sigma, "Player")
+--Flight
+local character = localPlayer.Character or localPlayer.CharacterAdded:Wait()
+local humanoid = character:WaitForChild("Humanoid")
+local rootPart = character:WaitForChild("HumanoidRootPart")
+
+local gravityEnabled = true
+local flyEnabled = false
+local flyVelocity = Vector3.new(0, 3, 0)
+local jumpPower = humanoid.JumpPower
+
+local function fly()
+    while flyEnabled do
+        rootPart.Velocity = rootPart.CFrame.LookVector * jumpPower * 1.8
+        wait(1)
+        rootPart.Velocity = flyVelocity
+        wait(0.55)
+    end
+end
+local FlightTemp = PLAYERtab:ToggleButton({
+    name = "FlightTemp",
+    info = "Temporary Flight",
+    callback = function(enabled)
+        if enabled then
+            gravityEnabled = false
+            humanoid.PlatformStand = true
+            humanoid.Gravity = 0
+            flyEnabled = true
+            fly()
+        else
+            flyEnabled = false
+            humanoid.PlatformStand = false
+            rootPart.Velocity = Vector3.new()
+            if not gravityEnabled then
+                humanoid.Gravity = 196.2
+            end
+        end
+    end
+})
 --SpeedTemporarily
 local CustomSpeed = 58
 local SpeedTemp = PLAYERtab:ToggleButton({
