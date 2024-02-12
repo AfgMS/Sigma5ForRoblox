@@ -177,9 +177,9 @@ local PLAYERtab = Library:createTabs(CoreGui.Sigma, "Player")
 local FlyingShit = false
 local function LibrecraftFly()
     while FlyingShit do
-        rootPart.CFrame = CFrame.new(rootPart.Position + Vector3.new(0, 8, 0))
+        rootPart.CFrame = CFrame.new(rootPart.Position + Vector3.new(0, 3, 0))
         wait(0.18)
-        rootPart.Velocity = rootPart.CFrame.LookVector * humanoid.JumpPower * 1.3
+        rootPart.Velocity = rootPart.CFrame.LookVector * humanoid.JumpPower * 1.8
         wait(0.85)
     end
 end
