@@ -174,18 +174,14 @@ local PLAYERtab = Library:createTabs(CoreGui.Sigma, "Player")
 local character = localPlayer.Character or localPlayer.CharacterAdded:Wait()
 local humanoid = character:WaitForChild("Humanoid")
 local rootPart = character:WaitForChild("HumanoidRootPart")
+local FlyingShit = false
 
-local gravityEnabled = true
-local flyEnabled = false
-local flyVelocity = Vector3.new(0, 3, 0)
-local jumpPower = humanoid.JumpPower
-
-local function fly()
-    while flyEnabled do
-        rootPart.Velocity = rootPart.CFrame.LookVector * jumpPower * 1.8
+local function LibrecraftFly()
+    while FlyingShit do
+        rootPart.Velocity = Vector3.new(0, 3, 0)
+        wait(0.73)
+        rootPart.Velocity = rootPart.CFrame.LookVector * humanoid.JumpPower * 1.8
         wait(1)
-        rootPart.Velocity = flyVelocity
-        wait(0.55)
     end
 end
 local FlightTemp = PLAYERtab:ToggleButton({
@@ -193,18 +189,13 @@ local FlightTemp = PLAYERtab:ToggleButton({
     info = "Temporary Flight",
     callback = function(enabled)
         if enabled then
-            gravityEnabled = false
+            FlyingShit = true
             humanoid.PlatformStand = true
-            humanoid.Gravity = 0
-            flyEnabled = true
-            fly()
+            LibrecraftFly()
         else
-            flyEnabled = false
+            FlyingShit = false
             humanoid.PlatformStand = false
             rootPart.Velocity = Vector3.new()
-            if not gravityEnabled then
-                humanoid.Gravity = 196.2
-            end
         end
     end
 })
