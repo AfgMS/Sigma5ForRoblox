@@ -6,7 +6,7 @@ local Font = game:GetService("TextService")
 local Mouse = game.Players.LocalPlayer:GetMouse()
 local localplayer = game.Players.LocalPlayer
 local TouchInput = game:GetService("TouchInputService")
-
+local Lighting = game:GetService("Lighting")
 local Library = {}
 local soundObjects = {}
 Library.totalWidth = 15
@@ -439,6 +439,11 @@ function Library:createTabs(parentFrame, tabName)
 	MobileSupportUI.Position = UDim2.new(0.963096738, 0, 0.351765305, 0)
 	MobileSupportUI.AutoButtonColor = false
 	MobileSupportUI.TextTransparency = 0.250
+
+	local BlurUI = Instance.new("BlurEffect")
+	BlurUI.Parent = Lighting
+	BlurUI.Size = 28
+	BlurUI.Enabled = false
 	
 	MobileSupportUI.MouseButton1Click:Connect(function()
 		for _, tab in pairs(parentFrame:GetChildren()) do
@@ -456,6 +461,7 @@ function Library:createTabs(parentFrame, tabName)
 			if input.KeyCode == Enum.KeyCode.V and not gameProcessedEvent then
 				TAB.Tabs.Visible = not TAB.Tabs.Visible
 				TAB.ScrollingPart.Visible = not TAB.ScrollingPart.Visible
+				BlurUI.Enabled = not BlurUI.Enabled
 			end
 		end)
 	
