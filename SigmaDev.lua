@@ -360,6 +360,11 @@ World.Text = "   World"
 World.TextColor3 = Color3.fromRGB(255, 255, 255)
 World.TextSize = 14
 World.TextXAlignment = Enum.TextXAlignment.Left
+	
+local BlurUI = Instance.new("BlurEffect")
+BlurUI.Parent = Lighting
+BlurUI.Size = 28
+BlurUI.Enabled = false
 
 --UILibrary
 function Library:createScreenGui()
@@ -442,11 +447,6 @@ function Library:createTabs(parentFrame, tabName)
 	
 	local MobileCornerSupport = Instance.new("UICorner", MobileSupportUI)
 	MobileCornerSupport.CornerRadius = UDim.new(0, 8)
-
-	local BlurUI = Instance.new("BlurEffect")
-	BlurUI.Parent = Lighting
-	BlurUI.Size = 23
-	BlurUI.Enabled = false
 	
 	MobileSupportUI.MouseButton1Click:Connect(function()
 		for _, tab in pairs(parentFrame:GetChildren()) do
@@ -458,19 +458,16 @@ function Library:createTabs(parentFrame, tabName)
 			end
 		end
 	end)
-	
-	game:GetService("UserInputService").InputBegan:Connect(function(input, gameProcessedEvent)
-		if input.KeyCode == Enum.KeyCode.V and not gameProcessedEvent then
-			TAB.Tabs.Visible = true
-			TAB.ScrollingPart.Visible = true
-			BlurUI.Enabled = true
-		else
-			TAB.Tabs.Visible = false
-			TAB.ScrollingPart.Visible = false
-			BlurUI.Enabled = false
-		end
-	end)
 
+
+		game:GetService("UserInputService").InputBegan:Connect(function(input, gameProcessedEvent)
+			if input.KeyCode == Enum.KeyCode.V and not gameProcessedEvent then
+				TAB.Tabs.Visible = not TAB.Tabs.Visible
+				TAB.ScrollingPart.Visible = not TAB.ScrollingPart.Visible
+				BlurUI.Enabled = not BlurUI.Enabled
+			end
+		end)
+	
 	if Library.totalWidth < 10 * TAB.Tabs.Size.X.Offset then
 		local newX = UDim2.new(0, Library.totalWidth * 1.03, 0, 0)
 		Library.totalWidth = Library.totalWidth + TAB.Tabs.Size.X.Offset
@@ -529,82 +526,83 @@ function Library:createTabs(parentFrame, tabName)
 
 		-- RightClickStuff
 		
-		local ButtonsMenuFrame = Instance.new("Frame", CoreGui.Sigma)
-		ButtonsMenuFrame.Name = "Holder"
-		ButtonsMenuFrame.BackgroundColor3 = Color3.fromRGB(250, 250, 250)
-		ButtonsMenuFrame.BorderColor3 = Color3.fromRGB(0, 0, 0)
-		ButtonsMenuFrame.BorderSizePixel = 0
-		ButtonsMenuFrame.Position = UDim2.new(0.497, -155, 0.521, -158)
-		ButtonsMenuFrame.Size = UDim2.new(0, 325, 0, 295)
-		ButtonsMenuFrame.ZIndex = 2
-		ButtonsMenuFrame.Visible = false
+local ButtonsMenuFrame = Instance.new("Frame", CoreGui.Sigma)
+ButtonsMenuFrame.Name = "Holder"
+ButtonsMenuFrame.BackgroundColor3 = Color3.fromRGB(250, 250, 250)
+ButtonsMenuFrame.BorderColor3 = Color3.fromRGB(0, 0, 0)
+ButtonsMenuFrame.BorderSizePixel = 0
+ButtonsMenuFrame.Position = UDim2.new(0.497, -155, 0.521, -158)
+ButtonsMenuFrame.Size = UDim2.new(0, 325, 0, 295)
+ButtonsMenuFrame.ZIndex = 2
+ButtonsMenuFrame.Visible = false
 		
-		local ButtonsMenuFrameCorner = Instance.new("UICorner", ButtonsMenuFrame)
-		ButtonsMenuFrameCorner.CornerRadius = UDim.new(0, 8)
+local ButtonsMenuFrameCorner = Instance.new("UICorner", ButtonsMenuFrame)
+ButtonsMenuFrameCorner.CornerRadius = UDim.new(0, 8)
 
-		local ButtonsMenuTitleText = Instance.new("TextLabel", ButtonsMenuFrame)
-		ButtonsMenuTitleText.Name = "Menu For" .. options.name
-		ButtonsMenuTitleText.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-		ButtonsMenuTitleText.BackgroundTransparency = 1.000
-		ButtonsMenuTitleText.BorderColor3 = Color3.fromRGB(0, 0, 0)
-		ButtonsMenuTitleText.BorderSizePixel = 0
-		ButtonsMenuTitleText.Position = UDim2.new(0, 0, 0, -52)
-		ButtonsMenuTitleText.Size = UDim2.new(0, 200, 0, 50)
-		ButtonsMenuTitleText.Font = Enum.Font.Roboto
-		ButtonsMenuTitleText.Text = options.name
-		ButtonsMenuTitleText.TextColor3 = Color3.fromRGB(255, 255, 255)
-		ButtonsMenuTitleText.TextSize = 30.000
-		ButtonsMenuTitleText.TextXAlignment = Enum.TextXAlignment.Left
-		ButtonsMenuTitleText.Visible = true
-		ButtonsMenuTitleText.ZIndex = 2
+local ButtonsMenuTitleText = Instance.new("TextLabel", ButtonsMenuFrame)
+ButtonsMenuTitleText.Name = "Menu For" .. options.name
+ButtonsMenuTitleText.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+ButtonsMenuTitleText.BackgroundTransparency = 1.000
+ButtonsMenuTitleText.BorderColor3 = Color3.fromRGB(0, 0, 0)
+ButtonsMenuTitleText.BorderSizePixel = 0
+ButtonsMenuTitleText.Position = UDim2.new(0, 0, 0, -52)
+ButtonsMenuTitleText.Size = UDim2.new(0, 200, 0, 50)
+ButtonsMenuTitleText.Font = Enum.Font.Roboto
+ButtonsMenuTitleText.Text = options.name
+ButtonsMenuTitleText.TextColor3 = Color3.fromRGB(255, 255, 255)
+ButtonsMenuTitleText.TextSize = 30.000
+ButtonsMenuTitleText.TextXAlignment = Enum.TextXAlignment.Left
+ButtonsMenuTitleText.Visible = true
+ButtonsMenuTitleText.ZIndex = 2
 
-		local ButtonsMenuInner = Instance.new("ScrollingFrame", ButtonsMenuFrame)
-		ButtonsMenuInner.Name = "ScrollHolder"
-		ButtonsMenuInner.Active = true
-		ButtonsMenuInner.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-		ButtonsMenuInner.BackgroundTransparency = 1.000
-		ButtonsMenuInner.BorderColor3 = Color3.fromRGB(0, 0, 0)
-		ButtonsMenuInner.BorderSizePixel = 0
-		ButtonsMenuInner.Size = UDim2.new(1, 0, 1, 0)
-		ButtonsMenuInner.ScrollBarThickness = 0
-		ButtonsMenuInner.Visible = false
-		ButtonsMenuInner.ZIndex = 2
+local ButtonsMenuInner = Instance.new("ScrollingFrame", ButtonsMenuFrame)
+ButtonsMenuInner.Name = "ScrollHolder"
+ButtonsMenuInner.Active = true
+ButtonsMenuInner.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+ButtonsMenuInner.BackgroundTransparency = 1.000
+ButtonsMenuInner.BorderColor3 = Color3.fromRGB(0, 0, 0)
+ButtonsMenuInner.BorderSizePixel = 0
+ButtonsMenuInner.Size = UDim2.new(1, 0, 1, 0)
+ButtonsMenuInner.ScrollBarThickness = 0
+ButtonsMenuInner.Visible = false
+ButtonsMenuInner.ZIndex = 2
 
-		local UIListLayout = Instance.new("UIListLayout", ButtonsMenuInner)
-		UIListLayout.SortOrder = Enum.SortOrder.LayoutOrder
+local UIListLayout = Instance.new("UIListLayout", ButtonsMenuInner)
+UIListLayout.SortOrder = Enum.SortOrder.LayoutOrder
 
-		local ButtonsMenuTitle = Instance.new("TextLabel", ButtonsMenuInner)
-		ButtonsMenuTitle.Name = "Info for" ..options.name
-		ButtonsMenuTitle.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-		ButtonsMenuTitle.BackgroundTransparency = 1.000
-		ButtonsMenuTitle.BorderColor3 = Color3.fromRGB(0, 0, 0)
-		ButtonsMenuTitle.BorderSizePixel = 0
-		ButtonsMenuTitle.Size = UDim2.new(1, 0, 0, 35)
-		ButtonsMenuTitle.Font = Enum.Font.Roboto
-		ButtonsMenuTitle.Text = "      " .. options.info
-		ButtonsMenuTitle.TextColor3 = Color3.fromRGB(85, 85, 85)
-		ButtonsMenuTitle.TextSize = 13
-		ButtonsMenuTitle.TextWrapped = true
-		ButtonsMenuTitle.TextXAlignment = Enum.TextXAlignment.Left
-		ButtonsMenuTitle.Visible = true
-		ButtonsMenuTitle.ZIndex = 2
+local ButtonsMenuTitle = Instance.new("TextLabel", ButtonsMenuInner)
+ButtonsMenuTitle.Name = "Info for" ..options.name
+ButtonsMenuTitle.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+ButtonsMenuTitle.BackgroundTransparency = 1.000
+ButtonsMenuTitle.BorderColor3 = Color3.fromRGB(0, 0, 0)
+ButtonsMenuTitle.BorderSizePixel = 0
+ButtonsMenuTitle.Size = UDim2.new(1, 0, 0, 35)
+ButtonsMenuTitle.Font = Enum.Font.Roboto
+ButtonsMenuTitle.Text = "      " .. options.info
+ButtonsMenuTitle.TextColor3 = Color3.fromRGB(85, 85, 85)
+ButtonsMenuTitle.TextSize = 13
+ButtonsMenuTitle.TextWrapped = true
+ButtonsMenuTitle.TextXAlignment = Enum.TextXAlignment.Left
+ButtonsMenuTitle.Visible = true
+ButtonsMenuTitle.ZIndex = 2
+
 		ToggleButton.MenuFrame = ButtonsMenuFrame
-		
-	local function updateColors()
-		if ToggleButton.Enabled then
-			Library:tween(newButton, {BackgroundColor3 = Color3.fromRGB(115, 185, 255)})
-			Library:tween(newButton, {TextColor3 = Color3.fromRGB(255, 255, 255)})
-			newButton.Text = "       " .. options.name
-			AddArrayList(options.name)
-			playContinuousSound(soundIds.enabled)
-		else
-			Library:tween(newButton, {BackgroundColor3 = Color3.fromRGB(255, 255, 255)})
-			Library:tween(newButton, {TextColor3 = Color3.fromRGB(15, 15, 15)})
-			newButton.Text = "     " .. options.name
-			RemoveArraylist(options.name)
-			playContinuousSound(soundIds.disabled)
+
+		local function updateColors()
+			if ToggleButton.Enabled then
+				Library:tween(newButton, {BackgroundColor3 = Color3.fromRGB(115, 185, 255)})
+				Library:tween(newButton, {TextColor3 = Color3.fromRGB(255, 255, 255)})
+				newButton.Text = "       " .. options.name
+				AddArrayList(options.name)
+				playContinuousSound(soundIds.enabled)
+			else
+				Library:tween(newButton, {BackgroundColor3 = Color3.fromRGB(255, 255, 255)})
+				Library:tween(newButton, {TextColor3 = Color3.fromRGB(15, 15, 15)})
+				newButton.Text = "     " .. options.name
+				RemoveArraylist(options.name)
+				playContinuousSound(soundIds.disabled)
+			end
 		end
-	end
 
 		newButton.MouseButton1Click:Connect(function()
 			ToggleButton.Enabled = not ToggleButton.Enabled
