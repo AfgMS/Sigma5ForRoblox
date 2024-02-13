@@ -594,6 +594,16 @@ ButtonsMenuTitle.TextWrapped = true
 ButtonsMenuTitle.TextXAlignment = Enum.TextXAlignment.Left
 ButtonsMenuTitle.Visible = true
 ButtonsMenuTitle.ZIndex = 4
+
+local CloseButtonMenu = Instance.new("TextButton", ButtonsMenuInner)
+CloseButtonMenu.Name = "CloseMenu"
+CloseButtonMenu.BackgroundTransparency = 1
+CloseButtonMenu.Font = Enum.Font.Roboto
+CloseButtonMenu.Text = "x"
+CloseButtonMenu.TextSize = 18
+CloseButtonMenu.Visible = true
+CloseButtonMenu.Position = UDim2.new(0, 0, 0, -52)
+
 ToggleButton.MenuFrame = ButtonsMenuFrame
 		
 		local function updateColors()
