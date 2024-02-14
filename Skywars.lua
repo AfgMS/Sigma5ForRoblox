@@ -6,10 +6,39 @@ local localPlayer = game.Players.LocalPlayer
 local Camera = game:GetService("Workspace").CurrentCamera
 local UserInputService = game:GetService("UserInputService")
 local Lighting = game:GetService("Lighting")
+local DataStoreService = game:GetService("DataStoreService")
+local SettingsDataStore = DataStoreService:GetDataStore("PlayerSettings")
 local character = localPlayer.Character or localPlayer.CharacterAdded:Wait()
 local humanoid = character:WaitForChild("Humanoid")
 local rootPart = character:WaitForChild("HumanoidRootPart")
+--AutoSave?
+local defaultSettings = {
+    ActiveMods = true,
+    TabGUI = true,
+    Aimbot = false,
+    AimRange = 20,
+    KillAura = false,
+    Flight = false,
+    Speed = false
+}
 
+local function loadSettings(player)
+    local success, savedSettings = pcall(function()
+        return SettingsDataStore:GetAsync(tostring(player.UserId))
+    end)
+    
+    if success and savedSettings then
+        return savedSettings
+    else
+        return defaultSettings
+    end
+end
+
+local function saveSettings(player, settings)
+    pcall(function()
+        SettingsDataStore:SetAsync(tostring(player.UserId), settings)
+    end)
+end
 --Function
 local function LibraryCheck()
     local SigmaCheck = CoreGui:FindFirstChild("Sigma")
@@ -77,6 +106,7 @@ local function attackNearestPlayer()
     end
 end
 --SigmaUI
+local savedSettings = loadSettings(localPlayer)
 Library:createScreenGui()
 LibraryCheck()
 createnotification("Sigma5", "Loaded Successfully", 1, true)
@@ -86,16 +116,22 @@ local GUItab = Library:createTabs(CoreGui.Sigma, "Gui")
 local ActiveMods = GUItab:ToggleButton({
     name = "ActiveMods",
     info = "Render active mods",
+    default = savedSettings.ActiveMods,
     callback = function(enabled)
-            CoreGui.SigmaVisualStuff.ArrayListHolder.Visible = not CoreGui.SigmaVisualStuff.ArrayListHolder.Visible
+        savedSettings.ActiveMods = enabled
+        saveSettings(localPlayer, savedSettings) -- Save settings when changed
+        CoreGui.SigmaVisualStuff.ArrayListHolder.Visible = enabled
     end
 })
 --TabGUI
 local TabGUI = GUItab:ToggleButton({
     name = "TabGUI",
     info = "Just decorations",
+    default = savedSettings.TabGUI,
     callback = function(enabled)
-            CoreGui.SigmaVisualStuff.LeftHolder.TabHolder.Visible = not CoreGui.SigmaVisualStuff.LeftHolder.TabHolder.Visible
+        savedSettings.TabGUI = enabled
+        saveSettings(localPlayer, savedSettings)
+        CoreGui.SigmaVisualStuff.LeftHolder.TabHolder.Visible = not CoreGui.SigmaVisualStuff.LeftHolder.TabHolder.Visible
     end
 })
 --Uninject
@@ -120,6 +156,7 @@ local AimRange
 local Aimbot = COMBATtab:ToggleButton({
     name = "Aimbot",
     info = "Aim At Nearest Player?",
+    default = savedSettings.Aimbot,
     callback = function(enabled)
         if enabled then
             AimRange = 20
