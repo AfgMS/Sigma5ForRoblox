@@ -7,11 +7,6 @@ local Camera = game:GetService("Workspace").CurrentCamera
 local UserInputService = game:GetService("UserInputService")
 local Lighting = game:GetService("Lighting")
 local SkywarsCont = {}
---Tabs
-local GuiTab = Library:createTabs(CoreGui.Sigma, "Gui")
-local CombatTab = Library:createTabs(CoreGui.Sigma, "Combat")
-local PlayerTab = Library:createTabs(CoreGui.Sigma, "Player")
-local WorldTab = Library:createTabs(CoreGui.Sigma, "World")
 --Remotes
 local SkywarsRemote = {
     HitRemote = ReplicatedStorage:FindFirstChild("events-Eqz") and ReplicatedStorage:FindFirstChild("events-Eqz"):FindFirstChild("5c73e2ee-c179-4b60-8be7-ef8e4a7eebaa")
@@ -117,6 +112,11 @@ Library:createScreenGui()
 task.wait()
 LibraryCheck()
 GetImportantShit()
+--Tabs
+local GuiTab = Library:createTabs(CoreGui.Sigma, "Gui")
+local CombatTab = Library:createTabs(CoreGui.Sigma, "Combat")
+local PlayerTab = Library:createTabs(CoreGui.Sigma, "Player")
+local WorldTab = Library:createTabs(CoreGui.Sigma, "World")
 --SigmaSkywarsEdition
 createnotification("Sigma5", "Loaded Successfully", 1, true)
 --ActiveMods
