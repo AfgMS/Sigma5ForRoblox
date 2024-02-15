@@ -101,8 +101,7 @@ local WeaponTier = {
 local function GetBestSword()
     local bestSword
     local highestTier = 0
-
-    -- Iterate through the hotbar items
+    
     for _, itemId in ipairs(SkywarsCont.HotbarController:getHotbarItems()) do
         local swordTier = WeaponTier[itemId]
         if swordTier and swordTier > highestTier then
@@ -113,7 +112,9 @@ local function GetBestSword()
 
     return bestSword
 end
+--CreatingUI
 Library:createScreenGui()
+task.wait()
 LibraryCheck()
 GetImportantShit()
 --SigmaSkywarsEdition
