@@ -152,12 +152,14 @@ local Uninject = GUItab:ToggleButton({
 --CombatSection
 local COMBATtab = Library:createTabs(CoreGui.Sigma, "Combat")
 --AimBot
-local AimRange
+local AimRange = savedSettings.AimRange
 local Aimbot = COMBATtab:ToggleButton({
     name = "Aimbot",
     info = "Aim At Nearest Player?",
     default = savedSettings.Aimbot,
     callback = function(enabled)
+        savedSettings.Aimbot = enabled -- Update saved settings when the button is toggled
+        saveSettings(localPlayer, savedSettings) -- Save settings when changed
         if enabled then
             AimRange = 20
             while enabled do
@@ -183,7 +185,10 @@ local Delay = 0.03
 local KillAura = COMBATtab:ToggleButton({
     name = "KillAura",
     info = "Attack Nearest Player?",
+    default = savedSettings.KillAura,
     callback = function(enabled)
+        savedSettings.KillAura = enabled
+        saveSettings(localPlayer, savedSettings)
         if enabled then
             while true do
                 attackNearestPlayer()
@@ -223,7 +228,10 @@ end
 local FlightTemp = PLAYERtab:ToggleButton({
     name = "LibrecraftFly",
     info = "Sigma5 MC Reference",
+    default = FlyingShit,
     callback = function(enabled)
+        savedSettings.Flight = enabled
+        saveSettings(localPlayer, savedSettings)
         if enabled then
             FlyingShit = true
             game.Workspace.Gravity = 0
@@ -239,16 +247,19 @@ local FlightTemp = PLAYERtab:ToggleButton({
 local SpeedShit = false
 local function ViperSpeed()
     while SpeedShit do
-        game.Players.LocalPlayer.Character:WaitForChild("Humanoid").WalkSpeed = 48
+        game.Players.LocalPlayer.Character:WaitForChild("Humanoid").WalkSpeed = 78
         wait(0.28)
-        game.Players.LocalPlayer.Character:WaitForChild("Humanoid").WalkSpeed = 23
+        game.Players.LocalPlayer.Character:WaitForChild("Humanoid").WalkSpeed = 48
         wait(1)
     end
 end
 local SpeedTemp = PLAYERtab:ToggleButton({
     name = "ViperMCSpeed",
     info = "Sigma5 MC Reference",
+    default = SpeedShit,
     callback = function(enabled)
+        savedSettings.Speed = enabled
+        saveSettings(localPlayer, savedSettings)
         if enabled then
             SpeedShit = true
             ViperSpeed()
