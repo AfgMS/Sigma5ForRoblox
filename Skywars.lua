@@ -6,11 +6,6 @@ local localPlayer = game.Players.LocalPlayer
 local Camera = game:GetService("Workspace").CurrentCamera
 local UserInputService = game:GetService("UserInputService")
 local Lighting = game:GetService("Lighting")
-local SkywarsCont = {}
---Remotes
-local SkywarsRemote = {
-    HitRemote = ReplicatedStorage:FindFirstChild("events-Eqz") and ReplicatedStorage:FindFirstChild("events-Eqz"):FindFirstChild("5c73e2ee-c179-4b60-8be7-ef8e4a7eebaa")
-}
 --Functions
 local function LibraryCheck()
     local SigmaCheck = CoreGui:FindFirstChild("Sigma")
@@ -136,10 +131,10 @@ local KillAura = CombatTab:ToggleButton({
             while enabled do
                 local NearestPlayer = GetNearestPlr(StartAttackingRange)
                 if NearestPlayer then
-                        local KillAuraShit = {
-                            [1] = nearestPlayer
-                        }
-                        SkywarsRemote.HitRemote:FireServer(unpack(KillAuraShit))
+                    local args = {
+                        [1] = NearestPlayer
+                    }
+                    game:GetService("ReplicatedStorage"):FindFirstChild("events-Eqz"):FindFirstChild("5c73e2ee-c179-4b60-8be7-ef8e4a7eebaa"):FireServer(unpack(args))
                 end
                 wait(0.01)
             end
@@ -183,21 +178,21 @@ local RotationsCheck = KillAura:ToggleButtonInsideUI({
 })
 --TPAura
 local NearestPlrTP
+local OriginalPos = localPlayer.Character:WaitForChild("HumanoidRootPart").Position
 local TPAura = CombatTab:ToggleButton({
     name = "TPAura",
     info = "Beta Testing",
     callback = function(enabled)
         if enabled then
             NearestPlrTP = 58
-            local OriginalPos = localPlayer.Character:WaitForChild("HumanoidRootPart").Position
-            if KillAura.Enabled then
+            while enabled do
                 local NearestPlayer = GetNearestPlr(NearestPlrTP)
                 if NearestPlayer then
                     localPlayer.Character:WaitForChild("HumanoidRootPart").Position = NearestPlayer.Character:WaitForChild("HumanoidRootPart").Position
                     wait(0.48)
                     localPlayer.Character:WaitForChild("HumanoidRootPart").Position = OriginalPos
                 end
-                wait(1)
+                wait(3)
             end
         end
     end
