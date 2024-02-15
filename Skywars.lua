@@ -6,11 +6,17 @@ local localPlayer = game.Players.LocalPlayer
 local Camera = game:GetService("Workspace").CurrentCamera
 local UserInputService = game:GetService("UserInputService")
 local Lighting = game:GetService("Lighting")
-local character = localPlayer.Character or localPlayer.CharacterAdded:Wait()
-local humanoid = character:WaitForChild("Humanoid")
-local rootPart = character:WaitForChild("HumanoidRootPart")
-
---Function
+local SkywarsCont = {}
+--Tabs
+local GuiTab = Library:createTabs(CoreGui.Sigma, "Gui")
+local CombatTab = Library:createTabs(CoreGui.Sigma, "Combat")
+local PlayerTab = Library:createTabs(CoreGui.Sigma, "Player")
+local WorldTab = Library:createTabs(CoreGui.Sigma, "World")
+--Remotes
+local SkywarsRemote = {
+    HitRemote = ReplicatedStorage:FindFirstChild("events-Eqz") and ReplicatedStorage:FindFirstChild("events-Eqz"):FindFirstChild("5c73e2ee-c179-4b60-8be7-ef8e4a7eebaa")
+}
+--Functions
 local function LibraryCheck()
     local SigmaCheck = CoreGui:FindFirstChild("Sigma")
     local SigmaVisualCheck = CoreGui:FindFirstChild("SigmaVisualStuff")
@@ -32,7 +38,8 @@ local function LibraryCheck()
         end
     end
 end
-local function findNearestPlayer(range)
+
+local function GetNearestPlr(range)
     local nearestPlayer
     local nearestDistance = math.huge
     local localPlayer = game.Players.LocalPlayer
@@ -49,41 +56,70 @@ local function findNearestPlayer(range)
 
     return nearestPlayer
 end
-local function getAllPlayers()
-    local localPlayer = game.Players.LocalPlayer
-    local players = {}
-    for _, player in ipairs(game.Players:GetPlayers()) do
-        if player ~= localPlayer and player.Character then
-            table.insert(players, player)
+
+local function GetImportantShit()
+    local FlaemWork = require(game:GetService("ReplicatedStorage").rbxts_include.node_modules["@flamework"].core.out).Flamework
+    repeat wait() until FlaemWork.isInitialized
+
+    local controllers = {}
+    local eventnames = {}
+
+    for i, v in pairs(debug.getupvalue(FlaemWork.Testing.patchDependency, 1).idToObj) do
+        controllers[tostring(v)] = v
+        local controllerevents = {}
+
+        for i2, v2 in pairs(v) do
+            if type(v2) == "function" then
+                local eventsfound = {}
+                for i3, v3 in pairs(debug.getconstants(v2)) do
+                    if tostring(v3):find("-") == 9 then
+                        table.insert(eventsfound, tostring(v3))
+                    end
+                end
+                if #eventsfound > 0 then
+                    controllerevents[i2] = eventsfound
+                end
+            end
+        end
+        eventnames[tostring(v)] = controllerevents
+    end
+
+    SkywarsCont = {
+        ["HotbarController"] = controllers["HotbarController"],
+        ["BlockUtil"] = require(game:GetService("ReplicatedStorage").TS.util["block-util"]).BlockUtil
+    }
+end
+
+local WeaponTier = {
+    BronzeSword = 1,
+    IronSword = 2,
+    GoldSword = 3,
+    DiamondSword = 4,
+    OnyxSword = 5
+}
+
+local function GetBestSword()
+    local bestSword
+    local highestTier = 0
+
+    -- Iterate through the hotbar items
+    for _, itemId in ipairs(SkywarsCont.HotbarController:getHotbarItems()) do
+        local swordTier = WeaponTier[itemId]
+        if swordTier and swordTier > highestTier then
+            bestSword = itemId
+            highestTier = swordTier
         end
     end
-    return players
+
+    return bestSword
 end
-local function aimAtNearestPlayer(range)
-    local nearestPlayer = findNearestPlayer(range)
-    if nearestPlayer then
-        local direction = (nearestPlayer.Character.HumanoidRootPart.Position - Camera.CFrame.Position).unit
-        local newLookAt = CFrame.new(Camera.CFrame.Position, nearestPlayer.Character.HumanoidRootPart.Position)
-        Camera.CFrame = newLookAt
-    end
-end
-local function attackNearestPlayer()
-    local nearestPlayer = findNearestPlayer(20)
-    if nearestPlayer then
-        local args = {
-            [1] = nearestPlayer
-        }
-        game:GetService("ReplicatedStorage"):FindFirstChild("events-Eqz"):FindFirstChild("5c73e2ee-c179-4b60-8be7-ef8e4a7eebaa"):FireServer(unpack(args))
-    end
-end
---SigmaUI
 Library:createScreenGui()
 LibraryCheck()
+GetImportantShit()
+--SigmaSkywarsEdition
 createnotification("Sigma5", "Loaded Successfully", 1, true)
-
-local GUItab = Library:createTabs(CoreGui.Sigma, "Gui")
 --ActiveMods
-local ActiveMods = GUItab:ToggleButton({
+local ActiveMods = GuiTab:ToggleButton({
     name = "ActiveMods",
     info = "Render active mods",
     callback = function(enabled)
@@ -91,18 +127,18 @@ local ActiveMods = GUItab:ToggleButton({
     end
 })
 --TabGUI
-local TabGUI = GUItab:ToggleButton({
+local TabGUI = GuiTab:ToggleButton({
     name = "TabGUI",
     info = "Just decorations",
     callback = function(enabled)
             CoreGui.SigmaVisualStuff.LeftHolder.TabHolder.Visible = not CoreGui.SigmaVisualStuff.LeftHolder.TabHolder.Visible
     end
 })
---Uninject
+--DeleteGui
 local BlurEffect = Lighting:FindFirstChild("Blur")
-local Uninject = GUItab:ToggleButton({
+local DeleteGui = GuiTab:ToggleButton({
     name = "DeleteGUI",
-    info = "Doesnt Uninject 100%",
+    info = "Does not uninject",
     callback = function(enabled)
         if enabled then
             BlurEffect:Destroy()
@@ -113,111 +149,92 @@ local Uninject = GUItab:ToggleButton({
         end
     end
 })
---CombatSection
-local COMBATtab = Library:createTabs(CoreGui.Sigma, "Combat")
---AimBot
-local AimRange
-local Aimbot = COMBATtab:ToggleButton({
+--Aimbot
+local StartAimingRange
+local Aimbot = CombatTab:ToggleButton({
     name = "Aimbot",
-    info = "Aim At Nearest Player?",
+    info = "Aim Assist?",
     callback = function(enabled)
         if enabled then
-            AimRange = 20
+            StartAimingRange = 20
             while enabled do
-                aimAtNearestPlayer(AimRange)
+                local NearestPlayer = GetNearestPlr(StartAimingRange)
+                if NearestPlayer then
+                    local direction = (NearestPlayer.Character.HumanoidRootPart.Position - Camera.CFrame.Position).unit
+                    local newLookAt = CFrame.new(Camera.CFrame.Position, NearestPlayer.Character.HumanoidRootPart.Position)
+                    Camera.CFrame = newLookAt
+                end
                 wait(0.01)
             end
         else
-            AimRange = 0
+            StartAimingRange = 0
         end
     end
 })
-local AimRangeSlider = Aimbot:Slider({
-    title = "AimRange",
+local StartAimingRangeCustom = Aimbot:Slider({
+    title = "Range",
     min = 0,
     max = 20,
     default = 20,
     callback = function(val)
-        AimRange = val
+        StartAimingRange = val
     end
 })
 --KillAura
-local Delay = 0.03
-local KillAura = COMBATtab:ToggleButton({
+local StartAttackingRange
+local StartRotatingRange
+local KillAura = CombatTab:ToggleButton({
     name = "KillAura",
-    info = "Attack Nearest Player?",
+    info = "Attack Nearest Entity",
     callback = function(enabled)
         if enabled then
-            while true do
-                attackNearestPlayer()
-                wait(Delay)
+            StartAttackingRange = 20
+            while enabled do
+                local NearestPlayer = GetNearestPlr(StartAttackingRange)
+                if NearestPlayer then
+                local HeldedItem = GetBestSword()
+                        local KillAuraShit = {
+                            [1] = nearestPlayer
+                        }
+                        SkywarsRemote.HitRemote:FireServer(unpack(KillAuraShit))
+                end
+                wait(0.01)
             end
+        else
+            StartAttackingRange = 0
         end
     end
 })
-local TableFix = KillAura:Slider({
-    title = "None",
+local StartAttackingRangeCustom = KillAura:Slider({
+    title = "Range",
     min = 0,
-    max = 0,
-    default = 0,
+    max = 20,
+    default = 20,
     callback = function(value)
+        StartAttackingRange = value
+        StartRotatingRange = value
     end
 })
-local Rotation = KillAura:ToggleButtonInsideUI({
+local RotationsCheck = KillAura:ToggleButtonInsideUI({
     name = "Rotations",
     callback = function(enabled)
         if enabled then
-            loadstring(game:HttpGet("https://raw.githubusercontent.com/AfgMS/Simga345/main/Rotate.lua"))()
-        end
-    end
-})
---PlayerSection
-local PLAYERtab = Library:createTabs(CoreGui.Sigma, "Player")
---Flight
-local FlyingShit = false
-local function LibrecraftFly()
-    while FlyingShit do
-        rootPart.CFrame = CFrame.new(rootPart.Position + Vector3.new(0, 3, 0))
-        wait(0.18)
-        rootPart.Velocity = rootPart.CFrame.LookVector * humanoid.JumpPower * 1.8
-        wait(0.85)
-    end
-end
-local FlightTemp = PLAYERtab:ToggleButton({
-    name = "LibrecraftFly",
-    info = "Sigma5 MC Reference",
-    callback = function(enabled)
-        if enabled then
-            FlyingShit = true
-            game.Workspace.Gravity = 0
-            LibrecraftFly()
+            StartRotatingRange = 20
+            while enabled do
+                local NearestPlayer = GetNearestPlr(StartRotatingRange)
+                if NearestPlayer then
+                    local character = localPlayer.Character
+                    if character and character:FindFirstChild("HumanoidRootPart") then
+                        local direction = (NearestPlayer.Character.HumanoidRootPart.Position - character.HumanoidRootPart.Position).unit
+                        local lookVector = Vector3.new(direction.X, 0, direction.Z).unit
+                        local newCFrame = CFrame.new(character.HumanoidRootPart.Position, character.HumanoidRootPart.Position + lookVector)
+                        character:SetPrimaryPartCFrame(newCFrame)
+                    end
+                end
+                wait(0.01)
+            end
         else
-            FlyingShit = false
-            game.Workspace.Gravity = 196.2
-            rootPart.Velocity = Vector3.new()
-        end
-    end
-})
---Speed
-local SpeedShit = false
-local function ViperSpeed()
-    while SpeedShit do
-        game.Players.LocalPlayer.Character:WaitForChild("Humanoid").WalkSpeed = 48
-        wait(0.28)
-        game.Players.LocalPlayer.Character:WaitForChild("Humanoid").WalkSpeed = 23
-        wait(1)
-    end
-end
-local SpeedTemp = PLAYERtab:ToggleButton({
-    name = "ViperMCSpeed",
-    info = "Sigma5 MC Reference",
-    callback = function(enabled)
-        if enabled then
-            SpeedShit = true
-            ViperSpeed()
-        else
-            SpeedShit = false
-            game.Players.LocalPlayer.Character:WaitForChild("Humanoid").WalkSpeed = 16
+            StartRotatingRange = 0
         end
     end
 })
