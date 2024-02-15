@@ -51,67 +51,10 @@ local function GetNearestPlr(range)
 
     return nearestPlayer
 end
-
-local function GetImportantShit()
-    local FlaemWork = require(game:GetService("ReplicatedStorage").rbxts_include.node_modules["@flamework"].core.out).Flamework
-    repeat wait() until FlaemWork.isInitialized
-
-    local controllers = {}
-    local eventnames = {}
-
-    for i, v in pairs(debug.getupvalue(FlaemWork.Testing.patchDependency, 1).idToObj) do
-        controllers[tostring(v)] = v
-        local controllerevents = {}
-
-        for i2, v2 in pairs(v) do
-            if type(v2) == "function" then
-                local eventsfound = {}
-                for i3, v3 in pairs(debug.getconstants(v2)) do
-                    if tostring(v3):find("-") == 9 then
-                        table.insert(eventsfound, tostring(v3))
-                    end
-                end
-                if #eventsfound > 0 then
-                    controllerevents[i2] = eventsfound
-                end
-            end
-        end
-        eventnames[tostring(v)] = controllerevents
-    end
-
-    SkywarsCont = {
-        ["HotbarController"] = controllers["HotbarController"],
-        ["BlockUtil"] = require(game:GetService("ReplicatedStorage").TS.util["block-util"]).BlockUtil
-    }
-end
-
-local WeaponTier = {
-    BronzeSword = 1,
-    IronSword = 2,
-    GoldSword = 3,
-    DiamondSword = 4,
-    OnyxSword = 5
-}
-
-local function GetBestSword()
-    local bestSword
-    local highestTier = 0
-    
-    for _, itemId in ipairs(SkywarsCont.HotbarController:getHotbarItems()) do
-        local swordTier = WeaponTier[itemId]
-        if swordTier and swordTier > highestTier then
-            bestSword = itemId
-            highestTier = swordTier
-        end
-    end
-
-    return bestSword
-end
 --CreatingUI
 Library:createScreenGui()
 task.wait()
 LibraryCheck()
-GetImportantShit()
 --Tabs
 local GuiTab = Library:createTabs(CoreGui.Sigma, "Gui")
 local CombatTab = Library:createTabs(CoreGui.Sigma, "Combat")
@@ -193,7 +136,6 @@ local KillAura = CombatTab:ToggleButton({
             while enabled do
                 local NearestPlayer = GetNearestPlr(StartAttackingRange)
                 if NearestPlayer then
-                local HeldedItem = GetBestSword()
                         local KillAuraShit = {
                             [1] = nearestPlayer
                         }
@@ -236,6 +178,27 @@ local RotationsCheck = KillAura:ToggleButtonInsideUI({
             end
         else
             StartRotatingRange = 0
+        end
+    end
+})
+--TPAura
+local NearestPlrTP
+local TPAura = CombatTab:ToggleButton({
+    name = "TPAura",
+    info = "Beta Testing",
+    callback = function(enabled)
+        if enabled then
+            NearestPlrTP = 58
+            local OriginalPos = localPlayer.Character:WaitForChild("HumanoidRootPart").Position
+            if KillAura.Enabled then
+                local NearestPlayer = GetNearestPlr(NearestPlrTP)
+                if NearestPlayer then
+                    localPlayer.Character:WaitForChild("HumanoidRootPart").Position = NearestPlayer.Character:WaitForChild("HumanoidRootPart").Position
+                    wait(0.48)
+                    localPlayer.Character:WaitForChild("HumanoidRootPart").Position = OriginalPos
+                end
+                wait(1)
+            end
         end
     end
 })
