@@ -178,7 +178,7 @@ local RotationsCheck = KillAura:ToggleButtonInsideUI({
 })
 --TPAura
 local NearestPlrTP
-local OriginalPos = localPlayer.Character:WaitForChild("HumanoidRootPart").Position
+local OriginalPos = localPlayer.Character.Position
 local TPAura = CombatTab:ToggleButton({
     name = "TPAura",
     info = "Beta Testing",
@@ -188,12 +188,13 @@ local TPAura = CombatTab:ToggleButton({
             while enabled do
                 local NearestPlayer = GetNearestPlr(NearestPlrTP)
                 if NearestPlayer then
-                    localPlayer.Character:WaitForChild("HumanoidRootPart").Position = NearestPlayer.Character:WaitForChild("HumanoidRootPart").Position
-                    wait(0.48)
-                    localPlayer.Character:WaitForChild("HumanoidRootPart").Position = OriginalPos
+                    localPlayer.Character.Position = NearestPlayer.Character.Position  -- Corrected the spelling of "Position"
+                    wait(0.73)
+                    localPlayer.Character.Position = OriginalPos
                 end
                 wait(3)
             end
         end
     end
 })
+
