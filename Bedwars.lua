@@ -50,7 +50,7 @@ local function GetNearestPlr(range)
     return nearestPlayer
 end
 
-local function Value2Vector(Vec)
+local function HasFunc(Vec)
     return { value = Vec }
 end
 
@@ -84,16 +84,18 @@ local function GetInventory(localPlayer)
     return Return
 end
 
-local function GetBestSword()
+local function GetBestSword(localPlayer)
     local bestSword
-    local maxDamage = 0
+    local maxDamage = -math.huge
 
-    for _, item in pairs(GetInventory(localPlayer)) do
-        if item.itemType:lower():find('sword') or item.itemType:lower():find('scythe') or item.itemType:lower():find('blade') or item.itemType:lower():find('dagger') or item.itemType:lower():find('hammer') then
-            local swordDamage = Modules.ItemTable[item.itemType].sword.damage
-            if swordDamage > maxDamage then
-                maxDamage = swordDamage
-                bestSword = item.tool
+    for _, item in pairs(GetInventory(localPlayer).items) do
+        if item.itemType and ItemTable[item.itemType] and ItemTable[item.itemType].sword then
+            local sword = ItemTable[item.itemType].sword
+            local damagePerSecond = sword.damage / sword.attackSpeed
+
+            if damagePerSecond > maxDamage then
+                maxDamage = damagePerSecond
+                bestSword = item
             end
         end
     end
@@ -229,8 +231,8 @@ local KillAura = CombatTab:ToggleButton({
             while enabled do
                 local NearestPlayer = GetNearestPlr(KillAuraRange)
                 if NearestPlayer then
-                    local Magnitude = (localPlayer.Character.HumanoidRootPart.Position - NearestPlayer.Character.HumanoidRootPart.Position).Magnitude
-                        local KillAuraRequirement = {
+                    local selfPosition = HasFunc(localPlayer.Character:FindFirstChild("HumanoidRootPart").Position + ((18 > 14 and (localPlayer.Character:FindFirstChild("HumanoidRootPart").Position - NearestPlayer.Character:FindFirstChild("HumanoidRootPart").Position).Magnitude > 14.4) and (CFrame.lookAt(localPlayer.Character:FindFirstChild("HumanoidRootPart").Position, NearestPlayer.Character:FindFirstChild("HumanoidRootPart").Position).lookVector * ((localPlayer.Character:FindFirstChild("HumanoidRootPart").Position - NearestPlayer.Character:FindFirstChild("HumanoidRootPart").Position).Magnitude - 14)) or Vector3.zero))
+                    local KillAuraRequirement = {
                         {
                             entityInstance = NearestPlayer.Character,
                             chargedAttack = {
@@ -238,10 +240,10 @@ local KillAura = CombatTab:ToggleButton({
                             },
                             validate = {
                                 targetPosition = {
-                                    value = Value2Vector(NearestPlayer.Character:FindFirstChild("HumanoidRootPart").Position)
+                                    value = HasFunc(NearestPlayer.Character:FindFirstChild("HumanoidRootPart").Position)
                                 },
                                 selfPosition = {
-                                    value = Value2Vector(SetAttackPosition(localPlayer.Character, NearestPlayer.Character, Magnitude + ((localPlayer.Character:FindFirstChild("HumanoidRootPart").Position - NearestPlayer.Character:FindFirstChild("HumanoidRootPart").Position).Magnitude > 14 and (CFrame.lookAt(localPlayer.Character:FindFirstChild("HumanoidRootPart").Position, NearestPlayer.Character:FindFirstChild("HumanoidRootPart").Position).LookVector * 4) or Vector3.new(0, 0, 0))))
+                                    value = selfPosition
                                 }
                             },
                             weapon = GetBestSword()
