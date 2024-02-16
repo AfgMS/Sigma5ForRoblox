@@ -189,7 +189,6 @@ local KillAura = CombatTab:ToggleButton({
             while enabled do
                 local NearestPlayer = GetNearestPlr(KillAuraRange)
                 if NearestPlayer then
-                    local Sword = GetSword()
                     local selfPosition = HasFunc(localPlayer.Character:FindFirstChild("HumanoidRootPart").Position + ((18 > 14 and (localPlayer.Character:FindFirstChild("HumanoidRootPart").Position - NearestPlayer.Character:FindFirstChild("HumanoidRootPart").Position).Magnitude > 14.4) and (CFrame.lookAt(localPlayer.Character:FindFirstChild("HumanoidRootPart").Position, NearestPlayer.Character:FindFirstChild("HumanoidRootPart").Position).lookVector * ((localPlayer.Character:FindFirstChild("HumanoidRootPart").Position - NearestPlayer.Character:FindFirstChild("HumanoidRootPart").Position).Magnitude - 14)) or Vector3.zero))
                     local KillAuraRequirement = {
                         {
