@@ -60,6 +60,10 @@ local SwordInfo = {
   [5] = { Name = "emerald_sword", Display = "Emerald Sword", Rank = 5 },
   [6] = { Name = "rageblade", Display = "Rage Blade", Rank = 6 },
 }
+function getcloserpos(pos1, pos2, amount)
+  local newPos = (pos2 - pos1).Unit * math.min(amount, (pos2 - pos1).Magnitude) + pos1
+  return newPos
+end
 local function findNearestLivingPlayer()
   local nearestPlayer
   local nearestDistance = math.huge
@@ -195,7 +199,6 @@ local CustomLowHealth = AutoRageQuit:Slider({
 --KillAura
 local KillAuraRange
 local RotationsRange
-local AutoBlockValue = false
 local KillAura = CombatTab:ToggleButton({
     name = "KillAura",
     info = "Attack Nearest Entity",
@@ -205,7 +208,6 @@ local KillAura = CombatTab:ToggleButton({
             while enabled do
                 local NearestPlayer = GetNearestPlr(KillAuraRange)
                 if NearestPlayer then
-                    local selfPosition = HashFunc(localPlayer.Character:FindFirstChild("HumanoidRootPart").Position + ((18 > 14 and (localPlayer.Character:FindFirstChild("HumanoidRootPart").Position - NearestPlayer.Character:FindFirstChild("HumanoidRootPart").Position).Magnitude > 14.4) and (CFrame.lookAt(localPlayer.Character:FindFirstChild("HumanoidRootPart").Position, NearestPlayer.Character:FindFirstChild("HumanoidRootPart").Position).LookVector * ((localPlayer.Character:FindFirstChild("HumanoidRootPart").Position - NearestPlayer.Character:FindFirstChild("HumanoidRootPart").Position).Magnitude - 14)) or Vector3.new(0, 0, 0)))
                     local KillAuraRequirement = {
                         [1] = {
                             ["entityInstance"] = NearestPlayer.Character,
@@ -217,7 +219,7 @@ local KillAura = CombatTab:ToggleButton({
                                     ["value"] = HashFunc(NearestPlayer.Character:FindFirstChild("HumanoidRootPart").Position)
                                 },
                                 ["selfPosition"] = {
-                                    ["value"] = selfPosition
+                                    ["value"] = HashFunc(getcloserpos(localPlayer.Character.HumanoidRootPart.Position, target.Character.HumanoidRootPart.Position, 2))
                                 }
                             },
                             ["weapon"] = GetBestSword()
