@@ -647,8 +647,8 @@ ToggleButton.MenuFrame = ButtonsMenuFrame
 		function ToggleButton:Slider(options)
 			options = Library:validate({
 				title = "Error404",
-				min = 0,
-				max = 100,
+				min = nil,
+				max = nil,
 				default = 50,
 				callback = function(value) print(value) end
 			}, options or {})
@@ -736,9 +736,9 @@ local function Update(input)
 
         if inputPosition then
             Percent = math.clamp((inputPosition.X - SliderBack.AbsolutePosition.X) / SliderBack.AbsoluteSize.X, 0, 1)
-            local sliderValue = math.round(Percent * 100)
+            local sliderValue = math.round(Percent * todo.max)
             SliderValueLabel.Text = sliderValue
-            SliderFill.Size = UDim2.fromScale(Percent, 1)
+            SliderFill.Size = UDim2.fromScale(Percent, todo.min)
 
             options.callback(sliderValue)
         end
