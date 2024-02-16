@@ -52,13 +52,29 @@ end
 local function HasFunc(Vec)
     return { value = Vec }
 end
-local function SetAttackPosition(MyselfCharacter, TargetCharacter, magnitude)
-    if magnitude > 21 then
-        return Vector3.new(0, 0, 0)
-    else
-        local lookVector = CFrame.new(MyselfCharacter.HumanoidRootPart.Position, TargetCharacter.HumanoidRootPart.Position).lookVector * 4
-        return MyselfCharacter.HumanoidRootPart.Position + lookVector
+local SwordInfo = {
+  [1] = { Name = "wood_sword", Display = "Wood Sword", Rank = 1 },
+  [2] = { Name = "stone_sword", Display = "Stone Sword", Rank = 2 },
+  [3] = { Name = "iron_sword", Display = "Iron Sword", Rank = 3 },
+  [4] = { Name = "diamond_sword", Display = "Diamond Sword", Rank = 4 },
+  [5] = { Name = "emerald_sword", Display = "Emerald Sword", Rank = 5 },
+  [6] = { Name = "rageblade", Display = "Rage Blade", Rank = 6 },
+}
+local function findNearestLivingPlayer()
+  local nearestPlayer
+  local nearestDistance = math.huge
+
+  for _, player in ipairs(game.Players:GetPlayers()) do
+    if player ~= localPlayer and isalive(player) then
+      local distance = (player.Character.HumanoidRootPart.Position - localPlayer.Character.HumanoidRootPart.Position).Magnitude
+      if distance < nearestDistance then
+        nearestPlayer = player
+        nearestDistance = distance
+      end
     end
+  end
+
+  return nearestPlayer
 end
 --CreatingUI
 Library:createScreenGui()
@@ -204,7 +220,7 @@ local KillAura = CombatTab:ToggleButton({
                                     ["value"] = selfPosition
                                 }
                             },
-                            ["weapon"] = game:GetService("ReplicatedStorage").Inventories.NobolineUser08.wood_sword
+                            ["weapon"] = GetBestSword()
                         }
                     }
                     game:GetService("ReplicatedStorage").rbxts_include.node_modules:FindFirstChild("@rbxts").net.out._NetManaged.SwordHit:FireServer(unpack(KillAuraRequirement))
