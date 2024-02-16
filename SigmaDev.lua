@@ -649,7 +649,7 @@ ToggleButton.MenuFrame = ButtonsMenuFrame
 				title = "Error404",
 				min = nil,
 				max = nil,
-				default = 50,
+				default = nil,
 				callback = function(value) print(value) end
 			}, options or {})
 
