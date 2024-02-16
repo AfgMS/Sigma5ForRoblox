@@ -174,24 +174,23 @@ local AimbotRangeCustom = Aimbot:Slider({
         AimbotRange = val
     end
 })
---[[
-local KnockbackTS = debug.getupvalue(require(ReplicatedStorage.TS.damage["knockback-util"]).KnockbackUtil.calculateKnockbackVelocity, 1)
-local OriginalHValue = KnockbackTS.kbDirectionStrength
-local OriginalYValue = KnockbackTS.kbUpwardStrength
+--AntiKnockback
+local KnockbackTS = ReplicatedStorage.TS.damage["knockback-util"]
+local OriginalHValue = KnockbackTS.["kbDirectionStrength"]
+local OriginalYValue = KnockbackTS.["kbUpwardStrength"]
 local AntiKnockback = CombatTab:ToggleButton({
     name = "AntiKnockback",
     info = "Sexwars KnockbackTable sexy",
     callback = function(enabled)
         if enabled then
-            KnockbackTS.kbDirectionStrength = 0
-            KnockbackTS.kbUpwardStrength = 0
+            KnockbackTS.["kbDirectionStrength"] = 0
+            KnockbackTS.["kbUpwardStrength"] = 0
         else
-            KnockbackTS.kbDirectionStrength = OriginalHValue
-            KnockbackTS.kbUpwardStrength = OriginalYValue
+            KnockbackTS.["kbDirectionStrength"] = OriginalHValue
+            KnockbackTS.["kbUpwardStrength"] = OriginalYValue
         end
     end
 })
---]]
 --AutoRageQuit
 local LowHealthValue = 0.11
 local AutoRageQuit = CombatTab:ToggleButton({
@@ -232,9 +231,9 @@ local KillAura = CombatTab:ToggleButton({
                 if NearestPlayer then
                     local Magnitude = (localPlayer.Character.HumanoidRootPart.Position - NearestPlayer.Character.HumanoidRootPart.Position).Magnitude
                     local targetPosition = Value2Vector(NearestPlayer.Character:FindFirstChild("HumanoidRootPart").Position)
-                    local selfPosition = Value2Vector(SetAttackPosition(localPlayer.Character, NearestPlayer.Character, Magnitude + ((localPlayer.Character:FindFirstChild("HumanoidRootPart").Position - NearestPlayer.Character:FindFirstChild("HumanoidRootPart").Position).Magnitude > 14 and (CFrame.lookAt(localPlayer.Character:FindFirstChild("HumanoidRootPart").Position, NearestPlayer.Character:FindFirstChild("HumanoidRootPart").Position).LookVector * 4) or Vector3.new(0, 0, 0))))
-                    local GetSword = GetBestSword()
-                    local KillAuraRequirement = {
+                        local attackPosition = SetAttackPosition(localPlayer.Character, NearestPlayer.Character, Magnitude + ((localPlayer.Character:FindFirstChild("HumanoidRootPart").Position - NearestPlayer.Character:FindFirstChild("HumanoidRootPart").Position).Magnitude > 14 and (CFrame.lookAt(localPlayer.Character:FindFirstChild("HumanoidRootPart").Position, NearestPlayer.Character:FindFirstChild("HumanoidRootPart").Position).LookVector * 4) or Vector3.new(0, 0, 0)))
+                        local selfPosition = Value2Vector(attackPosition)
+                        local KillAuraRequirement = {
                         {
                             entityInstance = NearestPlayer.Character,
                             chargedAttack = {
@@ -248,7 +247,7 @@ local KillAura = CombatTab:ToggleButton({
                                     value = selfPosition
                                 }
                             },
-                            weapon = GetSword
+                            weapon = GetBestSword()
                         }
                     }
                     game:GetService("ReplicatedStorage").rbxts_include.node_modules:FindFirstChild("@rbxts").net.out._NetManaged.SwordHit:FireServer(unpack(KillAuraRequirement))
