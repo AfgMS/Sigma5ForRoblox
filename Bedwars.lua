@@ -230,9 +230,6 @@ local KillAura = CombatTab:ToggleButton({
                 local NearestPlayer = GetNearestPlr(KillAuraRange)
                 if NearestPlayer then
                     local Magnitude = (localPlayer.Character.HumanoidRootPart.Position - NearestPlayer.Character.HumanoidRootPart.Position).Magnitude
-                    local targetPosition = Value2Vector(NearestPlayer.Character:FindFirstChild("HumanoidRootPart").Position)
-                        local attackPosition = SetAttackPosition(localPlayer.Character, NearestPlayer.Character, Magnitude + ((localPlayer.Character:FindFirstChild("HumanoidRootPart").Position - NearestPlayer.Character:FindFirstChild("HumanoidRootPart").Position).Magnitude > 14 and (CFrame.lookAt(localPlayer.Character:FindFirstChild("HumanoidRootPart").Position, NearestPlayer.Character:FindFirstChild("HumanoidRootPart").Position).LookVector * 4) or Vector3.new(0, 0, 0)))
-                        local selfPosition = Value2Vector(attackPosition)
                         local KillAuraRequirement = {
                         {
                             entityInstance = NearestPlayer.Character,
@@ -241,10 +238,10 @@ local KillAura = CombatTab:ToggleButton({
                             },
                             validate = {
                                 targetPosition = {
-                                    value = targetPosition
+                                    value = Value2Vector(NearestPlayer.Character:FindFirstChild("HumanoidRootPart").Position)
                                 },
                                 selfPosition = {
-                                    value = selfPosition
+                                    value = Value2Vector(SetAttackPosition(localPlayer.Character, NearestPlayer.Character, Magnitude + ((localPlayer.Character:FindFirstChild("HumanoidRootPart").Position - NearestPlayer.Character:FindFirstChild("HumanoidRootPart").Position).Magnitude > 14 and (CFrame.lookAt(localPlayer.Character:FindFirstChild("HumanoidRootPart").Position, NearestPlayer.Character:FindFirstChild("HumanoidRootPart").Position).LookVector * 4) or Vector3.new(0, 0, 0))))
                                 }
                             },
                             weapon = GetBestSword()
