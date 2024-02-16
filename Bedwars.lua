@@ -189,27 +189,27 @@ local KillAura = CombatTab:ToggleButton({
             while enabled do
                 local NearestPlayer = GetNearestPlr(KillAuraRange)
                 if NearestPlayer then
-                    local selfPosition = HasFunc(localPlayer.Character:FindFirstChild("HumanoidRootPart").Position + ((18 > 14 and (localPlayer.Character:FindFirstChild("HumanoidRootPart").Position - NearestPlayer.Character:FindFirstChild("HumanoidRootPart").Position).Magnitude > 14.4) and (CFrame.lookAt(localPlayer.Character:FindFirstChild("HumanoidRootPart").Position, NearestPlayer.Character:FindFirstChild("HumanoidRootPart").Position).lookVector * ((localPlayer.Character:FindFirstChild("HumanoidRootPart").Position - NearestPlayer.Character:FindFirstChild("HumanoidRootPart").Position).Magnitude - 14)) or Vector3.zero))
+                    local selfPosition = HashFunc(localPlayer.Character:FindFirstChild("HumanoidRootPart").Position + ((18 > 14 and (localPlayer.Character:FindFirstChild("HumanoidRootPart").Position - NearestPlayer.Character:FindFirstChild("HumanoidRootPart").Position).Magnitude > 14.4) and (CFrame.lookAt(localPlayer.Character:FindFirstChild("HumanoidRootPart").Position, NearestPlayer.Character:FindFirstChild("HumanoidRootPart").Position).LookVector * ((localPlayer.Character:FindFirstChild("HumanoidRootPart").Position - NearestPlayer.Character:FindFirstChild("HumanoidRootPart").Position).Magnitude - 14)) or Vector3.new(0, 0, 0)))
                     local KillAuraRequirement = {
-                        {
-                            entityInstance = NearestPlayer.Character,
-                            chargedAttack = {
-                                chargeRatio = 0
+                        [1] = {
+                            ["entityInstance"] = NearestPlayer.Character,
+                            ["chargedAttack"] = {
+                                ["chargeRatio"] = 0
                             },
-                            validate = {
-                                targetPosition = {
-                                    value = HasFunc(NearestPlayer.Character:FindFirstChild("HumanoidRootPart").Position)
+                            ["validate"] = {
+                                ["targetPosition"] = {
+                                    ["value"] = HashFunc(NearestPlayer.Character:FindFirstChild("HumanoidRootPart").Position)
                                 },
-                                selfPosition = {
-                                    value = selfPosition
+                                ["selfPosition"] = {
+                                    ["value"] = selfPosition
                                 }
                             },
-                            weapon = game:GetService("ReplicatedStorage").Inventories.NobolineUser08.wood_sword
+                            ["weapon"] = game:GetService("ReplicatedStorage").Inventories.NobolineUser08.wood_sword
                         }
                     }
                     game:GetService("ReplicatedStorage").rbxts_include.node_modules:FindFirstChild("@rbxts").net.out._NetManaged.SwordHit:FireServer(unpack(KillAuraRequirement))
+                    wait(0.01)
                 end
-                wait(0.01)
             end
         else
             KillAuraRange = 0
