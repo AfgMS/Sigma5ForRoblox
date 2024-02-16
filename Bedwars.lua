@@ -63,44 +63,24 @@ local function SetAttackPosition(MyselfCharacter, TargetCharacter, magnitude)
     end
 end
 
-local function GetInventory(localPlayer)
-    if not localPlayer then return {} end
+local function GetSword(localPlayer)
+    local BigDamage = -math.huge
+    local Sword = nil
 
-    local Success, Return = pcall(function()
-        return require(game:GetService("ReplicatedStorage").TS.inventory["inventory-util"]).InventoryUtil.getInventory(localPlayer)
-    end)
+    for i, v in pairs(GetInventory(localPlayer).items) do
+        local SwordCheck = ItemTable[v.itemType].sword
 
-    if not Success then return { Items = {}, Armor = {} } end
-    
-    local InventoryFolder = localPlayer.Character and localPlayer.Character:FindFirstChild("InventoryFolder") and localPlayer.Character.InventoryFolder.Value
-    if not InventoryFolder then return Return end
+        if SwordCheck then
+            local SwordDamage = SwordCheck.damage / SwordCheck.attackSpeed
 
-    for _, item in pairs(Return) do
-        if type(item) == 'table' and item.itemType then
-            item.instance = InventoryFolder:FindFirstChild(item.itemType)
-        end
-    end
-
-    return Return
-end
-
-local function GetBestSword(localPlayer)
-    local bestSword
-    local maxDamage = -math.huge
-
-    for _, item in pairs(GetInventory(localPlayer).items) do
-        if item.itemType and ItemTable[item.itemType] and ItemTable[item.itemType].sword then
-            local sword = ItemTable[item.itemType].sword
-            local damagePerSecond = sword.damage / sword.attackSpeed
-
-            if damagePerSecond > maxDamage then
-                maxDamage = damagePerSecond
-                bestSword = item
+            if SwordDamage > BigDamage then
+                BigDamage = SwordDamage
+                Sword = v
             end
         end
     end
 
-    return bestSword
+    return Sword
 end
 --CreatingUI
 Library:createScreenGui()
@@ -246,7 +226,7 @@ local KillAura = CombatTab:ToggleButton({
                                     value = selfPosition
                                 }
                             },
-                            weapon = GetBestSword()
+                            weapon = GetSword(localPlayer)
                         }
                     }
                     game:GetService("ReplicatedStorage").rbxts_include.node_modules:FindFirstChild("@rbxts").net.out._NetManaged.SwordHit:FireServer(unpack(KillAuraRequirement))
