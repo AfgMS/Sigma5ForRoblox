@@ -176,37 +176,17 @@ local AimbotRangeCustom = Aimbot:Slider({
 })
 --AntiKnockback
 local KnockbackTS = debug.getupvalue(require(game:GetService("ReplicatedStorage").TS.damage["knockback-util"]).KnockbackUtil.calculateKnockbackVelocity, 1)
-local KnockbackYValue = 0
-local KnockbackHValue = 0
 local AntiKnockback = GuiTab:ToggleButton({
     name = "AntiKnockback",
     info = "Sexwars KnockbackTable sexy",
     callback = function(enabled)
         if enabled then
-            KnockbackTS["kbUpwardStrength"] = KnockbackYValue
-            KnockbackTS["kbDirectionStrength"] = KnockbackHValue
+            KnockbackTS["kbUpwardStrength"] = 0
+            KnockbackTS["kbDirectionStrength"] = 0
         else
             KnockbackTS["kbUpwardStrength"] = 100
             KnockbackTS["kbDirectionStrength"] = 100
         end
-    end
-})
-local KnockbackYValueCustom = AntiKnockback:Slider({
-    title = "YValue",
-    min = 0,
-    max = 100,
-    default = 0,
-    callback = function(val)
-        KnockbackYValue = val
-    end
-})
-local KnockbackHValueCustom = AntiKnockback:Slider({
-    title = "HValue",
-    min = 0,
-    max = 100,
-    default = 0,
-    callback = function(val)
-        KnockbackHValue = val
     end
 })
 --AutoRageQuit
