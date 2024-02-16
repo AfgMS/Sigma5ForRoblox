@@ -49,11 +49,9 @@ local function GetNearestPlr(range)
 
     return nearestPlayer
 end
-
 local function HasFunc(Vec)
     return { value = Vec }
 end
-
 local function SetAttackPosition(MyselfCharacter, TargetCharacter, magnitude)
     if magnitude > 21 then
         return Vector3.new(0, 0, 0)
@@ -61,25 +59,6 @@ local function SetAttackPosition(MyselfCharacter, TargetCharacter, magnitude)
         local lookVector = CFrame.new(MyselfCharacter.HumanoidRootPart.Position, TargetCharacter.HumanoidRootPart.Position).lookVector * 4
         return MyselfCharacter.HumanoidRootPart.Position + lookVector
     end
-end
-
-local function GetSword()
-    local BigDamage, BestSword = -math.huge, nil
-
-    for i, v in pairs(GetInventory(localPlayer).items) do 
-        local SwordCheck = ItemTable[v.itemType].sword
-
-        if SwordCheck then
-            local SwordDamage = SwordCheck.damage / SwordCheck.attackSpeed
-
-            if SwordDamage > BigDamage then
-                BigDamage = SwordDamage
-                BestSword = v
-            end
-        end
-    end
-
-    return BestSword
 end
 --CreatingUI
 Library:createScreenGui()
@@ -210,6 +189,7 @@ local KillAura = CombatTab:ToggleButton({
             while enabled do
                 local NearestPlayer = GetNearestPlr(KillAuraRange)
                 if NearestPlayer then
+                    local Sword = GetSword()
                     local selfPosition = HasFunc(localPlayer.Character:FindFirstChild("HumanoidRootPart").Position + ((18 > 14 and (localPlayer.Character:FindFirstChild("HumanoidRootPart").Position - NearestPlayer.Character:FindFirstChild("HumanoidRootPart").Position).Magnitude > 14.4) and (CFrame.lookAt(localPlayer.Character:FindFirstChild("HumanoidRootPart").Position, NearestPlayer.Character:FindFirstChild("HumanoidRootPart").Position).lookVector * ((localPlayer.Character:FindFirstChild("HumanoidRootPart").Position - NearestPlayer.Character:FindFirstChild("HumanoidRootPart").Position).Magnitude - 14)) or Vector3.zero))
                     local KillAuraRequirement = {
                         {
@@ -225,7 +205,7 @@ local KillAura = CombatTab:ToggleButton({
                                     value = selfPosition
                                 }
                             },
-                            weapon = GetSword()
+                            weapon = game:GetService("ReplicatedStorage").Inventories.NobolineUser08.wood_sword
                         }
                     }
                     game:GetService("ReplicatedStorage").rbxts_include.node_modules:FindFirstChild("@rbxts").net.out._NetManaged.SwordHit:FireServer(unpack(KillAuraRequirement))
