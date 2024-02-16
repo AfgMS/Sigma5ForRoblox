@@ -63,11 +63,10 @@ local function SetAttackPosition(MyselfCharacter, TargetCharacter, magnitude)
     end
 end
 
-local function GetSword(localPlayer)
-    local BigDamage = -math.huge
-    local Sword = nil
+local function GetSword()
+    local BigDamage, BestSword = -math.huge, nil
 
-    for i, v in pairs(GetInventory(localPlayer).items) do
+    for i, v in pairs(GetInventory(localPlayer).items) do 
         local SwordCheck = ItemTable[v.itemType].sword
 
         if SwordCheck then
@@ -75,12 +74,12 @@ local function GetSword(localPlayer)
 
             if SwordDamage > BigDamage then
                 BigDamage = SwordDamage
-                Sword = v
+                BestSword = v
             end
         end
     end
 
-    return Sword
+    return BestSword
 end
 --CreatingUI
 Library:createScreenGui()
@@ -226,7 +225,7 @@ local KillAura = CombatTab:ToggleButton({
                                     value = selfPosition
                                 }
                             },
-                            weapon = GetSword(localPlayer)
+                            weapon = GetSword()
                         }
                     }
                     game:GetService("ReplicatedStorage").rbxts_include.node_modules:FindFirstChild("@rbxts").net.out._NetManaged.SwordHit:FireServer(unpack(KillAuraRequirement))
