@@ -594,16 +594,6 @@ ButtonsMenuTitle.TextWrapped = true
 ButtonsMenuTitle.TextXAlignment = Enum.TextXAlignment.Left
 ButtonsMenuTitle.Visible = true
 ButtonsMenuTitle.ZIndex = 4
-
-local CloseButtonMenu = Instance.new("TextButton", ButtonsMenuInner)
-CloseButtonMenu.Name = "CloseMenu"
-CloseButtonMenu.BackgroundTransparency = 1
-CloseButtonMenu.Font = Enum.Font.Roboto
-CloseButtonMenu.Text = "x"
-CloseButtonMenu.TextSize = 18
-CloseButtonMenu.Visible = true
-CloseButtonMenu.Position = UDim2.new(0, 0, 0, -52)
-
 ToggleButton.MenuFrame = ButtonsMenuFrame
 		
 		local function updateColors()
@@ -647,9 +637,9 @@ ToggleButton.MenuFrame = ButtonsMenuFrame
 		function ToggleButton:Slider(options)
 			options = Library:validate({
 				title = "Error404",
-				min = nil,
-				max = nil,
-				default = nil,
+				min = 0,
+				max = 100,
+				default = 50,
 				callback = function(value) print(value) end
 			}, options or {})
 
@@ -736,9 +726,9 @@ local function Update(input)
 
         if inputPosition then
             Percent = math.clamp((inputPosition.X - SliderBack.AbsolutePosition.X) / SliderBack.AbsoluteSize.X, 0, 1)
-            local sliderValue = math.round(Percent * todo.max)
+            local sliderValue = math.round(Percent * 100)
             SliderValueLabel.Text = sliderValue
-            SliderFill.Size = UDim2.fromScale(Percent, todo.min)
+            SliderFill.Size = UDim2.fromScale(Percent, 1)
 
             options.callback(sliderValue)
         end
