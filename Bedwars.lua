@@ -286,7 +286,7 @@ local Criticals = CombatTab:ToggleButton({
             if KillAuraCriticalEffect and NearestPlayer then
                 CritEffect.Parent = NearestPlayer.Character:FindFirstChild("HumanoidRootPart") or NearestPlayer.Character
             else
-                CritEffect.Parent = game.Workspace
+                CritEffect:Destroy()
             end
         end
     end
