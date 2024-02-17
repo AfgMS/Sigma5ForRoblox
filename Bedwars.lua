@@ -157,18 +157,19 @@ local AimbotRangeCustom = Aimbot:Slider({
 })
 --AntiKnockback
 local KnockbackTS = ReplicatedStorage.TS.damage["knockback-util"]
-local OriginalHValue = KnockbackTS["kbDirectionStrength"]
-local OriginalYValue = KnockbackTS["kbUpwardStrength"]
+local OriginalHValue = KnockbackTS.kbDirectionStrength
+local OriginalYValue = KnockbackTS.kbUpwardStrength
+
 local AntiKnockback = CombatTab:ToggleButton({
     name = "AntiKnockback",
-    info = "Sexwars KnockbackTable sexy",
+    info = "Remove Knockback",
     callback = function(enabled)
         if enabled then
-            KnockbackTS["kbDirectionStrength"] = 0
-            KnockbackTS["kbUpwardStrength"] = 0
+            KnockbackTS.kbDirectionStrength = 0
+            KnockbackTS.kbUpwardStrength = 0
         else
-            KnockbackTS["kbDirectionStrength"] = OriginalHValue
-            KnockbackTS["kbUpwardStrength"] = OriginalYValue
+            KnockbackTS.kbDirectionStrength = OriginalHValue
+            KnockbackTS.kbUpwardStrength = OriginalYValue
         end
     end
 })
