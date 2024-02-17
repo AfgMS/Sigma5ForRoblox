@@ -36,7 +36,6 @@ local function GetNearestPlr(range)
 
     for _, player in ipairs(game.Players:GetPlayers()) do
         if player ~= localPlayer and player.Character and player.Character:FindFirstChild("HumanoidRootPart") then
-            -- Check team membership if TeamCheck is enabled
             if not TeamCheck or player.Team ~= localPlayer.Team then
                 local distance = (player.Character.HumanoidRootPart.Position - localPlayer.Character.HumanoidRootPart.Position).magnitude
                 if distance < nearestDistance and distance <= range then
@@ -49,36 +48,38 @@ local function GetNearestPlr(range)
 
     return nearestPlayer
 end
-local function HasFunc(Vec)
-    return { value = Vec }
+local function Value2Vector(vec)
+  return { value = vec }
 end
-local SwordInfo = {
-  [1] = { Name = "wood_sword", Display = "Wood Sword", Rank = 1 },
-  [2] = { Name = "stone_sword", Display = "Stone Sword", Rank = 2 },
-  [3] = { Name = "iron_sword", Display = "Iron Sword", Rank = 3 },
-  [4] = { Name = "diamond_sword", Display = "Diamond Sword", Rank = 4 },
-  [5] = { Name = "emerald_sword", Display = "Emerald Sword", Rank = 5 },
-  [6] = { Name = "rageblade", Display = "Rage Blade", Rank = 6 },
+local WeaponRank = {
+  [1] = { Name = "wood_sword", Rank = 1 },
+  [2] = { Name = "stone_sword", Rank = 2 },
+  [3] = { Name = "iron_sword", Rank = 3 },
+  [4] = { Name = "diamond_sword", Rank = 4 },
+  [5] = { Name = "void_sword", Rank = 5 },
+  [6] = { Name = "emerald_sword", Rank = 6 },
+  [7] = { Name = "rageblade", Rank = 7 },
 }
-function getcloserpos(pos1, pos2, amount)
-  local newPos = (pos2 - pos1).Unit * math.min(amount, (pos2 - pos1).Magnitude) + pos1
+function GetAttackPos(plrpos, nearpost, val)
+  local newPos = (nearpost - plrpos).Unit * math.min(val, (nearpost - plrpos).Magnitude) + plrpos
   return newPos
 end
-local function findNearestLivingPlayer()
-  local nearestPlayer
-  local nearestDistance = math.huge
-
-  for _, player in ipairs(game.Players:GetPlayers()) do
-    if player ~= localPlayer and isalive(player) then
-      local distance = (player.Character.HumanoidRootPart.Position - localPlayer.Character.HumanoidRootPart.Position).Magnitude
-      if distance < nearestDistance then
-        nearestPlayer = player
-        nearestDistance = distance
+local function GetSword()
+  local bestsword = nil
+  local bestrank = 0
+  for i, v in pairs(localPlayer.Character.InventoryFolder.Value:GetChildren()) do
+    if v.Name:match("sword") or v.Name:match("blade") then
+      for _, data in pairs(WeaponRank) do
+        if data["Name"] == v.Name then
+          if bestrank <= data["Rank"] then
+            bestrank = data["Rank"]
+            bestsword = v
+          end
+        end
       end
     end
   end
-
-  return nearestPlayer
+  return bestsword
 end
 --CreatingUI
 Library:createScreenGui()
@@ -194,18 +195,18 @@ local CustomLowHealth = AutoRageQuit:Slider({
     end
 })
 --BowAimbot Coming Soon
---Criticals Coming Soon
---InteractRange Coming Soon
 --KillAura
 local KillAuraRange
 local RotationsRange
+local KillAuraCriticalEffect
 local KillAura = CombatTab:ToggleButton({
     name = "KillAura",
     info = "Attack Nearest Entity",
     callback = function(enabled)
         if enabled then
             KillAuraRange = 20
-            while enabled do
+            KillAuraCriticalEffect = true
+            while wait(0.01) do
                 local NearestPlayer = GetNearestPlr(KillAuraRange)
                 if NearestPlayer then
                     local KillAuraRequirement = {
@@ -216,21 +217,21 @@ local KillAura = CombatTab:ToggleButton({
                             },
                             ["validate"] = {
                                 ["targetPosition"] = {
-                                    ["value"] = HashFunc(NearestPlayer.Character:FindFirstChild("HumanoidRootPart").Position)
+                                    ["value"] = Value2Vector(NearestPlayer.Character:FindFirstChild("HumanoidRootPart").Position)
                                 },
                                 ["selfPosition"] = {
-                                    ["value"] = HashFunc(getcloserpos(localPlayer.Character.HumanoidRootPart.Position, target.Character.HumanoidRootPart.Position, 2))
+                                    ["value"] = Value2Vector(GetAttackPos(localPlayer.Character.HumanoidRootPart.Position, NearestPlayer.Character.HumanoidRootPart.Position, 2))
                                 }
                             },
                             ["weapon"] = GetBestSword()
                         }
                     }
                     game:GetService("ReplicatedStorage").rbxts_include.node_modules:FindFirstChild("@rbxts").net.out._NetManaged.SwordHit:FireServer(unpack(KillAuraRequirement))
-                    wait(0.01)
                 end
             end
         else
             KillAuraRange = 0
+            KillAuraCriticalEffect = false
         end
     end
 })
@@ -264,6 +265,23 @@ local Rotations = KillAura:ToggleButtonInsideUI({
             end
         else
             RotationsRange = 0
+        end
+    end
+})
+--Criticals
+local Criticals = CombatTab:ToggleButton({
+    name = "Criticals",
+    info = "Just a visual",
+    callback = function(enabled)
+        if enabled then
+            local NearestPlayer = GetNearestPlr(20)
+            local CritEffect = Instance.new("Sparkles")
+            CritEffect.SparkleColor = Color3.fromRGB(170, 0, 0)
+            if KillAuraCriticalEffect and NearestPlayer then
+                CritEffect.Parent = NearestPlayer.Character:FindFirstChild("HumanoidRootPart")
+            else
+                CritEffect.Parent = game:GetService("Lighting")
+            end
         end
     end
 })
