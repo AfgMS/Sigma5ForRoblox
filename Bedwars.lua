@@ -205,28 +205,25 @@ local KillAura = CombatTab:ToggleButton({
     callback = function(enabled)
         if enabled then
             KillAuraRange = 20
-            KillAuraCriticalEffect = true
             while wait(0.01) do
                 local NearestPlayer = GetNearestPlr(KillAuraRange)
                 if NearestPlayer then
-                    local KillAuraRequirement = {
-                        [1] = {
-                            ["entityInstance"] = NearestPlayer.Character,
-                            ["chargedAttack"] = {
-                                ["chargeRatio"] = 1
+                    KillAuraCriticalEffect = true
+                    ReplicatedStorage.rbxts_include.node_modules:FindFirstChild("@rbxts").net.out._NetManaged.SwordHit:FireServer({
+                        ["entityInstance"] = NearestPlayer.Character,
+                        ["chargedAttack"] = {
+                            ["chargeRatio"] = 1
+                        },
+                        ["validate"] = {
+                            ["raycast"] = {
+                                ["cursorDirection"] = Value2Vector(Ray.new(game.Workspace.CurrentCamera.CFrame.Position, NearestPlayer.Character:FindFirstChild("HumanoidRootPart").Position).Unit.Direction),
+                                ["cameraPosition"] = Value2Vector(NearestPlayer.Character:FindFirstChild("HumanoidRootPart").Position),
                             },
-                            ["validate"] = {
-                                ["targetPosition"] = {
-                                    ["value"] = Value2Vector(NearestPlayer.Character:FindFirstChild("HumanoidRootPart").Position)
-                                },
-                                ["selfPosition"] = {
-                                    ["value"] = Value2Vector(GetAttackPos(localPlayer.Character.HumanoidRootPart.Position, NearestPlayer.Character.HumanoidRootPart.Position, 2))
-                                }
-                            },
-                            ["weapon"] = GetSword()
-                        }
-                    }
-                    game:GetService("ReplicatedStorage").rbxts_include.node_modules:FindFirstChild("@rbxts").net.out._NetManaged.SwordHit:FireServer(unpack(KillAuraRequirement))
+                            ["selfPosition"] = Value2Vector(GetAttackPos(localPlayer.Character:FindFirstChild("HumanoidRootPart").Position, NearestPlayer.Character:FindFirstChild("HumanoidRootPart").Position, 2)),
+                            ["targetPosition"] = Value2Vector(NearestPlayer.Character.HumanoidRootPart.Position),
+                        },
+                        ["weapon"] = GetBestSword()
+                    })
                 end
             end
         else
@@ -275,14 +272,13 @@ local Criticals = CombatTab:ToggleButton({
     callback = function(enabled)
         if enabled then
             local NearestPlayer = GetNearestPlr(20)
-            local CritEffect = Instance.new("ParticleEmitter")
-            CritEffect.Color = Color3.fromRGB(170, 0, 0)
-            CritEffect.Brightness = 0
-            CritEffect.LightEmission = 0.32
-            CritEffect.LightInfluence = 0.23
-            CritEffect.Size = UDim2.new(0.43)
-            CritEffect.Parent = NearestPlayer.Character:FindFirstChild("HumanoidRootPart")
+            local CritEffect = Instance.new("ParticleEmitter", NearestPlayer.Character:FindFirstChild("HumanoidRootPart"))
+            CritEffect.Color = Color3.fromRGB(170,0,0)
             CritEffect.Enabled = false
+            CritEffect.Size = UDim2.new(0.48)
+            CritEffect.LightEmission = UDim2.new(0.32)
+            CritEffect.LightInfluence = UDim2.new(0.23)
+            CritEffect.Lifetime = UDim2.new(0.78)
             if KillAuraCriticalEffect and NearestPlayer then
                 CritEffect.Enabled = true
             else
