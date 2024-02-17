@@ -128,7 +128,7 @@ local DeleteGui = GuiTab:ToggleButton({
 local AimbotRange
 local Aimbot = CombatTab:ToggleButton({
     name = "Aimbot",
-    info = "Aim Assist?",
+    info = "AimAssist?",
     callback = function(enabled)
         if enabled then
             AimbotRange = 20
@@ -155,33 +155,41 @@ local AimbotRangeCustom = Aimbot:Slider({
         AimbotRange = val
     end
 })
---[[
+--AntiKnockback
 local KnockbackTS = ReplicatedStorage.TS.damage["knockback-util"]
-local OriginalHValue = KnockbackTS.["kbDirectionStrength"]
-local OriginalYValue = KnockbackTS.["kbUpwardStrength"]
+local OriginalHValue = KnockbackTS["kbDirectionStrength"]
+local OriginalYValue = KnockbackTS["kbUpwardStrength"]
 local AntiKnockback = CombatTab:ToggleButton({
     name = "AntiKnockback",
     info = "Sexwars KnockbackTable sexy",
     callback = function(enabled)
         if enabled then
-            KnockbackTS.["kbDirectionStrength"] = 0
-            KnockbackTS.["kbUpwardStrength"] = 0
+            KnockbackTS["kbDirectionStrength"] = 0
+            KnockbackTS["kbUpwardStrength"] = 0
         else
-            KnockbackTS.["kbDirectionStrength"] = OriginalHValue
-            KnockbackTS.["kbUpwardStrength"] = OriginalYValue
+            KnockbackTS["kbDirectionStrength"] = OriginalHValue
+            KnockbackTS["kbUpwardStrength"] = OriginalYValue
         end
     end
 })
---]]
-local LowHealthValue = 0.11
+--AutoAutoRageQuit
+local LowHealthValue
+local function CheckHealth()
+    while wait(0.01) do
+        if localPlayer.Character and localPlayer.Character:FindFirstChild("Humanoid") and localPlayer.Character.Humanoid.Health < LowHealthValue then
+            localPlayer:Kick("AutoRageQuitTriggered")
+        end
+    end
+end
 local AutoRageQuit = CombatTab:ToggleButton({
     name = "AutoRageQuit",
-    info = "Leave the game when you are low",
+    info = "RageQuit when your low",
     callback = function(enabled)
         if enabled then
-            if localPlayer.Character:FindFirstChild("Humanoid") and localPlayer.Character.Humanoid.Health < LowHealthValue then
-                localPlayer:Kick("AutoRageQuitTriggered")
-            end
+            LowHealthValue = 0.11
+            CheckHealth()
+        else
+            LowHealthValue = nil
         end
     end
 })
@@ -201,7 +209,7 @@ local RotationsRange
 local KillAuraCriticalEffect
 local KillAura = CombatTab:ToggleButton({
     name = "KillAura",
-    info = "Attack Nearest Entity",
+    info = "Attack nearest plr",
     callback = function(enabled)
         if enabled then
             KillAuraRange = 20
@@ -268,21 +276,16 @@ local Rotations = KillAura:ToggleButtonInsideUI({
 --Criticals
 local Criticals = CombatTab:ToggleButton({
     name = "Criticals",
-    info = "Just a visual",
+    info = "Gay AHH criticals effect",
     callback = function(enabled)
         if enabled then
             local NearestPlayer = GetNearestPlr(20)
-            local CritEffect = Instance.new("ParticleEmitter", NearestPlayer.Character:FindFirstChild("HumanoidRootPart"))
-            CritEffect.Color = Color3.fromRGB(170,0,0)
-            CritEffect.Enabled = false
-            CritEffect.Size = UDim2.new(0.48)
-            CritEffect.LightEmission = UDim2.new(0.32)
-            CritEffect.LightInfluence = UDim2.new(0.23)
-            CritEffect.Lifetime = UDim2.new(0.78)
+            local CritEffect = Instance.new("Sparkles")
+            CritEffect.SparkleColor = Color3.fromRGB(170, 0, 0)
             if KillAuraCriticalEffect and NearestPlayer then
-                CritEffect.Enabled = true
+                CritEffect.Parent = NearestPlayer.Character:FindFirstChild("HumanoidRootPart") or NearestPlayer.Character
             else
-                CritEffect.Enabled = false
+                CritEffect.Parent = game.Workspace
             end
         end
     end
