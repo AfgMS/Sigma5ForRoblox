@@ -72,17 +72,6 @@ function GetAttackPos(plrpos, nearpost, val)
   local newPos = (nearpost - plrpos).Unit * math.min(val, (nearpost - plrpos).Magnitude) + plrpos
   return newPos
 end
-local function ChangeHotbar(item)
-    if localPlayer.Character.HandInvItem.Value ~= item then
-        local inventoryFolder = localPlayer.Character.InventoryFolder.Value
-        for _, child in ipairs(inventoryFolder:GetChildren()) do
-            if child.Name == item then
-                game:GetService("ReplicatedStorage"):WaitForChild("rbxts_include"):WaitForChild("node_modules"):WaitForChild("@rbxts"):WaitForChild("net"):WaitForChild("out"):WaitForChild("_NetManaged"):WaitForChild("SetInvItem"):InvokeServer({ hand = child })
-                break
-            end
-        end
-    end
-end
 local function GetProjectiles()
   local bestProject = nil
   local bestrank = 0
@@ -249,12 +238,11 @@ local BowAimbot = CombatTab:ToggleButton({
             BowAimbotDelay = 1
             local NearestPlayer = GetNearestPlr(math.huge)
             if NearestPlayer and not NearestPlayer:FindFirstChildOfClass("ForceField") then
-                local ProjectileWeapon = ChangeHotbar(GetProjectiles())
                 while wait(BowAimbotDelay) do
                     local BowAimbotRequirement = {
-                        [1] = ProjectileWeapon,
+                        [1] = GetProjectiles(),
                         [2] = "arrow",
-                        [3] = ProjectileWeapon,
+                        [3] = GetProjectiles(),
                         [4] = Value2Vector(NearestPlayer.Character:FindFirstChild("HumanoidRootPart").Position),
                         [5] = Value2Vector(NearestPlayer.Character:FindFirstChild("HumanoidRootPart").Position),
                         [6] = Vector3.new(0, NearestPlayer.Character:FindFirstChild("HumanoidRootPart").Position.Y, 0),
@@ -301,7 +289,7 @@ local KillAura = CombatTab:ToggleButton({
                             ["selfPosition"] = Value2Vector(GetAttackPos(localPlayer.Character:FindFirstChild("HumanoidRootPart").Position, NearestPlayer.Character:FindFirstChild("HumanoidRootPart").Position, 2)),
                             ["targetPosition"] = Value2Vector(NearestPlayer.Character.HumanoidRootPart.Position),
                         },
-                        ["weapon"] = ChangeHotbar(GetSword())
+                        ["weapon"] = GetSword()
                     })
                 end
             end
