@@ -155,6 +155,24 @@ local AimbotRangeCustom = Aimbot:Slider({
         AimbotRange = val
     end
 })
+--AntiKnockback
+local KnockbackTS = debug.getupvalue(require(ReplicatedStorage.TS.damage["knockback-util"]).KnockbackUtil.calculateKnockbackVelocity, 1)
+local OriginalHValue = KnockbackTS.kbDirectionStrength
+local OriginalYValue = KnockbackTS.kbUpwardStrength
+
+local AntiKnockback = CombatTab:ToggleButton({
+    name = "AntiKnockback",
+    info = "Prevent Knockback",
+    callback = function(enabled)
+        if enabled then
+            KnockbackTS.kbDirectionStrength = 0
+            KnockbackTS.kbUpwardStrength = 0
+        else
+            KnockbackTS.kbDirectionStrength = OriginalHValue
+            KnockbackTS.kbUpwardStrength = OriginalYValue
+        end
+    end
+})
 --AutoAutoRageQuit
 local LowHealthValue
 local function CheckHealth()
