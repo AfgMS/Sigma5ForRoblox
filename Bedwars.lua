@@ -6,7 +6,6 @@ local localPlayer = game.Players.LocalPlayer
 local Camera = game:GetService("Workspace").CurrentCamera
 local UserInputService = game:GetService("UserInputService")
 local Lighting = game:GetService("Lighting")
-local lplrname = localPlayer.Name
 --Functions
 local function LibraryCheck()
     local SigmaCheck = CoreGui:FindFirstChild("Sigma")
@@ -49,6 +48,9 @@ local function GetNearestPlr(range)
 
     return nearestPlayer
 end
+local function Value2Vector(vec)
+  return { value = vec }
+end
 local WeaponRank = {
   [1] = { Name = "wood_sword", Rank = 1 },
   [2] = { Name = "stone_sword", Rank = 2 },
@@ -58,36 +60,9 @@ local WeaponRank = {
   [6] = { Name = "emerald_sword", Rank = 6 },
   [7] = { Name = "rageblade", Rank = 7 },
 }
-local ProjectilesRank = {
-  [1] = { Name = "wood_bow", Rank = 1 },
-  [2] = { Name = "fireball", Rank = 2 },
-  [3] = { Name = "wood_crossbow", Rank = 3 },
-  [4] = { Name = "firecrackers", Rank = 4 },
-  [5] = { Name = "headhunter", Rank = 5 }
-}
-local function Value2Vector(vec)
-  return { value = vec }
-end
 function GetAttackPos(plrpos, nearpost, val)
   local newPos = (nearpost - plrpos).Unit * math.min(val, (nearpost - plrpos).Magnitude) + plrpos
   return newPos
-end
-local function GetProjectiles()
-  local bestProject = nil
-  local bestrank = 0
-  for i, v in pairs(localPlayer.Character.InventoryFolder.Value:GetChildren()) do
-    if v.Name:match("bow") or v.Name:match("fire") or v.Name:match("head") then
-      for _, data in pairs(ProjectilesRank) do
-        if data["Name"] == v.Name then
-          if bestrank <= data["Rank"] then
-            bestrank = data["Rank"]
-            bestProject = v
-          end
-        end
-      end
-    end
-  end
-  return bestProject
 end
 local function GetSword()
   local bestsword = nil
@@ -228,40 +203,7 @@ local CustomLowHealth = AutoRageQuit:Slider({
         LowHealthValue = value
     end
 })
---[[
-local BowAimbotDelay
-local BowAimbot = CombatTab:ToggleButton({
-    name = "BowAimbot",
-    info = "Vape ProjectileExploit??",
-    callback = function(enabled)
-        if enabled then
-            BowAimbotDelay = 1
-            local NearestPlayer = GetNearestPlr(math.huge)
-            if NearestPlayer and not NearestPlayer:FindFirstChildOfClass("ForceField") then
-                while wait(BowAimbotDelay) do
-                    local BowAimbotRequirement = {
-                        [1] = GetProjectiles(),
-                        [2] = "arrow",
-                        [3] = GetProjectiles(),
-                        [4] = Value2Vector(NearestPlayer.Character:FindFirstChild("HumanoidRootPart").Position),
-                        [5] = Value2Vector(NearestPlayer.Character:FindFirstChild("HumanoidRootPart").Position),
-                        [6] = Vector3.new(0, NearestPlayer.Character:FindFirstChild("HumanoidRootPart").Position.Y, 0),
-                        [7] = HttpService:GenerateGUID(true),
-                        [8] = {
-                            ["drawDurationSeconds"] = 0.95,
-                            ["shotId"] = HttpService:GenerateGUID(false)
-                        },
-                        [9] = Workspace:GetServerTimeNow() - 0.11
-                    }
-                    game:GetService("ReplicatedStorage").rbxts_include.node_modules:FindFirstChild("@rbxts").net.out._NetManaged.ProjectileFire:InvokeServer(unpack(BowAimbotRequirement))
-                end
-            else
-                BowAimbotDelay = 86000
-            end
-        end
-    end
-})
---]]
+--BowAimbot Coming Soon
 --KillAura
 local KillAuraRange
 local RotationsRange
@@ -274,7 +216,7 @@ local KillAura = CombatTab:ToggleButton({
             KillAuraRange = 20
             while wait(0.01) do
                 local NearestPlayer = GetNearestPlr(KillAuraRange)
-                if NearestPlayer and not NearestPlayer:FindFirstChildOfClass("ForceField") then
+                if NearestPlayer then
                     KillAuraCriticalEffect = true
                     ReplicatedStorage.rbxts_include.node_modules:FindFirstChild("@rbxts").net.out._NetManaged.SwordHit:FireServer({
                         ["entityInstance"] = NearestPlayer.Character,
@@ -344,7 +286,7 @@ local Criticals = CombatTab:ToggleButton({
             if KillAuraCriticalEffect and NearestPlayer then
                 CritEffect.Parent = NearestPlayer.Character:FindFirstChild("HumanoidRootPart") or NearestPlayer.Character
             else
-                CritEffect:Destroy()
+                CritEffect.Parent = game.Workspace
             end
         end
     end
