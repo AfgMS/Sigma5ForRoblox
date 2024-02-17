@@ -223,7 +223,7 @@ local KillAura = CombatTab:ToggleButton({
                                     ["value"] = Value2Vector(GetAttackPos(localPlayer.Character.HumanoidRootPart.Position, NearestPlayer.Character.HumanoidRootPart.Position, 2))
                                 }
                             },
-                            ["weapon"] = GetBestSword()
+                            ["weapon"] = GetSword()
                         }
                     }
                     game:GetService("ReplicatedStorage").rbxts_include.node_modules:FindFirstChild("@rbxts").net.out._NetManaged.SwordHit:FireServer(unpack(KillAuraRequirement))
@@ -275,12 +275,17 @@ local Criticals = CombatTab:ToggleButton({
     callback = function(enabled)
         if enabled then
             local NearestPlayer = GetNearestPlr(20)
-            local CritEffect = Instance.new("Sparkles")
-            CritEffect.SparkleColor = Color3.fromRGB(170, 0, 0)
+            local CritEffect = Instance.new("ParticleEmitter")
+            CritEffect.Color = Color3.fromRGB(170, 0, 0)
+            CritEffect.Brightness = 0
+            CritEffect.LightEmission = 0.32
+            CritEffect.LightInfluence = 0.23
+            CritEffect.Size = UDim2.new(0.43)
+            CritEffect.Enabled = false
             if KillAuraCriticalEffect and NearestPlayer then
-                CritEffect.Parent = NearestPlayer.Character:FindFirstChild("HumanoidRootPart")
+                CritEffect.Enabled = true
             else
-                CritEffect.Parent = game:GetService("Lighting")
+                CritEffect.Enabled = false
             end
         end
     end
