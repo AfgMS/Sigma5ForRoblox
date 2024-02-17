@@ -213,7 +213,7 @@ local KillAura = CombatTab:ToggleButton({
                         [1] = {
                             ["entityInstance"] = NearestPlayer.Character,
                             ["chargedAttack"] = {
-                                ["chargeRatio"] = 0
+                                ["chargeRatio"] = 1
                             },
                             ["validate"] = {
                                 ["targetPosition"] = {
@@ -281,6 +281,7 @@ local Criticals = CombatTab:ToggleButton({
             CritEffect.LightEmission = 0.32
             CritEffect.LightInfluence = 0.23
             CritEffect.Size = UDim2.new(0.43)
+            CritEffect.Parent = NearestPlayer.Character:FindFirstChild("HumanoidRootPart")
             CritEffect.Enabled = false
             if KillAuraCriticalEffect and NearestPlayer then
                 CritEffect.Enabled = true
