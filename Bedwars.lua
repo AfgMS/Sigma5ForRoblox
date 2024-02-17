@@ -6,7 +6,6 @@ local localPlayer = game.Players.LocalPlayer
 local Camera = game:GetService("Workspace").CurrentCamera
 local UserInputService = game:GetService("UserInputService")
 local Lighting = game:GetService("Lighting")
-local lplrname = localPlayer.Name
 --Functions
 local function LibraryCheck()
     local SigmaCheck = CoreGui:FindFirstChild("Sigma")
@@ -248,7 +247,7 @@ local BowAimbot = CombatTab:ToggleButton({
         if enabled then
             BowAimbotDelay = 1
             local NearestPlayer = GetNearestPlr(math.huge)
-            if NearestPlayer and not NearestPlayer:FindFirstChildOfClass("ForceField") then
+            if NearestPlayer then
                 local ProjectileWeapon = ChangeHotbar(GetProjectiles())
                 while wait(BowAimbotDelay) do
                     local BowAimbotRequirement = {
