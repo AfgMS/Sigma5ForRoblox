@@ -222,7 +222,7 @@ local KillAura = CombatTab:ToggleButton({
                             ["selfPosition"] = Value2Vector(GetAttackPos(localPlayer.Character:FindFirstChild("HumanoidRootPart").Position, NearestPlayer.Character:FindFirstChild("HumanoidRootPart").Position, 2)),
                             ["targetPosition"] = Value2Vector(NearestPlayer.Character.HumanoidRootPart.Position),
                         },
-                        ["weapon"] = GetBestSword()
+                        ["weapon"] = GetSword()
                     })
                 end
             end
