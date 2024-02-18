@@ -85,6 +85,7 @@ end
 Library:createScreenGui()
 task.wait()
 LibraryCheck()
+createnotification("Sigma5", "Loaded Successfully", 1, true)
 --Tabs
 local GuiTab = Library:createTabs(CoreGui.Sigma, "Gui")
 local CombatTab = Library:createTabs(CoreGui.Sigma, "Combat")
@@ -297,4 +298,3 @@ local Teams = CombatTab:ToggleButton({
         TeamCheck = not TeamCheck
     end
 })
-createnotification("Sigma5", "Loaded Successfully", 1, true)
