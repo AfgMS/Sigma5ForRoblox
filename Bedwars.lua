@@ -155,7 +155,7 @@ local AimbotRangeCustom = Aimbot:Slider({
         AimbotRange = val
     end
 })
---[[
+--AntiKnockback
 local KnockbackTS = debug.getupvalue(require(ReplicatedStorage.TS.damage["knockback-util"]).KnockbackUtil.calculateKnockbackVelocity, 1)
 local OriginalHValue = KnockbackTS.kbDirectionStrength
 local OriginalYValue = KnockbackTS.kbUpwardStrength
@@ -173,7 +173,6 @@ local AntiKnockback = CombatTab:ToggleButton({
         end
     end
 })
---]]
 --AutoAutoRageQuit
 local LowHealthValue
 local function CheckHealth()
@@ -188,7 +187,7 @@ local AutoRageQuit = CombatTab:ToggleButton({
     info = "RageQuit when your low",
     callback = function(enabled)
         if enabled then
-            LowHealthValue = 0.11
+            LowHealthValue = 3
             CheckHealth()
         else
             LowHealthValue = nil
@@ -278,16 +277,17 @@ local Rotations = KillAura:ToggleButtonInsideUI({
 --Criticals
 local Criticals = CombatTab:ToggleButton({
     name = "Criticals",
-    info = "Gay AHH criticals effect",
+    info = "Gay Effect",
     callback = function(enabled)
         if enabled then
             local NearestPlayer = GetNearestPlr(20)
             local CritEffect = Instance.new("Sparkles")
             CritEffect.SparkleColor = Color3.fromRGB(170, 0, 0)
+            local OriginalCritParent = CritEffect.Parent
             if KillAuraCriticalEffect and NearestPlayer then
                 CritEffect.Parent = NearestPlayer.Character:FindFirstChild("HumanoidRootPart") or NearestPlayer.Character
             else
-                CritEffect.Parent = game.Workspace
+                CritEffect.Parent = OriginalCritParent
             end
         end
     end
