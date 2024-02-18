@@ -154,7 +154,7 @@ local AimbotRangeCustom = Aimbot:Slider({
     end
 })
 --AntiKnockback
-local KnockbackTS = debug.getupvalue(require(ReplicatedStorage.TS.damage["knockback-util"]).KnockbackUtil.calculateKnockbackVelocity, 1)
+local KnockbackTS = debug.getupvalue(require(ReplicatedStorage.TS.damage.knockback-util.KnockbackUtil.calculateKnockbackVelocity, 1)
 local OriginalHValue = KnockbackTS.kbDirectionStrength
 local OriginalYValue = KnockbackTS.kbUpwardStrength
 
