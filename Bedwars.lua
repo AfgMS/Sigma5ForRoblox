@@ -332,9 +332,22 @@ local Fov = RenderTab:ToggleButton({
     name = "Fov",
     info = "Makes your camera zoom",
     callback = function(enabled)
-        while enabled do
+        if enabled then
+            Camera.FieldOfView = CustomFovValue
+        else
+            Camera.FieldOfView = 70
+        end
+    end
+})
+local CustomFov = Fov:Slider({
+    title = "Value",
+    min = 0,
+    max = 100,
+    default = 70,
+    callback = function(val)
+        CustomFovValue = val
+        if Fov:GetState() then
             Camera.FieldOfView = CustomFovValue
         end
-        Camera.FieldOfView = 70
     end
 })
