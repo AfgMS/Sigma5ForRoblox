@@ -160,7 +160,7 @@ local AntiKnockback = CombatTab:ToggleButton({
     name = "AntiKnockback",
     info = "Prevent Knockback",
     callback = function(enabled)
-        createnotification("Sigma5", "This feature is for premium user", 1, true)
+        createnotification("Sigma5", "This feature is for premium", 1, true)
     end
 })
 --AutoAutoRageQuit
@@ -261,23 +261,6 @@ local Rotations = KillAura:ToggleButtonInsideUI({
             end
         else
             RotationsRange = 0
-        end
-    end
-})
---Criticals
-local Criticals = CombatTab:ToggleButton({
-    name = "Criticals",
-    info = "Gay Effect",
-    callback = function(enabled)
-        if enabled then
-            local NearestPlayer = GetNearestPlr(20)
-            local CritEffect = Instance.new("Sparkles")
-            CritEffect.SparkleColor = Color3.fromRGB(170, 0, 0)
-            if KillAuraCriticalEffect and NearestPlayer then
-                CritEffect.Parent = NearestPlayer.Character:FindFirstChild("HumanoidRootPart") or NearestPlayer.Character
-            elseif not KillAuraCriticalEffect or not NearestPlayer then
-                CritEffect.Parent = game.Workspace
-            end
         end
     end
 })
