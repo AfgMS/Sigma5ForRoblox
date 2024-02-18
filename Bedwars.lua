@@ -85,13 +85,14 @@ end
 Library:createScreenGui()
 task.wait()
 LibraryCheck()
-createnotification("Sigma5", "Loaded Successfully", 1, true)
 --Tabs
 local GuiTab = Library:createTabs(CoreGui.Sigma, "Gui")
 local CombatTab = Library:createTabs(CoreGui.Sigma, "Combat")
 local RenderTab = Library:createTabs(CoreGui.Sigma, "Render")
 local PlayerTab = Library:createTabs(CoreGui.Sigma, "Player")
 local WorldTab = Library:createTabs(CoreGui.Sigma, "World")
+--Notification
+createnotification("Sigma5", "Loaded Successfully", 1, true)
 --ActiveMods
 local ActiveMods = GuiTab:ToggleButton({
     name = "ActiveMods",
@@ -155,21 +156,11 @@ local AimbotRangeCustom = Aimbot:Slider({
     end
 })
 --AntiKnockback
-local KnockbackTS = debug.getupvalue(require(ReplicatedStorage.TS.damage.knockback-util.KnockbackUtil.calculateKnockbackVelocity, 1)
-local OriginalHValue = KnockbackTS.kbDirectionStrength
-local OriginalYValue = KnockbackTS.kbUpwardStrength
-
 local AntiKnockback = CombatTab:ToggleButton({
     name = "AntiKnockback",
     info = "Prevent Knockback",
     callback = function(enabled)
-        if enabled then
-            KnockbackTS.kbDirectionStrength = 0
-            KnockbackTS.kbUpwardStrength = 0
-        else
-            KnockbackTS.kbDirectionStrength = OriginalHValue
-            KnockbackTS.kbUpwardStrength = OriginalYValue
-        end
+        createnotification("Sigma5", "This feature is for premium user", 1, true)
     end
 })
 --AutoAutoRageQuit
