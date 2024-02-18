@@ -281,6 +281,7 @@ local function BoxESP(player)
         AllPLRRoot.Color = Color3.fromRGB(255, 255, 255)
 
         local Highlighthumroot = Instance.new("Highlight", AllPLRRoot)
+        Highlighthumroot.Adornee = Highlighthumroot.Parent
         Highlighthumroot.Enabled = true
         Highlighthumroot.FillColor = Color3.fromRGB(255, 255, 255)
         Highlighthumroot.FillTransparency = 0.99
