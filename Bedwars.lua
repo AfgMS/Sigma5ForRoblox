@@ -280,15 +280,20 @@ local ESP = RenderTab:ToggleButton({
         if enabled then
             local NearestPlayer = GetNearestPlr(math.huge)
             if NearestPlayer and NearestPlayer.Character then
-                local ESPBox = Instance.new("Part", NearestPlayer.Character)
-                ESPBox.Size = Vector3.new(5, 6, 3)
-                ESPBox.Transparency = 1
+                local ESPHolder = Instance.new("Part", NearestPlayer.Character)
+                ESPHolder.Size = Vector3.new(5, 6, 3)
+                ESPHolder.Transparency = 1
 
-                local SelectionBox = Instance.new("SelectionBox", ESPBox)
-                SelectionBox.Color3 = Color3.fromRGB(255, 255, 255)
-                SelectionBox.LineThickness = 0.03
-                SelectionBox.Adornee = SelectionBox.Parent
-                SelectionBox.Transparency = 0
+                local SelectionBoxESP = Instance.new("SelectionBox", ESPHolder)
+                SelectionBoxESP.Color3 = Color3.fromRGB(255, 255, 255)
+                SelectionBoxESP.LineThickness = 0.03
+                SelectionBoxESP.Adornee = SelectionBoxESP.Parent
+                SelectionBoxESP.Transparency = 0
+
+                local HighlightESP = Instance.new("Highlight", ESPHolder)
+                HighlightESP.Enabled = true
+                HighlightESP.FillTransparency = 0.99
+                HighlightESP.OutlineTransparency = 0.35
             end
         else
             for _, player in ipairs(game.Players:GetPlayers()) do
