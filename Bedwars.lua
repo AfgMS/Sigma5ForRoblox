@@ -323,6 +323,14 @@ local ESP = RenderTab:ToggleButton({
         end
     end
 })
+local ESPTableFix = ESP:Slider({
+    title = "??",
+    min = 0,
+    max = 0,
+    default = 0,
+    callback = function(val)
+    end
+})
 local ESPMode = ESP:Dropdown({
     name = "Modes",
     default = "Shadow",
