@@ -273,24 +273,17 @@ local Teams = CombatTab:ToggleButton({
     end
 })
 --ESP
-local function createESP(player)
+local function BoxESP(player)
     if player ~= game.Players.LocalPlayer and player.Character then
-        local ESPHolder = Instance.new("Part", player.Character)
-        ESPHolder.Name = "ESPHolder"
-        ESPHolder.Size = Vector3.new(5, 6, 3)
-        ESPHolder.Transparency = 0.99
+        local AllPLRRoot = player.Character:FindFirstChild("HumanoidRootPart")
+        AllPLRRoot.Size = Vector3.new(5, 6, 3)
+        AllPLRRoot.Transparency = 0.8
+        AllPLRRoot.Color = Color3.fromRGB(255, 255, 255)
 
-        local SelectionBoxESP = Instance.new("SelectionBox", ESPHolder)
-        SelectionBoxESP.Color3 = Color3.fromRGB(255, 255, 255)
-        SelectionBoxESP.LineThickness = 0.03
-        SelectionBoxESP.Adornee = SelectionBoxESP.Parent
-        SelectionBoxESP.Transparency = 0
-        SelectionBoxESP.Visible = true
-
-        local HighlightESP = Instance.new("Highlight", ESPHolder)
-        HighlightESP.Enabled = true
-        HighlightESP.FillTransparency = 0.99
-        HighlightESP.OutlineTransparency = 0.35
+        local Highlighthumroot = Instance.new("Highlight", AllPLRRoot)
+        Highlighthumroot.Enabled = true
+        Highlighthumroot.FillColor = Color3.fromRGB(255, 255, 255)
+        Highlighthumroot.FillTransparency = 0.99
     end
 end
 local ESP = RenderTab:ToggleButton({
@@ -299,12 +292,18 @@ local ESP = RenderTab:ToggleButton({
     callback = function(enabled)
         if enabled then
             for _, player in ipairs(game.Players:GetPlayers()) do
-                createESP(player)
+                BoxESP(player)
             end
         else
             for _, player in ipairs(game.Players:GetPlayers()) do
-                if player.Character and player.Character:FindFirstChild("ESPHolder") then
-                    player.Character.ESPHolder:Destroy()
+                if player.Character and player.Character:FindFirstChild("HumanoidRootPart") then
+                    player.Character.HumanoidRootPart.Size = Vector3.new(2, 2, 1)
+                    player.Character.HumanoidRootPart.Transparency = 1
+                    player.Character.HumanoidRootPart.Color = Color3.new(163, 162, 165)
+                    local HighlightHumRoot = player.Character.HumanoidRootPart:FindFirstChildOfClass("Highlight")
+                    if HighlightHumRoot then
+                        HighlightHumRoot:Destroy()
+                    end
                 end
             end
         end
