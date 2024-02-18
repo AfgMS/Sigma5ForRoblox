@@ -272,33 +272,33 @@ local Teams = CombatTab:ToggleButton({
         TeamCheck = not TeamCheck
     end
 })
--- ESP
+--ESP
 local ESP = RenderTab:ToggleButton({
     name = "ESP",
     info = "Toggle ESP for nearest player",
     callback = function(enabled)
-        if enabled then
-            local NearestPlayer = GetNearestPlr(math.huge)
-            if NearestPlayer and NearestPlayer.Character then
-                local ESPHolder = Instance.new("Part", NearestPlayer.Character)
-                ESPHolder.Size = Vector3.new(5, 6, 3)
-                ESPHolder.Transparency = 1
+        local NearestPlayer = GetNearestPlr(10000)
+        if enabled and NearestPlayer and NearestPlayer.Character then
+            local ESPHolder = Instance.new("Part", NearestPlayer.Character)
+            ESPHolder.Name = "ESPHolder"
+            ESPHolder.Size = Vector3.new(5, 6, 3)
+            ESPHolder.Transparency = 0.99
 
-                local SelectionBoxESP = Instance.new("SelectionBox", ESPHolder)
-                SelectionBoxESP.Color3 = Color3.fromRGB(255, 255, 255)
-                SelectionBoxESP.LineThickness = 0.03
-                SelectionBoxESP.Adornee = SelectionBoxESP.Parent
-                SelectionBoxESP.Transparency = 0
+            local SelectionBoxESP = Instance.new("SelectionBox", ESPHolder)
+            SelectionBoxESP.Color3 = Color3.fromRGB(255, 255, 255)
+            SelectionBoxESP.LineThickness = 0.03
+            SelectionBoxESP.Adornee = SelectionBoxESP.Parent
+            SelectionBoxESP.Transparency = 0
+            SelectionBoxESP.Visible = true
 
-                local HighlightESP = Instance.new("Highlight", ESPHolder)
-                HighlightESP.Enabled = true
-                HighlightESP.FillTransparency = 0.99
-                HighlightESP.OutlineTransparency = 0.35
-            end
+            local HighlightESP = Instance.new("Highlight", ESPHolder)
+            HighlightESP.Enabled = true
+            HighlightESP.FillTransparency = 0.99
+            HighlightESP.OutlineTransparency = 0.35
         else
             for _, player in ipairs(game.Players:GetPlayers()) do
-                if player.Character and player.Character:FindFirstChild("ESPBox") then
-                    player.Character.ESPBox:Destroy()
+                if player.Character and player.Character:FindFirstChild("ESPHolder") then
+                    player.Character.ESPHolder:Destroy()
                 end
             end
         end
