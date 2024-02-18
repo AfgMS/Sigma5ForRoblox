@@ -3,6 +3,7 @@ local CoreGui = game:WaitForChild("CoreGui")
 local Player = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local localPlayer = game.Players.LocalPlayer
+local TeamsService = game:GetService("Teams")
 local Camera = game:GetService("Workspace").CurrentCamera
 local UserInputService = game:GetService("UserInputService")
 local Lighting = game:GetService("Lighting")
@@ -80,6 +81,17 @@ local function GetSword()
     end
   end
   return bestsword
+end
+local function GetAllTeam(team)
+    local children = {}
+    for _, otherTeam in ipairs(TeamsService:GetTeams()) do
+        if otherTeam ~= team then
+            for _, player in ipairs(otherTeam:GetPlayers()) do
+                table.insert(children, player)
+            end
+        end
+    end
+    return children
 end
 --CreatingUI
 Library:createScreenGui()
@@ -348,6 +360,126 @@ local CustomFov = Fov:Slider({
         CustomFovValue = val
         if Fov:GetState() then
             Camera.FieldOfView = CustomFovValue
+        end
+    end
+})
+--GamePlay
+local AutoQueue
+local AutoGG
+local AutoL
+
+local function CheckTeams()
+    local localPlayer = Players.LocalPlayer
+    if not localPlayer or not localPlayer.Character then
+        ReplicatedStorage:WaitForChild("events-@easy-games/lobby:shared/event/lobby-events@getEvents.Events").joinQueue:FireServer({["queueType"] = "bedwars_to1"})
+        return true
+    end
+    
+    local localTeam = localPlayer.Team
+    local spectatorTeam = TeamsService:FindFirstChild("Spectators")
+    
+    local foundOtherPlayer = false
+    for _, otherTeam in ipairs(TeamsService:GetTeams()) do
+        if otherTeam ~= localTeam and otherTeam ~= spectatorTeam then
+            if #otherTeam:GetPlayers() > 0 then
+                foundOtherPlayer = true
+                break
+            end
+        end
+    end
+    
+    return not foundOtherPlayer
+end
+
+local function SigmemeAutoL()
+    local RandomChances = math.random(0, 5)
+
+    if RandomChances == 0 then
+        game:GetService("ReplicatedStorage").DefaultChatSystemChatEvents.SayMessageRequest:FireServer("I don't hack I just SIGMA", "All")
+    end
+
+    if RandomChances ~= 0 then
+        game:GetService("ReplicatedStorage").DefaultChatSystemChatEvents.SayMessageRequest:FireServer("Sigma will help you Oops, I killed you instead.", "All")
+    end
+
+    if RandomChances == 2 then
+        game:GetService("ReplicatedStorage").DefaultChatSystemChatEvents.SayMessageRequest:FireServer("vxpe and godsploit is better than this", "All")
+    end
+
+    if RandomChances == 3 then
+        game:GetService("ReplicatedStorage").DefaultChatSystemChatEvents.SayMessageRequest:FireServer("I just have a good gaming chair", "All")
+    end
+
+    if RandomChances == 4 then
+        game:GetService("ReplicatedStorage").DefaultChatSystemChatEvents.SayMessageRequest:FireServer("Use sigma to kick some ### while listening to music", "All")
+    end
+
+    if RandomChances == 5 then
+        game:GetService("ReplicatedStorage").DefaultChatSystemChatEvents.SayMessageRequest:FireServer("Simga Klien 1945 bye pass 🙀", "All")
+    end
+end
+
+local GamePlay = PlayerTab:ToggleButton({
+    name = "GamePlay",
+    info = "Makes your experience better",
+    callback = function(enabled)
+        if enabled then
+            if AutoQueue then
+                if CheckTeams() then
+                    ReplicatedStorage:WaitForChild("events-@easy-games/lobby:shared/event/lobby-events@getEvents.Events").joinQueue:FireServer({["queueType"] = "bedwars_to1"})
+                end
+            end
+
+            if AutoGG then
+                if CheckTeams() then
+                    game:GetService("ReplicatedStorage").DefaultChatSystemChatEvents.SayMessageRequest:FireServer("GG", "All")
+                end
+            end
+
+            if AutoL then
+                SigmemeAutoL()
+            end
+        end
+    end
+})
+--Speed
+local Heatseeker = false
+local function HeatSeekerSAFE()
+    while Heatseeker do
+        local humanoid = localPlayer.Character:FindFirstChild("Humanoid")
+        if humanoid then
+            humanoid.WalkSpeed = 38
+            wait(0.3)
+            humanoid.WalkSpeed = 0
+            wait(0.28)
+            humanoid.WalkSpeed = 22.3
+        end
+    end
+end
+local Speed = PlayerTab:ToggleButton({
+    name = "Speed",
+    info = "Make your speed peed",
+    callback = function(enabled)
+        if enabled then
+            Heatseeker = true
+            HeatSeekerSAFE()
+        else
+            Heatseeker = false
+        end
+    end
+})
+--FlyJump
+local FlyJump = PlayerTab:ToggleButton({
+    name = "FlyJump",
+    info = "FlyJump?",
+    callback = function(enabled)
+        if enabled then
+            game:GetService("Players").LocalPlayer:GetPropertyChangedSignal("Jump"):Connect(function()
+                local humanoid = game:GetService("Players").LocalPlayer.Character and game:GetService("Players").LocalPlayer.Character:FindFirstChildOfClass("Humanoid")
+                if humanoid then
+                    humanoid:ChangeState("Jumping")
+                end
+            end)
         end
     end
 })
