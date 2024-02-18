@@ -128,7 +128,7 @@ local DeleteGui = GuiTab:ToggleButton({
 local AimbotRange
 local Aimbot = CombatTab:ToggleButton({
     name = "Aimbot",
-    info = "AimAssist?",
+    info = "Automatically aim at players",
     callback = function(enabled)
         if enabled then
             AimbotRange = 20
@@ -158,7 +158,7 @@ local AimbotRangeCustom = Aimbot:Slider({
 --AntiKnockback
 local AntiKnockback = CombatTab:ToggleButton({
     name = "AntiKnockback",
-    info = "Prevent Knockback",
+    info = "Prevent you from taking knockback",
     callback = function(enabled)
         createnotification("Sigma5", "This feature is for premium", 1, true)
     end
@@ -174,7 +174,7 @@ local function CheckHealth()
 end
 local AutoRageQuit = CombatTab:ToggleButton({
     name = "AutoRageQuit",
-    info = "RageQuit when your low",
+    info = "Automatically logs out",
     callback = function(enabled)
         if enabled then
             LowHealthValue = 3
@@ -200,7 +200,7 @@ local RotationsRange
 local KillAuraCriticalEffect
 local KillAura = CombatTab:ToggleButton({
     name = "KillAura",
-    info = "Attack nearest plr",
+    info = "Automatically attacks players",
     callback = function(enabled)
         if enabled then
             KillAuraRange = 20
@@ -273,16 +273,6 @@ local Teams = CombatTab:ToggleButton({
     end
 })
 --ESP
-local ESPModeList = {"Shadow", "Box"}
-local function ShadowESP(player)
-    if player ~= game.Players.LocalPlayer and player.Character then
-        local HighlightShadow = Instance.new("Highlight", player.Character)
-        HighlightShadow.Adornee = HighlightShadow.Parent
-        HighlightShadow.Enabled = true
-        HighlightShadow.FillColor = Color3.fromRGB(255, 255, 255)
-        HighlightShadow.FillTransparency = 0.85
-    end
-end
 local function BoxESP(player)
     if player ~= game.Players.LocalPlayer and player.Character then
         local AllPLRRoot = player.Character:FindFirstChild("HumanoidRootPart")
@@ -297,51 +287,16 @@ local function BoxESP(player)
         Highlighthumroot.FillTransparency = 0.99
     end
 end
-
 local ESP = RenderTab:ToggleButton({
     name = "ESP",
-    info = "Toggle ESP for all players",
+    info = "See players anytime anywhere",
     callback = function(enabled)
         if enabled then
             for _, player in ipairs(game.Players:GetPlayers()) do
-                if ESPModeList.Shadow and selectedItem == "Shadow" then
-                    ShadowESP(player)
-                elseif ESPModeList.Box and selectedItem == "Box" then
-                    BoxESP(player)
-                else
-                    if player.Character and player.Character:FindFirstChild("HumanoidRootPart") then
-                        player.Character.HumanoidRootPart.Size = Vector3.new(2, 2, 1)
-                        player.Character.HumanoidRootPart.Transparency = 1
-                        player.Character.HumanoidRootPart.Color = Color3.new(163, 162, 165)
-                        local HighlightHumRoot = player.Character.HumanoidRootPart:FindFirstChildOfClass("Highlight")
-                        if HighlightHumRoot then
-                            HighlightHumRoot:Destroy()
-                        end
-                    end
-                end
-            end
-        end
-    end
-})
-local ESPTableFix = ESP:Slider({
-    title = "??",
-    min = 0,
-    max = 0,
-    default = 0,
-    callback = function(val)
-    end
-})
-local ESPMode = ESP:Dropdown({
-    name = "Modes",
-    default = "Shadow",
-    list = ESPModeList,
-    callback = function(selectedItem)
-        for _, player in ipairs(game.Players:GetPlayers()) do
-            if ESPModeList.Shadow and selectedItem == "Shadow" then
-                ShadowESP(player)
-            elseif ESPModeList.Box and selectedItem == "Box" then
                 BoxESP(player)
-            else
+            end
+        else
+            for _, player in ipairs(game.Players:GetPlayers()) do
                 if player.Character and player.Character:FindFirstChild("HumanoidRootPart") then
                     player.Character.HumanoidRootPart.Size = Vector3.new(2, 2, 1)
                     player.Character.HumanoidRootPart.Transparency = 1
@@ -353,5 +308,33 @@ local ESPMode = ESP:Dropdown({
                 end
             end
         end
+    end
+})
+--Fullbright
+local originalAmbient = Lighting.Ambient
+local originalOutdoor = Lighting.OutdoorAmbient
+local Fullbright = RenderTab:ToggleButton({
+    name = "Fullbright",
+    info = "Makes you see in the dark",
+    callback = function(enabled)
+        if enabled then
+            Lighting.Ambient = Color3.new(1, 1, 1)
+            Lighting.OutdoorAmbient = Color3.new(1, 1, 1)
+        else
+            Lighting.Ambient = originalAmbient
+            Lighting.OutdoorAmbient = originalOutdoor
+        end
+    end
+})
+--Fov
+local CustomFovValue = 70
+local Fov = RenderTab:ToggleButton({
+    name = "Fov",
+    info = "Makes your camera zoom",
+    callback = function(enabled)
+        while enabled do
+            Camera.FieldOfView = CustomFovValue
+        end
+        Camera.FieldOfView = 70
     end
 })
