@@ -273,6 +273,16 @@ local Teams = CombatTab:ToggleButton({
     end
 })
 --ESP
+local ESPModeList = {"Shadow", "Box"}
+local function ShadowESP(player)
+    if player ~= game.Players.LocalPlayer and player.Character then
+        local HighlightShadow = Instance.new("Highlight", player.Character)
+        HighlightShadow.Adornee = HighlightShadow.Parent
+        HighlightShadow.Enabled = true
+        HighlightShadow.FillColor = Color3.fromRGB(255, 255, 255)
+        HighlightShadow.FillTransparency = 0.85
+    end
+end
 local function BoxESP(player)
     if player ~= game.Players.LocalPlayer and player.Character then
         local AllPLRRoot = player.Character:FindFirstChild("HumanoidRootPart")
@@ -287,16 +297,43 @@ local function BoxESP(player)
         Highlighthumroot.FillTransparency = 0.99
     end
 end
+
 local ESP = RenderTab:ToggleButton({
     name = "ESP",
     info = "Toggle ESP for all players",
     callback = function(enabled)
         if enabled then
             for _, player in ipairs(game.Players:GetPlayers()) do
-                BoxESP(player)
+                if ESPModeList.Shadow and selectedItem == "Shadow" then
+                    ShadowESP(player)
+                elseif ESPModeList.Box and selectedItem == "Box" then
+                    BoxESP(player)
+                else
+                    if player.Character and player.Character:FindFirstChild("HumanoidRootPart") then
+                        player.Character.HumanoidRootPart.Size = Vector3.new(2, 2, 1)
+                        player.Character.HumanoidRootPart.Transparency = 1
+                        player.Character.HumanoidRootPart.Color = Color3.new(163, 162, 165)
+                        local HighlightHumRoot = player.Character.HumanoidRootPart:FindFirstChildOfClass("Highlight")
+                        if HighlightHumRoot then
+                            HighlightHumRoot:Destroy()
+                        end
+                    end
+                end
             end
-        else
-            for _, player in ipairs(game.Players:GetPlayers()) do
+        end
+    end
+})
+local ESPMode = ESP:Dropdown({
+    name = "Modes",
+    default = "Shadow",
+    list = ESPModeList,
+    callback = function(selectedItem)
+        for _, player in ipairs(game.Players:GetPlayers()) do
+            if ESPModeList.Shadow and selectedItem == "Shadow" then
+                ShadowESP(player)
+            elseif ESPModeList.Box and selectedItem == "Box" then
+                BoxESP(player)
+            else
                 if player.Character and player.Character:FindFirstChild("HumanoidRootPart") then
                     player.Character.HumanoidRootPart.Size = Vector3.new(2, 2, 1)
                     player.Character.HumanoidRootPart.Transparency = 1
