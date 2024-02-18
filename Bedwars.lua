@@ -91,8 +91,6 @@ local CombatTab = Library:createTabs(CoreGui.Sigma, "Combat")
 local RenderTab = Library:createTabs(CoreGui.Sigma, "Render")
 local PlayerTab = Library:createTabs(CoreGui.Sigma, "Player")
 local WorldTab = Library:createTabs(CoreGui.Sigma, "World")
---Sigma5Bedwars
-createnotification("Sigma5", "Loaded Successfully", 1, true)
 --ActiveMods
 local ActiveMods = GuiTab:ToggleButton({
     name = "ActiveMods",
@@ -155,7 +153,7 @@ local AimbotRangeCustom = Aimbot:Slider({
         AimbotRange = val
     end
 })
---[[
+--AntiKnockback
 local KnockbackTS = debug.getupvalue(require(ReplicatedStorage.TS.damage["knockback-util"]).KnockbackUtil.calculateKnockbackVelocity, 1)
 local OriginalHValue = KnockbackTS.kbDirectionStrength
 local OriginalYValue = KnockbackTS.kbUpwardStrength
@@ -173,7 +171,6 @@ local AntiKnockback = CombatTab:ToggleButton({
         end
     end
 })
---]]
 --AutoAutoRageQuit
 local LowHealthValue
 local function CheckHealth()
@@ -284,11 +281,10 @@ local Criticals = CombatTab:ToggleButton({
             local NearestPlayer = GetNearestPlr(20)
             local CritEffect = Instance.new("Sparkles")
             CritEffect.SparkleColor = Color3.fromRGB(170, 0, 0)
-            local OriginalCritParent = CritEffect.Parent
             if KillAuraCriticalEffect and NearestPlayer then
                 CritEffect.Parent = NearestPlayer.Character:FindFirstChild("HumanoidRootPart") or NearestPlayer.Character
-            else
-                CritEffect.Parent = OriginalCritParent
+            elseif not KillAuraCriticalEffect or not NearestPlayer then
+                CritEffect.Parent = game.Workspace
             end
         end
     end
@@ -301,3 +297,4 @@ local Teams = CombatTab:ToggleButton({
         TeamCheck = not TeamCheck
     end
 })
+createnotification("Sigma5", "Loaded Successfully", 1, true)
