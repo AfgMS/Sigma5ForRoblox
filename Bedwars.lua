@@ -272,3 +272,30 @@ local Teams = CombatTab:ToggleButton({
         TeamCheck = not TeamCheck
     end
 })
+-- ESP
+local ESP = RenderTab:ToggleButton({
+    name = "ESP",
+    info = "Toggle ESP for nearest player",
+    callback = function(enabled)
+        if enabled then
+            local NearestPlayer = GetNearestPlr(math.huge)
+            if NearestPlayer and NearestPlayer.Character then
+                local ESPBox = Instance.new("Part", NearestPlayer.Character)
+                ESPBox.Size = Vector3.new(5, 6, 3)
+                ESPBox.Transparency = 1
+
+                local SelectionBox = Instance.new("SelectionBox", ESPBox)
+                SelectionBox.Color3 = Color3.fromRGB(255, 255, 255)
+                SelectionBox.LineThickness = 0.03
+                SelectionBox.Adornee = SelectionBox.Parent
+                SelectionBox.Transparency = 0
+            end
+        else
+            for _, player in ipairs(game.Players:GetPlayers()) do
+                if player.Character and player.Character:FindFirstChild("ESPBox") then
+                    player.Character.ESPBox:Destroy()
+                end
+            end
+        end
+    end
+})
