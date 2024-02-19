@@ -7,22 +7,6 @@ local TeamsService = game:GetService("Teams")
 local Camera = game:GetService("Workspace").CurrentCamera
 local UserInputService = game:GetService("UserInputService")
 local Lighting = game:GetService("Lighting")
-local KnitClientGotten = false
-local ClientGotten = false
-task.spawn(function()
-    local success, KnitClient = pcall(require, LocalPlayer.PlayerScripts.TS.knit)
-    if success then
-        KnitClientGotten = true
-    else
-        warn("ERROR")
-    end
-end)
-task.spawn(function()
-    local success, Client = pcall(require, ReplicatedStorage.TS.remotes.default.Client)
-    if success then
-        ClientGotten = true
-    end
-end)
 --Functions
 local function LibraryCheck()
     local SigmaCheck = CoreGui:FindFirstChild("Sigma")
@@ -521,7 +505,7 @@ local FlyJump = PlayerTab:ToggleButton({
     end
 })
 --AutoSprint
-local SprintController = KnitClient.Controllers.SprintController
+local SprintController = localPlayer.PlayerScripts.TS.controllers.global.sprint["sprint-controller"]
 local AutoSprint = PlayerTab:ToggleButton({
     name = "AutoSprint",
     info = "Automatically sprint for you",
@@ -540,3 +524,4 @@ local AutoSprint = PlayerTab:ToggleButton({
         end
     end
 })
+
