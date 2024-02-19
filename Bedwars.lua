@@ -49,6 +49,7 @@ local function GetNearestPlr(range)
 
     return nearestPlayer
 end
+local KnitClient = require(LocalPlayer.PlayerScripts.TS.knit).setup()
 local function Value2Vector(vec)
   return { value = vec }
 end
@@ -338,31 +339,6 @@ local Fullbright = RenderTab:ToggleButton({
         end
     end
 })
---Fov
-local CustomFovValue = 70
-local Fov = RenderTab:ToggleButton({
-    name = "Fov",
-    info = "Makes your camera zoom",
-    callback = function(enabled)
-        if enabled then
-            Camera.FieldOfView = CustomFovValue
-        else
-            Camera.FieldOfView = 70
-        end
-    end
-})
-local CustomFov = Fov:Slider({
-    title = "Value",
-    min = 0,
-    max = 100,
-    default = 70,
-    callback = function(val)
-        CustomFovValue = val
-        if Fov:GetState() then
-            Camera.FieldOfView = CustomFovValue
-        end
-    end
-})
 --GamePlay
 local function CheckTeams()
     local localPlayer = Players.LocalPlayer
@@ -386,7 +362,6 @@ local function CheckTeams()
     
     return not foundOtherPlayer
 end
-
 local function SigmemeAutoL()
     local RandomChances = math.random(0, 5)
 
@@ -460,37 +435,12 @@ local AutoLToggle = GamePlay:ToggleButtonInsideUI({
         AutoL = enabled
     end
 })
---Speed
-local LibreCraftS = false
-local HypixelS = false
 local AutoJump = false
-local ChoosedMode = "Vanilla"
-local function LibreCraftMode()
-    while LibreCraftS do
-        localPlayer.Character:FindFirstChild("Humanoid").WalkSpeed = 28
-        wait(0.03)
-        localPlayer.Character:FindFirstChild("Humanoid").WalkSpeed = 0
-        wait(0.28)
-        localPlayer.Character:FindFirstChild("Humanoid").WalkSpeed = 16
-        wait(2.3)
-    end
-end
+local ChoosedMode = "Hypixel"
 local function AutoJumpSettings()
     while AutoJump do
         localPlayer.Character:FindFirstChild("Humanoid"):ChangeState("Jumping")
-        wait(1.03)
-    end
-end
-local function HypixelMode()
-    while HypixelS do
-        localPlayer.Character:FindFirstChild("Humanoid").WalkSpeed = 23
-        wait(0.32)
-        localPlayer.Character:FindFirstChild("Humanoid").WalkSpeed = 20
-        wait(0.25)
-        localPlayer.Character:FindFirstChild("Humanoid").WalkSpeed = 25
-        wait(0.05)
-        localPlayer.Character:FindFirstChild("Humanoid").WalkSpeed = 16
-        wait(2)
+        wait(1)
     end
 end
 local Speed = PlayerTab:ToggleButton({
@@ -498,18 +448,18 @@ local Speed = PlayerTab:ToggleButton({
     info = "Make your speed peed",
     callback = function(enabled)
         if enabled then
-            if ChoosedMode == "LibreCraft" then
-                LibreCraftS = true
-                LibreCraftMode()
-            elseif ChoosedMode == "Hypixel" then
-                HypixelS = true
-                HypixelMode()
+            if ChoosedMode == "Hypixel" then
+                Camera.FieldOfView = 120
+                AutoJump = true
+                AutoJumpSettings()
+                localPlayer.Character:FindFirstChild("HumanoidRootPart").Velocity = localPlayer.Character:FindFirstChild("HumanoidRootPart").CFrame.LookVector * 22.55
             elseif ChoosedMode == "Vanilla" then
-                localPlayer.Character:FindFirstChild("Humanoid").WalkSpeed = 22.3
+                Camera.FieldOfView = 105
+                localPlayer.Character:FindFirstChild("Humanoid").WalkSpeed = 23
             end
         else
-            LibreCraftS = false
-            HypixelS = false
+            localPlayer.Character:FindFirstChild("HumanoidRootPart").Velocity = localPlayer.Character:FindFirstChild("HumanoidRootPart").CFrame.LookVector * 16
+            AutoJump = false
             localPlayer.Character:FindFirstChild("Humanoid").WalkSpeed = 16
         end
     end
@@ -522,13 +472,9 @@ local SpeedFix = Speed:Slider({
     callback = function(val)
     end
 })
-local AutoJumpSet = Speed:ToggleButtonInsideUI({
-    name = "AutoJump",
+local DropdownFix = Speed:ToggleButtonInsideUI({
+    name = "??",
     callback = function(enabled)
-        AutoJump = enabled
-        if enabled then
-            AutoJumpSettings()
-        end
     end
 })
 local SpeedModes = Speed:Dropdown({
@@ -548,6 +494,33 @@ local FlyJump = PlayerTab:ToggleButton({
             game:GetService("UserInputService").JumpRequest:Connect(function()
                 game:GetService("Players").LocalPlayer.Character:FindFirstChildOfClass("Humanoid"):ChangeState("Jumping")
             end)
+        end
+    end
+})
+--AutoSprint
+local SprintController = KnitClient.Controllers.SprintController
+local AutoSprint = PlayerTab:ToggleButton({
+    name = "AutoSprint",
+    info = "Automatically sprint for you",
+    callback = function(enabled)
+        if enabled then
+            oldSprintFunction = SprintController.stopSprinting
+            SprintController.stopSprinting = function(...)
+                SprintController:startSprinting()
+                return oldSprintFunction(...)
+            end
+            if inputService.TouchEnabled then
+                pcall(function() lplr.PlayerGui.MobileUI["4"].Visible = false end)
+            end
+        else
+            if oldSprintFunction then
+                SprintController.stopSprinting = oldSprintFunction
+                oldSprintFunction = nil
+            end
+            if inputService.TouchEnabled then
+                pcall(function() lplr.PlayerGui.MobileUI["3"].Visible = true end)
+            end
+            SprintController:stopSprinting()
         end
     end
 })
