@@ -168,7 +168,7 @@ local AimbotRangeCustom = Aimbot:Slider({
     end
 })
 --AntiKnockback
-local KnockbackUtil = localPlayer.PlayerScripts.TS.controllers.game.combat["knockback-controller"]
+local KnockbackUtil = require(ReplicatedStorage.TS.damage["knockback-util"])
 local KnockTable = debug.getupvalue(KnockbackUtil.calculateKnockbackVelocity, 1)
 local AntiKnockback = CombatTab:ToggleButton({
     name = "AntiKnockback",
