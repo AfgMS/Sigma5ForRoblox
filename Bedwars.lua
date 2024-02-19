@@ -7,6 +7,17 @@ local TeamsService = game:GetService("Teams")
 local Camera = game:GetService("Workspace").CurrentCamera
 local UserInputService = game:GetService("UserInputService")
 local Lighting = game:GetService("Lighting")
+local KnitClient = debug.getupvalue(require(lplr.PlayerScripts.TS.knit).setup, 6)
+local Client = require(game:GetService("ReplicatedStorage").TS.remotes).default.Client
+function getremote(tab)
+    for i,v in pairs(tab) do
+        if v == "Client" then
+            return tab[i + 1]
+        end
+    end
+    return ""
+end
+
 --Functions
 local function LibraryCheck()
     local SigmaCheck = CoreGui:FindFirstChild("Sigma")
@@ -49,7 +60,6 @@ local function GetNearestPlr(range)
 
     return nearestPlayer
 end
-local KnitClient = require(LocalPlayer.PlayerScripts.TS.knit).setup()
 local function Value2Vector(vec)
   return { value = vec }
 end
@@ -169,11 +179,19 @@ local AimbotRangeCustom = Aimbot:Slider({
     end
 })
 --AntiKnockback
+local KnockbackUtil = require(ReplicatedStorage.TS.damage["knockback-util"]).KnockbackUtil
+local KnockTable = debug.getupvalue(KnockbackUtil.calculateKnockbackVelocity, 1)
 local AntiKnockback = CombatTab:ToggleButton({
     name = "AntiKnockback",
     info = "Prevent you from taking knockback",
     callback = function(enabled)
-        createnotification("Sigma5", "This feature is for premium", 1, true)
+        if enabled then
+            KnockTable.kbDirectionStrength = 0
+            KnockTable.kbUpwardStrength = 0
+        else
+            KnockTable.kbDirectionStrength = 100
+            KnockTable.kbUpwardStrength = 100
+        end
     end
 })
 --AutoAutoRageQuit
@@ -504,22 +522,15 @@ local AutoSprint = PlayerTab:ToggleButton({
     info = "Automatically sprint for you",
     callback = function(enabled)
         if enabled then
-            oldSprintFunction = SprintController.stopSprinting
-            SprintController.stopSprinting = function(...)
-                SprintController:startSprinting()
-                return oldSprintFunction(...)
-            end
-            if inputService.TouchEnabled then
-                pcall(function() lplr.PlayerGui.MobileUI["4"].Visible = false end)
-            end
+            spawn(function()
+                repeat
+                    task.wait()
+                    if not SprintController.sprinting then
+                        SprintController:startSprinting()
+                    end
+                until not enabled
+            end)
         else
-            if oldSprintFunction then
-                SprintController.stopSprinting = oldSprintFunction
-                oldSprintFunction = nil
-            end
-            if inputService.TouchEnabled then
-                pcall(function() lplr.PlayerGui.MobileUI["3"].Visible = true end)
-            end
             SprintController:stopSprinting()
         end
     end
