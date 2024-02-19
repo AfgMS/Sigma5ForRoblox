@@ -7,6 +7,22 @@ local TeamsService = game:GetService("Teams")
 local Camera = game:GetService("Workspace").CurrentCamera
 local UserInputService = game:GetService("UserInputService")
 local Lighting = game:GetService("Lighting")
+local KnitClient, KnitClientGotten = nil, false
+task.spawn(function()
+    KnitClient = debug.getupvalue(require(localPlayer.PlayerScripts.TS.knit).setup, 6)
+    if KnitClient then
+        KnitClientGotten = true
+    else
+        warn("Unknown Error")
+    end
+end)
+local Client, ClientGotten = nil, false
+task.spawn(function()
+    Client = require(ReplicatedStorage.TS.remotes).default.Client
+    if Client then
+        ClientGotten = true
+    end
+end)
 --Functions
 local function LibraryCheck()
     local SigmaCheck = CoreGui:FindFirstChild("Sigma")
@@ -506,23 +522,26 @@ local FlyJump = PlayerTab:ToggleButton({
     end
 })
 --AutoSprint
-local SprintController = localPlayer.PlayerScripts.TS.controllers.global.sprint["sprint-controller"]
+local SprintController = KnitClientGotten and KnitClient.Controllers.SprintController or nil
 local AutoSprint = PlayerTab:ToggleButton({
     name = "AutoSprint",
     info = "Automatically sprint for you",
     callback = function(enabled)
-        if enabled then
-            spawn(function()
-                repeat
-                    task.wait()
-                    if not SprintController.sprinting then
-                        SprintController:startSprinting()
-                    end
-                until not enabled
-            end)
+        if SprintController then
+            if enabled then
+                spawn(function()
+                    repeat
+                        task.wait()
+                        if not SprintController.sprinting then
+                            SprintController:startSprinting()
+                        end
+                    until not enabled
+                end)
+            else
+                SprintController:stopSprinting()
+            end
         else
-            SprintController:stopSprinting()
+            warn("Sprint controller not found.")
         end
     end
 })
-
