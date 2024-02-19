@@ -9,14 +9,12 @@ local UserInputService = game:GetService("UserInputService")
 local Lighting = game:GetService("Lighting")
 local KnitClient = debug.getupvalue(require(localPlayer.PlayerScripts.TS.knit).setup, 6)
 local Client = require(ReplicatedStorage.TS.remotes).default.Client
-function getremote(tab)
-    for i,v in pairs(tab) do
-        if v == "Client" then
-            return tab[i + 1]
-        end
-    end
-    return ""
+if not KnitClient then
+    task.spawn(function()
+        warn("Error Unhelpable")
+    end)
 end
+local ClientGotten = Client ~= nil
 --Functions
 local function LibraryCheck()
     local SigmaCheck = CoreGui:FindFirstChild("Sigma")
