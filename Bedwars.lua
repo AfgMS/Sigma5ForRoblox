@@ -7,9 +7,6 @@ local TeamsService = game:GetService("Teams")
 local Camera = game:GetService("Workspace").CurrentCamera
 local UserInputService = game:GetService("UserInputService")
 local Lighting = game:GetService("Lighting")
-local KnitClient = debug.getupvalue(require(lplr.PlayerScripts.TS.knit).setup, 6)
-local Client = require(game:GetService("ReplicatedStorage").TS.remotes).default.Client
-
 --Functions
 local function LibraryCheck()
     local SigmaCheck = CoreGui:FindFirstChild("Sigma")
@@ -64,6 +61,13 @@ local WeaponRank = {
   [6] = { Name = "emerald_sword", Rank = 6 },
   [7] = { Name = "rageblade", Rank = 7 },
 }
+local ProjectilesRank = {
+  [1] = { Name = "wood_bow", Rank = 1 },
+  [2] = { Name = "fireball", Rank = 2 },
+  [3] = { Name = "wood_crossbow", Rank = 3 },
+  [4] = { Name = "firecrackers", Rank = 4 },
+  [5] = { Name = "headhunter", Rank = 5 }
+}
 function GetAttackPos(plrpos, nearpost, val)
   local newPos = (nearpost - plrpos).Unit * math.min(val, (nearpost - plrpos).Magnitude) + plrpos
   return newPos
@@ -84,6 +88,23 @@ local function GetSword()
     end
   end
   return bestsword
+end
+local function GetProjectiles()
+  local bestProject = nil
+  local bestrank = 0
+  for i, v in pairs(localPlayer.Character.InventoryFolder.Value:GetChildren()) do
+    if v.Name:match("bow") or v.Name:match("fire") or v.Name:match("head") then
+      for _, data in pairs(ProjectilesRank) do
+        if data.Name == v.Name then
+          if bestrank <= data.Rank then
+            bestrank = data.Rank
+            bestProject = v
+          end
+        end
+      end
+    end
+  end
+  return bestProject
 end
 local function GetAllTeam(team)
     local children = {}
@@ -109,7 +130,7 @@ local WorldTab = Library:createTabs(CoreGui.Sigma, "World")
 --Notification
 createnotification("Sigma5", "Loaded Successfully", 1, true)
 task.wait(3)
-createnotification("Sigma5", "Suggestion to use valyse.best", 1, true)
+createnotification("Sigma5", "Suggested use valyse.best", 1, true)
 --ActiveMods
 local ActiveMods = GuiTab:ToggleButton({
     name = "ActiveMods",
@@ -217,11 +238,48 @@ local CustomLowHealth = AutoRageQuit:Slider({
         LowHealthValue = value
     end
 })
---BowAimbot Coming Soon
+--BowAimbot
+local function ProjectileShoot(ProjectileWeapon, Projectile)
+  local BowAimbotRequirement = {
+    [1] = ProjectileWeapon,
+    [2] = Projectile,
+    [3] = ProjectileWeapon,
+    [4] = Value2Vector(NearestPlayer.Character:FindFirstChild("HumanoidRootPart").Position),
+    [5] = Value2Vector(NearestPlayer.Character:FindFirstChild("HumanoidRootPart").Position),
+    [6] = Vector3.new(0, NearestPlayer.Character:FindFirstChild("HumanoidRootPart").Position.Y, 0),
+    [7] = HttpService:GenerateGUID(true),
+    [8] = {
+      ["drawDurationSeconds"] = 0.95,
+      ["shotId"] = HttpService:GenerateGUID(false)
+    },
+    [9] = Workspace:GetServerTimeNow() - 0.11
+  }
+  game:GetService("ReplicatedStorage").rbxts_include.node_modules:FindFirstChild("@rbxts").net.out._NetManaged.ProjectileFire:InvokeServer(unpack(BowAimbotRequirement))
+end
+
+local BowAimbotDelay = 1.8
+
+local BowAimbot = CombatTab:ToggleButton({
+  name = "BowAimbot",
+  info = "Vape ProjectileExploit??",
+  callback = function(enabled)
+    if enabled then
+      local NearestPlayer = GetNearestPlr(math.huge)
+      if NearestPlayer then
+        local ProjectileAmmo = "arrow"
+        while wait(BowAimbotDelay) do
+          ProjectileShoot(GetProjectiles(), ProjectileAmmo)
+        end
+      else
+        BowAimbotDelay = 86000
+      end
+    end
+  end
+})
 --KillAura
 local KillAuraRange
-local RotationsRange
 local KillAuraCriticalEffect
+local TargetESP
 local KillAura = CombatTab:ToggleButton({
     name = "KillAura",
     info = "Automatically attacks players",
@@ -232,6 +290,7 @@ local KillAura = CombatTab:ToggleButton({
                 local NearestPlayer = GetNearestPlr(KillAuraRange)
                 if NearestPlayer then
                     KillAuraCriticalEffect = true
+                    TargetESP = true
                     ReplicatedStorage.rbxts_include.node_modules:FindFirstChild("@rbxts").net.out._NetManaged.SwordHit:FireServer({
                         ["entityInstance"] = NearestPlayer.Character,
                         ["chargedAttack"] = {
@@ -262,16 +321,13 @@ local KillAuraRangeCustom = KillAura:Slider({
     default = 20,
     callback = function(value)
         KillAuraRange = value
-        RotationsRange = value
     end
 })
 local Rotations = KillAura:ToggleButtonInsideUI({
     name = "Rotations",
     callback = function(enabled)
         if enabled then
-            RotationsRange = 20
             while enabled do
-                local NearestPlayer = GetNearestPlr(RotationsRange)
                 if NearestPlayer then
                     local character = localPlayer.Character
                     if character and character:FindFirstChild("HumanoidRootPart") then
@@ -286,6 +342,40 @@ local Rotations = KillAura:ToggleButtonInsideUI({
         else
             RotationsRange = 0
         end
+    end
+})
+local TargetESP = KillAura:ToggleButtonInsideUI({
+    name = "TargetESP",
+    callback = function(enabled)
+        if enabled then
+            if NearestPlayer and TargetESP then
+                local NearestHumRoot = NearestPlayer.Character:FindFirstChild("HumanoidRootPart")
+                NearestHumRoot.Size = Vector3.new(5, 6, 3)
+                NearestHumRoot.Transparency = 0.58
+                NearestHumRoot.Color = Color3.fromRGB(255, 255, 255)
+            elseif not NearestPlayer or not TargetESP then
+                NearestHumRoot.Size = Vector3.new(2, 2, 1)
+                NearestHumRoot.Transparency = 1
+                NearestHumRoot.Color = Color3.new(163, 162, 165)
+            end
+        end
+    end
+})
+--Criticals
+local Criticals = CombatTab:ToggleButton({
+    name = "Criticals",
+    info = "Minecraft crit particles",
+    callback = function(enabled)
+            if enabled then
+                if NearestPlayer then
+                    local ParticleHolder = NearestHumRoot:Clone()
+                    ParticleHolder.Name = "ParticleHolder"
+                    ParticleHolder.CanCollide = false
+                    ParticleHolder.Transparency = 1
+
+                    local CritEffect = Instance.new("ParticleEmitter")
+                    CritEffect.Enabled = true
+                    
     end
 })
 --Teams
@@ -451,7 +541,7 @@ local ChoosedMode = "Hypixel"
 local function AutoJumpSettings()
     while AutoJump do
         localPlayer.Character:FindFirstChild("Humanoid"):ChangeState("Jumping")
-        wait(1)
+        wait(0.93)
     end
 end
 local Speed = PlayerTab:ToggleButton({
@@ -505,28 +595,6 @@ local FlyJump = PlayerTab:ToggleButton({
             game:GetService("UserInputService").JumpRequest:Connect(function()
                 game:GetService("Players").LocalPlayer.Character:FindFirstChildOfClass("Humanoid"):ChangeState("Jumping")
             end)
-        end
-    end
-})
---AutoSprint
-local SprintController = KnitClient.Controllers.SprintController
-local AutoSprint = PlayerTab:ToggleButton({
-    name = "AutoSprint",
-    info = "Automatically sprint for you",
-    callback = function(enabled)
-        if SprintController then
-            if enabled then
-                spawn(function()
-                    repeat
-                        task.wait()
-                        if not SprintController.sprinting then
-                            SprintController:startSprinting()
-                        end
-                    until not enabled
-                end)
-            else
-                SprintController:stopSprinting()
-            end
         end
     end
 })
