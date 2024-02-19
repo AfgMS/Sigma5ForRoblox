@@ -7,22 +7,9 @@ local TeamsService = game:GetService("Teams")
 local Camera = game:GetService("Workspace").CurrentCamera
 local UserInputService = game:GetService("UserInputService")
 local Lighting = game:GetService("Lighting")
-local KnitClient, KnitClientGotten = nil, false
-task.spawn(function()
-    KnitClient = debug.getupvalue(require(localPlayer.PlayerScripts.TS.knit).setup, 6)
-    if KnitClient then
-        KnitClientGotten = true
-    else
-        warn("Unknown Error")
-    end
-end)
-local Client, ClientGotten = nil, false
-task.spawn(function()
-    Client = require(ReplicatedStorage.TS.remotes).default.Client
-    if Client then
-        ClientGotten = true
-    end
-end)
+local KnitClient = debug.getupvalue(require(lplr.PlayerScripts.TS.knit).setup, 6)
+local Client = require(game:GetService("ReplicatedStorage").TS.remotes).default.Client
+
 --Functions
 local function LibraryCheck()
     local SigmaCheck = CoreGui:FindFirstChild("Sigma")
@@ -121,6 +108,8 @@ local PlayerTab = Library:createTabs(CoreGui.Sigma, "Player")
 local WorldTab = Library:createTabs(CoreGui.Sigma, "World")
 --Notification
 createnotification("Sigma5", "Loaded Successfully", 1, true)
+task.wait(3)
+createnotification("Sigma5", "Suggestion to use valyse.best", 1, true)
 --ActiveMods
 local ActiveMods = GuiTab:ToggleButton({
     name = "ActiveMods",
@@ -183,23 +172,21 @@ local AimbotRangeCustom = Aimbot:Slider({
         AimbotRange = val
     end
 })
---[[
-local KnockbackUtil = require(ReplicatedStorage.TS.damage["knockback-util"])
-local KnockTable = debug.getupvalue(KnockbackUtil.calculateKnockbackVelocity, 1)
+--AntiKnockback
+local KnockbackUtil = debug.getupvalue(require(ReplicatedStorage.TS.damage["knockback-util"]).KnockbackUtil.calculateKnockbackVelocity, 1)
 local AntiKnockback = CombatTab:ToggleButton({
     name = "AntiKnockback",
     info = "Prevent you from taking knockback",
     callback = function(enabled)
         if enabled then
-            KnockTable.kbDirectionStrength = 0
-            KnockTable.kbUpwardStrength = 0
+            KnockbackUtil.kbDirectionStrength = 0
+            KnockbackUtil.kbUpwardStrength = 0
         else
-            KnockTable.kbDirectionStrength = 100
-            KnockTable.kbUpwardStrength = 100
+            KnockbackUtil.kbDirectionStrength = 100
+            KnockbackUtil.kbUpwardStrength = 100
         end
     end
 })
---]]
 --AutoAutoRageQuit
 local LowHealthValue
 local function CheckHealth()
@@ -522,7 +509,7 @@ local FlyJump = PlayerTab:ToggleButton({
     end
 })
 --AutoSprint
-local SprintController = KnitClientGotten and KnitClient.Controllers.SprintController or nil
+local SprintController = KnitClient.Controllers.SprintController
 local AutoSprint = PlayerTab:ToggleButton({
     name = "AutoSprint",
     info = "Automatically sprint for you",
@@ -540,8 +527,6 @@ local AutoSprint = PlayerTab:ToggleButton({
             else
                 SprintController:stopSprinting()
             end
-        else
-            warn("Sprint controller not found.")
         end
     end
 })
