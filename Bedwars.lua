@@ -61,7 +61,6 @@ local WeaponRank = {
   [6] = { Name = "emerald_sword", Rank = 6 },
   [7] = { Name = "rageblade", Rank = 7 },
 }
---[[
 local ProjectilesRank = {
   [1] = { Name = "wood_bow", Rank = 1 },
   [2] = { Name = "fireball", Rank = 2 },
@@ -69,7 +68,6 @@ local ProjectilesRank = {
   [4] = { Name = "firecrackers", Rank = 4 },
   [5] = { Name = "headhunter", Rank = 5 }
 }
---]]
 function GetAttackPos(plrpos, nearpost, val)
   local newPos = (nearpost - plrpos).Unit * math.min(val, (nearpost - plrpos).Magnitude) + plrpos
   return newPos
@@ -91,7 +89,6 @@ local function GetSword()
   end
   return bestsword
 end
---[[
 local function GetProjectiles()
   local bestProject = nil
   local bestrank = 0
@@ -109,7 +106,6 @@ local function GetProjectiles()
   end
   return bestProject
 end
---]]
 local function GetAllTeam(team)
     local children = {}
     for _, otherTeam in ipairs(TeamsService:GetTeams()) do
@@ -123,6 +119,7 @@ local function GetAllTeam(team)
 end
 --CreatingUI
 Library:createScreenGui()
+task.wait()
 LibraryCheck()
 --Tabs
 local GuiTab = Library:createTabs(CoreGui.Sigma, "Gui")
@@ -132,6 +129,8 @@ local PlayerTab = Library:createTabs(CoreGui.Sigma, "Player")
 local WorldTab = Library:createTabs(CoreGui.Sigma, "World")
 --Notification
 createnotification("Sigma5", "Loaded Successfully", 1, true)
+task.wait(3)
+createnotification("Sigma5", "Suggestion to use valyse.best", 1, true)
 --ActiveMods
 local ActiveMods = GuiTab:ToggleButton({
     name = "ActiveMods",
@@ -194,7 +193,7 @@ local AimbotRangeCustom = Aimbot:Slider({
         AimbotRange = val
     end
 })
---[[ --Premium Features??
+--AntiKnockback
 local KnockbackUtil = debug.getupvalue(require(ReplicatedStorage.TS.damage["knockback-util"]).KnockbackUtil.calculateKnockbackVelocity, 1)
 local AntiKnockback = CombatTab:ToggleButton({
     name = "AntiKnockback",
@@ -209,7 +208,6 @@ local AntiKnockback = CombatTab:ToggleButton({
         end
     end
 })
---]]
 --AutoAutoRageQuit
 local LowHealthValue
 local function CheckHealth()
@@ -240,7 +238,7 @@ local CustomLowHealth = AutoRageQuit:Slider({
         LowHealthValue = value
     end
 })
---[[ --Premium?
+--BowAimbot
 local function ProjectileShoot(ProjectileWeapon, Projectile)
   local BowAimbotRequirement = {
     [1] = ProjectileWeapon,
@@ -260,7 +258,6 @@ local function ProjectileShoot(ProjectileWeapon, Projectile)
 end
 
 local BowAimbotDelay = 1.8
-
 local BowAimbot = CombatTab:ToggleButton({
   name = "BowAimbot",
   info = "Vape ProjectileExploit??",
@@ -278,11 +275,10 @@ local BowAimbot = CombatTab:ToggleButton({
     end
   end
 })
---]]
 --KillAura
 local KillAuraRange
+local RotationsRange
 local KillAuraCriticalEffect
-local TargetESP
 local KillAura = CombatTab:ToggleButton({
     name = "KillAura",
     info = "Automatically attacks players",
@@ -293,7 +289,6 @@ local KillAura = CombatTab:ToggleButton({
                 local NearestPlayer = GetNearestPlr(KillAuraRange)
                 if NearestPlayer then
                     KillAuraCriticalEffect = true
-                    TargetESP = true
                     ReplicatedStorage.rbxts_include.node_modules:FindFirstChild("@rbxts").net.out._NetManaged.SwordHit:FireServer({
                         ["entityInstance"] = NearestPlayer.Character,
                         ["chargedAttack"] = {
@@ -324,13 +319,16 @@ local KillAuraRangeCustom = KillAura:Slider({
     default = 20,
     callback = function(value)
         KillAuraRange = value
+        RotationsRange = value
     end
 })
 local Rotations = KillAura:ToggleButtonInsideUI({
     name = "Rotations",
     callback = function(enabled)
         if enabled then
+            RotationsRange = 20
             while enabled do
+                local NearestPlayer = GetNearestPlr(RotationsRange)
                 if NearestPlayer then
                     local character = localPlayer.Character
                     if character and character:FindFirstChild("HumanoidRootPart") then
@@ -345,40 +343,6 @@ local Rotations = KillAura:ToggleButtonInsideUI({
         else
             RotationsRange = 0
         end
-    end
-})
-local TargetESP = KillAura:ToggleButtonInsideUI({
-    name = "TargetESP",
-    callback = function(enabled)
-        if enabled then
-            if NearestPlayer and TargetESP then
-                local NearestHumRoot = NearestPlayer.Character:FindFirstChild("HumanoidRootPart")
-                NearestHumRoot.Size = Vector3.new(5, 6, 3)
-                NearestHumRoot.Transparency = 0.58
-                NearestHumRoot.Color = Color3.fromRGB(255, 255, 255)
-            elseif not NearestPlayer or not TargetESP then
-                NearestHumRoot.Size = Vector3.new(2, 2, 1)
-                NearestHumRoot.Transparency = 1
-                NearestHumRoot.Color = Color3.new(163, 162, 165)
-            end
-        end
-    end
-})
---Criticals
-local Criticals = CombatTab:ToggleButton({
-    name = "Criticals",
-    info = "Minecraft crit particles",
-    callback = function(enabled)
-            if enabled then
-                if NearestPlayer then
-                    local ParticleHolder = NearestHumRoot:Clone()
-                    ParticleHolder.Name = "ParticleHolder"
-                    ParticleHolder.CanCollide = false
-                    ParticleHolder.Transparency = 1
-
-                    local CritEffect = Instance.new("ParticleEmitter")
-                    CritEffect.Enabled = true
-                    
     end
 })
 --Teams
@@ -544,7 +508,7 @@ local ChoosedMode = "Hypixel"
 local function AutoJumpSettings()
     while AutoJump do
         localPlayer.Character:FindFirstChild("Humanoid"):ChangeState("Jumping")
-        wait(0.93)
+        wait(1)
     end
 end
 local Speed = PlayerTab:ToggleButton({
