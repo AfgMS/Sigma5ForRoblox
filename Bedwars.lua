@@ -49,6 +49,13 @@ local function GetNearestPlr(range)
 
     return nearestPlayer
 end
+local function HotbarSet(item)
+    if localPlayer.Character.HandInvItem.Value ~= item then
+        local InventoriesSet = ReplicatedStorage.Inventories:FindFirstChild(localPlayer.Name):FindFirstChild(item)
+
+        ReplicatedStorage:WaitForChild("rbxts_include"):WaitForChild("node_modules"):WaitForChild("@rbxts"):WaitForChild("net"):WaitForChild("out"):WaitForChild("_NetManaged"):WaitForChild("SetInvItem"):InvokeServer({hand = InventoriesSet})
+    end	
+end
 local function Value2Vector(vec)
   return { value = vec }
 end
@@ -233,7 +240,7 @@ local KillAura = CombatTab:ToggleButton({
                             ["selfPosition"] = Value2Vector(GetAttackPos(localPlayer.Character:FindFirstChild("HumanoidRootPart").Position, NearestPlayer.Character:FindFirstChild("HumanoidRootPart").Position, 2)),
                             ["targetPosition"] = Value2Vector(NearestPlayer.Character.HumanoidRootPart.Position),
                         },
-                        ["weapon"] = GetSword()
+                        ["weapon"] = HotbarSet(GetSword())
                     })
                 end
             end
@@ -286,14 +293,14 @@ local Teams = CombatTab:ToggleButton({
 })
 --ESP
 local function BoxESP(player)
-    if player ~= game.Players.LocalPlayer and player.Character then
+    if player ~= game:GetService("Players").LocalPlayer and player.Character then
         local AllPLRRoot = player.Character:FindFirstChild("HumanoidRootPart")
         AllPLRRoot.Size = Vector3.new(5, 6, 3)
         AllPLRRoot.Transparency = 0.8
         AllPLRRoot.Color = Color3.fromRGB(255, 255, 255)
 
         local Highlighthumroot = Instance.new("Highlight", AllPLRRoot)
-        Highlighthumroot.Adornee = Highlighthumroot.Parent
+        Highlighthumroot.Adornee = player.Character or Highlighthumroot.Parent
         Highlighthumroot.Enabled = true
         Highlighthumroot.FillColor = Color3.fromRGB(255, 255, 255)
         Highlighthumroot.FillTransparency = 0.99
@@ -364,10 +371,6 @@ local CustomFov = Fov:Slider({
     end
 })
 --GamePlay
-local AutoQueue
-local AutoGG
-local AutoL
-
 local function CheckTeams()
     local localPlayer = Players.LocalPlayer
     if not localPlayer or not localPlayer.Character then
@@ -394,65 +397,114 @@ end
 local function SigmemeAutoL()
     local RandomChances = math.random(0, 5)
 
+    local function FireServer(message)
+        game:GetService("ReplicatedStorage").DefaultChatSystemChatEvents.SayMessageRequest:FireServer(message, "All")
+    end
+
     if RandomChances == 0 then
-        game:GetService("ReplicatedStorage").DefaultChatSystemChatEvents.SayMessageRequest:FireServer("I don't hack I just SIGMA", "All")
-    end
-
-    if RandomChances ~= 0 then
-        game:GetService("ReplicatedStorage").DefaultChatSystemChatEvents.SayMessageRequest:FireServer("Sigma will help you Oops, I killed you instead.", "All")
-    end
-
-    if RandomChances == 2 then
-        game:GetService("ReplicatedStorage").DefaultChatSystemChatEvents.SayMessageRequest:FireServer("vxpe and godsploit is better than this", "All")
-    end
-
-    if RandomChances == 3 then
-        game:GetService("ReplicatedStorage").DefaultChatSystemChatEvents.SayMessageRequest:FireServer("I just have a good gaming chair", "All")
-    end
-
-    if RandomChances == 4 then
-        game:GetService("ReplicatedStorage").DefaultChatSystemChatEvents.SayMessageRequest:FireServer("Use sigma to kick some ### while listening to music", "All")
-    end
-
-    if RandomChances == 5 then
-        game:GetService("ReplicatedStorage").DefaultChatSystemChatEvents.SayMessageRequest:FireServer("Simga Klien 1945 bye pass 🙀", "All")
+        FireServer("I don't hack I just SIGMA")
+    elseif RandomChances ~= 0 then
+        FireServer("Sigma will help you. Oops, I killed you instead.")
+    elseif RandomChances == 2 then
+        FireServer("vxpe and godsploit is better than this")
+    elseif RandomChances == 3 then
+        FireServer("I just have a good gaming chair")
+    elseif RandomChances == 4 then
+        FireServer("Use sigma to kick some ### while listening to music")
+    elseif RandomChances == 5 then
+        FireServer("Simga Klien 1945 bye pass 🙀")
     end
 end
+
+local AutoQueue = false
+local AutoGG = false
+local AutoL = false
 
 local GamePlay = PlayerTab:ToggleButton({
     name = "GamePlay",
     info = "Makes your experience better",
     callback = function(enabled)
         if enabled then
-            if AutoQueue then
-                if CheckTeams() then
-                    ReplicatedStorage:WaitForChild("events-@easy-games/lobby:shared/event/lobby-events@getEvents.Events").joinQueue:FireServer({["queueType"] = "bedwars_to1"})
-                end
+            if AutoQueue and CheckTeams() then
+                ReplicatedStorage:WaitForChild("events-@easy-games/lobby:shared/event/lobby-events@getEvents.Events").joinQueue:FireServer({["queueType"] = "bedwars_to1"})
             end
 
-            if AutoGG then
-                if CheckTeams() then
-                    game:GetService("ReplicatedStorage").DefaultChatSystemChatEvents.SayMessageRequest:FireServer("GG", "All")
-                end
+            if AutoGG and CheckTeams() then
+                game:GetService("ReplicatedStorage").DefaultChatSystemChatEvents.SayMessageRequest:FireServer("GG", "All")
             end
 
             if AutoL then
                 SigmemeAutoL()
             end
+        else
+            AutoQueue, AutoGG, AutoL = false, false, false
         end
     end
 })
+local GamePlayFix = GamePlay:Slider({
+    title = "??",
+    min = 0,
+    max = 0,
+    default = 0,
+    callback = function(val)
+    end
+})
+local AutoQueueToggle = GamePlay:ToggleButtonInsideUI({
+    name = "AutoQueue",
+    callback = function(enabled)
+        AutoQueue = enabled
+    end
+})
+local AutoGGToggle = GamePlay:ToggleButtonInsideUI({
+    name = "AutoGG",
+    callback = function(enabled)
+        AutoGG = enabled
+    end
+})
+local AutoLToggle = GamePlay:ToggleButtonInsideUI({
+    name = "AutoL",
+    callback = function(enabled)
+        AutoL = enabled
+    end
+})
 --Speed
-local Heatseeker = false
-local function HeatSeekerSAFE()
-    while Heatseeker do
-        local humanoid = localPlayer.Character:FindFirstChild("Humanoid")
-        if humanoid then
-            humanoid.WalkSpeed = 38
-            wait(0.3)
-            humanoid.WalkSpeed = 0
+local SpeedMode = {"LibreCraft", "Hypixel", "Vanilla"}
+local LibreCraftS = false
+local HypixelS = false
+local AutoJump = false
+local ChooseMode = "Vanilla"
+
+local function LibreCraftMode()
+    while LibreCraftS do
+        if localPlayer and localPlayer.Character then
+            localPlayer.Character:FindFirstChild("Humanoid").WalkSpeed = 28
+            wait(0.03)
+            localPlayer.Character:FindFirstChild("Humanoid").WalkSpeed = 0
             wait(0.28)
-            humanoid.WalkSpeed = 22.3
+            localPlayer.Character:FindFirstChild("Humanoid").WalkSpeed = 16
+            wait(3)
+        end
+    end
+end
+local function AutoJumpSettings()
+    while AutoJump do
+        if localPlayer and localPlayer.Character then
+            localPlayer.Character:FindFirstChild("Humanoid"):ChangeState("Jumping")
+            wait(1)
+        end
+    end
+end
+local function HypixelMode()
+    while HypixelS do
+        if localPlayer and localPlayer.Character then
+            localPlayer.Character:FindFirstChild("Humanoid").WalkSpeed = 23
+            wait(0.38)
+            localPlayer.Character:FindFirstChild("Humanoid").WalkSpeed = 20
+            wait(0.28)
+            localPlayer.Character:FindFirstChild("Humanoid").WalkSpeed = 25
+            wait(0.03)
+            localPlayer.Character:FindFirstChild("Humanoid").WalkSpeed = 16
+            wait(2)
         end
     end
 end
@@ -461,10 +513,44 @@ local Speed = PlayerTab:ToggleButton({
     info = "Make your speed peed",
     callback = function(enabled)
         if enabled then
-            Heatseeker = true
-            HeatSeekerSAFE()
+            if ChooseMode == "LibreCraft" then
+                LibreCraftS = true
+                LibreCraftMode()
+            elseif ChooseMode == "Hypixel" then
+                HypixelS = true
+                HypixelMode()
+            else
+                localPlayer.Character:FindFirstChild("Humanoid").WalkSpeed = 20
+            end
         else
-            Heatseeker = false
+            LibreCraftS = false
+            HypixelS = false
+            localPlayer.Character:FindFirstChild("Humanoid").WalkSpeed = 16
+        end
+    end
+})
+local SpeedFix = Speed:Slider({
+    title = "??",
+    min = 0,
+    max = 0,
+    default = 0,
+    callback = function(val)
+    end
+})
+local SpeedModes = Speed:Dropdown({
+    name = "SpeedMode",
+    default = "Vanilla",
+    list = SpeedMode,
+    callback = function(mode)
+        ChooseMode = mode
+    end
+})
+local AutoJumpSet = Speed:ToggleButtonInsideUI({
+    name = "AutoJump",
+    callback = function(enabled)
+        AutoJump = enabled
+        if enabled then
+            AutoJumpSettings()
         end
     end
 })
@@ -474,10 +560,9 @@ local FlyJump = PlayerTab:ToggleButton({
     info = "FlyJump?",
     callback = function(enabled)
         if enabled then
-            game:GetService("Players").LocalPlayer:GetPropertyChangedSignal("Jump"):Connect(function()
-                local humanoid = game:GetService("Players").LocalPlayer.Character and game:GetService("Players").LocalPlayer.Character:FindFirstChildOfClass("Humanoid")
-                if humanoid then
-                    humanoid:ChangeState("Jumping")
+            game:GetService("UserInputService").JumpRequest:Connect(function()
+                if enabled then
+                    game:GetService("Players").LocalPlayer.Character:FindFirstChildOfClass("Humanoid"):ChangeState("Jumping")
                 end
             end)
         end
