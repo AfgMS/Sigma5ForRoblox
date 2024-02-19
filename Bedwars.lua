@@ -61,6 +61,7 @@ local WeaponRank = {
   [6] = { Name = "emerald_sword", Rank = 6 },
   [7] = { Name = "rageblade", Rank = 7 },
 }
+--[[
 local ProjectilesRank = {
   [1] = { Name = "wood_bow", Rank = 1 },
   [2] = { Name = "fireball", Rank = 2 },
@@ -68,6 +69,7 @@ local ProjectilesRank = {
   [4] = { Name = "firecrackers", Rank = 4 },
   [5] = { Name = "headhunter", Rank = 5 }
 }
+--]]
 function GetAttackPos(plrpos, nearpost, val)
   local newPos = (nearpost - plrpos).Unit * math.min(val, (nearpost - plrpos).Magnitude) + plrpos
   return newPos
@@ -89,6 +91,7 @@ local function GetSword()
   end
   return bestsword
 end
+--[[
 local function GetProjectiles()
   local bestProject = nil
   local bestrank = 0
@@ -106,6 +109,7 @@ local function GetProjectiles()
   end
   return bestProject
 end
+--]]
 local function GetAllTeam(team)
     local children = {}
     for _, otherTeam in ipairs(TeamsService:GetTeams()) do
@@ -119,7 +123,6 @@ local function GetAllTeam(team)
 end
 --CreatingUI
 Library:createScreenGui()
-task.wait()
 LibraryCheck()
 --Tabs
 local GuiTab = Library:createTabs(CoreGui.Sigma, "Gui")
@@ -237,7 +240,7 @@ local CustomLowHealth = AutoRageQuit:Slider({
         LowHealthValue = value
     end
 })
---BowAimbot
+--[[ --Premium?
 local function ProjectileShoot(ProjectileWeapon, Projectile)
   local BowAimbotRequirement = {
     [1] = ProjectileWeapon,
@@ -275,6 +278,7 @@ local BowAimbot = CombatTab:ToggleButton({
     end
   end
 })
+--]]
 --KillAura
 local KillAuraRange
 local KillAuraCriticalEffect
