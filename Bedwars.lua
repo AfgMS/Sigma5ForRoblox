@@ -7,8 +7,8 @@ local TeamsService = game:GetService("Teams")
 local Camera = game:GetService("Workspace").CurrentCamera
 local UserInputService = game:GetService("UserInputService")
 local Lighting = game:GetService("Lighting")
-local KnitClient = debug.getupvalue(require(lplr.PlayerScripts.TS.knit).setup, 6)
-local Client = require(game:GetService("ReplicatedStorage").TS.remotes).default.Client
+local KnitClient = debug.getupvalue(require(localPlayer.PlayerScripts.TS.knit).setup, 6)
+local Client = require(ReplicatedStorage.TS.remotes).default.Client
 function getremote(tab)
     for i,v in pairs(tab) do
         if v == "Client" then
@@ -17,7 +17,6 @@ function getremote(tab)
     end
     return ""
 end
-
 --Functions
 local function LibraryCheck()
     local SigmaCheck = CoreGui:FindFirstChild("Sigma")
