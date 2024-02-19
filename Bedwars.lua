@@ -129,8 +129,6 @@ local PlayerTab = Library:createTabs(CoreGui.Sigma, "Player")
 local WorldTab = Library:createTabs(CoreGui.Sigma, "World")
 --Notification
 createnotification("Sigma5", "Loaded Successfully", 1, true)
-task.wait(3)
-createnotification("Sigma5", "Suggestion to use valyse.best", 1, true)
 --ActiveMods
 local ActiveMods = GuiTab:ToggleButton({
     name = "ActiveMods",
@@ -195,6 +193,8 @@ local AimbotRangeCustom = Aimbot:Slider({
 })
 --AntiKnockback
 local KnockbackUtil = debug.getupvalue(require(ReplicatedStorage.TS.damage["knockback-util"]).KnockbackUtil.calculateKnockbackVelocity, 1)
+local OriginalH = KnockbackUtil.kbDirectionStrength
+local OriginalY = KnockbackUtil.kbUpwardStrength
 local AntiKnockback = CombatTab:ToggleButton({
     name = "AntiKnockback",
     info = "Prevent you from taking knockback",
@@ -203,8 +203,8 @@ local AntiKnockback = CombatTab:ToggleButton({
             KnockbackUtil.kbDirectionStrength = 0
             KnockbackUtil.kbUpwardStrength = 0
         else
-            KnockbackUtil.kbDirectionStrength = 100
-            KnockbackUtil.kbUpwardStrength = 100
+            KnockbackUtil.kbDirectionStrength = OriginalH
+            KnockbackUtil.kbUpwardStrength = OriginalY
         end
     end
 })
@@ -239,46 +239,39 @@ local CustomLowHealth = AutoRageQuit:Slider({
     end
 })
 --BowAimbot
-local function ProjectileShoot(ProjectileWeapon, Projectile)
-  local BowAimbotRequirement = {
-    [1] = ProjectileWeapon,
-    [2] = Projectile,
-    [3] = ProjectileWeapon,
-    [4] = Value2Vector(NearestPlayer.Character:FindFirstChild("HumanoidRootPart").Position),
-    [5] = Value2Vector(NearestPlayer.Character:FindFirstChild("HumanoidRootPart").Position),
-    [6] = Vector3.new(0, NearestPlayer.Character:FindFirstChild("HumanoidRootPart").Position.Y, 0),
-    [7] = HttpService:GenerateGUID(true),
-    [8] = {
-      ["drawDurationSeconds"] = 0.95,
-      ["shotId"] = HttpService:GenerateGUID(false)
-    },
-    [9] = Workspace:GetServerTimeNow() - 0.11
-  }
-  game:GetService("ReplicatedStorage").rbxts_include.node_modules:FindFirstChild("@rbxts").net.out._NetManaged.ProjectileFire:InvokeServer(unpack(BowAimbotRequirement))
-end
-
-local BowAimbotDelay = 1.8
+local WeaponProjectile
 local BowAimbot = CombatTab:ToggleButton({
-  name = "BowAimbot",
-  info = "Vape ProjectileExploit??",
-  callback = function(enabled)
-    if enabled then
-      local NearestPlayer = GetNearestPlr(math.huge)
-      if NearestPlayer then
-        local ProjectileAmmo = "arrow"
-        while wait(BowAimbotDelay) do
-          ProjectileShoot(GetProjectiles(), ProjectileAmmo)
+    name = "BowAimbot",
+    info = "Vape ProjectileExploit??",
+    callback = function(enabled)
+        if enabled then
+            WeaponProjectile = GetProjectiles()
+            local NearestPlayer = GetNearestPlr(math.huge)
+            if NearestPlayer then
+                local BowAimbotRequirement = {
+                    [1] = WeaponProjectile,
+                    [2] = "arrow",
+                    [3] = WeaponProjectile,
+                    [4] = Value2Vector(NearestPlayer.Character:FindFirstChild("HumanoidRootPart").Position),
+                    [5] = Value2Vector(NearestPlayer.Character:FindFirstChild("HumanoidRootPart").Position),
+                    [6] = Vector3.new(0, NearestPlayer.Character:FindFirstChild("HumanoidRootPart").Position.Y, 0),
+                    [7] = HttpService:GenerateGUID(true),
+                    [8] = {
+                        ["drawDurationSeconds"] = 0.95,
+                        ["shotId"] = HttpService:GenerateGUID(false)
+                    },
+                    [9] = Workspace:GetServerTimeNow() - 0.11
+                }
+                game:GetService("ReplicatedStorage").rbxts_include.node_modules:FindFirstChild("@rbxts").net.out._NetManaged.ProjectileFire:InvokeServer(unpack(BowAimbotRequirement))
+            end
+        else
+            WeaponProjectile = nil
         end
-      else
-        BowAimbotDelay = 86000
-      end
     end
-  end
 })
 --KillAura
 local KillAuraRange
 local RotationsRange
-local KillAuraCriticalEffect
 local KillAura = CombatTab:ToggleButton({
     name = "KillAura",
     info = "Automatically attacks players",
@@ -288,7 +281,6 @@ local KillAura = CombatTab:ToggleButton({
             while wait(0.01) do
                 local NearestPlayer = GetNearestPlr(KillAuraRange)
                 if NearestPlayer then
-                    KillAuraCriticalEffect = true
                     ReplicatedStorage.rbxts_include.node_modules:FindFirstChild("@rbxts").net.out._NetManaged.SwordHit:FireServer({
                         ["entityInstance"] = NearestPlayer.Character,
                         ["chargedAttack"] = {
@@ -308,7 +300,6 @@ local KillAura = CombatTab:ToggleButton({
             end
         else
             KillAuraRange = 0
-            KillAuraCriticalEffect = false
         end
     end
 })
