@@ -49,13 +49,6 @@ local function GetNearestPlr(range)
 
     return nearestPlayer
 end
-local function HotbarSet(item)
-    if localPlayer.Character.HandInvItem.Value ~= item then
-        local InventoriesSet = ReplicatedStorage.Inventories:FindFirstChild(localPlayer.Name):FindFirstChild(item)
-
-        ReplicatedStorage:WaitForChild("rbxts_include"):WaitForChild("node_modules"):WaitForChild("@rbxts"):WaitForChild("net"):WaitForChild("out"):WaitForChild("_NetManaged"):WaitForChild("SetInvItem"):InvokeServer({hand = InventoriesSet})
-    end	
-end
 local function Value2Vector(vec)
   return { value = vec }
 end
@@ -240,7 +233,7 @@ local KillAura = CombatTab:ToggleButton({
                             ["selfPosition"] = Value2Vector(GetAttackPos(localPlayer.Character:FindFirstChild("HumanoidRootPart").Position, NearestPlayer.Character:FindFirstChild("HumanoidRootPart").Position, 2)),
                             ["targetPosition"] = Value2Vector(NearestPlayer.Character.HumanoidRootPart.Position),
                         },
-                        ["weapon"] = HotbarSet(GetSword())
+                        ["weapon"] = GetSword()
                     })
                 end
             end
@@ -468,44 +461,36 @@ local AutoLToggle = GamePlay:ToggleButtonInsideUI({
     end
 })
 --Speed
-local SpeedMode = {"LibreCraft", "Hypixel", "Vanilla"}
 local LibreCraftS = false
 local HypixelS = false
 local AutoJump = false
-local ChooseMode = "Vanilla"
-
+local ChoosedMode = "Vanilla"
 local function LibreCraftMode()
     while LibreCraftS do
-        if localPlayer and localPlayer.Character then
-            localPlayer.Character:FindFirstChild("Humanoid").WalkSpeed = 28
-            wait(0.03)
-            localPlayer.Character:FindFirstChild("Humanoid").WalkSpeed = 0
-            wait(0.28)
-            localPlayer.Character:FindFirstChild("Humanoid").WalkSpeed = 16
-            wait(3)
-        end
+        localPlayer.Character:FindFirstChild("Humanoid").WalkSpeed = 28
+        wait(0.03)
+        localPlayer.Character:FindFirstChild("Humanoid").WalkSpeed = 0
+        wait(0.28)
+        localPlayer.Character:FindFirstChild("Humanoid").WalkSpeed = 16
+        wait(2.3)
     end
 end
 local function AutoJumpSettings()
     while AutoJump do
-        if localPlayer and localPlayer.Character then
-            localPlayer.Character:FindFirstChild("Humanoid"):ChangeState("Jumping")
-            wait(1)
-        end
+        localPlayer.Character:FindFirstChild("Humanoid"):ChangeState("Jumping")
+        wait(1.03)
     end
 end
 local function HypixelMode()
     while HypixelS do
-        if localPlayer and localPlayer.Character then
-            localPlayer.Character:FindFirstChild("Humanoid").WalkSpeed = 23
-            wait(0.38)
-            localPlayer.Character:FindFirstChild("Humanoid").WalkSpeed = 20
-            wait(0.28)
-            localPlayer.Character:FindFirstChild("Humanoid").WalkSpeed = 25
-            wait(0.03)
-            localPlayer.Character:FindFirstChild("Humanoid").WalkSpeed = 16
-            wait(2)
-        end
+        localPlayer.Character:FindFirstChild("Humanoid").WalkSpeed = 23
+        wait(0.32)
+        localPlayer.Character:FindFirstChild("Humanoid").WalkSpeed = 20
+        wait(0.25)
+        localPlayer.Character:FindFirstChild("Humanoid").WalkSpeed = 25
+        wait(0.05)
+        localPlayer.Character:FindFirstChild("Humanoid").WalkSpeed = 16
+        wait(2)
     end
 end
 local Speed = PlayerTab:ToggleButton({
@@ -513,14 +498,14 @@ local Speed = PlayerTab:ToggleButton({
     info = "Make your speed peed",
     callback = function(enabled)
         if enabled then
-            if ChooseMode == "LibreCraft" then
+            if ChoosedMode == "LibreCraft" then
                 LibreCraftS = true
                 LibreCraftMode()
-            elseif ChooseMode == "Hypixel" then
+            elseif ChoosedMode == "Hypixel" then
                 HypixelS = true
                 HypixelMode()
-            else
-                localPlayer.Character:FindFirstChild("Humanoid").WalkSpeed = 20
+            elseif ChoosedMode == "Vanilla" then
+                localPlayer.Character:FindFirstChild("Humanoid").WalkSpeed = 22.3
             end
         else
             LibreCraftS = false
@@ -537,14 +522,6 @@ local SpeedFix = Speed:Slider({
     callback = function(val)
     end
 })
-local SpeedModes = Speed:Dropdown({
-    name = "SpeedMode",
-    default = "Vanilla",
-    list = SpeedMode,
-    callback = function(mode)
-        ChooseMode = mode
-    end
-})
 local AutoJumpSet = Speed:ToggleButtonInsideUI({
     name = "AutoJump",
     callback = function(enabled)
@@ -554,6 +531,14 @@ local AutoJumpSet = Speed:ToggleButtonInsideUI({
         end
     end
 })
+local SpeedModes = Speed:Dropdown({
+    name = "SpeedMode",
+    default = "Vanilla",
+    list = {"LibreCraft", "Hypixel", "Vanilla"},
+    callback = function(selected)
+        ChoosedMode = selected
+    end
+})
 --FlyJump
 local FlyJump = PlayerTab:ToggleButton({
     name = "FlyJump",
@@ -561,9 +546,7 @@ local FlyJump = PlayerTab:ToggleButton({
     callback = function(enabled)
         if enabled then
             game:GetService("UserInputService").JumpRequest:Connect(function()
-                if enabled then
-                    game:GetService("Players").LocalPlayer.Character:FindFirstChildOfClass("Humanoid"):ChangeState("Jumping")
-                end
+                game:GetService("Players").LocalPlayer.Character:FindFirstChildOfClass("Humanoid"):ChangeState("Jumping")
             end)
         end
     end
