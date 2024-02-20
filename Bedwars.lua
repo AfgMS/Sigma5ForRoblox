@@ -265,7 +265,7 @@ local CustomLowHealth = AutoQuit:Slider({
         LowHealthValue = value
     end
 })
---[[
+--[[ --Under a development
 local WeaponProjectile
 local BowAimbotRange = 85
 local BowAimbot = CombatTab:ToggleButton({
@@ -399,8 +399,10 @@ local function CreateNameTags(player)
         BillboardGui.Adornee = player.Character:FindFirstChild("Head")
         BillboardGui.AlwaysOnTop = true
         BillboardGui.MaxDistance = 115.000
+        BillboardGui.Name = "Sigma5NameTags"
         BillboardGui.Size = UDim2.new(0, 125, 0, 45)
         BillboardGui.StudsOffset = Vector3.new(0, 2, 0)
+        BillboardGui.ResetOnSpawn = false
         
         local NametagHolder = Instance.new("Frame", BillboardGui)
         NametagHolder.Name = "NametagHolder"
@@ -455,21 +457,23 @@ local function CreateNameTags(player)
         
         local function updateHealth()
             if player.Character and player.Character:FindFirstChild("Humanoid") then
-                local humanoid = player.Character.Humanoid
+                local humanoid = player.Character:FindFirstChildOfClass("Humanoid")
                 local maxHealth = humanoid.MaxHealth
                 local currentHealth = humanoid.Health
                 local fillPercentage = currentHealth / maxHealth
                 PlayerFill.Size = UDim2.new(fillPercentage, 0, 0, 5)
-                HealthValue.Text = "   Health: " .. tostring(currentHealth)
+                HealthValue.Text = "   Health:" .. tostring(currentHealth)
             end
         end
-        
-        player.CharacterAdded:Connect(function()
-            updateHealth()
-            player.Character:WaitForChild("Humanoid").Changed:Connect(updateHealth)
+
+        spawn(function()
+            while wait(0.01) do
+                updateHealth()
+            end
         end)
     end
 end
+
 local NameTags = RenderTab:ToggleButton({
     name = "NameTags",
     info = "Render Sigma5 NameTags",
@@ -480,14 +484,14 @@ local NameTags = RenderTab:ToggleButton({
             end
         else
             for _, player in ipairs(game.Players:GetPlayers()) do
-                if player.Character.Head:FindFirstChild("BillboardGui") then
-                    player.Character.Head:FindFirstChild("BillboardGui"):Destroy()
+                if player.Character.Head:FindFirstChild("Sigma5NameTags") and player.Character.Head:FindFirstChild("Sigma5NameTags").IsA(player.Character.Head, "BillboardGui") then
+                    player.Character.Head:FindFirstChild("Sigma5NameTags"):Destroy()
                 end
             end
         end
     end
 })
---GamePlay
+--[[ --Under a development
 local function CheckTeams()
     local localPlayer = Players.LocalPlayer
     if not localPlayer or not localPlayer.Character then
@@ -583,6 +587,7 @@ local AutoLToggle = GamePlay:ToggleButtonInsideUI({
         AutoL = enabled
     end
 })
+--]]
 local AutoJump = false
 local ChoosedMode = "Hypixel"
 local function AutoJumpSettings()
