@@ -265,7 +265,7 @@ local CustomLowHealth = AutoQuit:Slider({
         LowHealthValue = value
     end
 })
---BowAimbot
+--[[
 local WeaponProjectile
 local BowAimbotRange = 85
 local BowAimbot = CombatTab:ToggleButton({
@@ -298,7 +298,7 @@ local BowAimbot = CombatTab:ToggleButton({
         end
     end
 })
---KillAura
+--]]
 local KillAuraRange
 local RotationsRange
 local KillAura = CombatTab:ToggleButton({
@@ -373,29 +373,6 @@ local Teams = CombatTab:ToggleButton({
     info = "Avoid combat modules to target your teammate",
     callback = function(enabled)
         TeamCheck = not TeamCheck
-    end
-})
---ESP
-local function ESPtest(player)
-    if player ~= localPlayer then
-        local character = player.Character
-        if character then
-            local humanoid = character:FindFirstChildOfClass("Humanoid")
-            if humanoid then
-                humanoid.RootPart.BrickColor = BrickColor.new("Bright red")
-            end
-        end
-    end
-end
-local ESP = RenderTab:ToggleButton({
-    name = "ESP",
-    info = "See players anytime anywhere",
-    callback = function(enabled)
-        if enabled then
-            for _, player in ipairs(game.Players:GetPlayers()) do
-                highlightPlayer(player)
-            end
-        end
     end
 })
 --Fullbright
