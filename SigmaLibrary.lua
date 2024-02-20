@@ -564,6 +564,22 @@ ButtonsMenuTitleText.TextXAlignment = Enum.TextXAlignment.Left
 ButtonsMenuTitleText.Visible = true
 ButtonsMenuTitleText.ZIndex = 4
 
+local CloseButtonsMenuFrame = Instance.new("TextButton", ButtonsMenuFrame)
+CloseButtonsMenuFrame.BorderSizePixel = 0
+CloseButtonsMenuFrame.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+CloseButtonsMenuFrame.Font = Enum.Font.Roboto
+CloseButtonsMenuFrame.TextSize = 15.000
+CloseButtonsMenuFrame.TextColor3 = Color3.fromRGB(15, 15, 15)
+CloseButtonsMenuFrame.Size = UDim2.new(0, 45, 0, 45)
+CloseButtonsMenuFrame.BorderColor3 = Color3.fromRGB(0, 0, 0)
+CloseButtonsMenuFrame.Text = "X"
+CloseButtonsMenuFrame.BackgroundTransparency = 0.050
+CloseButtonsMenuFrame.ZIndex = 4
+CloseButtonsMenuFrame.Name = "MobileSupport"
+CloseButtonsMenuFrame.Position = UDim2.new(0, 0, 0, -52)
+CloseButtonsMenuFrame.AutoButtonColor = false
+CloseButtonsMenuFrame.TextTransparency = 0.250
+		
 local ButtonsMenuInner = Instance.new("ScrollingFrame", ButtonsMenuFrame)
 ButtonsMenuInner.Name = "ScrollHolder"
 ButtonsMenuInner.Active = true
