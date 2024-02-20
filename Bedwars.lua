@@ -473,19 +473,14 @@ local function CreateNameTags(player)
         end)
     end
 end
-
 local NameTags = RenderTab:ToggleButton({
     name = "NameTags",
     info = "Render Sigma5 NameTags",
     callback = function(enabled)
         if enabled then
-            for _, player in ipairs(game.Players:GetPlayers()) do
-                CreateNameTags(player)
-            end
-        else
-            for _, player in ipairs(game.Players:GetPlayers()) do
-                if player.Character.Head:FindFirstChild("Sigma5NameTags") and player.Character.Head:FindFirstChild("Sigma5NameTags").IsA(player.Character.Head, "BillboardGui") then
-                    player.Character.Head:FindFirstChild("Sigma5NameTags"):Destroy()
+            while task.wait(1) do
+                for _, player in ipairs(game.Players:GetPlayers()) do
+                    CreateNameTags(player)
                 end
             end
         end
@@ -594,7 +589,7 @@ local function EasyGGMode()
     local humanoid = localPlayer.Character:FindFirstChild("Humanoid")
     
     local currentPos = localPlayer.Character:GetPrimaryPartCFrame().Position
-    local forwardOffset = Vector3.new(0, 0, 8)
+    local forwardOffset = Vector3.new(0, 0, 1)
     local targetPos = currentPos + (localPlayer.Character:GetPrimaryPartCFrame().LookVector * forwardOffset)
     
     while EasyGGs do
@@ -652,5 +647,29 @@ local SpeedModes = Speed:Dropdown({
     list = {"EasyGG", "Universal"},
     callback = function(selected)
         ChoosedMode = selected
+    end
+})
+--TargetStrafe
+local TargetStrafe = PlayerTab:ToggleButton({
+    name = "TargetStrafe",
+    info = "Strafe behind the nearest player",
+    callback = function(enabled)
+        if enabled then
+            local nearestPlayer = GetNearestPlr(18)
+            if nearestPlayer then
+                local humanoidRootPart = localPlayer.Character:WaitForChild("HumanoidRootPart")
+                local targetPosition = nearestPlayer.Character:WaitForChild("HumanoidRootPart").Position
+                local direction = (targetPosition - humanoidRootPart.Position).unit
+                local distanceBehind = 8
+                
+                while enabled do
+                    targetPosition = nearestPlayer.Character:WaitForChild("HumanoidRootPart").Position
+                    direction = (targetPosition - humanoidRootPart.Position).unit
+                    targetPosition = targetPosition - (direction * distanceBehind)
+                    humanoidRootPart.CFrame = CFrame.new(humanoidRootPart.Position, targetPosition)
+                    wait(0.8)
+                end
+            end
+        end
     end
 })
