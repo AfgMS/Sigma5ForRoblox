@@ -49,15 +49,15 @@ local function GetNearestPlr(range)
 
     return nearestPlayer
 end
-local function Value2Vector(vec)
-  return { value = vec }
-end
 local function SetHotbar(item)
-    if localPlayer.Character.HandInvItem.Value ~= item then
-        local Inventories = ReplicatedStorage.Inventories:FindFirstChild(localPlayer.Name):FindFirstChild(item)
+    if localPlayer.Character:FindFirstChild("HandInvItem").Value ~= item then
+        local Inventories = game:GetService("ReplicatedStorage").Inventories:FindFirstChild(localPlayer.Name):FindFirstChild(item)
 
         game:GetService("ReplicatedStorage").rbxts_include.node_modules:FindFirstChild("@rbxts").net.out._NetManaged.SetInvItem:InvokeServer({["hand"] = item})
     end
+end
+local function Value2Vector(vec)
+  return { value = vec }
 end
 local WeaponRank = {
   [1] = { Name = "wood_sword", Rank = 1 },
@@ -112,6 +112,17 @@ local function GetProjectiles()
     end
   end
   return bestProject
+end
+local function GetAllTeam(team)
+    local children = {}
+    for _, otherTeam in ipairs(TeamsService:GetTeams()) do
+        if otherTeam ~= team then
+            for _, player in ipairs(otherTeam:GetPlayers()) do
+                table.insert(children, player)
+            end
+        end
+    end
+    return children
 end
 --CreatingUI
 Library:createScreenGui()
@@ -242,7 +253,7 @@ local BowAimbot = CombatTab:ToggleButton({
     callback = function(enabled)
         if enabled then
             WeaponProjectile = GetProjectiles()
-            local NearestPlayer = GetNearestPlr(100)
+            local NearestPlayer = GetNearestPlr(math.huge)
             if NearestPlayer then
                 local BowAimbotRequirement = {
                     [1] = WeaponProjectile,
@@ -274,10 +285,11 @@ local KillAura = CombatTab:ToggleButton({
     callback = function(enabled)
         if enabled then
             KillAuraRange = 20
+            local Sword = GetSword()
             while wait(0.01) do
                 local NearestPlayer = GetNearestPlr(KillAuraRange)
                 if NearestPlayer then
-                    SetHotbar(GetSword())
+                    SetHotbar(Sword)
                     ReplicatedStorage.rbxts_include.node_modules:FindFirstChild("@rbxts").net.out._NetManaged.SwordHit:FireServer({
                         ["entityInstance"] = NearestPlayer.Character,
                         ["chargedAttack"] = {
@@ -291,7 +303,7 @@ local KillAura = CombatTab:ToggleButton({
                             ["selfPosition"] = Value2Vector(GetAttackPos(localPlayer.Character:FindFirstChild("HumanoidRootPart").Position, NearestPlayer.Character:FindFirstChild("HumanoidRootPart").Position, 2)),
                             ["targetPosition"] = Value2Vector(NearestPlayer.Character.HumanoidRootPart.Position),
                         },
-                        ["weapon"] = GetSword()
+                        ["weapon"] = Sword
                     })
                 end
             end
@@ -396,8 +408,31 @@ local Fullbright = RenderTab:ToggleButton({
     end
 })
 --GamePlay
+local function CheckTeams()
+    local localPlayer = Players.LocalPlayer
+    if not localPlayer or not localPlayer.Character then
+        ReplicatedStorage:WaitForChild("events-@easy-games/lobby:shared/event/lobby-events@getEvents.Events").joinQueue:FireServer({["queueType"] = "bedwars_to1"})
+        return true
+    end
+    
+    local localTeam = localPlayer.Team
+    local spectatorTeam = TeamsService:FindFirstChild("Spectators")
+    
+    local foundOtherPlayer = false
+    for _, otherTeam in ipairs(TeamsService:GetTeams()) do
+        if otherTeam ~= localTeam and otherTeam ~= spectatorTeam then
+            if #otherTeam:GetPlayers() > 0 then
+                foundOtherPlayer = true
+                break
+            end
+        end
+    end
+    
+    return not foundOtherPlayer
+end
 local function SigmemeAutoL()
     local RandomChances = math.random(0, 5)
+
     local function FireServer(message)
         game:GetService("ReplicatedStorage").DefaultChatSystemChatEvents.SayMessageRequest:FireServer(message, "All")
     end
@@ -426,9 +461,8 @@ local GamePlay = PlayerTab:ToggleButton({
     info = "Makes your experience better",
     callback = function(enabled)
         if enabled then
-            if AutoQueue then
-            if not LocalPlayer or not LocalPlayer.Character then
-                game:GetService("ReplicatedStorage"):WaitForChild("events-@easy-games/lobby:shared/event/lobby-events@getEvents").Events.joinQueue:FireServer({["queueType"] = "bedwars_to1"})
+            if AutoQueue and CheckTeams() then
+                ReplicatedStorage:WaitForChild("events-@easy-games/lobby:shared/event/lobby-events@getEvents.Events").joinQueue:FireServer({["queueType"] = "bedwars_to1"})
             end
 
             if AutoGG and CheckTeams() then
@@ -474,7 +508,7 @@ local ChoosedMode = "Hypixel"
 local function AutoJumpSettings()
     while AutoJump do
         localPlayer.Character:FindFirstChild("Humanoid"):ChangeState("Jumping")
-        wait(0.83)
+        wait(1)
     end
 end
 local Speed = PlayerTab:ToggleButton({
