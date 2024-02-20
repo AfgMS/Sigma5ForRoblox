@@ -391,6 +391,102 @@ local Fullbright = RenderTab:ToggleButton({
         end
     end
 })
+--Nametags
+local function CreateNameTags(player)
+    if player ~= localPlayer then
+        local BillboardGui = Instance.new("BillboardGui", game.CoreGui)
+        BillboardGui.Active = true
+        BillboardGui.Adornee = player.Character:FindFirstChild("Head")
+        BillboardGui.AlwaysOnTop = true
+        BillboardGui.MaxDistance = 115.000
+        BillboardGui.Size = UDim2.new(0, 125, 0, 45)
+        BillboardGui.StudsOffset = Vector3.new(0, 2, 0)
+        
+        local NametagHolder = Instance.new("Frame", BillboardGui)
+        NametagHolder.Name = "NametagHolder"
+        NametagHolder.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+        NametagHolder.BackgroundTransparency = 1.000
+        NametagHolder.BorderColor3 = Color3.fromRGB(0, 0, 0)
+        NametagHolder.BorderSizePixel = 0
+        NametagHolder.Size = UDim2.new(1, 0, 1, 0)
+        
+        local PlayerHealth = Instance.new("Frame", NametagHolder)
+        PlayerHealth.Name = "PlayerHealth"
+        PlayerHealth.BackgroundColor3 = Color3.fromRGB(65, 65, 65)
+        PlayerHealth.BorderColor3 = Color3.fromRGB(0, 0, 0)
+        PlayerHealth.BorderSizePixel = 0
+        PlayerHealth.Position = UDim2.new(0, 0, 0, 40)
+        PlayerHealth.Size = UDim2.new(1, 0, 0, 5)
+        
+        local PlayerFill = Instance.new("Frame", PlayerHealth)
+        PlayerFill.Name = "PlayerFill"
+        PlayerFill.BackgroundColor3 = Color3.fromRGB(9, 122, 220)
+        PlayerFill.BorderColor3 = Color3.fromRGB(0, 0, 0)
+        PlayerFill.BorderSizePixel = 0
+        PlayerFill.Size = UDim2.new(1, 0, 0, 5)
+        
+        local PlayerName = Instance.new("TextLabel", NametagHolder)
+        PlayerName.Name = "PlayerName"
+        PlayerName.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+        PlayerName.BackgroundTransparency = 0.350
+        PlayerName.BorderColor3 = Color3.fromRGB(0, 0, 0)
+        PlayerName.BorderSizePixel = 0
+        PlayerName.Size = UDim2.new(1, 0, 0, 40)
+        PlayerName.Font = Enum.Font.Roboto
+        PlayerName.Text = player.Name
+        PlayerName.TextColor3 = Color3.fromRGB(255, 255, 255)
+        PlayerName.TextScaled = true
+        PlayerName.TextSize = 25.000
+        PlayerName.TextWrapped = true
+
+        local HealthValue = Instance.new("TextLabel", PlayerName)
+        HealthValue.Name = "HealthValue"
+        HealthValue.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+        HealthValue.BackgroundTransparency = 1.000
+        HealthValue.BorderColor3 = Color3.fromRGB(0, 0, 0)
+        HealthValue.BorderSizePixel = 0
+        HealthValue.Position = UDim2.new(0, 0, 0, 27)
+        HealthValue.Size = UDim2.new(1, 0, 0, 15)
+        HealthValue.Font = Enum.Font.Roboto
+        HealthValue.Text = "   Health: " .. tostring(100)
+        HealthValue.TextColor3 = Color3.fromRGB(255, 255, 255)
+        HealthValue.TextWrapped = true
+        HealthValue.TextXAlignment = Enum.TextXAlignment.Left
+        
+        local function updateHealth()
+            if player.Character and player.Character:FindFirstChild("Humanoid") then
+                local humanoid = player.Character.Humanoid
+                local maxHealth = humanoid.MaxHealth
+                local currentHealth = humanoid.Health
+                local fillPercentage = currentHealth / maxHealth
+                PlayerFill.Size = UDim2.new(fillPercentage, 0, 0, 5)
+                HealthValue.Text = "   Health: " .. tostring(currentHealth)
+            end
+        end
+        
+        player.CharacterAdded:Connect(function()
+            updateHealth()
+            player.Character:WaitForChild("Humanoid").Changed:Connect(updateHealth)
+        end)
+    end
+end
+local NameTags = RenderTab:ToggleButton({
+    name = "NameTags",
+    info = "Render Sigma5 NameTags",
+    callback = function(enabled)
+        if enabled then
+            for _, player in ipairs(game.Players:GetPlayers()) do
+                CreateNameTags(player)
+            end
+        else
+            for _, player in ipairs(game.Players:GetPlayers()) do
+                if player.Character.Head:FindFirstChild("BillboardGui") then
+                    player.Character.Head:FindFirstChild("BillboardGui"):Destroy()
+                end
+            end
+        end
+    end
+})
 --GamePlay
 local function CheckTeams()
     local localPlayer = Players.LocalPlayer
