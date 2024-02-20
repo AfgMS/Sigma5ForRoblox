@@ -201,32 +201,52 @@ local AimbotRangeCustom = Aimbot:Slider({
 --AntiKnockback
 local KnockbackUtil = debug.getupvalue(require(ReplicatedStorage.TS.damage["knockback-util"]).KnockbackUtil.calculateKnockbackVelocity, 1)
 local OriginalH = KnockbackUtil.kbDirectionStrength
+local CustomHValue = 0
 local OriginalY = KnockbackUtil.kbUpwardStrength
+local CustomYValue = 0
 local AntiKnockback = CombatTab:ToggleButton({
     name = "AntiKnockback",
     info = "Prevent you from taking knockback",
     callback = function(enabled)
         if enabled then
-            KnockbackUtil.kbDirectionStrength = 0
-            KnockbackUtil.kbUpwardStrength = 0
+            KnockbackUtil.kbDirectionStrength = CustomHValue
+            KnockbackUtil.kbUpwardStrength = CustomYValue
         else
             KnockbackUtil.kbDirectionStrength = OriginalH
             KnockbackUtil.kbUpwardStrength = OriginalY
         end
     end
 })
---AutoAutoRageQuit
+local AntiKnockbackCustomH = AntiKnockback:Slider({
+    title = "H",
+    min = 0,
+    max = 100,
+    default = 100,
+    callback = function(val)
+        CustomHValue = val
+    end
+})
+local AntiKnockbackCustomY = AntiKnockback:Slider({
+    title = "Y",
+    min = 0,
+    max = 100,
+    default = 100,
+    callback = function(val)
+        CustomYValue = val
+    end
+})
+--AutoQuit
 local LowHealthValue
 local function CheckHealth()
     while wait(0.01) do
         if localPlayer.Character and localPlayer.Character:FindFirstChild("Humanoid") and localPlayer.Character.Humanoid.Health < LowHealthValue then
-            localPlayer:Kick("AutoRageQuitTriggered")
+            localPlayer:Kick("AutoQuit")
         end
     end
 end
-local AutoRageQuit = CombatTab:ToggleButton({
-    name = "AutoRageQuit",
-    info = "Automatically logs out",
+local AutoQuit = CombatTab:ToggleButton({
+    name = "AutoQuit",
+    info = "Automatically quit the game",
     callback = function(enabled)
         if enabled then
             LowHealthValue = 3
@@ -236,7 +256,7 @@ local AutoRageQuit = CombatTab:ToggleButton({
         end
     end
 })
-local CustomLowHealth = AutoRageQuit:Slider({
+local CustomLowHealth = AutoQuit:Slider({
     title = "HealthMin",
     min = 0.11,
     max = 100,
@@ -247,14 +267,16 @@ local CustomLowHealth = AutoRageQuit:Slider({
 })
 --BowAimbot
 local WeaponProjectile
+local BowAimbotRange = 85
 local BowAimbot = CombatTab:ToggleButton({
     name = "BowAimbot",
     info = "Vape ProjectileExploit??",
     callback = function(enabled)
         if enabled then
             WeaponProjectile = GetProjectiles()
-            local NearestPlayer = GetNearestPlr(math.huge)
+            local NearestPlayer = GetNearestPlr(BowAimbotRange)
             if NearestPlayer then
+                SetHotbar(WeaponProjectile)
                 local BowAimbotRequirement = {
                     [1] = WeaponProjectile,
                     [2] = "arrow",
@@ -354,18 +376,15 @@ local Teams = CombatTab:ToggleButton({
     end
 })
 --ESP
-local function BoxESP(player)
-    if player ~= game:GetService("Players").LocalPlayer and player.Character then
-        local AllPLRRoot = player.Character:FindFirstChild("HumanoidRootPart")
-        AllPLRRoot.Size = Vector3.new(5, 6, 3)
-        AllPLRRoot.Transparency = 0.8
-        AllPLRRoot.Color = Color3.fromRGB(255, 255, 255)
-
-        local Highlighthumroot = Instance.new("Highlight", AllPLRRoot)
-        Highlighthumroot.Adornee = player.Character or Highlighthumroot.Parent
-        Highlighthumroot.Enabled = true
-        Highlighthumroot.FillColor = Color3.fromRGB(255, 255, 255)
-        Highlighthumroot.FillTransparency = 0.99
+local function ESPtest(player)
+    if player ~= localPlayer then
+        local character = player.Character
+        if character then
+            local humanoid = character:FindFirstChildOfClass("Humanoid")
+            if humanoid then
+                humanoid.RootPart.BrickColor = BrickColor.new("Bright red")
+            end
+        end
     end
 end
 local ESP = RenderTab:ToggleButton({
@@ -374,19 +393,7 @@ local ESP = RenderTab:ToggleButton({
     callback = function(enabled)
         if enabled then
             for _, player in ipairs(game.Players:GetPlayers()) do
-                BoxESP(player)
-            end
-        else
-            for _, player in ipairs(game.Players:GetPlayers()) do
-                if player.Character and player.Character:FindFirstChild("HumanoidRootPart") then
-                    player.Character.HumanoidRootPart.Size = Vector3.new(2, 2, 1)
-                    player.Character.HumanoidRootPart.Transparency = 1
-                    player.Character.HumanoidRootPart.Color = Color3.new(163, 162, 165)
-                    local HighlightHumRoot = player.Character.HumanoidRootPart:FindFirstChildOfClass("Highlight")
-                    if HighlightHumRoot then
-                        HighlightHumRoot:Destroy()
-                    end
-                end
+                highlightPlayer(player)
             end
         end
     end
