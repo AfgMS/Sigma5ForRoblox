@@ -53,8 +53,8 @@ local function Value2Vector(vec)
   return { value = vec }
 end
 local function SetHotbar(item)
-    if LocalPlayer.Character.HandInvItem.Value ~= item then
-        local Inventory = LocalPlayer.Character.InventoryFolder.Value:FindFirstChild(item)
+    if localPlayer.Character.HandInvItem.Value ~= item then
+        local Inventories = ReplicatedStorage.Inventories:FindFirstChild(localPlayer.Name):FindFirstChild(item)
 
         game:GetService("ReplicatedStorage").rbxts_include.node_modules:FindFirstChild("@rbxts").net.out._NetManaged.SetInvItem:InvokeServer({["hand"] = item})
     end
