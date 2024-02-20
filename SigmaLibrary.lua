@@ -540,7 +540,7 @@ ButtonsMenuFrame.Name = "Holder"
 ButtonsMenuFrame.BackgroundColor3 = Color3.fromRGB(250, 250, 250)
 ButtonsMenuFrame.BorderColor3 = Color3.fromRGB(0, 0, 0)
 ButtonsMenuFrame.BorderSizePixel = 0
-ButtonsMenuFrame.Position = UDim2.new(0.497, -155, 0.521, -148)
+ButtonsMenuFrame.Position = UDim2.new(0.497, -155, 0.521, -158)
 ButtonsMenuFrame.Size = UDim2.new(0, 325, 0, 295)
 ButtonsMenuFrame.ZIndex = 4
 ButtonsMenuFrame.Visible = false
@@ -563,21 +563,6 @@ ButtonsMenuTitleText.TextSize = 30.000
 ButtonsMenuTitleText.TextXAlignment = Enum.TextXAlignment.Left
 ButtonsMenuTitleText.Visible = true
 ButtonsMenuTitleText.ZIndex = 4
-
-local CloseButtonsMenuFrame = Instance.new("TextButton", ButtonsMenuFrame)
-CloseButtonsMenuFrame.BorderSizePixel = 0
-CloseButtonsMenuFrame.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-CloseButtonsMenuFrame.Font = Enum.Font.Roboto
-CloseButtonsMenuFrame.TextScaled  = true
-CloseButtonsMenuFrame.TextColor3 = Color3.fromRGB(255, 255, 255)
-CloseButtonsMenuFrame.Size = UDim2.new(0, 45, 0, 45)
-CloseButtonsMenuFrame.BorderColor3 = Color3.fromRGB(0, 0, 0)
-CloseButtonsMenuFrame.Text = "x"
-CloseButtonsMenuFrame.BackgroundTransparency = 1
-CloseButtonsMenuFrame.ZIndex = 4
-CloseButtonsMenuFrame.Name = "CloseMobileSupport"
-CloseButtonsMenuFrame.Position = UDim2.new(0, 290, 0, -52)
-CloseButtonsMenuFrame.AutoButtonColor = false
 
 local ButtonsMenuInner = Instance.new("ScrollingFrame", ButtonsMenuFrame)
 ButtonsMenuInner.Name = "ScrollHolder"
@@ -626,7 +611,7 @@ ToggleButton.MenuFrame = ButtonsMenuFrame
 				playContinuousSound(soundIds.disabled)
 			end
 		end
-		
+
 		newButton.MouseButton1Click:Connect(function()
 			ToggleButton.Enabled = not ToggleButton.Enabled
 			updateColors()
@@ -646,11 +631,6 @@ ToggleButton.MenuFrame = ButtonsMenuFrame
 			ButtonsMenuFrame.Visible = not ButtonsMenuFrame.Visible
 			ButtonsMenuInner.Visible = not ButtonsMenuInner.Visible
 		end)
-
-		
-		CloseButtonsMenuFrame.MouseButton1Click:Connect(function()
-			ButtonsMenuFrame.Visible = not ButtonsMenuFrame.Visible
-		end
 
 		updateColors()
 
