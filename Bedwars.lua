@@ -588,32 +588,42 @@ local AutoLToggle = GamePlay:ToggleButtonInsideUI({
     end
 })
 --]]
-local AutoJump = false
-local ChoosedMode = "Hypixel"
-local function AutoJumpSettings()
-    while AutoJump do
-        localPlayer.Character:FindFirstChild("Humanoid"):ChangeState("Jumping")
+local EasyGGs = false
+local AutoJumps = false
+local function EasyGGMode()
+    local humanoid = localPlayer.Character:FindFirstChild("Humanoid")
+    
+    local currentPos = localPlayer.Character:GetPrimaryPartCFrame().Position
+    local forwardOffset = Vector3.new(0, 0, 8)
+    local targetPos = currentPos + (localPlayer.Character:GetPrimaryPartCFrame().LookVector * forwardOffset)
+    
+    while EasyGGs do
+        localPlayer.Character:SetPrimaryPartCFrame(CFrame.new(targetPos))
         wait(1)
     end
 end
+local function AutoJumpSet()
+    while AutoJumps do
+        localPlayer.Character:FindFirstChildOfClass("Humanoid"):ChangeState(Enum.HumanoidStateType.Jumping)
+        wait(0.64)
+    end 
+end
+local ChoosedMode = "Universal"
 local Speed = PlayerTab:ToggleButton({
     name = "Speed",
-    info = "Make your speed peed",
+    info = "Insani Spid Bipass!!",
     callback = function(enabled)
         if enabled then
-            if ChoosedMode == "Hypixel" then
-                Camera.FieldOfView = 120
-                AutoJump = true
-                AutoJumpSettings()
-                localPlayer.Character:FindFirstChild("HumanoidRootPart").Velocity = localPlayer.Character:FindFirstChild("HumanoidRootPart").CFrame.LookVector * 22.55
-            elseif ChoosedMode == "Vanilla" then
-                Camera.FieldOfView = 105
+            if ChoosedMode == "EasyGG" then
                 localPlayer.Character:FindFirstChild("Humanoid").WalkSpeed = 23
+                EasyGGs = true
+                EasyGGMode()
+            elseif ChoosedMode == "Universal" then
+                localPlayer.Character:FindFirstChild("Humanoid").WalkSpeed = 20
             end
         else
-            localPlayer.Character:FindFirstChild("HumanoidRootPart").Velocity = localPlayer.Character:FindFirstChild("HumanoidRootPart").CFrame.LookVector * 16
-            AutoJump = false
             localPlayer.Character:FindFirstChild("Humanoid").WalkSpeed = 16
+            EasyGGs = false
         end
     end
 })
@@ -625,28 +635,22 @@ local SpeedFix = Speed:Slider({
     callback = function(val)
     end
 })
-local DropdownFix = Speed:ToggleButtonInsideUI({
-    name = "??",
+local AutoJump = Speed:ToggleButtonInsideUI({
+    name = "AutoJump",
     callback = function(enabled)
+        if enabled then
+            AutoJumps = true 
+            AutoJumpSet()
+        else
+            AutoJumps = false 
+        end
     end
 })
 local SpeedModes = Speed:Dropdown({
     name = "SpeedMode",
     default = "Vanilla",
-    list = {"LibreCraft", "Hypixel", "Vanilla"},
+    list = {"EasyGG", "Universal"},
     callback = function(selected)
         ChoosedMode = selected
-    end
-})
---FlyJump
-local FlyJump = PlayerTab:ToggleButton({
-    name = "FlyJump",
-    info = "FlyJump?",
-    callback = function(enabled)
-        if enabled then
-            game:GetService("UserInputService").JumpRequest:Connect(function()
-                game:GetService("Players").LocalPlayer.Character:FindFirstChildOfClass("Humanoid"):ChangeState("Jumping")
-            end)
-        end
     end
 })
