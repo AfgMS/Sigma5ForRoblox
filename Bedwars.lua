@@ -1,3 +1,4 @@
+--ImprotantStuff
 local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/AfgMS/SigmaJello4Roblox/main/SigmaLibrary.lua", true))()
 local CoreGui = game:WaitForChild("CoreGui")
 local Player = game:GetService("Players")
@@ -7,6 +8,11 @@ local TeamsService = game:GetService("Teams")
 local Camera = game:GetService("Workspace").CurrentCamera
 local UserInputService = game:GetService("UserInputService")
 local Lighting = game:GetService("Lighting")
+
+local KnitClient = debug.getupvalue(require(localPlayer.PlayerScripts.TS.knit).setup, 6)
+local Client = require(ReplicatedStorage.TS.remotes).default.Client
+local BlockService = CollectionService:GetTagged("block")
+
 --Functions
 local function LibraryCheck()
     local SigmaCheck = CoreGui:FindFirstChild("Sigma")
@@ -29,6 +35,7 @@ local function LibraryCheck()
         end
     end
 end
+
 local TeamCheck = false
 local function GetNearestPlr(range)
     local nearestPlayer
@@ -49,6 +56,19 @@ local function GetNearestPlr(range)
 
     return nearestPlayer
 end
+
+local Bedwars = {
+    ["KnockbackCont"] = debug.getupvalue(require(ReplicatedStorage.TS.damage["knockback-util"]).KnockbackUtil.calculateKnockbackVelocity, 1),
+    ["SprintCont"] = KnitClient.Controllers.SprintController,
+    ["SwordCont"] = KnitClient.Controllers.SwordController,
+    ["ViewmodelCont"] = KnitClient.Controllers.ViewmodelController,
+    ["ClientHandlerStore"] = require(localPlayer.PlayerScripts.TS.ui.store).ClientStore,
+}
+
+local function GetMatchState()
+	return Bedwars["ClientHandlerStore"]:getState().Game.matchState
+end
+
 local function SetHotbar(item)
     if localPlayer.Character:FindFirstChild("HandInvItem").Value ~= item then
         local Inventories = game:GetService("ReplicatedStorage").Inventories:FindFirstChild(localPlayer.Name):FindFirstChild(item)
@@ -56,9 +76,11 @@ local function SetHotbar(item)
         game:GetService("ReplicatedStorage").rbxts_include.node_modules:FindFirstChild("@rbxts").net.out._NetManaged.SetInvItem:InvokeServer({["hand"] = item})
     end
 end
+
 local function Value2Vector(vec)
   return { value = vec }
 end
+
 local WeaponRank = {
   [1] = { Name = "wood_sword", Rank = 1 },
   [2] = { Name = "stone_sword", Rank = 2 },
@@ -68,6 +90,7 @@ local WeaponRank = {
   [6] = { Name = "emerald_sword", Rank = 6 },
   [7] = { Name = "rageblade", Rank = 7 },
 }
+
 local ProjectilesRank = {
   [1] = { Name = "wood_bow", Rank = 1 },
   [2] = { Name = "fireball", Rank = 2 },
@@ -75,10 +98,12 @@ local ProjectilesRank = {
   [4] = { Name = "firecrackers", Rank = 4 },
   [5] = { Name = "headhunter", Rank = 5 }
 }
+
 function GetAttackPos(plrpos, nearpost, val)
   local newPos = (nearpost - plrpos).Unit * math.min(val, (nearpost - plrpos).Magnitude) + plrpos
   return newPos
 end
+
 local function GetSword()
   local bestsword = nil
   local bestrank = 0
@@ -96,6 +121,7 @@ local function GetSword()
   end
   return bestsword
 end
+
 local function GetProjectiles()
   local bestProject = nil
   local bestrank = 0
@@ -112,17 +138,6 @@ local function GetProjectiles()
     end
   end
   return bestProject
-end
-local function GetAllTeam(team)
-    local children = {}
-    for _, otherTeam in ipairs(TeamsService:GetTeams()) do
-        if otherTeam ~= team then
-            for _, player in ipairs(otherTeam:GetPlayers()) do
-                table.insert(children, player)
-            end
-        end
-    end
-    return children
 end
 --CreatingUI
 Library:createScreenGui()
@@ -199,21 +214,20 @@ local AimbotRangeCustom = Aimbot:Slider({
     end
 })
 --AntiKnockback
-local KnockbackUtil = debug.getupvalue(require(ReplicatedStorage.TS.damage["knockback-util"]).KnockbackUtil.calculateKnockbackVelocity, 1)
-local OriginalH = KnockbackUtil.kbDirectionStrength
+local OriginalH = Bedwars["KnockbackCont"]["kbDirectionStrength"]
 local CustomHValue = 0
-local OriginalY = KnockbackUtil.kbUpwardStrength
+local OriginalY = Bedwars["KnockbackCont"]["kbUpwardStrength"]
 local CustomYValue = 0
 local AntiKnockback = CombatTab:ToggleButton({
     name = "AntiKnockback",
     info = "Prevent you from taking knockback",
     callback = function(enabled)
         if enabled then
-            KnockbackUtil.kbDirectionStrength = CustomHValue
-            KnockbackUtil.kbUpwardStrength = CustomYValue
+            Bedwars["KnockbackCont"]["kbDirectionStrength"] = CustomHValue
+            Bedwars["KnockbackCont"]["kbUpwardStrength"] = CustomYValue
         else
-            KnockbackUtil.kbDirectionStrength = OriginalH
-            KnockbackUtil.kbUpwardStrength = OriginalY
+            Bedwars["KnockbackCont"]["kbDirectionStrength"] = OriginalH
+            Bedwars["KnockbackCont"]["kbUpwardStrength"] = OriginalY
         end
     end
 })
@@ -299,8 +313,23 @@ local BowAimbot = CombatTab:ToggleButton({
     end
 })
 --]]
+--KillAura
+local Anims = {
+    ["Slow"] = {
+        {CFrame = CFrame.new(0, 0, 0) * CFrame.Angles(math.rad(220), math.rad(100), math.rad(100)), Time = 0.25},
+        {CFrame = CFrame.new(0, 0, 0) * CFrame.Angles(math.rad(0), math.rad(0), math.rad(0)), Time = 0.25}
+    },
+    ["Weird"] = {
+        {CFrame = CFrame.new(0, 0, 1.5) * CFrame.Angles(math.rad(0), math.rad(0), math.rad(0)), Time = 0.25},
+        {CFrame = CFrame.new(0, 0, -1.5) * CFrame.Angles(math.rad(0), math.rad(0), math.rad(0)), Time = 0.25},
+        {CFrame = CFrame.new(0, 0, 0) * CFrame.Angles(math.rad(0), math.rad(0), math.rad(0)), Time = 0.25}
+    }
+}
+local PlayAnims = false
+local RightC0 = ReplicatedStorage.Assets.Viewmodel.RightHand.RightWrist.C0
 local KillAuraRange
 local RotationsRange
+local ChoosedAnimations = Anims["Slow"]
 local KillAura = CombatTab:ToggleButton({
     name = "KillAura",
     info = "Automatically attacks players",
@@ -308,29 +337,45 @@ local KillAura = CombatTab:ToggleButton({
         if enabled then
             KillAuraRange = 20
             local Sword = GetSword()
-            while wait(0.01) do
-                local NearestPlayer = GetNearestPlr(KillAuraRange)
-                if NearestPlayer then
-                    SetHotbar(Sword)
-                    ReplicatedStorage.rbxts_include.node_modules:FindFirstChild("@rbxts").net.out._NetManaged.SwordHit:FireServer({
-                        ["entityInstance"] = NearestPlayer.Character,
-                        ["chargedAttack"] = {
-                            ["chargeRatio"] = 1
-                        },
-                        ["validate"] = {
-                            ["raycast"] = {
-                                ["cursorDirection"] = Value2Vector(Ray.new(game.Workspace.CurrentCamera.CFrame.Position, NearestPlayer.Character:FindFirstChild("HumanoidRootPart").Position).Unit.Direction),
-                                ["cameraPosition"] = Value2Vector(NearestPlayer.Character:FindFirstChild("HumanoidRootPart").Position),
-                            },
-                            ["selfPosition"] = Value2Vector(GetAttackPos(localPlayer.Character:FindFirstChild("HumanoidRootPart").Position, NearestPlayer.Character:FindFirstChild("HumanoidRootPart").Position, 2)),
-                            ["targetPosition"] = Value2Vector(NearestPlayer.Character.HumanoidRootPart.Position),
-                        },
-                        ["weapon"] = Sword
-                    })
+            if localplayer and localplayer.Character then
+                repeat task.wait() until GetMatchState() ~= 0
+                local AnimationHolder = Instance.new("Animation")
+                AnimationHolder.AnimationId = "rbxassetid://4947108314"
+                local AnimationLoader = localPlayer.Character:FindFirstChild("Humanoid"):FindFirstChild("Animator")
+                AnimationLoader:LoadAnimation(AnimationHolder):Play()
+                if PlayAnims then
+                    for i,v in pairs(ChoosedAnimations, Anims) do
+                        game:GetService("TweenService"):Create(game.Workspace.CurrentCamera.Viewmodel.RightHand.RightWrist,TweenInfo.new(v.Time),{C0 = RightC0 * v.CFrame}):Play()
+                        task.wait(v.Time-0.01)
+                    end
+                    PlayAnims = false
                 end
             end
-        else
-            KillAuraRange = 0
+            if Sword ~= nil then
+                while wait(0.01) do
+                    local NearestPlayer = GetNearestPlr(KillAuraRange)
+                    if NearestPlayer then
+                        SetHotbar(Sword)
+                        ReplicatedStorage.rbxts_include.node_modules:FindFirstChild("@rbxts").net.out._NetManaged.SwordHit:FireServer({
+                            ["entityInstance"] = NearestPlayer.Character,
+                            ["chargedAttack"] = {
+                                ["chargeRatio"] = 1
+                            },
+                            ["validate"] = {
+                                ["raycast"] = {
+                                    ["cursorDirection"] = Value2Vector(Ray.new(game.Workspace.CurrentCamera.CFrame.Position, NearestPlayer.Character:FindFirstChild("HumanoidRootPart").Position).Unit.Direction),
+                                    ["cameraPosition"] = Value2Vector(NearestPlayer.Character:FindFirstChild("HumanoidRootPart").Position),
+                                },
+                                ["selfPosition"] = Value2Vector(GetAttackPos(localPlayer.Character:FindFirstChild("HumanoidRootPart").Position, NearestPlayer.Character:FindFirstChild("HumanoidRootPart").Position, 2)),
+                                ["targetPosition"] = Value2Vector(NearestPlayer.Character.HumanoidRootPart.Position),
+                            },
+                            ["weapon"] = Sword
+                        })
+                    end
+                end
+            else
+                KillAuraRange = 0
+            end
         end
     end
 })
@@ -367,6 +412,14 @@ local Rotations = KillAura:ToggleButtonInsideUI({
         end
     end
 })
+local KillAuraAnimationsMode = KillAura:Dropdown({
+    name = "Animations",
+    default = "Slow",
+    list = Anims,
+    callback = function(selected)
+        ChoosedAnimations = selected
+    end
+})
 --Teams
 local Teams = CombatTab:ToggleButton({
     name = "Teams",
@@ -391,7 +444,7 @@ local Fullbright = RenderTab:ToggleButton({
         end
     end
 })
---Nametags
+--[[ --Under a development
 local function CreateNameTags(player)
     if player ~= localPlayer then
         local BillboardGui = Instance.new("BillboardGui", game.CoreGui)
@@ -486,7 +539,6 @@ local NameTags = RenderTab:ToggleButton({
         end
     end
 })
---[[ --Under a development
 local function CheckTeams()
     local localPlayer = Players.LocalPlayer
     if not localPlayer or not localPlayer.Character then
