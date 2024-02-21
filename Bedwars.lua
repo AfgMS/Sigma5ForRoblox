@@ -160,7 +160,7 @@ local DeleteGui = GuiTab:ToggleButton({
         end
     end
 })
---[[
+--Aimbot
 local AimbotRange
 local Aimbot = CombatTab:ToggleButton({
     name = "Aimbot",
@@ -191,7 +191,6 @@ local AimbotRangeCustom = Aimbot:Slider({
         AimbotRange = val
     end
 })
---]]
 --AntiKnockback
 local OriginalH = Bedwars["KnockbackCont"]["kbDirectionStrength"]
 local OriginalY = Bedwars["KnockbackCont"]["kbUpwardStrength"]
@@ -450,21 +449,6 @@ local function SigmemeAutoL()
     end
 end
 
-local previousKillCount = 0
-
-local function KillCountCheck()
-    local localPlayer = game:GetService("Players").LocalPlayer
-    local kills = localPlayer:FindFirstChild("leaderstats") and localPlayer.leaderstats:FindFirstChild("Kills")
-    
-    if kills then
-        local currentKillCount = kills.Value
-        if currentKillCount > previousKillCount then
-            SigmemeAutoL()
-            previousKillCount = currentKillCount
-        end
-    end
-end
-
 local AutoQueue = false
 local AutoGG = false
 local AutoL = false
@@ -478,9 +462,7 @@ local GamePlay = PlayerTab:ToggleButton({
                 repeat
                     task.wait(3)
                 until GetMatchState() == 2 or not enabled
-                if not enabled then return end
                 game:GetService("ReplicatedStorage"):FindFirstChild("events-@easy-games/lobby:shared/event/lobby-events@getEvents.Events").joinQueue:FireServer({["queueType"] = getQueueType()})
-                return
             end
 
             if AutoGG then
@@ -491,7 +473,11 @@ local GamePlay = PlayerTab:ToggleButton({
             end
 
             if AutoL then
-                KillCountCheck()
+                repeat
+                    task.wait(1)
+                    Client:WaitFor("EntityDeathEvent")
+                    SigmemeAutoL()
+                until not enabled
             end
         else
             AutoQueue, AutoGG, AutoL = false, false, false
