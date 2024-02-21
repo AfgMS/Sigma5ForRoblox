@@ -11,7 +11,6 @@ local Lighting = game:GetService("Lighting")
 
 local KnitClient = debug.getupvalue(require(localPlayer.PlayerScripts.TS.knit).setup, 6)
 local Client = require(ReplicatedStorage.TS.remotes).default.Client
-local BlockService = CollectionService:GetTagged("block")
 
 --Functions
 local function LibraryCheck()
@@ -67,6 +66,11 @@ local Bedwars = {
 
 local function GetMatchState()
 	return Bedwars["ClientHandlerStore"]:getState().Game.matchState
+end
+
+function getQueueType()
+    local state = bedwars["ClientHandlerStore"]:getState()
+    return state.Game.queueType or "bedwars_test"
 end
 
 local function SetHotbar(item)
@@ -519,28 +523,8 @@ local NameTags = RenderTab:ToggleButton({
         end
     end
 })
-local function CheckTeams()
-    local localPlayer = Players.LocalPlayer
-    if not localPlayer or not localPlayer.Character then
-        ReplicatedStorage:WaitForChild("events-@easy-games/lobby:shared/event/lobby-events@getEvents.Events").joinQueue:FireServer({["queueType"] = "bedwars_to1"})
-        return true
-    end
-    
-    local localTeam = localPlayer.Team
-    local spectatorTeam = TeamsService:FindFirstChild("Spectators")
-    
-    local foundOtherPlayer = false
-    for _, otherTeam in ipairs(TeamsService:GetTeams()) do
-        if otherTeam ~= localTeam and otherTeam ~= spectatorTeam then
-            if #otherTeam:GetPlayers() > 0 then
-                foundOtherPlayer = true
-                break
-            end
-        end
-    end
-    
-    return not foundOtherPlayer
-end
+--]]
+--GamePlay
 local function SigmemeAutoL()
     local RandomChances = math.random(0, 5)
 
@@ -550,7 +534,7 @@ local function SigmemeAutoL()
 
     if RandomChances == 0 then
         FireServer("I don't hack I just SIGMA")
-    elseif RandomChances ~= 0 then
+    elseif RandomChances == 1 then
         FireServer("Sigma will help you. Oops, I killed you instead.")
     elseif RandomChances == 2 then
         FireServer("vxpe and godsploit is better than this")
@@ -563,6 +547,21 @@ local function SigmemeAutoL()
     end
 end
 
+local previousKillCount = 0
+
+local function KillCountCheck()
+    local localPlayer = game:GetService("Players").LocalPlayer
+    local kills = localPlayer:FindFirstChild("leaderstats") and localPlayer.leaderstats:FindFirstChild("Kills")
+    
+    if kills then
+        local currentKillCount = kills.Value
+        if currentKillCount > previousKillCount then
+            SigmemeAutoL()
+            previousKillCount = currentKillCount
+        end
+    end
+end
+
 local AutoQueue = false
 local AutoGG = false
 local AutoL = false
@@ -572,16 +571,24 @@ local GamePlay = PlayerTab:ToggleButton({
     info = "Makes your experience better",
     callback = function(enabled)
         if enabled then
-            if AutoQueue and CheckTeams() then
-                ReplicatedStorage:WaitForChild("events-@easy-games/lobby:shared/event/lobby-events@getEvents.Events").joinQueue:FireServer({["queueType"] = "bedwars_to1"})
+            if AutoQueue then
+                repeat
+                    task.wait(3)
+                until GetMatchState() == 2 or not enabled
+                if not enabled then return end
+                game:GetService("ReplicatedStorage"):FindFirstChild("events-@easy-games/lobby:shared/event/lobby-events@getEvents.Events").joinQueue:FireServer({["queueType"] = getQueueType()})
+                return
             end
 
-            if AutoGG and CheckTeams() then
+            if AutoGG then
+                repeat
+                    task.wait(1)
+                until GetMatchState() == 2 or not enabled
                 game:GetService("ReplicatedStorage").DefaultChatSystemChatEvents.SayMessageRequest:FireServer("GG", "All")
             end
 
             if AutoL then
-                SigmemeAutoL()
+                KillCountCheck()
             end
         else
             AutoQueue, AutoGG, AutoL = false, false, false
@@ -614,7 +621,7 @@ local AutoLToggle = GamePlay:ToggleButtonInsideUI({
         AutoL = enabled
     end
 })
---]]
+--Speed
 local EasyGGs = false
 local AutoJumps = false
 local function EasyGGMode()
