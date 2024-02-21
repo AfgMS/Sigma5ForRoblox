@@ -216,38 +216,18 @@ local AimbotRangeCustom = Aimbot:Slider({
 --]]
 --AntiKnockback
 local OriginalH = Bedwars["KnockbackCont"]["kbDirectionStrength"]
-local CustomHValue = 0
 local OriginalY = Bedwars["KnockbackCont"]["kbUpwardStrength"]
-local CustomYValue = 0
 local AntiKnockback = CombatTab:ToggleButton({
     name = "AntiKnockback",
     info = "Prevent you from taking knockback",
     callback = function(enabled)
         if enabled then
-            Bedwars["KnockbackCont"]["kbDirectionStrength"] = CustomHValue
-            Bedwars["KnockbackCont"]["kbUpwardStrength"] = CustomYValue
+            Bedwars["KnockbackCont"]["kbDirectionStrength"] = 0
+            Bedwars["KnockbackCont"]["kbUpwardStrength"] = 0
         else
             Bedwars["KnockbackCont"]["kbDirectionStrength"] = OriginalH
             Bedwars["KnockbackCont"]["kbUpwardStrength"] = OriginalY
         end
-    end
-})
-local AntiKnockbackCustomH = AntiKnockback:Slider({
-    title = "H",
-    min = 0,
-    max = 100,
-    default = 100,
-    callback = function(val)
-        CustomHValue = val
-    end
-})
-local AntiKnockbackCustomY = AntiKnockback:Slider({
-    title = "Y",
-    min = 0,
-    max = 100,
-    default = 100,
-    callback = function(val)
-        CustomYValue = val
     end
 })
 --[[
