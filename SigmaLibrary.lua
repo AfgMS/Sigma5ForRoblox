@@ -7,52 +7,11 @@ local Mouse = game.Players.LocalPlayer:GetMouse()
 local localplayer = game.Players.LocalPlayer
 local TouchInput = game:GetService("TouchInputService")
 local Lighting = game:GetService("Lighting")
+
+--ImportantUIStuff
 local Library = {}
 local soundObjects = {}
 Library.totalWidth = 15
-
-local function makeDraggable(frame, dragSpeedFactor)
-	dragSpeedFactor = dragSpeedFactor or 1
-
-	local dragging = false
-	local dragInput
-	local dragStart
-	local startPos
-
-	local function onTouchInput(input)
-		if dragging then
-			local delta = (input.Position - dragStart) * dragSpeedFactor
-			frame.Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X, startPos.Y.Scale, startPos.Y.Offset + delta.Y)
-		end
-	end
-
-	frame.InputBegan:Connect(function(input)
-		if input.UserInputType == Enum.UserInputType.Touch then
-			dragging = true
-			dragStart = input.Position
-			startPos = frame.Position
-
-			input.Changed:Connect(function()
-				if input.UserInputState == Enum.UserInputState.End then
-					dragging = false
-				end
-			end)
-		end
-	end)
-
-	frame.InputChanged:Connect(function(input)
-		if input.UserInputType == Enum.UserInputType.Touch and dragging then
-			onTouchInput(input)
-		end
-	end)
-
-	frame.InputEnded:Connect(function(input)
-		if input.UserInputType == Enum.UserInputType.Touch then
-			dragging = false
-		end
-	end)
-end
-
 
 function Library:validate(defaults, options)
 	for i, v in pairs(defaults) do
@@ -67,11 +26,6 @@ function Library:tween(object, properties)
 	local tweenInfo = TweenInfo.new(properties.time or 0.10, properties.easingStyle or Enum.EasingStyle.Quad, properties.easingDirection or Enum.EasingDirection.Out)
 	local tween = TweenService:Create(object, tweenInfo, properties)
 	tween:Play()
-end
-
-local function calculateSliderValue(inputPosition, sliderBack)
-    local relativeX = math.clamp((inputPosition - sliderBack.AbsolutePosition.X) / sliderBack.AbsoluteSize.X, 0, 1)
-    return relativeX
 end
 
 local soundIds = {
@@ -482,8 +436,6 @@ function Library:createTabs(parentFrame, tabName)
 		Library.totalWidth = Library.totalWidth + TAB.Tabs.Size.X.Offset
 
 		TAB.Tabs.Position = newX
-
-		makeDraggable(TAB.Tabs)
 	else
 		warn("Reached the maximum number of tabs. Cannot create more tabs.")
 		createnotification("Sigma", "You can't add more tabs", 5, true)
@@ -540,7 +492,7 @@ ButtonsMenuFrame.Name = "Holder"
 ButtonsMenuFrame.BackgroundColor3 = Color3.fromRGB(250, 250, 250)
 ButtonsMenuFrame.BorderColor3 = Color3.fromRGB(0, 0, 0)
 ButtonsMenuFrame.BorderSizePixel = 0
-ButtonsMenuFrame.Position = UDim2.new(0.497, -155, 0.521, -158)
+ButtonsMenuFrame.Position = UDim2.new(0.497, -155, 0.521, -148)
 ButtonsMenuFrame.Size = UDim2.new(0, 325, 0, 295)
 ButtonsMenuFrame.ZIndex = 4
 ButtonsMenuFrame.Visible = false
@@ -563,6 +515,21 @@ ButtonsMenuTitleText.TextSize = 30.000
 ButtonsMenuTitleText.TextXAlignment = Enum.TextXAlignment.Left
 ButtonsMenuTitleText.Visible = true
 ButtonsMenuTitleText.ZIndex = 4
+
+local CloseButtonsMenuFrame = Instance.new("TextButton", ButtonsMenuFrame)
+CloseButtonsMenuFrame.BorderSizePixel = 0
+CloseButtonsMenuFrame.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+CloseButtonsMenuFrame.Font = Enum.Font.Roboto
+CloseButtonsMenuFrame.TextScaled  = true
+CloseButtonsMenuFrame.TextColor3 = Color3.fromRGB(255, 255, 255)
+CloseButtonsMenuFrame.Size = UDim2.new(0, 45, 0, 45)
+CloseButtonsMenuFrame.BorderColor3 = Color3.fromRGB(0, 0, 0)
+CloseButtonsMenuFrame.Text = "x"
+CloseButtonsMenuFrame.BackgroundTransparency = 1
+CloseButtonsMenuFrame.ZIndex = 4
+CloseButtonsMenuFrame.Name = "CloseMobileSupport"
+CloseButtonsMenuFrame.Position = UDim2.new(0, 290, 0, -52)
+CloseButtonsMenuFrame.AutoButtonColor = false
 
 local ButtonsMenuInner = Instance.new("ScrollingFrame", ButtonsMenuFrame)
 ButtonsMenuInner.Name = "ScrollHolder"
@@ -630,6 +597,10 @@ ToggleButton.MenuFrame = ButtonsMenuFrame
 		openmenu.MouseButton1Click:Connect(function()
 			ButtonsMenuFrame.Visible = not ButtonsMenuFrame.Visible
 			ButtonsMenuInner.Visible = not ButtonsMenuInner.Visible
+		end)
+		
+		CloseButtonsMenuFrame.MouseButton1Click:Connect(function()
+			ButtonsMenuFrame.Visible = not ButtonsMenuFrame.Visible
 		end)
 
 		updateColors()
