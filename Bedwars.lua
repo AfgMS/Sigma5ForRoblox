@@ -95,14 +95,6 @@ local WeaponRank = {
   [7] = { Name = "rageblade", Rank = 7 },
 }
 
-local ProjectilesRank = {
-  [1] = { Name = "wood_bow", Rank = 1 },
-  [2] = { Name = "fireball", Rank = 2 },
-  [3] = { Name = "wood_crossbow", Rank = 3 },
-  [4] = { Name = "firecrackers", Rank = 4 },
-  [5] = { Name = "headhunter", Rank = 5 }
-}
-
 function GetAttackPos(plrpos, nearpost, val)
   local newPos = (nearpost - plrpos).Unit * math.min(val, (nearpost - plrpos).Magnitude) + plrpos
   return newPos
@@ -124,24 +116,6 @@ local function GetSword()
     end
   end
   return bestsword
-end
-
-local function GetProjectiles()
-  local bestProject = nil
-  local bestrank = 0
-  for i, v in pairs(localPlayer.Character.InventoryFolder.Value:GetChildren()) do
-    if v.Name:match("bow") or v.Name:match("fire") or v.Name:match("head") then
-      for _, data in pairs(ProjectilesRank) do
-        if data.Name == v.Name then
-          if bestrank <= data.Rank then
-            bestrank = data.Rank
-            bestProject = v
-          end
-        end
-      end
-    end
-  end
-  return bestProject
 end
 --CreatingUI
 Library:createScreenGui()
@@ -234,7 +208,7 @@ local AntiKnockback = CombatTab:ToggleButton({
         end
     end
 })
---[[
+--AutoQuit
 local LowHealthValue
 local function CheckHealth()
     while wait(0.01) do
@@ -264,56 +238,9 @@ local CustomLowHealth = AutoQuit:Slider({
         LowHealthValue = value
     end
 })
-local WeaponProjectile
-local BowAimbotRange = 85
-local BowAimbot = CombatTab:ToggleButton({
-    name = "BowAimbot",
-    info = "Vape ProjectileExploit??",
-    callback = function(enabled)
-        if enabled then
-            WeaponProjectile = GetProjectiles()
-            local NearestPlayer = GetNearestPlr(BowAimbotRange)
-            if NearestPlayer then
-                SetHotbar(WeaponProjectile)
-                local BowAimbotRequirement = {
-                    [1] = WeaponProjectile,
-                    [2] = "arrow",
-                    [3] = WeaponProjectile,
-                    [4] = Value2Vector(NearestPlayer.Character:FindFirstChild("HumanoidRootPart").Position),
-                    [5] = Value2Vector(NearestPlayer.Character:FindFirstChild("HumanoidRootPart").Position),
-                    [6] = Vector3.new(0, NearestPlayer.Character:FindFirstChild("HumanoidRootPart").Position.Y, 0),
-                    [7] = HttpService:GenerateGUID(true),
-                    [8] = {
-                        ["drawDurationSeconds"] = 0.95,
-                        ["shotId"] = HttpService:GenerateGUID(false)
-                    },
-                    [9] = Workspace:GetServerTimeNow() - 0.11
-                }
-                game:GetService("ReplicatedStorage").rbxts_include.node_modules:FindFirstChild("@rbxts").net.out._NetManaged.ProjectileFire:InvokeServer(unpack(BowAimbotRequirement))
-            end
-        else
-            WeaponProjectile = nil
-        end
-    end
-})
---]]
 --KillAura
-local Anims = {
-    ["Slow"] = {
-        {CFrame = CFrame.new(0, 0, 0) * CFrame.Angles(math.rad(220), math.rad(100), math.rad(100)), Time = 0.25},
-        {CFrame = CFrame.new(0, 0, 0) * CFrame.Angles(math.rad(0), math.rad(0), math.rad(0)), Time = 0.25}
-    },
-    ["Weird"] = {
-        {CFrame = CFrame.new(0, 0, 1.5) * CFrame.Angles(math.rad(0), math.rad(0), math.rad(0)), Time = 0.25},
-        {CFrame = CFrame.new(0, 0, -1.5) * CFrame.Angles(math.rad(0), math.rad(0), math.rad(0)), Time = 0.25},
-        {CFrame = CFrame.new(0, 0, 0) * CFrame.Angles(math.rad(0), math.rad(0), math.rad(0)), Time = 0.25}
-    }
-}
-local PlayAnims = false
-local RightC0 = ReplicatedStorage.Assets.Viewmodel.RightHand.RightWrist.C0
 local KillAuraRange
 local RotationsRange
-local ChoosedAnimations = Anims["Slow"]
 local KillAura = CombatTab:ToggleButton({
     name = "KillAura",
     info = "Automatically attacks players",
@@ -321,45 +248,29 @@ local KillAura = CombatTab:ToggleButton({
         if enabled then
             KillAuraRange = 20
             local Sword = GetSword()
-            if localplayer and localplayer.Character then
-                repeat task.wait() until GetMatchState() ~= 0
-                local AnimationHolder = Instance.new("Animation")
-                AnimationHolder.AnimationId = "rbxassetid://4947108314"
-                local AnimationLoader = localPlayer.Character:FindFirstChild("Humanoid"):FindFirstChild("Animator")
-                AnimationLoader:LoadAnimation(AnimationHolder):Play()
-                if PlayAnims then
-                    for i,v in pairs(ChoosedAnimations, Anims) do
-                        game:GetService("TweenService"):Create(game.Workspace.CurrentCamera.Viewmodel.RightHand.RightWrist,TweenInfo.new(v.Time),{C0 = RightC0 * v.CFrame}):Play()
-                        task.wait(v.Time-0.01)
-                    end
-                    PlayAnims = false
+            while wait(0.01) do
+                local NearestPlayer = GetNearestPlr(KillAuraRange)
+                if NearestPlayer then
+                    SetHotbar(Sword)
+                    ReplicatedStorage.rbxts_include.node_modules:FindFirstChild("@rbxts").net.out._NetManaged.SwordHit:FireServer({
+                        ["entityInstance"] = NearestPlayer.Character,
+                        ["chargedAttack"] = {
+                            ["chargeRatio"] = 1
+                        },
+                        ["validate"] = {
+                            ["raycast"] = {
+                                ["cursorDirection"] = Value2Vector(Ray.new(game.Workspace.CurrentCamera.CFrame.Position, NearestPlayer.Character:FindFirstChild("HumanoidRootPart").Position).Unit.Direction),
+                                ["cameraPosition"] = Value2Vector(NearestPlayer.Character:FindFirstChild("HumanoidRootPart").Position),
+                            },
+                            ["selfPosition"] = Value2Vector(GetAttackPos(localPlayer.Character:FindFirstChild("HumanoidRootPart").Position, NearestPlayer.Character:FindFirstChild("HumanoidRootPart").Position, 2)),
+                            ["targetPosition"] = Value2Vector(NearestPlayer.Character.HumanoidRootPart.Position),
+                        },
+                        ["weapon"] = Sword
+                    })
                 end
             end
-            if Sword ~= nil then
-                while wait(0.01) do
-                    local NearestPlayer = GetNearestPlr(KillAuraRange)
-                    if NearestPlayer then
-                        SetHotbar(Sword)
-                        ReplicatedStorage.rbxts_include.node_modules:FindFirstChild("@rbxts").net.out._NetManaged.SwordHit:FireServer({
-                            ["entityInstance"] = NearestPlayer.Character,
-                            ["chargedAttack"] = {
-                                ["chargeRatio"] = 1
-                            },
-                            ["validate"] = {
-                                ["raycast"] = {
-                                    ["cursorDirection"] = Value2Vector(Ray.new(game.Workspace.CurrentCamera.CFrame.Position, NearestPlayer.Character:FindFirstChild("HumanoidRootPart").Position).Unit.Direction),
-                                    ["cameraPosition"] = Value2Vector(NearestPlayer.Character:FindFirstChild("HumanoidRootPart").Position),
-                                },
-                                ["selfPosition"] = Value2Vector(GetAttackPos(localPlayer.Character:FindFirstChild("HumanoidRootPart").Position, NearestPlayer.Character:FindFirstChild("HumanoidRootPart").Position, 2)),
-                                ["targetPosition"] = Value2Vector(NearestPlayer.Character.HumanoidRootPart.Position),
-                            },
-                            ["weapon"] = Sword
-                        })
-                    end
-                end
-            else
-                KillAuraRange = 0
-            end
+        else
+            KillAuraRange = 0
         end
     end
 })
@@ -394,14 +305,6 @@ local Rotations = KillAura:ToggleButtonInsideUI({
         else
             RotationsRange = 0
         end
-    end
-})
-local KillAuraAnimationsMode = KillAura:Dropdown({
-    name = "Animations",
-    default = "Slow",
-    list = Anims,
-    callback = function(selected)
-        ChoosedAnimations = selected
     end
 })
 --Teams
