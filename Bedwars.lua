@@ -182,7 +182,7 @@ local DeleteGui = GuiTab:ToggleButton({
         end
     end
 })
---Aimbot
+--[[
 local AimbotRange
 local Aimbot = CombatTab:ToggleButton({
     name = "Aimbot",
@@ -213,6 +213,7 @@ local AimbotRangeCustom = Aimbot:Slider({
         AimbotRange = val
     end
 })
+--]]
 --AntiKnockback
 local OriginalH = Bedwars["KnockbackCont"]["kbDirectionStrength"]
 local CustomHValue = 0
@@ -249,7 +250,7 @@ local AntiKnockbackCustomY = AntiKnockback:Slider({
         CustomYValue = val
     end
 })
---AutoQuit
+--[[
 local LowHealthValue
 local function CheckHealth()
     while wait(0.01) do
@@ -279,7 +280,6 @@ local CustomLowHealth = AutoQuit:Slider({
         LowHealthValue = value
     end
 })
---[[ --Under a development
 local WeaponProjectile
 local BowAimbotRange = 85
 local BowAimbot = CombatTab:ToggleButton({
@@ -699,29 +699,5 @@ local SpeedModes = Speed:Dropdown({
     list = {"EasyGG", "Universal"},
     callback = function(selected)
         ChoosedMode = selected
-    end
-})
---TargetStrafe
-local TargetStrafe = PlayerTab:ToggleButton({
-    name = "TargetStrafe",
-    info = "Strafe behind the nearest player",
-    callback = function(enabled)
-        if enabled then
-            local nearestPlayer = GetNearestPlr(18)
-            if nearestPlayer then
-                local humanoidRootPart = localPlayer.Character:WaitForChild("HumanoidRootPart")
-                local targetPosition = nearestPlayer.Character:WaitForChild("HumanoidRootPart").Position
-                local direction = (targetPosition - humanoidRootPart.Position).unit
-                local distanceBehind = 8
-                
-                while enabled do
-                    targetPosition = nearestPlayer.Character:WaitForChild("HumanoidRootPart").Position
-                    direction = (targetPosition - humanoidRootPart.Position).unit
-                    targetPosition = targetPosition - (direction * distanceBehind)
-                    humanoidRootPart.CFrame = CFrame.new(humanoidRootPart.Position, targetPosition)
-                    wait(0.8)
-                end
-            end
-        end
     end
 })
