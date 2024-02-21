@@ -427,31 +427,8 @@ local NameTags = RenderTab:ToggleButton({
 })
 --]]
 --GamePlay
-local function SigmemeAutoL()
-    local RandomChances = math.random(0, 5)
-
-    local function FireServer(message)
-        game:GetService("ReplicatedStorage").DefaultChatSystemChatEvents.SayMessageRequest:FireServer(message, "All")
-    end
-
-    if RandomChances == 0 then
-        FireServer("I don't hack I just SIGMA")
-    elseif RandomChances == 1 then
-        FireServer("Sigma will help you. Oops, I killed you instead.")
-    elseif RandomChances == 2 then
-        FireServer("vxpe and godsploit is better than this")
-    elseif RandomChances == 3 then
-        FireServer("I just have a good gaming chair")
-    elseif RandomChances == 4 then
-        FireServer("Use sigma to kick some ### while listening to music")
-    elseif RandomChances == 5 then
-        FireServer("Simga Klien 1945 bye pass 🙀")
-    end
-end
-
 local AutoQueue = false
 local AutoGG = false
-local AutoL = false
 
 local GamePlay = PlayerTab:ToggleButton({
     name = "GamePlay",
@@ -471,16 +448,8 @@ local GamePlay = PlayerTab:ToggleButton({
                 until GetMatchState() == 2 or not enabled
                 game:GetService("ReplicatedStorage").DefaultChatSystemChatEvents.SayMessageRequest:FireServer("GG", "All")
             end
-
-            if AutoL then
-                repeat
-                    task.wait(1)
-                    Client:WaitFor("EntityDeathEvent")
-                    SigmemeAutoL()
-                until not enabled
-            end
         else
-            AutoQueue, AutoGG, AutoL = false, false, false
+            AutoQueue, AutoGG = false, false
         end
     end
 })
@@ -502,12 +471,6 @@ local AutoGGToggle = GamePlay:ToggleButtonInsideUI({
     name = "AutoGG",
     callback = function(enabled)
         AutoGG = enabled
-    end
-})
-local AutoLToggle = GamePlay:ToggleButtonInsideUI({
-    name = "AutoL",
-    callback = function(enabled)
-        AutoL = enabled
     end
 })
 --Speed
