@@ -317,41 +317,52 @@ local Teams = CombatTab:ToggleButton({
 --ESP
 local ESPEnabled = false
 local function ShadowESP(character)
-    local torso = character:WaitForChild("HumanoidRootPart")
-    local esp = Instance.new("BoxHandleAdornment")
-    esp.Adornee = torso
-    esp.Size = torso.Size
-    esp.Color3 = Color3.new(1, 1, 1)
-    esp.Transparency = 0.75
-    esp.AlwaysOnTop = true
-    esp.ZIndex = 5
-    esp.Parent = torso
-    return esp 
-end
+    local humanoidRootPart = character:WaitForChild("HumanoidRootPart")
+    local head = character:WaitForChild("Head")
+    local righthand = character:WaitForChild("RightHand")
+    local lefthand = character:WaitForChild("LeftHand")
+    local rightleg = character:WaitForChild("RightLeg")
+    local leftleg = character:WaitForChild("LeftLeg")
 
-local function CreateESPsForAllPlayers()
-    for _, player in ipairs(game.Players:GetPlayers()) do
-        if player.Character then
-            ShadowESP(player.Character)
+    if humanoidRootPart and head and righthand and lefthand and rightleg and leftleg then
+        local esp = character:FindFirstChild("BoxHandleAdornment")
+        if not esp then
+            esp = Instance.new("BoxHandleAdornment")
+            esp.Adornee = humanoidRootPart
+            esp.Size = humanoidRootPart.Size
+            esp.Color3 = Color3.new(1, 1, 1)
+            esp.Transparency = 0.48
+            esp.AlwaysOnTop = true
+            esp.ZIndex = 5
+            esp.Parent = humanoidRootPart
         end
+        return esp
     end
 end
-
+local function RemoveESP(character)
+    local esp = character:FindFirstChild("BoxHandleAdornment")
+    if esp then
+        esp:Destroy()
+    end
+end
 local ESP = RenderTab:ToggleButton({
     name = "ESP",
     info = "Sigma ESP?",
     callback = function(enabled)
         ESPEnabled = enabled
         if enabled then
-            CreateESPsForAllPlayers()
+            while ESPEnabled do
+                for _, player in ipairs(game.Players:GetPlayers()) do
+                    if player.Character then
+                        ShadowESP(player.Character)
+                    end
+                end
+                wait(1)
+            end
         else
             for _, player in ipairs(game.Players:GetPlayers()) do
-                local character = player.Character
-                if character then
-                    local esp = character:FindFirstChild("BoxHandleAdornment")
-                    if esp then
-                        esp:Destroy()
-                    end
+                if player.Character and player.Character:FindFirstChild("HumanoidRootPart") and player.Character.Head and player.Character.RightHand and player.Character.LeftHand and player.Character.RightLeg and player.Character.LeftLeg then
+                    RemoveESP(player.Character)
                 end
             end
         end
