@@ -394,16 +394,19 @@ local function CreateNameTags(player)
         HealthValue.TextWrapped = true
         HealthValue.TextXAlignment = Enum.TextXAlignment.Left
         
-        local function updateHealth()
-            if player.Character and player.Character:FindFirstChild("Humanoid") then
-                local humanoid = player.Character:FindFirstChildOfClass("Humanoid")
-                local maxHealth = humanoid.MaxHealth
-                local currentHealth = humanoid.Health
-                local fillPercentage = currentHealth / maxHealth
-                PlayerFill.Size = UDim2.new(fillPercentage, 0, 0, 5)
-                HealthValue.Text = "   Health:" .. math.round(currentHealth)
-            end
-        end
+local function updateHealth()
+    if player.Character and player.Character:FindFirstChild("Humanoid") then
+        local humanoid = player.Character:FindFirstChildOfClass("Humanoid")
+        local maxHealth = humanoid.MaxHealth
+        local currentHealth = humanoid.Health
+        local fillPercentage = currentHealth / maxHealth
+        PlayerFill.Size = UDim2.new(fillPercentage, 0, 0, 5)
+        local roundedHealth = math.round(currentHealth)
+        wait(0.8)
+        HealthValue.Text = "   Health:" .. roundedHealth
+    end
+end
+
 
         spawn(function()
             while wait(0.01) do
