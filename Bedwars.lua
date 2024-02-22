@@ -330,15 +330,16 @@ local Fullbright = RenderTab:ToggleButton({
         end
     end
 })
+--NameTags
 local function CreateNameTags(player)
     if player ~= localPlayer then
         local BillboardGui = Instance.new("BillboardGui", game.CoreGui)
         BillboardGui.Active = true
         BillboardGui.Adornee = player.Character:FindFirstChild("Head")
         BillboardGui.AlwaysOnTop = true
-        BillboardGui.MaxDistance = 115.000
+        BillboardGui.MaxDistance = 100 -- Set MaxDistance to a finite value
         BillboardGui.Name = "Sigma5NameTags"
-        BillboardGui.Size = UDim2.new(0, 0, -player.Character.LowerTorso.Size.Y / 2 or -player.PrimaryPart.Size.Y / 2, 0)
+        BillboardGui.Size = UDim2.new(0, 125, 0, 45)
         BillboardGui.StudsOffset = Vector3.new(0, 2, 0)
         BillboardGui.ResetOnSpawn = false
         
@@ -388,7 +389,7 @@ local function CreateNameTags(player)
         HealthValue.Position = UDim2.new(0, 0, 0, 27)
         HealthValue.Size = UDim2.new(1, 0, 0, 15)
         HealthValue.Font = Enum.Font.Roboto
-        HealthValue.Text = "   Health: " .. tostring(100)
+        HealthValue.Text = "   Health: " .. math.round(100)
         HealthValue.TextColor3 = Color3.fromRGB(255, 255, 255)
         HealthValue.TextWrapped = true
         HealthValue.TextXAlignment = Enum.TextXAlignment.Left
@@ -400,7 +401,7 @@ local function CreateNameTags(player)
                 local currentHealth = humanoid.Health
                 local fillPercentage = currentHealth / maxHealth
                 PlayerFill.Size = UDim2.new(fillPercentage, 0, 0, 5)
-                HealthValue.Text = "   Health:" .. tostring(currentHealth)
+                HealthValue.Text = "   Health:" .. math.round(currentHealth)
             end
         end
 
@@ -411,6 +412,7 @@ local function CreateNameTags(player)
         end)
     end
 end
+
 local NameTags = RenderTab:ToggleButton({
     name = "NameTags",
     info = "Render Sigma5 NameTags",
