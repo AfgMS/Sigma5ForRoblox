@@ -476,6 +476,24 @@ local AutoGGToggle = GamePlay:ToggleButtonInsideUI({
         AutoGG = enabled
     end
 })
+local AutoSprint = PlayerTab:ToggleButton({
+    name = "AutoSprint",
+    info = "Automatically Sprint",
+    callback = function(enabled)
+        if enabled then
+            spawn(function()
+                repeat
+                    task.wait()
+                    if not Bedwars["SprintCont"].sprinting then
+                        Bedwars["SprintCont"]:startSprinting()
+                    end
+                until not enabled
+            end)
+        else
+            Bedwars["SprintCont"]:stopSprinting()
+        end
+    end
+})
 --Speed
 local AutoJumps = false
 local function AutoJumpSet()
