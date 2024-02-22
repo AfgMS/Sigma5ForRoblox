@@ -314,60 +314,6 @@ local Teams = CombatTab:ToggleButton({
         TeamCheck = not TeamCheck
     end
 })
---ESP
-local ESPEnabled = false
-local function ShadowESP(character)
-    local humanoidRootPart = character:WaitForChild("HumanoidRootPart")
-    local head = character:WaitForChild("Head")
-    local righthand = character:WaitForChild("RightHand")
-    local lefthand = character:WaitForChild("LeftHand")
-    local rightleg = character:WaitForChild("RightLeg")
-    local leftleg = character:WaitForChild("LeftLeg")
-
-    if humanoidRootPart and head and righthand and lefthand and rightleg and leftleg then
-        local esp = character:FindFirstChild("BoxHandleAdornment")
-        if not esp then
-            esp = Instance.new("BoxHandleAdornment")
-            esp.Adornee = humanoidRootPart
-            esp.Size = humanoidRootPart.Size
-            esp.Color3 = Color3.new(1, 1, 1)
-            esp.Transparency = 0.48
-            esp.AlwaysOnTop = true
-            esp.ZIndex = 5
-            esp.Parent = humanoidRootPart
-        end
-        return esp
-    end
-end
-local function RemoveESP(character)
-    local esp = character:FindFirstChild("BoxHandleAdornment")
-    if esp then
-        esp:Destroy()
-    end
-end
-local ESP = RenderTab:ToggleButton({
-    name = "ESP",
-    info = "Sigma ESP?",
-    callback = function(enabled)
-        ESPEnabled = enabled
-        if enabled then
-            while ESPEnabled do
-                for _, player in ipairs(game.Players:GetPlayers()) do
-                    if player.Character then
-                        ShadowESP(player.Character)
-                    end
-                end
-                wait(1)
-            end
-        else
-            for _, player in ipairs(game.Players:GetPlayers()) do
-                if player.Character and player.Character:FindFirstChild("HumanoidRootPart") and player.Character.Head and player.Character.RightHand and player.Character.LeftHand and player.Character.RightLeg and player.Character.LeftLeg then
-                    RemoveESP(player.Character)
-                end
-            end
-        end
-    end
-})
 --Fullbright
 local originalAmbient = Lighting.Ambient
 local originalOutdoor = Lighting.OutdoorAmbient
@@ -384,7 +330,6 @@ local Fullbright = RenderTab:ToggleButton({
         end
     end
 })
---[[ --Under a development
 local function CreateNameTags(player)
     if player ~= localPlayer then
         local BillboardGui = Instance.new("BillboardGui", game.CoreGui)
@@ -393,7 +338,7 @@ local function CreateNameTags(player)
         BillboardGui.AlwaysOnTop = true
         BillboardGui.MaxDistance = 115.000
         BillboardGui.Name = "Sigma5NameTags"
-        BillboardGui.Size = UDim2.new(0, 125, 0, 45)
+        BillboardGui.Size = UDim2.new(0, 0, -player.Character.LowerTorso.Size.Y / 2 or -player.PrimaryPart.Size.Y / 2, 0)
         BillboardGui.StudsOffset = Vector3.new(0, 2, 0)
         BillboardGui.ResetOnSpawn = false
         
@@ -479,7 +424,6 @@ local NameTags = RenderTab:ToggleButton({
         end
     end
 })
---]]
 --GamePlay
 local AutoQueue = false
 local AutoGG = false
