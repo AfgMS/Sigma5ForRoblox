@@ -315,50 +315,44 @@ local Teams = CombatTab:ToggleButton({
     end
 })
 --ESP
-local function CreateESP(player)
-    local humanoidRootPart = player:WaitForChild("HumanoidRootPart", 10)
-    local head = player:WaitForChild("Head", 10)
-    local righthand =  player:WaitForChild("RightHand", 10)
-    local lefthand =  player:WaitForChild("LeftHand", 10)
-    local rightleg = player:WaitForChild("RightLeg", 10)
-    local leftleg = player:WaitForChild("LeftLeg", 10)
+local ESPEnabled = false
+local function ShadowESP(character)
+    local torso = character:WaitForChild("HumanoidRootPart")
+    local esp = Instance.new("BoxHandleAdornment")
+    esp.Adornee = torso
+    esp.Size = torso.Size
+    esp.Color3 = Color3.new(1, 1, 1)
+    esp.Transparency = 0.75
+    esp.AlwaysOnTop = true
+    esp.ZIndex = 5
+    esp.Parent = torso
+    return esp 
+end
 
-    if humanoidRootPart and head and righthand and lefthand and rightleg and leftleg then
-        if not humanoidRootPart:FindFirstChild("BoxHandleAdornment") then
-            local esp = Instance.new("BoxHandleAdornment")
-            esp.Adornee = humanoidRootPart
-            esp.Size = humanoidRootPart.Size
-            esp.Color3 = Color3.new(1, 1, 1)
-            esp.Transparency = 0.75
-            esp.AlwaysOnTop = true
-            esp.ZIndex = 5
-            esp.Parent = humanoidRootPart
-            return esp
+local function CreateESPsForAllPlayers()
+    for _, player in ipairs(game.Players:GetPlayers()) do
+        if player.Character then
+            ShadowESP(player.Character)
         end
     end
 end
-local function RemoveESP(player)
-    local esp = player:FindFirstChild("HumanoidRootPart"):FindFirstChild("BoxHandleAdornment")
-    if esp then
-        esp:Destroy()
-    end
-end
+
 local ESP = RenderTab:ToggleButton({
     name = "ESP",
     info = "Sigma ESP?",
     callback = function(enabled)
+        ESPEnabled = enabled
         if enabled then
-            for _, player in ipairs(game.Players:GetPlayers()) do
-                CreateESP(player)
-            end
-            game.Players.PlayerAdded:Connect(function(player)
-                player.CharacterAdded:Connect(function(character)
-                    CreateESP(player)
-                end)
-            end)
+            CreateESPsForAllPlayers()
         else
             for _, player in ipairs(game.Players:GetPlayers()) do
-                RemoveESP(player)
+                local character = player.Character
+                if character then
+                    local esp = character:FindFirstChild("BoxHandleAdornment")
+                    if esp then
+                        esp:Destroy()
+                    end
+                end
             end
         end
     end
