@@ -314,6 +314,55 @@ local Teams = CombatTab:ToggleButton({
         TeamCheck = not TeamCheck
     end
 })
+--ESP
+local function CreateESP(player)
+    local humanoidRootPart = player:WaitForChild("HumanoidRootPart", 10)
+    local head = player:WaitForChild("Head", 10)
+    local righthand =  player:WaitForChild("RightHand", 10)
+    local lefthand =  player:WaitForChild("LeftHand", 10)
+    local rightleg = player:WaitForChild("RightLeg", 10)
+    local leftleg = player:WaitForChild("LeftLeg", 10)
+
+    if humanoidRootPart and head and righthand and lefthand and rightleg and leftleg then
+        if not humanoidRootPart:FindFirstChild("BoxHandleAdornment") then
+            local esp = Instance.new("BoxHandleAdornment")
+            esp.Adornee = humanoidRootPart
+            esp.Size = humanoidRootPart.Size
+            esp.Color3 = Color3.new(1, 1, 1)
+            esp.Transparency = 0.75
+            esp.AlwaysOnTop = true
+            esp.ZIndex = 5
+            esp.Parent = humanoidRootPart
+            return esp
+        end
+    end
+end
+local function RemoveESP(player)
+    local esp = player:FindFirstChild("HumanoidRootPart"):FindFirstChild("BoxHandleAdornment")
+    if esp then
+        esp:Destroy()
+    end
+end
+local ESP = RenderTab:ToggleButton({
+    name = "ESP",
+    info = "Sigma ESP?",
+    callback = function(enabled)
+        if enabled then
+            for _, player in ipairs(game.Players:GetPlayers()) do
+                CreateESP(player)
+            end
+            game.Players.PlayerAdded:Connect(function(player)
+                player.CharacterAdded:Connect(function(character)
+                    CreateESP(player)
+                end)
+            end)
+        else
+            for _, player in ipairs(game.Players:GetPlayers()) do
+                RemoveESP(player)
+            end
+        end
+    end
+})
 --Fullbright
 local originalAmbient = Lighting.Ambient
 local originalOutdoor = Lighting.OutdoorAmbient
@@ -474,51 +523,39 @@ local AutoGGToggle = GamePlay:ToggleButtonInsideUI({
     end
 })
 --Speed
-local EasyGGs = false
 local AutoJumps = false
-local function EasyGGMode()
-    local humanoid = localPlayer.Character:FindFirstChild("Humanoid")
-    
-    local currentPos = localPlayer.Character:GetPrimaryPartCFrame().Position
-    local forwardOffset = Vector3.new(0, 0, 1)
-    local targetPos = currentPos + (localPlayer.Character:GetPrimaryPartCFrame().LookVector * forwardOffset)
-    
-    while EasyGGs do
-        localPlayer.Character:SetPrimaryPartCFrame(CFrame.new(targetPos))
-        wait(1)
-    end
-end
 local function AutoJumpSet()
     while AutoJumps do
         localPlayer.Character:FindFirstChildOfClass("Humanoid"):ChangeState(Enum.HumanoidStateType.Jumping)
         wait(0.64)
     end 
 end
-local ChoosedMode = "Universal"
+local SpeedValue = 20
+local ChoosedMode = "EasyGG"
 local Speed = PlayerTab:ToggleButton({
     name = "Speed",
     info = "Insani Spid Bipass!!",
     callback = function(enabled)
         if enabled then
             if ChoosedMode == "EasyGG" then
-                localPlayer.Character:FindFirstChild("Humanoid").WalkSpeed = 23
-                EasyGGs = true
-                EasyGGMode()
+                local MoveDir = localPlayer.Character.Humanoid.MoveDirection * SpeedValue * 3
+                MoveDir = Vector3.new(MoveDir.x / 10, 0, MoveDir.z / 10)
+                localPlayer.Character:TranslateBy(MoveDir)
             elseif ChoosedMode == "Universal" then
-                localPlayer.Character:FindFirstChild("Humanoid").WalkSpeed = 20
+                localPlayer.Character:FindFirstChild("Humanoid").WalkSpeed = SpeedValue
             end
         else
             localPlayer.Character:FindFirstChild("Humanoid").WalkSpeed = 16
-            EasyGGs = false
         end
     end
 })
-local SpeedFix = Speed:Slider({
-    title = "??",
+local SpeedCustom = Speed:Slider({
+    title = "Speed",
     min = 0,
-    max = 0,
-    default = 0,
+    max = 100,
+    default = 20,
     callback = function(val)
+	SpeedValue = val
     end
 })
 local AutoJump = Speed:ToggleButtonInsideUI({
