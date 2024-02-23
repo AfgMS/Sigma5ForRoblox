@@ -330,7 +330,7 @@ local Fullbright = RenderTab:ToggleButton({
         end
     end
 })
---NameTags
+--[[ --Under a development
 local function CreateNameTags(player)
     if player ~= localPlayer then
         local BillboardGui = Instance.new("BillboardGui", game.CoreGui)
@@ -424,7 +424,7 @@ local NameTags = RenderTab:ToggleButton({
             end
         end
     end
-})
+})--]]
 --GamePlay
 local AutoQueue = false
 local AutoGG = false
@@ -490,7 +490,7 @@ local AutoSprint = PlayerTab:ToggleButton({
         end
     end
 })
---Speed
+--[[ --Under a Development
 local AutoJumps = false
 local function AutoJumpSet()
     while AutoJumps do
@@ -545,3 +545,4 @@ local SpeedModes = Speed:Dropdown({
         ChoosedMode = selected
     end
 })
+--]]
