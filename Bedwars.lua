@@ -62,7 +62,10 @@ local Bedwars = {
     ["ViewmodelCont"] = KnitClient.Controllers.ViewmodelController,
     ["ClientHandlerStore"] = require(localPlayer.PlayerScripts.TS.ui.store).ClientStore,
     ["CombatCons"] = require(ReplicatedStorage.TS.combat["combat-constant"]).CombatConstant,
-    ["QueryUtil"] = require(ReplicatedStorage["rbxts_include"]["node_modules"]["@easy-games"]["game-core"].out).GameQueryUtil
+    ["QueryUtil"] = require(ReplicatedStorage["rbxts_include"]["node_modules"]["@easy-games"]["game-core"].out).GameQueryUtil,
+    ["SwordHit"] = ReplicatedStorage.rbxts_include.node_modules:FindFirstChild("@rbxts").net.out._NetManaged.SwordHit,
+    ["MessageRequest"] = ReplicatedStorage.DefaultChatSystemChatEvents.SayMessageRequest,
+    ["JoinQueue"] = ReplicatedStorage:FindFirstChild("events-@easy-games/lobby:shared/event/lobby-events@getEvents.Events").joinQueue
 }
 
 local function GetMatchState()
@@ -70,8 +73,8 @@ local function GetMatchState()
 end
 
 function getQueueType()
-    local state = bedwars["ClientHandlerStore"]:getState()
-    return state.Game.queueType or "bedwars_test"
+    local matchstate = Bedwars["ClientHandlerStore"]:getState()
+    return matchstate.Game.queueType or "bedwars_test"
 end
 
 local function SetHotbar(item)
@@ -254,19 +257,26 @@ local CustomLowHealth = AutoQuit:Slider({
 })
 --KillAura
 local KillAuraRange
-local RotationsRange
+local RotateDelay = 0.01
+local AutoSword = false
+local HitDelay = 0.01
 local KillAura = CombatTab:ToggleButton({
     name = "KillAura",
     info = "Automatically attacks players",
     callback = function(enabled)
         if enabled then
             KillAuraRange = 20
+            local NearestPlayer = GetNearestPlr(KillAuraRange)
             local Sword = GetSword()
-            while wait(0.01) do
-                local NearestPlayer = GetNearestPlr(KillAuraRange)
+            if AutoSword then
                 if NearestPlayer then
                     SetHotbar(Sword)
-                    ReplicatedStorage.rbxts_include.node_modules:FindFirstChild("@rbxts").net.out._NetManaged.SwordHit:FireServer({
+                end
+            end
+            if NearestPlayer and localPlayer.Character then
+                while true do
+                    task.wait(HitDelay)
+                    Bedwars["SwordHit"]:FireServer({
                         ["entityInstance"] = NearestPlayer.Character,
                         ["chargedAttack"] = {
                             ["chargeRatio"] = 1
@@ -285,9 +295,11 @@ local KillAura = CombatTab:ToggleButton({
             end
         else
             KillAuraRange = 0
+            AutoSword = false
         end
     end
 })
+
 local KillAuraRangeCustom = KillAura:Slider({
     title = "Range",
     min = 0,
@@ -295,29 +307,32 @@ local KillAuraRangeCustom = KillAura:Slider({
     default = 20,
     callback = function(value)
         KillAuraRange = value
-        RotationsRange = value
+    end
+})
+
+local AutoWeapon = KillAura:ToggleButtonInsideUI({
+    name = "AutoWeapon",
+    callback = function(enabled)
+        AutoSword = not AutoSword
     end
 })
 local Rotations = KillAura:ToggleButtonInsideUI({
     name = "Rotations",
     callback = function(enabled)
         if enabled then
-            RotationsRange = 20
-            while enabled do
-                local NearestPlayer = GetNearestPlr(RotationsRange)
+            while true do
+                wait(RotateDelay)
                 if NearestPlayer then
-                    local character = localPlayer.Character
-                    if character and character:FindFirstChild("HumanoidRootPart") then
-                        local direction = (NearestPlayer.Character.HumanoidRootPart.Position - character.HumanoidRootPart.Position).unit
+                    if localPlayer.Character and localPlayer.Character:FindFirstChild("HumanoidRootPart") then
+                        local direction = (NearestPlayer.Character.HumanoidRootPart.Position - localPlayer.Character.HumanoidRootPart.Position).unit
                         local lookVector = Vector3.new(direction.X, 0, direction.Z).unit
-                        local newCFrame = CFrame.new(character.HumanoidRootPart.Position, character.HumanoidRootPart.Position + lookVector)
-                        character:SetPrimaryPartCFrame(newCFrame)
+                        local newCFrame = CFrame.new(localPlayer.Character.HumanoidRootPart.Position, localPlayer.Character.HumanoidRootPart.Position + lookVector)
+                        localPlayer.Character:SetPrimaryPartCFrame(newCFrame)
                     end
                 end
-                wait(0.01)
             end
         else
-            RotationsRange = 0
+            RotateDelay = 86000
         end
     end
 })
@@ -329,58 +344,7 @@ local Teams = CombatTab:ToggleButton({
         TeamCheck = not TeamCheck
     end
 })
---ESP
-local ESPDelay = 0.01
-local function BoxESP(player)
-    local selectionBox = Instance.new("SelectionBox")
-    selectionBox.LineThickness = 0.08
-    selectionBox.Color3 = Color3.new(1, 0, 0)
-    selectionBox.Transparency = 0
-    selectionBox.SurfaceTransparency = 0.5
-    selectionBox.Adornee = player.Character.HumanoidRootPart
-        
-    selectionBox.Parent = player.Character
-    SelectionService:AddSelection(selectionBox)
-    return selectionBox
-end
-local function RemoveESP(player)
-    for i, player in ipairs(Player:GetPlayers()) do
-        if player ~= Player.LocalPlayer and player.Character then
-            local esp = player.Character:FindFirstChild("SelectionBox")
-            if esp then
-                esp:Destroy()
-            end
-        end
-    end
-end
-local ESP = RenderTab:ToggleButton({
-    name = "ESP",
-    info = "esp",
-    callback = function(enabled)
-        if enabled then
-            ESPDelay = 0.01
-            for _, player in ipairs(Player:GetPlayers()) do
-                if player ~= Player.LocalPlayer and player.Character then
-                    player.Character:WaitForChild("HumanoidRootPart").Size = Vector3.new(6, 5, 3)
-                    BoxESP(player)
-                end
-            end
-            while task.wait(ESPDelay) do
-                for _, player in ipairs(Player:GetPlayers()) do
-                    if not player.Character:FindFirstChild("SelectionBox") then
-                        BoxESP(player)
-                    end
-                end
-            end
-        else
-            ESPDelay = 86400
-            for _, player in ipairs(Player:GetPlayers()) do
-                RemoveESP(player)
-            end
-        end
-    end
-})
---Fullbright
+--[[ --useless for now
 local originalAmbient = Lighting.Ambient
 local originalOutdoor = Lighting.OutdoorAmbient
 local Fullbright = RenderTab:ToggleButton({
@@ -396,10 +360,10 @@ local Fullbright = RenderTab:ToggleButton({
         end
     end
 })
+--]]
 --GamePlay
 local AutoQueue = false
 local AutoGG = false
-
 local GamePlay = PlayerTab:ToggleButton({
     name = "GamePlay",
     info = "Makes your experience better",
@@ -409,26 +373,22 @@ local GamePlay = PlayerTab:ToggleButton({
                 repeat
                     task.wait(3)
                 until GetMatchState() == 2 or not enabled
-                game:GetService("ReplicatedStorage"):FindFirstChild("events-@easy-games/lobby:shared/event/lobby-events@getEvents.Events").joinQueue:FireServer({["queueType"] = getQueueType()})
+                if enabled then
+                    Bedwars["JoinQueue"]:FireServer({["queueType"] = getQueueType()})
+                end
             end
 
             if AutoGG then
                 repeat
                     task.wait(1)
                 until GetMatchState() == 2 or not enabled
-                game:GetService("ReplicatedStorage").DefaultChatSystemChatEvents.SayMessageRequest:FireServer("GG", "All")
+                if enabled then
+                    Bedwars["MessageRequest"]:FireServer("GG", "All")
+                end
             end
         else
             AutoQueue, AutoGG = false, false
         end
-    end
-})
-local GamePlayFix = GamePlay:Slider({
-    title = "??",
-    min = 0,
-    max = 0,
-    default = 0,
-    callback = function(val)
     end
 })
 local AutoQueueToggle = GamePlay:ToggleButtonInsideUI({
