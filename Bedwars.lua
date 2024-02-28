@@ -1,4 +1,3 @@
---ImprotantStuff
 local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/AfgMS/SigmaJello4Roblox/main/SigmaLibrary.lua", true))()
 local CoreGui = game:WaitForChild("CoreGui")
 local Player = game:GetService("Players")
@@ -13,7 +12,6 @@ local SelectionService = game:GetService("Selection")
 local KnitClient = debug.getupvalue(require(localPlayer.PlayerScripts.TS.knit).setup, 6)
 local Client = require(ReplicatedStorage.TS.remotes).default.Client
 
---Functions
 local function LibraryCheck()
     local SigmaCheck = CoreGui:FindFirstChild("Sigma")
     local SigmaVisualCheck = CoreGui:FindFirstChild("SigmaVisualStuff")
@@ -63,6 +61,8 @@ local Bedwars = {
     ["SwordCont"] = KnitClient.Controllers.SwordController,
     ["ViewmodelCont"] = KnitClient.Controllers.ViewmodelController,
     ["ClientHandlerStore"] = require(localPlayer.PlayerScripts.TS.ui.store).ClientStore,
+    ["CombatCons"] = require(ReplicatedStorage.TS.combat["combat-constant"]).CombatConstant,
+    ["QueryUtil"] = require(ReplicatedStorage["rbxts_include"]["node_modules"]["@easy-games"]["game-core"].out).GameQueryUtil
 }
 
 local function GetMatchState()
@@ -192,6 +192,20 @@ local AimbotRangeCustom = Aimbot:Slider({
         AimbotRange = val
     end
 })
+--HitFix
+local HitFix = CombatTab:ToggleButton({
+    name = "HitFix",
+    info = "Fix the Bedwars game registration",
+    callback = function(enabled)
+        if enabled then
+            debug.setconstant(Bedwars["SwordCont"].swingSwordAtMouse, 23, "raycast")
+            debug.setupvalue(Bedwars["SwordCont"].swingSwordAtMouse, 4, Bedwars["QueryUtil"])
+        else
+            debug.setconstant(Bedwars["SwordCont"].swingSwordAtMouse, 23, "Raycast")
+            debug.setupvalue(Bedwars["SwordCont"].swingSwordAtMouse, 4, workspace)
+        end
+    end
+})
 --AntiKnockback
 local OriginalH = Bedwars["KnockbackCont"]["kbDirectionStrength"]
 local OriginalY = Bedwars["KnockbackCont"]["kbUpwardStrength"]
@@ -318,29 +332,27 @@ local Teams = CombatTab:ToggleButton({
 --ESP
 local ESPDelay = 0.01
 local function BoxESP(player)
-    if player ~= localPlayer then
-        local selectionBox = Instance.new("SelectionBox")
-        selectionBox.LineThickness = 0.05
-        selectionBox.Color3 = Color3.new(1, 0, 0)
-        selectionBox.Transparency = 0.5
-        selectionBox.SurfaceTransparency = 0.5
-        selectionBox.Adornee = player.Character.HumanoidRootPart
+    local selectionBox = Instance.new("SelectionBox")
+    selectionBox.LineThickness = 0.08
+    selectionBox.Color3 = Color3.new(1, 0, 0)
+    selectionBox.Transparency = 0
+    selectionBox.SurfaceTransparency = 0.5
+    selectionBox.Adornee = player.Character.HumanoidRootPart
         
-        selectionBox.Parent = player.Character
-        SelectionService:AddSelection(selectionBox)
-        return selectionBox
-    end
+    selectionBox.Parent = player.Character
+    SelectionService:AddSelection(selectionBox)
+    return selectionBox
 end
-
 local function RemoveESP(player)
-    if player ~= localPlayer then
-        local esp = player.Character:FindFirstChild("SelectionBox")
-        if esp then 
-            esp:Destroy()
+    for i, player in ipairs(Player:GetPlayers()) do
+        if player ~= Player.LocalPlayer and player.Character then
+            local esp = player.Character:FindFirstChild("SelectionBox")
+            if esp then
+                esp:Destroy()
+            end
         end
     end
 end
-			
 local ESP = RenderTab:ToggleButton({
     name = "ESP",
     info = "esp",
@@ -348,7 +360,10 @@ local ESP = RenderTab:ToggleButton({
         if enabled then
             ESPDelay = 0.01
             for _, player in ipairs(Player:GetPlayers()) do
-                BoxESP(player)
+                if player ~= Player.LocalPlayer and player.Character then
+                    player.Character:WaitForChild("HumanoidRootPart").Size = Vector3.new(6, 5, 3)
+                    BoxESP(player)
+                end
             end
             while task.wait(ESPDelay) do
                 for _, player in ipairs(Player:GetPlayers()) do
@@ -381,101 +396,6 @@ local Fullbright = RenderTab:ToggleButton({
         end
     end
 })
---[[ --Under a development
-local function CreateNameTags(player)
-    if player ~= localPlayer then
-        local BillboardGui = Instance.new("BillboardGui", game.CoreGui)
-        BillboardGui.Active = true
-        BillboardGui.Adornee = player.Character:FindFirstChild("Head")
-        BillboardGui.AlwaysOnTop = true
-        BillboardGui.MaxDistance = 100 -- Set MaxDistance to a finite value
-        BillboardGui.Name = "Sigma5NameTags"
-        BillboardGui.Size = UDim2.new(0, 125, 0, 45)
-        BillboardGui.StudsOffset = Vector3.new(0, 2, 0)
-        BillboardGui.ResetOnSpawn = false
-        
-        local NametagHolder = Instance.new("Frame", BillboardGui)
-        NametagHolder.Name = "NametagHolder"
-        NametagHolder.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-        NametagHolder.BackgroundTransparency = 1.000
-        NametagHolder.BorderColor3 = Color3.fromRGB(0, 0, 0)
-        NametagHolder.BorderSizePixel = 0
-        NametagHolder.Size = UDim2.new(1, 0, 1, 0)
-        
-        local PlayerHealth = Instance.new("Frame", NametagHolder)
-        PlayerHealth.Name = "PlayerHealth"
-        PlayerHealth.BackgroundColor3 = Color3.fromRGB(65, 65, 65)
-        PlayerHealth.BorderColor3 = Color3.fromRGB(0, 0, 0)
-        PlayerHealth.BorderSizePixel = 0
-        PlayerHealth.Position = UDim2.new(0, 0, 0, 40)
-        PlayerHealth.Size = UDim2.new(1, 0, 0, 5)
-        
-        local PlayerFill = Instance.new("Frame", PlayerHealth)
-        PlayerFill.Name = "PlayerFill"
-        PlayerFill.BackgroundColor3 = Color3.fromRGB(9, 122, 220)
-        PlayerFill.BorderColor3 = Color3.fromRGB(0, 0, 0)
-        PlayerFill.BorderSizePixel = 0
-        PlayerFill.Size = UDim2.new(1, 0, 0, 5)
-        
-        local PlayerName = Instance.new("TextLabel", NametagHolder)
-        PlayerName.Name = "PlayerName"
-        PlayerName.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
-        PlayerName.BackgroundTransparency = 0.350
-        PlayerName.BorderColor3 = Color3.fromRGB(0, 0, 0)
-        PlayerName.BorderSizePixel = 0
-        PlayerName.Size = UDim2.new(1, 0, 0, 40)
-        PlayerName.Font = Enum.Font.Roboto
-        PlayerName.Text = player.Name
-        PlayerName.TextColor3 = Color3.fromRGB(255, 255, 255)
-        PlayerName.TextScaled = true
-        PlayerName.TextSize = 25.000
-        PlayerName.TextWrapped = true
-
-        local HealthValue = Instance.new("TextLabel", PlayerName)
-        HealthValue.Name = "HealthValue"
-        HealthValue.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-        HealthValue.BackgroundTransparency = 1.000
-        HealthValue.BorderColor3 = Color3.fromRGB(0, 0, 0)
-        HealthValue.BorderSizePixel = 0
-        HealthValue.Position = UDim2.new(0, 0, 0, 27)
-        HealthValue.Size = UDim2.new(1, 0, 0, 15)
-        HealthValue.Font = Enum.Font.Roboto
-        HealthValue.Text = "   Health: " .. math.round(100)
-        HealthValue.TextColor3 = Color3.fromRGB(255, 255, 255)
-        HealthValue.TextWrapped = true
-        HealthValue.TextXAlignment = Enum.TextXAlignment.Left
-        
-        local function updateHealth()
-            if player.Character and player.Character:FindFirstChild("Humanoid") then
-                local humanoid = player.Character:FindFirstChildOfClass("Humanoid")
-                local maxHealth = humanoid.MaxHealth
-                local currentHealth = humanoid.Health
-                local fillPercentage = currentHealth / maxHealth
-                PlayerFill.Size = UDim2.new(fillPercentage, 0, 0, 5)
-                HealthValue.Text = "   Health:" .. math.round(currentHealth)
-            end
-        end
-
-        spawn(function()
-            while wait(0.01) do
-                updateHealth()
-            end
-        end)
-    end
-end
-local NameTags = RenderTab:ToggleButton({
-    name = "NameTags",
-    info = "Render Sigma5 NameTags",
-    callback = function(enabled)
-        if enabled then
-            while task.wait(1) do
-                for _, player in ipairs(game.Players:GetPlayers()) do
-                    CreateNameTags(player)
-                end
-            end
-        end
-    end
-})--]]
 --GamePlay
 local AutoQueue = false
 local AutoGG = false
@@ -523,6 +443,7 @@ local AutoGGToggle = GamePlay:ToggleButtonInsideUI({
         AutoGG = enabled
     end
 })
+--AutoSprint
 local AutoSprint = PlayerTab:ToggleButton({
     name = "AutoSprint",
     info = "Automatically Sprint",
@@ -537,63 +458,27 @@ local AutoSprint = PlayerTab:ToggleButton({
                 until not enabled
             end)
         else
-            Bedwars["SprintCont"]:stopSprinting()
+            spawn(function()
+                repeat 
+                    task.wait()
+                    if Bedwars["SprintCont"].sprinting then
+                        Bedwars["SprintCont"]:stopSprinting()
+                    end
+                until enabled 
+            end)
         end
     end
 })
---[[ --Under a Development
-local AutoJumps = false
-local function AutoJumpSet()
-    while AutoJumps do
-        localPlayer.Character:FindFirstChildOfClass("Humanoid"):ChangeState(Enum.HumanoidStateType.Jumping)
-        wait(0.64)
-    end 
-end
-local SpeedValue = 20
-local ChoosedMode = "EasyGG"
-local Speed = PlayerTab:ToggleButton({
-    name = "Speed",
-    info = "Insani Spid Bipass!!",
+--Reach
+local ReachRange = 18
+local Reach = PlayerTab:ToggleButton({
+    name = "Reach",
+    info = "Reach hax",
     callback = function(enabled)
         if enabled then
-            if ChoosedMode == "EasyGG" then
-                local MoveDir = localPlayer.Character.Humanoid.MoveDirection * SpeedValue * 3
-                MoveDir = Vector3.new(MoveDir.x / 10, 0, MoveDir.z / 10)
-                localPlayer.Character:TranslateBy(MoveDir)
-            elseif ChoosedMode == "Universal" then
-                localPlayer.Character:FindFirstChild("Humanoid").WalkSpeed = SpeedValue
-            end
+            Bedwars["CombatCons"].RAYCAST_SWORD_CHARACTER_DISTANCE = ReachRange + 2
         else
-            localPlayer.Character:FindFirstChild("Humanoid").WalkSpeed = 16
+            Bedwars["CombatCons"].RAYCAST_SWORD_CHARACTER_DISTANCE = 14.4
         end
     end
 })
-local SpeedCustom = Speed:Slider({
-    title = "Speed",
-    min = 0,
-    max = 100,
-    default = 20,
-    callback = function(val)
-	SpeedValue = val
-    end
-})
-local AutoJump = Speed:ToggleButtonInsideUI({
-    name = "AutoJump",
-    callback = function(enabled)
-        if enabled then
-            AutoJumps = true 
-            AutoJumpSet()
-        else
-            AutoJumps = false 
-        end
-    end
-})
-local SpeedModes = Speed:Dropdown({
-    name = "SpeedMode",
-    default = "Vanilla",
-    list = {"EasyGG", "Universal"},
-    callback = function(selected)
-        ChoosedMode = selected
-    end
-})
---]]
