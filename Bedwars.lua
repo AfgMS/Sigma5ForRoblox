@@ -1,3 +1,4 @@
+--ImprotantStuff
 local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/AfgMS/SigmaJello4Roblox/main/SigmaLibrary.lua", true))()
 local CoreGui = game:WaitForChild("CoreGui")
 local Player = game:GetService("Players")
@@ -7,10 +8,12 @@ local TeamsService = game:GetService("Teams")
 local Camera = game:GetService("Workspace").CurrentCamera
 local UserInputService = game:GetService("UserInputService")
 local Lighting = game:GetService("Lighting")
+local SelectionService = game:GetService("Selection")
 
 local KnitClient = debug.getupvalue(require(localPlayer.PlayerScripts.TS.knit).setup, 6)
 local Client = require(ReplicatedStorage.TS.remotes).default.Client
 
+--Functions
 local function LibraryCheck()
     local SigmaCheck = CoreGui:FindFirstChild("Sigma")
     local SigmaVisualCheck = CoreGui:FindFirstChild("SigmaVisualStuff")
@@ -60,7 +63,6 @@ local Bedwars = {
     ["SwordCont"] = KnitClient.Controllers.SwordController,
     ["ViewmodelCont"] = KnitClient.Controllers.ViewmodelController,
     ["ClientHandlerStore"] = require(localPlayer.PlayerScripts.TS.ui.store).ClientStore,
-    ["SwordHit"] = ReplicatedStorage.rbxts_include.node_modules:FindFirstChild("@rbxts").net.out._NetManaged.SwordHit
 }
 
 local function GetMatchState()
@@ -118,6 +120,7 @@ local function GetSword()
 end
 --CreatingUI
 Library:createScreenGui()
+task.wait()
 LibraryCheck()
 --Tabs
 local GuiTab = Library:createTabs(CoreGui.Sigma, "Gui")
@@ -238,25 +241,18 @@ local CustomLowHealth = AutoQuit:Slider({
 --KillAura
 local KillAuraRange
 local RotationsRange
-local AutoSword = false
 local KillAura = CombatTab:ToggleButton({
     name = "KillAura",
     info = "Automatically attacks players",
     callback = function(enabled)
         if enabled then
             KillAuraRange = 20
-            local NearestPlayer = GetNearestPlr(KillAuraRange)
             local Sword = GetSword()
-            if AutoSword then
+            while wait(0.01) do
+                local NearestPlayer = GetNearestPlr(KillAuraRange)
                 if NearestPlayer then
                     SetHotbar(Sword)
-                else
-                    AutoSword = false
-                end
-            end
-            if NearestPlayer then
-                while task.wait(0.01) do
-                    Bedwars["SwordHit"]:FireServer({
+                    ReplicatedStorage.rbxts_include.node_modules:FindFirstChild("@rbxts").net.out._NetManaged.SwordHit:FireServer({
                         ["entityInstance"] = NearestPlayer.Character,
                         ["chargedAttack"] = {
                             ["chargeRatio"] = 1
@@ -286,16 +282,6 @@ local KillAuraRangeCustom = KillAura:Slider({
     callback = function(value)
         KillAuraRange = value
         RotationsRange = value
-    end
-})
-local AutoSword = KillAura:ToggleButtonInsideUI({
-    name = "AutoSword",
-    callback = function(enabled)
-        if enabled then
-            AutoSword = true
-        else
-            AutoSword = false
-        end
     end
 })
 local Rotations = KillAura:ToggleButtonInsideUI({
@@ -329,6 +315,56 @@ local Teams = CombatTab:ToggleButton({
         TeamCheck = not TeamCheck
     end
 })
+--ESP
+local ESPDelay = 0.01
+local function BoxESP(player)
+    if player ~= localPlayer then
+        local selectionBox = Instance.new("SelectionBox")
+        selectionBox.LineThickness = 0.05
+        selectionBox.Color3 = Color3.new(1, 0, 0)
+        selectionBox.Transparency = 0.5
+        selectionBox.SurfaceTransparency = 0.5
+        selectionBox.Adornee = player.Character.HumanoidRootPart
+        
+        selectionBox.Parent = player.Character
+        SelectionService:AddSelection(selectionBox)
+        return selectionBox
+    end
+end
+
+local function RemoveESP(player)
+    if player ~= localPlayer then
+        local esp = player.Character:FindFirstChild("SelectionBox")
+        if esp then 
+            esp:Destroy()
+        end
+    end
+end
+			
+local ESP = RenderTab:ToggleButton({
+    name = "ESP",
+    info = "esp",
+    callback = function(enabled)
+        if enabled then
+            ESPDelay = 0.01
+            for _, player in ipairs(Player:GetPlayers()) do
+                BoxESP(player)
+            end
+            while task.wait(ESPDelay) do
+                for _, player in ipairs(Player:GetPlayers()) do
+                    if not player.Character:FindFirstChild("SelectionBox") then
+                        BoxESP(player)
+                    end
+                end
+            end
+        else
+            ESPDelay = 86400
+            for _, player in ipairs(Player:GetPlayers()) do
+                RemoveESP(player)
+            end
+        end
+    end
+})
 --Fullbright
 local originalAmbient = Lighting.Ambient
 local originalOutdoor = Lighting.OutdoorAmbient
@@ -345,14 +381,15 @@ local Fullbright = RenderTab:ToggleButton({
         end
     end
 })
---NameTags
+--[[ --Under a development
 local function CreateNameTags(player)
-    if player ~= game.Players.LocalPlayer then
+    if player ~= localPlayer then
         local BillboardGui = Instance.new("BillboardGui", game.CoreGui)
         BillboardGui.Active = true
         BillboardGui.Adornee = player.Character:FindFirstChild("Head")
         BillboardGui.AlwaysOnTop = true
-        BillboardGui.MaxDistance = 100
+        BillboardGui.MaxDistance = 100 -- Set MaxDistance to a finite value
+        BillboardGui.Name = "Sigma5NameTags"
         BillboardGui.Size = UDim2.new(0, 125, 0, 45)
         BillboardGui.StudsOffset = Vector3.new(0, 2, 0)
         BillboardGui.ResetOnSpawn = false
@@ -407,56 +444,38 @@ local function CreateNameTags(player)
         HealthValue.TextColor3 = Color3.fromRGB(255, 255, 255)
         HealthValue.TextWrapped = true
         HealthValue.TextXAlignment = Enum.TextXAlignment.Left
-		
-	local function updateHealth()
-		if player.Character and player.Character:FindFirstChild("Humanoid") then
-		local humanoid = player.Character:FindFirstChildOfClass("Humanoid")
-		local maxHealth = humanoid.MaxHealth
-		local currentHealth = humanoid.Health
-		local fillPercentage = currentHealth / maxHealth
-		PlayerFill.Size = UDim2.new(fillPercentage, 0, 0, 5)
-		HealthValue.Text = "   Health: " .. currentHealth
-		end
-	end
+        
+        local function updateHealth()
+            if player.Character and player.Character:FindFirstChild("Humanoid") then
+                local humanoid = player.Character:FindFirstChildOfClass("Humanoid")
+                local maxHealth = humanoid.MaxHealth
+                local currentHealth = humanoid.Health
+                local fillPercentage = currentHealth / maxHealth
+                PlayerFill.Size = UDim2.new(fillPercentage, 0, 0, 5)
+                HealthValue.Text = "   Health:" .. math.round(currentHealth)
+            end
+        end
 
         spawn(function()
-            while task.wait(0.01) do
+            while wait(0.01) do
                 updateHealth()
             end
         end)
     end
 end
-
-local function RemoveNameTags(player)
-    if player ~= game.Players.LocalPlayer then
-        local BillboardGui = player.Character:FindFirstChild("Head"):FindFirstChild("BillboardGui")
-        if BillboardGui then
-            BillboardGui:Destroy()
-        end
-    end
-end
-
 local NameTags = RenderTab:ToggleButton({
     name = "NameTags",
     info = "Render Sigma5 NameTags",
     callback = function(enabled)
         if enabled then
-            game.Players.PlayerAdded:Connect(function(player)
-                CreateNameTags(player)
-            end)
-            for _, player in ipairs(game.Players:GetPlayers()) do
-                CreateNameTags(player)
-            end
-        else
-            game.Players.PlayerRemoving:Connect(function(player)
-                RemoveNameTags(player)
-            end)
-            for _, player in ipairs(game.Players:GetPlayers()) do
-                RemoveNameTags(player)
+            while task.wait(1) do
+                for _, player in ipairs(game.Players:GetPlayers()) do
+                    CreateNameTags(player)
+                end
             end
         end
     end
-})
+})--]]
 --GamePlay
 local AutoQueue = false
 local AutoGG = false
@@ -504,7 +523,6 @@ local AutoGGToggle = GamePlay:ToggleButtonInsideUI({
         AutoGG = enabled
     end
 })
---AutoSprint
 local AutoSprint = PlayerTab:ToggleButton({
     name = "AutoSprint",
     info = "Automatically Sprint",
@@ -519,9 +537,7 @@ local AutoSprint = PlayerTab:ToggleButton({
                 until not enabled
             end)
         else
-            if Bedwars["SprintCont"].sprinting then
-                Bedwars["SprintCont"]:stopSprinting()
-            end
+            Bedwars["SprintCont"]:stopSprinting()
         end
     end
 })
@@ -580,19 +596,4 @@ local SpeedModes = Speed:Dropdown({
         ChoosedMode = selected
     end
 })
---Testing
-local player = game.Players.LocalPlayer
-local character = player.Character or player.CharacterAdded:Wait()
-
-local bodyVelocity = Instance.new("BodyVelocity")
-bodyVelocity.MaxForce = Vector3.new(400000, 400000, 400000) -- Adjust max force as needed
-bodyVelocity.Velocity = Vector3.new(0, 0, 0) -- Initial velocity
-
-bodyVelocity.Parent = character:FindFirstChildOfClass("HumanoidRootPart")
-
-local function updateSpeed(speed)
-    bodyVelocity.Velocity = character.Humanoid.MoveDirection * speed
-end
-updateSpeed(50)
-
 --]]
