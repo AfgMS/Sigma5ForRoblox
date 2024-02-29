@@ -76,7 +76,7 @@ local Bedwars = {
 }
 
 local function GetMatchState()
-	return Bedwars["ClientHandlerStore"]:getState().Game.matchState
+    return Bedwars["ClientHandlerStore"]:getState().Game.matchState
 end
 
 function getQueueType()
@@ -365,29 +365,43 @@ local Fullbright = RenderTab:ToggleButton({
         end
     end
 })
---[[
-local FovValue = 120
-local FOVChanger = RenderTab:ToggleButton({
-    name = "FOVChanger",
-    info = "Modify your field of view",
-    callback = function(enabled)
-        if enabled then
-            Bedwars["FovCont"]:setFOV = FovValue
-        else
-            Bedwars["FovCont"]:setFOV = 80
-        end
-    end
-})
-local FOVChangerCustom = FOVChanger:Slider({
-    title = "Value",
-    min = 0,
-    max = 120,
+local CustomFov = FOVChanger:Slider({
+    title = "FieldOfView",
+    min = 70,
+    max = 160,
     default = 120,
     callback = function(value)
         FovValue = value
     end
 })
---]]]
+--Tracers, Done
+local Tracers = RenderTab:ToggleButton({
+    name = "Tracers",
+    info = "Draw lines to players",
+    callback = function(enabled)
+        if enabled then
+            while enabled do
+                task.wait(0.01)
+                local current = Camera.CFrame.Position
+                for i, v in pairs(Player:GetPlayers()) do
+                    if v.Character and v.Character:FindFirstChild("HumanoidRootPart") then
+                        local HumanoidRootPart = v.Character.HumanoidRootPart
+                        if isAlive(v) and HumanoidRootPart.Position ~= current then
+                            Drawing.new({
+                                from = current,
+                                to = HumanoidRootPart.Position,
+                                thickness = 2,
+                                color = Color3.fromRGB(0, 255, 0)
+                            }):Draw()
+                        end
+                    end
+                end
+            end
+        else
+            Tracers:Remove()
+        end
+    end
+})
 --GamePlay, Need More Features
 local AutoQueue = false
 local AutoGG = false
