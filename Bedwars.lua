@@ -55,11 +55,19 @@ local function GetNearestPlr(range)
     return nearestPlayer
 end
 
+local function isAlive(player)
+    if player and player.Character and player.Character:FindFirstChild("Humanoid") then
+        return player.Character.Humanoid.Health > 0
+    end
+    return false
+end
+
 local Bedwars = {
     ["KnockbackCont"] = debug.getupvalue(require(ReplicatedStorage.TS.damage["knockback-util"]).KnockbackUtil.calculateKnockbackVelocity, 1),
     ["SprintCont"] = KnitClient.Controllers.SprintController,
     ["SwordCont"] = KnitClient.Controllers.SwordController,
     ["ViewmodelCont"] = KnitClient.Controllers.ViewmodelController,
+    ["FovCont"] = KnitClient.Controllers.FovController,
     ["ClientHandlerStore"] = require(localPlayer.PlayerScripts.TS.ui.store).ClientStore,
     ["CombatCons"] = require(ReplicatedStorage.TS.combat["combat-constant"]).CombatConstant,
     ["QueryUtil"] = require(ReplicatedStorage["rbxts_include"]["node_modules"]["@easy-games"]["game-core"].out).GameQueryUtil,
@@ -89,7 +97,7 @@ local function Value2Vector(vec)
   return { value = vec }
 end
 
-local WeaponRank = {
+local MeleeRank = {
   [1] = { Name = "wood_sword", Rank = 1 },
   [2] = { Name = "stone_sword", Rank = 2 },
   [3] = { Name = "iron_sword", Rank = 3 },
@@ -104,12 +112,12 @@ function GetAttackPos(plrpos, nearpost, val)
   return newPos
 end
 
-local function GetSword()
+local function GetMelee()
   local bestsword = nil
   local bestrank = 0
   for i, v in pairs(localPlayer.Character.InventoryFolder.Value:GetChildren()) do
     if v.Name:match("sword") or v.Name:match("blade") then
-      for _, data in pairs(WeaponRank) do
+      for _, data in pairs(MeleeRank) do
         if data["Name"] == v.Name then
           if bestrank <= data["Rank"] then
             bestrank = data["Rank"]
@@ -133,7 +141,7 @@ local PlayerTab = Library:createTabs(CoreGui.Sigma, "Player")
 local WorldTab = Library:createTabs(CoreGui.Sigma, "World")
 --Notification
 createnotification("Sigma5", "Loaded Successfully", 1, true)
---ActiveMods
+--ActiveMods, Done
 local ActiveMods = GuiTab:ToggleButton({
     name = "ActiveMods",
     info = "Render active mods",
@@ -141,7 +149,7 @@ local ActiveMods = GuiTab:ToggleButton({
             CoreGui.SigmaVisualStuff.ArrayListHolder.Visible = not CoreGui.SigmaVisualStuff.ArrayListHolder.Visible
     end
 })
---TabGUI
+--TabGUI, Done
 local TabGUI = GuiTab:ToggleButton({
     name = "TabGUI",
     info = "Just decorations",
@@ -149,7 +157,7 @@ local TabGUI = GuiTab:ToggleButton({
             CoreGui.SigmaVisualStuff.LeftHolder.TabHolder.Visible = not CoreGui.SigmaVisualStuff.LeftHolder.TabHolder.Visible
     end
 })
---DeleteGui
+--DeleteGui, Temporarly
 local BlurEffect = Lighting:FindFirstChild("Blur")
 local DeleteGui = GuiTab:ToggleButton({
     name = "DeleteGUI",
@@ -164,7 +172,7 @@ local DeleteGui = GuiTab:ToggleButton({
         end
     end
 })
---Aimbot
+--Aimbot, Done
 local AimbotRange
 local Aimbot = CombatTab:ToggleButton({
     name = "Aimbot",
@@ -195,21 +203,7 @@ local AimbotRangeCustom = Aimbot:Slider({
         AimbotRange = val
     end
 })
---HitFix
-local HitFix = CombatTab:ToggleButton({
-    name = "HitFix",
-    info = "Fix the Bedwars game registration",
-    callback = function(enabled)
-        if enabled then
-            debug.setconstant(Bedwars["SwordCont"].swingSwordAtMouse, 23, "raycast")
-            debug.setupvalue(Bedwars["SwordCont"].swingSwordAtMouse, 4, Bedwars["QueryUtil"])
-        else
-            debug.setconstant(Bedwars["SwordCont"].swingSwordAtMouse, 23, "Raycast")
-            debug.setupvalue(Bedwars["SwordCont"].swingSwordAtMouse, 4, workspace)
-        end
-    end
-})
---AntiKnockback
+--AntiKnockback, Need More Features
 local OriginalH = Bedwars["KnockbackCont"]["kbDirectionStrength"]
 local OriginalY = Bedwars["KnockbackCont"]["kbUpwardStrength"]
 local AntiKnockback = CombatTab:ToggleButton({
@@ -225,7 +219,7 @@ local AntiKnockback = CombatTab:ToggleButton({
         end
     end
 })
---AutoQuit
+--AutoQuit, Done
 local LowHealthValue
 local function CheckHealth()
     while wait(0.01) do
@@ -255,7 +249,7 @@ local CustomLowHealth = AutoQuit:Slider({
         LowHealthValue = value
     end
 })
---KillAura
+--KillAura, Need More Features
 local KillAuraRange
 local RotateDelay = 0.01
 local AutoSword = false
@@ -267,39 +261,40 @@ local KillAura = CombatTab:ToggleButton({
         if enabled then
             KillAuraRange = 20
             local NearestPlayer = GetNearestPlr(KillAuraRange)
-            local Sword = GetSword()
+            local Sword = GetMelee()
             if AutoSword then
-                if NearestPlayer then
+                if NearestPlayer and isAlive(NearestPlayer) then
                     SetHotbar(Sword)
                 end
             end
-            if NearestPlayer and localPlayer.Character then
-                while true do
-                    task.wait(HitDelay)
-                    Bedwars["SwordHit"]:FireServer({
-                        ["entityInstance"] = NearestPlayer.Character,
-                        ["chargedAttack"] = {
-                            ["chargeRatio"] = 1
-                        },
-                        ["validate"] = {
-                            ["raycast"] = {
-                                ["cursorDirection"] = Value2Vector(Ray.new(game.Workspace.CurrentCamera.CFrame.Position, NearestPlayer.Character:FindFirstChild("HumanoidRootPart").Position).Unit.Direction),
-                                ["cameraPosition"] = Value2Vector(NearestPlayer.Character:FindFirstChild("HumanoidRootPart").Position),
+            if NearestPlayer then
+                if isAlive(localPlayer) and isAlive(NearestPlayer) then
+                    while true do
+                        task.wait(HitDelay)
+                        Bedwars["SwordHit"]:FireServer({
+                            ["entityInstance"] = NearestPlayer.Character,
+                            ["chargedAttack"] = {
+                                ["chargeRatio"] = 1
                             },
-                            ["selfPosition"] = Value2Vector(GetAttackPos(localPlayer.Character:FindFirstChild("HumanoidRootPart").Position, NearestPlayer.Character:FindFirstChild("HumanoidRootPart").Position, 2)),
-                            ["targetPosition"] = Value2Vector(NearestPlayer.Character.HumanoidRootPart.Position),
-                        },
-                        ["weapon"] = Sword
-                    })
+                            ["validate"] = {
+                                ["raycast"] = {
+                                    ["cursorDirection"] = Value2Vector(Ray.new(game.Workspace.CurrentCamera.CFrame.Position, NearestPlayer.Character:FindFirstChild("HumanoidRootPart").Position).Unit.Direction),
+                                    ["cameraPosition"] = Value2Vector(NearestPlayer.Character:FindFirstChild("HumanoidRootPart").Position),
+                                },
+                                ["selfPosition"] = Value2Vector(GetAttackPos(localPlayer.Character:FindFirstChild("HumanoidRootPart").Position, NearestPlayer.Character:FindFirstChild("HumanoidRootPart").Position, 2)),
+                                ["targetPosition"] = Value2Vector(NearestPlayer.Character.HumanoidRootPart.Position),
+                            },
+                            ["weapon"] = Sword
+                        })
+                    end
                 end
+            else
+                KillAuraRange = 0
+                AutoSword = false
             end
-        else
-            KillAuraRange = 0
-            AutoSword = false
         end
     end
 })
-
 local KillAuraRangeCustom = KillAura:Slider({
     title = "Range",
     min = 0,
@@ -309,7 +304,6 @@ local KillAuraRangeCustom = KillAura:Slider({
         KillAuraRange = value
     end
 })
-
 local AutoWeapon = KillAura:ToggleButtonInsideUI({
     name = "AutoWeapon",
     callback = function(enabled)
@@ -323,7 +317,7 @@ local Rotations = KillAura:ToggleButtonInsideUI({
             while true do
                 wait(RotateDelay)
                 if NearestPlayer then
-                    if localPlayer.Character and localPlayer.Character:FindFirstChild("HumanoidRootPart") then
+                    if isAlive(localPlayer) and isAlive(NearestPlayer) then
                         local direction = (NearestPlayer.Character.HumanoidRootPart.Position - localPlayer.Character.HumanoidRootPart.Position).unit
                         local lookVector = Vector3.new(direction.X, 0, direction.Z).unit
                         local newCFrame = CFrame.new(localPlayer.Character.HumanoidRootPart.Position, localPlayer.Character.HumanoidRootPart.Position + lookVector)
@@ -336,7 +330,19 @@ local Rotations = KillAura:ToggleButtonInsideUI({
         end
     end
 })
---Teams
+local HitFix = KillAura:ToggleButtonInsideUI({
+    name = "HitFix",
+    callback = function(enabled)
+        if enabled then
+            debug.setconstant(Bedwars["SwordCont"].swingSwordAtMouse, 23, "raycast")
+            debug.setupvalue(Bedwars["SwordCont"].swingSwordAtMouse, 4, Bedwars["QueryUtil"])
+        else
+            debug.setconstant(Bedwars["SwordCont"].swingSwordAtMouse, 23, "Raycast")
+            debug.setupvalue(Bedwars["SwordCont"].swingSwordAtMouse, 4, workspace)
+        end
+    end
+})
+--Teams, Done
 local Teams = CombatTab:ToggleButton({
     name = "Teams",
     info = "Avoid combat modules to target your teammate",
@@ -344,7 +350,7 @@ local Teams = CombatTab:ToggleButton({
         TeamCheck = not TeamCheck
     end
 })
---[[ --useless for now
+--FullBright, Done
 local originalAmbient = Lighting.Ambient
 local originalOutdoor = Lighting.OutdoorAmbient
 local Fullbright = RenderTab:ToggleButton({
@@ -360,8 +366,29 @@ local Fullbright = RenderTab:ToggleButton({
         end
     end
 })
---]]
---GamePlay
+--FOVChanger, Done
+local FovValue = 120
+local FOVChanger = RenderTab:ToggleButton({
+    name = "FOVChanger",
+    info = "Modify your field of view",
+    callback = function(enabled)
+        if enabled then
+            Bedwars["FovCont"]:setFOV = FovValue
+        else
+            Bedwars["FovCont"]:setFOV = 80
+        end
+    end
+})
+local FOVChangerCustom = FOVChanger:Slider({
+    title = "Value",
+    min = 0,
+    max = 120,
+    default = 120,
+    callback = function(value)
+        FovValue = value
+    end
+})
+--GamePlay, Need More Features
 local AutoQueue = false
 local AutoGG = false
 local GamePlay = PlayerTab:ToggleButton({
@@ -403,7 +430,7 @@ local AutoGGToggle = GamePlay:ToggleButtonInsideUI({
         AutoGG = enabled
     end
 })
---AutoSprint
+--AutoSprint, Need Rework
 local AutoSprint = PlayerTab:ToggleButton({
     name = "AutoSprint",
     info = "Automatically Sprint",
@@ -429,7 +456,7 @@ local AutoSprint = PlayerTab:ToggleButton({
         end
     end
 })
---Reach
+--[[ -- Under a development
 local ReachRange = 18
 local Reach = PlayerTab:ToggleButton({
     name = "Reach",
@@ -442,3 +469,4 @@ local Reach = PlayerTab:ToggleButton({
         end
     end
 })
+--]]
