@@ -67,7 +67,6 @@ local Bedwars = {
     ["SprintCont"] = KnitClient.Controllers.SprintController,
     ["SwordCont"] = KnitClient.Controllers.SwordController,
     ["ViewmodelCont"] = KnitClient.Controllers.ViewmodelController,
-    ["FovCont"] = KnitClient.Controllers.FovController,
     ["ClientHandlerStore"] = require(localPlayer.PlayerScripts.TS.ui.store).ClientStore,
     ["CombatCons"] = require(ReplicatedStorage.TS.combat["combat-constant"]).CombatConstant,
     ["QueryUtil"] = require(ReplicatedStorage["rbxts_include"]["node_modules"]["@easy-games"]["game-core"].out).GameQueryUtil,
@@ -366,7 +365,7 @@ local Fullbright = RenderTab:ToggleButton({
         end
     end
 })
---FOVChanger, Done
+--[[
 local FovValue = 120
 local FOVChanger = RenderTab:ToggleButton({
     name = "FOVChanger",
@@ -388,6 +387,7 @@ local FOVChangerCustom = FOVChanger:Slider({
         FovValue = value
     end
 })
+--]]]
 --GamePlay, Need More Features
 local AutoQueue = false
 local AutoGG = false
