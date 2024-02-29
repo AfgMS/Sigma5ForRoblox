@@ -7,6 +7,7 @@ local TeamsService = game:GetService("Teams")
 local Camera = game:GetService("Workspace").CurrentCamera
 local UserInputService = game:GetService("UserInputService")
 local Lighting = game:GetService("Lighting")
+local SelectionService = game:GetService("Selection")
 
 local KnitClient = debug.getupvalue(require(localPlayer.PlayerScripts.TS.knit).setup, 6)
 local Client = require(ReplicatedStorage.TS.remotes).default.Client
@@ -67,9 +68,11 @@ local Bedwars = {
 	["SwordCont"] = KnitClient.Controllers.SwordController,
 	["ViewmodelCont"] = KnitClient.Controllers.ViewmodelController,
 	["ClientHandlerStore"] = require(localPlayer.PlayerScripts.TS.ui.store).ClientStore,
+	["CombatCons"] = require(ReplicatedStorage.TS.combat["combat-constant"]).CombatConstant,
+	["QueryUtil"] = require(ReplicatedStorage["rbxts_include"]["node_modules"]["@easy-games"]["game-core"].out).GameQueryUtil,
 	["SwordHit"] = ReplicatedStorage.rbxts_include.node_modules:FindFirstChild("@rbxts").net.out._NetManaged.SwordHit,
-	["SetInv"] = game:GetService("ReplicatedStorage").rbxts_include.node_modules:FindFirstChild("@rbxts").net.out._NetManaged.SetInvItem,
-	["JoinQueue"] = game:GetService("ReplicatedStorage"):FindFirstChild("events-@easy-games/lobby:shared/event/lobby-events@getEvents.Events").joinQueue
+	["MessageRequest"] = ReplicatedStorage.DefaultChatSystemChatEvents.SayMessageRequest,
+	["JoinQueue"] = ReplicatedStorage:FindFirstChild("events-@easy-games/lobby:shared/event/lobby-events@getEvents.Events").joinQueue
 }
 
 local function GetMatchState()
@@ -77,15 +80,15 @@ local function GetMatchState()
 end
 
 function getQueueType()
-	local MatchState = Bedwars["ClientHandlerStore"]:getState()
-	return MatchState.Game.queueType or "bedwars_test"
+	local matchstate = Bedwars["ClientHandlerStore"]:getState()
+	return matchstate.Game.queueType or "bedwars_test"
 end
 
 local function SetHotbar(item)
 	if localPlayer.Character:FindFirstChild("HandInvItem").Value ~= item then
 		local Inventories = game:GetService("ReplicatedStorage").Inventories:FindFirstChild(localPlayer.Name):FindFirstChild(item)
 
-		Bedwars["SetInv"]({["hand"] = item})
+		game:GetService("ReplicatedStorage").rbxts_include.node_modules:FindFirstChild("@rbxts").net.out._NetManaged.SetInvItem:InvokeServer({["hand"] = item})
 	end
 end
 
@@ -108,7 +111,7 @@ function GetAttackPos(plrpos, nearpost, val)
 	return newPos
 end
 
-local function GetMelees()
+local function GetMelee()
 	local bestsword = nil
 	local bestrank = 0
 	for i, v in pairs(localPlayer.Character.InventoryFolder.Value:GetChildren()) do
@@ -127,6 +130,7 @@ local function GetMelees()
 end
 --CreatingUI
 Library:createScreenGui()
+task.wait()
 LibraryCheck()
 --Tabs
 local GuiTab = Library:createTabs(CoreGui.Sigma, "Gui")
@@ -136,7 +140,7 @@ local PlayerTab = Library:createTabs(CoreGui.Sigma, "Player")
 local WorldTab = Library:createTabs(CoreGui.Sigma, "World")
 --Notification
 createnotification("Sigma5", "Loaded Successfully", 1, true)
---ActiveMods
+--ActiveMods, Done
 local ActiveMods = GuiTab:ToggleButton({
 	name = "ActiveMods",
 	info = "Render active mods",
@@ -144,7 +148,7 @@ local ActiveMods = GuiTab:ToggleButton({
 		CoreGui.SigmaVisualStuff.ArrayListHolder.Visible = not CoreGui.SigmaVisualStuff.ArrayListHolder.Visible
 	end
 })
---TabGUI
+--TabGUI, Done
 local TabGUI = GuiTab:ToggleButton({
 	name = "TabGUI",
 	info = "Just decorations",
@@ -152,7 +156,7 @@ local TabGUI = GuiTab:ToggleButton({
 		CoreGui.SigmaVisualStuff.LeftHolder.TabHolder.Visible = not CoreGui.SigmaVisualStuff.LeftHolder.TabHolder.Visible
 	end
 })
---DeleteGui
+--DeleteGui, Temporarly
 local BlurEffect = Lighting:FindFirstChild("Blur")
 local DeleteGui = GuiTab:ToggleButton({
 	name = "DeleteGUI",
@@ -167,7 +171,7 @@ local DeleteGui = GuiTab:ToggleButton({
 		end
 	end
 })
---Aimbot
+--Aimbot, Done
 local AimbotRange
 local Aimbot = CombatTab:ToggleButton({
 	name = "Aimbot",
@@ -198,7 +202,7 @@ local AimbotRangeCustom = Aimbot:Slider({
 		AimbotRange = val
 	end
 })
---AntiKnockback
+--AntiKnockback, Need More Features
 local OriginalH = Bedwars["KnockbackCont"]["kbDirectionStrength"]
 local OriginalY = Bedwars["KnockbackCont"]["kbUpwardStrength"]
 local AntiKnockback = CombatTab:ToggleButton({
@@ -214,7 +218,7 @@ local AntiKnockback = CombatTab:ToggleButton({
 		end
 	end
 })
---AutoQuit
+--AutoQuit, Done
 local LowHealthValue
 local function CheckHealth()
 	while wait(0.01) do
@@ -244,10 +248,11 @@ local CustomLowHealth = AutoQuit:Slider({
 		LowHealthValue = value
 	end
 })
---KillAura
+--KillAura, Need More Features
 local KillAuraRange
-local RotationsRange
+local RotateDelay = 0.01
 local AutoSword = false
+local HitDelay = 0.01
 local KillAura = CombatTab:ToggleButton({
 	name = "KillAura",
 	info = "Automatically attacks players",
@@ -255,37 +260,37 @@ local KillAura = CombatTab:ToggleButton({
 		if enabled then
 			KillAuraRange = 20
 			local NearestPlayer = GetNearestPlr(KillAuraRange)
-			local Sword = GetMelees()
+			local Sword = GetMelee()
 			if AutoSword then
 				if NearestPlayer and isAlive(NearestPlayer) then
 					SetHotbar(Sword)
-				else
-					AutoSword = false
 				end
 			end
 			if NearestPlayer then
-				if isAlive(NearestPlayer) and isAlive(localPlayer) then
-				while task.wait(0.01) do
-					Bedwars["SwordHit"]:FireServer({
-						["entityInstance"] = NearestPlayer.Character,
-						["chargedAttack"] = {
-							["chargeRatio"] = 1
-						},
-						["validate"] = {
-							["raycast"] = {
-								["cursorDirection"] = Value2Vector(Ray.new(game.Workspace.CurrentCamera.CFrame.Position, NearestPlayer.Character:FindFirstChild("HumanoidRootPart").Position).Unit.Direction),
-								["cameraPosition"] = Value2Vector(NearestPlayer.Character:FindFirstChild("HumanoidRootPart").Position),
+				if isAlive(localPlayer) and isAlive(NearestPlayer) then
+					while true do
+						task.wait(HitDelay)
+						Bedwars["SwordHit"]:FireServer({
+							["entityInstance"] = NearestPlayer.Character,
+							["chargedAttack"] = {
+								["chargeRatio"] = 1
 							},
-							["selfPosition"] = Value2Vector(GetAttackPos(localPlayer.Character:FindFirstChild("HumanoidRootPart").Position, NearestPlayer.Character:FindFirstChild("HumanoidRootPart").Position, 2)),
-							["targetPosition"] = Value2Vector(NearestPlayer.Character.HumanoidRootPart.Position),
-						},
-						["weapon"] = Sword
-					})
+							["validate"] = {
+								["raycast"] = {
+									["cursorDirection"] = Value2Vector(Ray.new(game.Workspace.CurrentCamera.CFrame.Position, NearestPlayer.Character:FindFirstChild("HumanoidRootPart").Position).Unit.Direction),
+									["cameraPosition"] = Value2Vector(NearestPlayer.Character:FindFirstChild("HumanoidRootPart").Position),
+								},
+								["selfPosition"] = Value2Vector(GetAttackPos(localPlayer.Character:FindFirstChild("HumanoidRootPart").Position, NearestPlayer.Character:FindFirstChild("HumanoidRootPart").Position, 2)),
+								["targetPosition"] = Value2Vector(NearestPlayer.Character.HumanoidRootPart.Position),
+							},
+							["weapon"] = Sword
+						})
 					end
 				end
+			else
+				KillAuraRange = 0
+				AutoSword = false
 			end
-		else
-			KillAuraRange = 0
 		end
 	end
 })
@@ -296,39 +301,48 @@ local KillAuraRangeCustom = KillAura:Slider({
 	default = 20,
 	callback = function(value)
 		KillAuraRange = value
-		RotationsRange = value
 	end
 })
-local AutoSword = KillAura:ToggleButtonInsideUI({
-	name = "AutoSword",
+local AutoWeapon = KillAura:ToggleButtonInsideUI({
+	name = "AutoWeapon",
 	callback = function(enabled)
-		AutoSword = enabled
+		AutoSword = not AutoSword
 	end
 })
 local Rotations = KillAura:ToggleButtonInsideUI({
 	name = "Rotations",
 	callback = function(enabled)
 		if enabled then
-			RotationsRange = 20
-			while enabled do
-				local NearestPlayer = GetNearestPlr(RotationsRange)
+			local NearestPlayer = GetNearestPlr(KillAuraRange)
+			while true do
+				wait(RotateDelay)
 				if NearestPlayer then
-					local character = localPlayer.Character
-					if character and character:FindFirstChild("HumanoidRootPart") then
-						local direction = (NearestPlayer.Character.HumanoidRootPart.Position - character.HumanoidRootPart.Position).unit
+					if isAlive(localPlayer) and isAlive(NearestPlayer) then
+						local direction = (NearestPlayer.Character.HumanoidRootPart.Position - localPlayer.Character.HumanoidRootPart.Position).unit
 						local lookVector = Vector3.new(direction.X, 0, direction.Z).unit
-						local newCFrame = CFrame.new(character.HumanoidRootPart.Position, character.HumanoidRootPart.Position + lookVector)
-						character:SetPrimaryPartCFrame(newCFrame)
+						local newCFrame = CFrame.new(localPlayer.Character.HumanoidRootPart.Position, localPlayer.Character.HumanoidRootPart.Position + lookVector)
+						localPlayer.Character:SetPrimaryPartCFrame(newCFrame)
 					end
 				end
-				wait(0.01)
 			end
 		else
-			RotationsRange = 0
+			RotateDelay = 86000
 		end
 	end
 })
---Teams
+local HitFix = KillAura:ToggleButtonInsideUI({
+	name = "HitFix",
+	callback = function(enabled)
+		if enabled then
+			debug.setconstant(Bedwars["SwordCont"].swingSwordAtMouse, 23, "raycast")
+			debug.setupvalue(Bedwars["SwordCont"].swingSwordAtMouse, 4, Bedwars["QueryUtil"])
+		else
+			debug.setconstant(Bedwars["SwordCont"].swingSwordAtMouse, 23, "Raycast")
+			debug.setupvalue(Bedwars["SwordCont"].swingSwordAtMouse, 4, workspace)
+		end
+	end
+})
+--Teams, Done
 local Teams = CombatTab:ToggleButton({
 	name = "Teams",
 	info = "Avoid combat modules to target your teammate",
@@ -336,7 +350,7 @@ local Teams = CombatTab:ToggleButton({
 		TeamCheck = not TeamCheck
 	end
 })
---Fullbright
+--FullBright, Done
 local originalAmbient = Lighting.Ambient
 local originalOutdoor = Lighting.OutdoorAmbient
 local Fullbright = RenderTab:ToggleButton({
@@ -352,122 +366,9 @@ local Fullbright = RenderTab:ToggleButton({
 		end
 	end
 })
---NameTags
-local function CreateNameTags(player)
-	if player ~= game.Players.LocalPlayer then
-		local BillboardGui = Instance.new("BillboardGui", game.CoreGui)
-		BillboardGui.Active = true
-		BillboardGui.Adornee = player.Character:FindFirstChild("Head")
-		BillboardGui.AlwaysOnTop = true
-		BillboardGui.MaxDistance = 100
-		BillboardGui.Size = UDim2.new(0, 125, 0, 45)
-		BillboardGui.StudsOffset = Vector3.new(0, 2, 0)
-		BillboardGui.ResetOnSpawn = false
-
-		local NametagHolder = Instance.new("Frame", BillboardGui)
-		NametagHolder.Name = "NametagHolder"
-		NametagHolder.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-		NametagHolder.BackgroundTransparency = 1.000
-		NametagHolder.BorderColor3 = Color3.fromRGB(0, 0, 0)
-		NametagHolder.BorderSizePixel = 0
-		NametagHolder.Size = UDim2.new(1, 0, 1, 0)
-
-		local PlayerHealth = Instance.new("Frame", NametagHolder)
-		PlayerHealth.Name = "PlayerHealth"
-		PlayerHealth.BackgroundColor3 = Color3.fromRGB(65, 65, 65)
-		PlayerHealth.BorderColor3 = Color3.fromRGB(0, 0, 0)
-		PlayerHealth.BorderSizePixel = 0
-		PlayerHealth.Position = UDim2.new(0, 0, 0, 40)
-		PlayerHealth.Size = UDim2.new(1, 0, 0, 5)
-
-		local PlayerFill = Instance.new("Frame", PlayerHealth)
-		PlayerFill.Name = "PlayerFill"
-		PlayerFill.BackgroundColor3 = Color3.fromRGB(9, 122, 220)
-		PlayerFill.BorderColor3 = Color3.fromRGB(0, 0, 0)
-		PlayerFill.BorderSizePixel = 0
-		PlayerFill.Size = UDim2.new(1, 0, 0, 5)
-
-		local PlayerName = Instance.new("TextLabel", NametagHolder)
-		PlayerName.Name = "PlayerName"
-		PlayerName.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
-		PlayerName.BackgroundTransparency = 0.350
-		PlayerName.BorderColor3 = Color3.fromRGB(0, 0, 0)
-		PlayerName.BorderSizePixel = 0
-		PlayerName.Size = UDim2.new(1, 0, 0, 40)
-		PlayerName.Font = Enum.Font.Roboto
-		PlayerName.Text = player.Name
-		PlayerName.TextColor3 = Color3.fromRGB(255, 255, 255)
-		PlayerName.TextScaled = true
-		PlayerName.TextSize = 25.000
-		PlayerName.TextWrapped = true
-
-		local HealthValue = Instance.new("TextLabel", PlayerName)
-		HealthValue.Name = "HealthValue"
-		HealthValue.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-		HealthValue.BackgroundTransparency = 1.000
-		HealthValue.BorderColor3 = Color3.fromRGB(0, 0, 0)
-		HealthValue.BorderSizePixel = 0
-		HealthValue.Position = UDim2.new(0, 0, 0, 27)
-		HealthValue.Size = UDim2.new(1, 0, 0, 15)
-		HealthValue.Font = Enum.Font.Roboto
-		HealthValue.Text = "   Health: " .. math.round(100)
-		HealthValue.TextColor3 = Color3.fromRGB(255, 255, 255)
-		HealthValue.TextWrapped = true
-		HealthValue.TextXAlignment = Enum.TextXAlignment.Left
-
-		local function updateHealth()
-			if player.Character and player.Character:FindFirstChild("Humanoid") then
-				local humanoid = player.Character:FindFirstChildOfClass("Humanoid")
-				local maxHealth = humanoid.MaxHealth
-				local currentHealth = humanoid.Health
-				local fillPercentage = currentHealth / maxHealth
-				PlayerFill.Size = UDim2.new(fillPercentage, 0, 0, 5)
-				HealthValue.Text = "   Health: " .. currentHealth
-			end
-		end
-
-		spawn(function()
-			while task.wait(0.01) do
-				updateHealth()
-			end
-		end)
-	end
-end
-
-local function RemoveNameTags(player)
-	if player ~= game.Players.LocalPlayer then
-		local BillboardGui = player.Character:FindFirstChild("Head"):FindFirstChild("BillboardGui")
-		if BillboardGui then
-			BillboardGui:Destroy()
-		end
-	end
-end
-
-local NameTags = RenderTab:ToggleButton({
-	name = "NameTags",
-	info = "Render Sigma5 NameTags",
-	callback = function(enabled)
-		if enabled then
-			game.Players.PlayerAdded:Connect(function(player)
-				CreateNameTags(player)
-			end)
-			for _, player in ipairs(game.Players:GetPlayers()) do
-				CreateNameTags(player)
-			end
-		else
-			game.Players.PlayerRemoving:Connect(function(player)
-				RemoveNameTags(player)
-			end)
-			for _, player in ipairs(game.Players:GetPlayers()) do
-				RemoveNameTags(player)
-			end
-		end
-	end
-})
---Gameplay
+--GamePlay, Need More Features
 local AutoQueue = false
 local AutoGG = false
-
 local GamePlay = PlayerTab:ToggleButton({
 	name = "GamePlay",
 	info = "Makes your experience better",
@@ -477,26 +378,22 @@ local GamePlay = PlayerTab:ToggleButton({
 				repeat
 					task.wait(3)
 				until GetMatchState() == 2 or not enabled
-				game:GetService("ReplicatedStorage"):FindFirstChild("events-@easy-games/lobby:shared/event/lobby-events@getEvents.Events").joinQueue:FireServer({["queueType"] = getQueueType()})
+				if enabled then
+					Bedwars["JoinQueue"]:FireServer({["queueType"] = getQueueType()})
+				end
 			end
 
 			if AutoGG then
 				repeat
 					task.wait(1)
 				until GetMatchState() == 2 or not enabled
-				game:GetService("ReplicatedStorage").DefaultChatSystemChatEvents.SayMessageRequest:FireServer("GG", "All")
+				if enabled then
+					Bedwars["MessageRequest"]:FireServer("GG", "All")
+				end
 			end
 		else
 			AutoQueue, AutoGG = false, false
 		end
-	end
-})
-local GamePlayFix = GamePlay:Slider({
-	title = "??",
-	min = 0,
-	max = 0,
-	default = 0,
-	callback = function(val)
 	end
 })
 local AutoQueueToggle = GamePlay:ToggleButtonInsideUI({
@@ -511,7 +408,7 @@ local AutoGGToggle = GamePlay:ToggleButtonInsideUI({
 		AutoGG = enabled
 	end
 })
---AutoSprint
+--AutoSprint, Need Rework
 local AutoSprint = PlayerTab:ToggleButton({
 	name = "AutoSprint",
 	info = "Automatically Sprint",
@@ -529,11 +426,25 @@ local AutoSprint = PlayerTab:ToggleButton({
 			spawn(function()
 				repeat 
 					task.wait()
-					if not Bedwars["SprintCont"].stopSprinting then
+					if Bedwars["SprintCont"].sprinting then
 						Bedwars["SprintCont"]:stopSprinting()
 					end
-				until enabled
+				until enabled 
 			end)
 		end
 	end
 })
+--[[ -- Under a development
+local ReachRange = 18
+local Reach = PlayerTab:ToggleButton({
+    name = "Reach",
+    info = "Reach hax",
+    callback = function(enabled)
+        if enabled then
+            Bedwars["CombatCons"].RAYCAST_SWORD_CHARACTER_DISTANCE = ReachRange + 2
+        else
+            Bedwars["CombatCons"].RAYCAST_SWORD_CHARACTER_DISTANCE = 14.4
+        end
+    end
+})
+--]]
