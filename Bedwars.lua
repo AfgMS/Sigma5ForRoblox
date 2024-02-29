@@ -65,8 +65,8 @@ local Bedwars = {
     ["ClientStore"] = require(localPlayer.PlayerScripts.TS.ui.store).ClientStore,
     ["SetItem"] = ReplicatedStorage.rbxts_include.node_modules:FindFirstChild("@rbxts").net.out._NetManaged.SetInvItem,
     ["SwordHit"] =  ReplicatedStorage.rbxts_include.node_modules:FindFirstChild("@rbxts").net.out._NetManaged.SwordHit,
-    ["JoinQueue"] = game:GetService("ReplicatedStorage"):FindFirstChild("events-@easy-games/lobby:shared/event/lobby-events@getEvents.Events").joinQueue,
-    ["ChatService"] = game:GetService("ReplicatedStorage").DefaultChatSystemChatEvents.SayMessageRequest
+    ["JoinQueue"] = ReplicatedStorage:FindFirstChild("events-@easy-games/lobby:shared/event/lobby-events@getEvents.Events").joinQueue,
+    ["ChatService"] = ReplicatedStorage.DefaultChatSystemChatEvents.SayMessageRequest
 }
 
 local function GetMatchState()
@@ -320,6 +320,12 @@ local KillAuraRangeCustom = KillAura:Slider({
         RotationsRange = value
     end
 })
+local AutoWeapon = KillAura:ToggleButtonInsideUI({
+    name = "AutoWeapon",
+    callback = function(enabled)
+        AutoSword = not AutoSword
+    end
+})
 local Rotations = KillAura:ToggleButtonInsideUI({
     name = "Rotations",
     callback = function(enabled)
@@ -403,13 +409,13 @@ local GamePlayFix = GamePlay:Slider({
 local AutoQueueToggle = GamePlay:ToggleButtonInsideUI({
     name = "AutoQueue",
     callback = function(enabled)
-        AutoQueue = enabled
+        AutoQueue = not AutoQueue
     end
 })
 local AutoGGToggle = GamePlay:ToggleButtonInsideUI({
     name = "AutoGG",
     callback = function(enabled)
-        AutoGG = enabled
+        AutoGG = not AutoGG
     end
 })
 --AutoSprint
