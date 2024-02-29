@@ -299,6 +299,7 @@ local KillAura = CombatTab:ToggleButton({
         end
     end
 })
+
 local KillAuraRangeCustom = KillAura:Slider({
     title = "Range",
     min = 0,
@@ -308,6 +309,7 @@ local KillAuraRangeCustom = KillAura:Slider({
         KillAuraRange = value
     end
 })
+
 local AutoWeapon = KillAura:ToggleButtonInsideUI({
     name = "AutoWeapon",
     callback = function(enabled)
@@ -342,7 +344,7 @@ local Teams = CombatTab:ToggleButton({
         TeamCheck = not TeamCheck
     end
 })
---Fullbright
+--[[ --useless for now
 local originalAmbient = Lighting.Ambient
 local originalOutdoor = Lighting.OutdoorAmbient
 local Fullbright = RenderTab:ToggleButton({
@@ -358,34 +360,7 @@ local Fullbright = RenderTab:ToggleButton({
         end
     end
 })
---Tracers
-local Tracers = RenderTab:ToggleButton({
-    name = "Tracers",
-    info = "Draw lines to players",
-    callback = function(enabled)
-        if enabled then
-            while enabled do
-                task.wait(0.01)
-                local current = Camera.CFrame.Position
-                for i, v in pairs(Player:GetPlayers()) do
-                    if v.Character and v.Character:FindFirstChild("HumanoidRootPart") then
-                        local HumanoidRootPart = v.Character.HumanoidRootPart
-                        if isAlive(v) and HumanoidRootPart.Position ~= current then
-                            Drawing.new({
-                                from = current,
-                                to = HumanoidRootPart.Position,
-                                thickness = 2,
-                                color = Color3.fromRGB(0, 255, 0)
-                            }):Draw()
-                        end
-                    end
-                end
-            end
-        else
-            Tracers:Remove()
-        end
-    end
-})
+--]]
 --GamePlay
 local AutoQueue = false
 local AutoGG = false
@@ -454,7 +429,7 @@ local AutoSprint = PlayerTab:ToggleButton({
         end
     end
 })
---[[ -- Under a development
+--Reach
 local ReachRange = 18
 local Reach = PlayerTab:ToggleButton({
     name = "Reach",
@@ -467,4 +442,3 @@ local Reach = PlayerTab:ToggleButton({
         end
     end
 })
---]]
