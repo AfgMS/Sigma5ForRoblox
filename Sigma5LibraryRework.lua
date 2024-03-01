@@ -15,15 +15,6 @@ local SoundList = {
 	OnErrorOriginal = {}
 }
 
-function Library:Valid(normal, advance)
-	for i, v in pairs(normal) do
-		if advance[i] == nil then
-			advance[i] = v
-		end
-	end
-	return advance
-end
-
 function PlaySound(soundId)
 	local sound = Instance.new("Sound", game.Workspace)
 	sound.SoundId = "rbxassetid://" .. soundId
@@ -103,24 +94,24 @@ function Library:CreateTabs(Name)
 	local UIListLayout = Instance.new("UIListLayout", ScrollForToggle)
 	UIListLayout.SortOrder = Enum.SortOrder.LayoutOrder
 
-	local MobileSupportUI = Instance.new("TextButton", CoreGui:WaitForChild("sigma5"))
-	MobileSupportUI.BorderSizePixel = 0
-	MobileSupportUI.BackgroundColor3 = Color3.fromRGB(235, 235, 235)
-	MobileSupportUI.TextSize = 8
-	MobileSupportUI.TextColor3 = Color3.fromRGB(0, 0, 0)
-	MobileSupportUI.Size = UDim2.new(0, 23, 0, 23)
-	MobileSupportUI.BorderColor3 = Color3.fromRGB(0, 0, 0)
-	MobileSupportUI.Text = "+"
-	MobileSupportUI.ZIndex = 2
-	MobileSupportUI.Name = "MobileOpenUI"
-	MobileSupportUI.Position = UDim2.new(0.963096738, 0, 0.351765305, 0)
-	MobileSupportUI.AutoButtonColor = false
-	MobileSupportUI.TextTransparency = 0.250
+	local MobileOpenUI = Instance.new("TextButton", CoreGui:WaitForChild("sigma5"))
+	MobileOpenUI.BorderSizePixel = 0
+	MobileOpenUI.BackgroundColor3 = Color3.fromRGB(235, 235, 235)
+	MobileOpenUI.TextSize = 8
+	MobileOpenUI.TextColor3 = Color3.fromRGB(0, 0, 0)
+	MobileOpenUI.Size = UDim2.new(0, 23, 0, 23)
+	MobileOpenUI.BorderColor3 = Color3.fromRGB(0, 0, 0)
+	MobileOpenUI.Text = "+"
+	MobileOpenUI.ZIndex = 2
+	MobileOpenUI.Name = "MobileOpenUI"
+	MobileOpenUI.Position = UDim2.new(0.963096738, 0, 0.351765305, 0)
+	MobileOpenUI.AutoButtonColor = false
+	MobileOpenUI.TextTransparency = 0.250
 
-	local MobileCornerSupport = Instance.new("UICorner", MobileSupportUI)
+	local MobileCornerSupport = Instance.new("UICorner", MobileOpenUI)
 	MobileCornerSupport.CornerRadius = UDim.new(0, 8)
 
-	MobileSupportUI.MouseButton1Click:Connect(function()
+	MobileOpenUI.MouseButton1Click:Connect(function()
 		for _, tab in pairs(CoreGui:WaitForChild("sigma5"):GetChildren()) do
 			if tab.Name == "TabsVHolder" and tab:IsA("Frame") then
 				tab.Visible = not tab.Visible
@@ -149,6 +140,163 @@ function Library:CreateTabs(Name)
 		warn("Reached the maximum number of tabs. Cannot create more tabs.")
 	end
 
+function Library:CreateToggles(Name, Description, callback)
+	
+	local ToggleButton = {
+		Enabled = false
+	}
+	
+	--ToggleButtons
+	local ToggleButtonHolder = Instance.new("TextButton", ScrollForToggle)
+	ToggleButtonHolder.BorderSizePixel = 0
+	ToggleButtonHolder.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+	ToggleButtonHolder.TextXAlignment = Enum.TextXAlignment.Left
+	ToggleButtonHolder.Font = Enum.Font.Roboto
+	ToggleButtonHolder.TextSize = 15.000
+	ToggleButtonHolder.TextColor3 = Color3.fromRGB(15, 15, 15)
+	ToggleButtonHolder.Size = UDim2.new(1, 0, 0, 20)
+	ToggleButtonHolder.BorderColor3 = Color3.fromRGB(0, 0, 0)
+	ToggleButtonHolder.Text = "     " .. Name
+	ToggleButtonHolder.ZIndex = 3
+	ToggleButtonHolder.Name = "Toggle Button For" .. Name
+	ToggleButtonHolder.Position = UDim2.new(0, 3, 0, 0)
+	ToggleButtonHolder.AutoButtonColor = false
+	ToggleButtonHolder.TextTransparency = 0.250
+
+	local MobileOpenMenu = Instance.new("TextButton", ToggleButtonHolder)
+	MobileOpenMenu.BorderSizePixel = 0
+	MobileOpenMenu.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+	MobileOpenMenu.Font = Enum.Font.Roboto
+	MobileOpenMenu.TextSize = 15.000
+	MobileOpenMenu.TextColor3 = Color3.fromRGB(15, 15, 15)
+	MobileOpenMenu.Size = UDim2.new(0, 20, 0, 20)
+	MobileOpenMenu.BorderColor3 = Color3.fromRGB(0, 0, 0)
+	MobileOpenMenu.Text = "+"
+	MobileOpenMenu.BackgroundTransparency = 0.050
+	MobileOpenMenu.ZIndex = 3
+	MobileOpenMenu.Position = UDim2.new(0, 113, 0, 0)
+	MobileOpenMenu.AutoButtonColor = false
+	MobileOpenMenu.TextTransparency = 0.250
+
+	--RightClickMenu
+
+	local MenuHolder = Instance.new("Frame", CoreGui:WaitForChild("sigma5"))
+	MenuHolder.BackgroundColor3 = Color3.fromRGB(250, 250, 250)
+	MenuHolder.BorderColor3 = Color3.fromRGB(0, 0, 0)
+	MenuHolder.BorderSizePixel = 0
+	MenuHolder.Position = UDim2.new(0.497, -155, 0.521, -148)
+	MenuHolder.Size = UDim2.new(0, 325, 0, 295)
+	MenuHolder.ZIndex = 4
+	MenuHolder.Visible = false
+
+	local MenuHolderCorner = Instance.new("UICorner", MenuHolder)
+	MenuHolderCorner.CornerRadius = UDim.new(0, 8)
+
+	local ButtonsMenuTitleText = Instance.new("TextLabel", MenuHolder)
+	ButtonsMenuTitleText.Name = "Menu For" .. Name
+	ButtonsMenuTitleText.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+	ButtonsMenuTitleText.BackgroundTransparency = 1.000
+	ButtonsMenuTitleText.BorderColor3 = Color3.fromRGB(0, 0, 0)
+	ButtonsMenuTitleText.BorderSizePixel = 0
+	ButtonsMenuTitleText.Position = UDim2.new(0, 0, 0, -52)
+	ButtonsMenuTitleText.Size = UDim2.new(0, 200, 0, 50)
+	ButtonsMenuTitleText.Font = Enum.Font.Roboto
+	ButtonsMenuTitleText.Text = Name
+	ButtonsMenuTitleText.TextColor3 = Color3.fromRGB(255, 255, 255)
+	ButtonsMenuTitleText.TextSize = 30.000
+	ButtonsMenuTitleText.TextXAlignment = Enum.TextXAlignment.Left
+	ButtonsMenuTitleText.Visible = true
+	ButtonsMenuTitleText.ZIndex = 4
+
+	local MobileCloseMenu = Instance.new("TextButton", MenuHolder)
+	MobileCloseMenu.BorderSizePixel = 0
+	MobileCloseMenu.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+	MobileCloseMenu.Font = Enum.Font.Roboto
+	MobileCloseMenu.TextScaled  = true
+	MobileCloseMenu.TextColor3 = Color3.fromRGB(255, 255, 255)
+	MobileCloseMenu.Size = UDim2.new(0, 45, 0, 45)
+	MobileCloseMenu.BorderColor3 = Color3.fromRGB(0, 0, 0)
+	MobileCloseMenu.Text = "x"
+	MobileCloseMenu.BackgroundTransparency = 1
+	MobileCloseMenu.ZIndex = 4
+	MobileCloseMenu.Name = "CloseMobileSupport"
+	MobileCloseMenu.Position = UDim2.new(0, 290, 0, -52)
+	MobileCloseMenu.AutoButtonColor = false
+
+	local ButtonsMenuInner = Instance.new("ScrollingFrame", MenuHolder)
+	ButtonsMenuInner.Name = "ScrollHolder"
+	ButtonsMenuInner.Active = true
+	ButtonsMenuInner.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+	ButtonsMenuInner.BackgroundTransparency = 1.000
+	ButtonsMenuInner.BorderColor3 = Color3.fromRGB(0, 0, 0)
+	ButtonsMenuInner.BorderSizePixel = 0
+	ButtonsMenuInner.Size = UDim2.new(1, 0, 1, 0)
+	ButtonsMenuInner.ScrollBarThickness = 0
+	ButtonsMenuInner.Visible = false
+	ButtonsMenuInner.ZIndex = 4
+
+	local UIListLayout = Instance.new("UIListLayout", ButtonsMenuInner)
+	UIListLayout.SortOrder = Enum.SortOrder.LayoutOrder
+
+	local ButtonsMenuTitle = Instance.new("TextLabel", ButtonsMenuInner)
+	ButtonsMenuTitle.Name = "Info for" .. Name
+	ButtonsMenuTitle.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+	ButtonsMenuTitle.BackgroundTransparency = 1.000
+	ButtonsMenuTitle.BorderColor3 = Color3.fromRGB(0, 0, 0)
+	ButtonsMenuTitle.BorderSizePixel = 0
+	ButtonsMenuTitle.Size = UDim2.new(1, 0, 0, 35)
+	ButtonsMenuTitle.Font = Enum.Font.Roboto
+	ButtonsMenuTitle.Text = "      " .. Description
+	ButtonsMenuTitle.TextColor3 = Color3.fromRGB(85, 85, 85)
+	ButtonsMenuTitle.TextSize = 13
+	ButtonsMenuTitle.TextWrapped = true
+	ButtonsMenuTitle.TextXAlignment = Enum.TextXAlignment.Left
+	ButtonsMenuTitle.Visible = true
+	ButtonsMenuTitle.ZIndex = 4
+
+	local function ToggleButtonOnClicked()
+		if ToggleButton.Enabled then
+			ToggleButtonHolder.BackgroundColor3 = Color3.fromRGB(115, 185, 255)
+			ToggleButtonHolder.TextColor3 = Color3.fromRGB(255, 255, 255)
+			ToggleButtonHolder.Text = "       " .. Name
+			PlaySound(SoundList.OnEnabled)
+			PlaySound(SoundList.OnErrorOriginal)
+		else
+			ToggleButtonHolder.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+			ToggleButtonHolder.TextColor3 = Color3.fromRGB(15, 15, 15)
+			ToggleButtonHolder.Text = "     " .. Name
+			PlaySound(SoundList.OnDisabled)
+			PlaySound(SoundList.OnDisabledOriginal)
+		end
+	end
+
+	ToggleButtonHolder.MouseButton1Click:Connect(function()
+		ToggleButton.Enabled = not ToggleButton.Enabled
+		ToggleButtonOnClicked()
+
+		if callback then
+			callback(ToggleButton.Enabled)
+		end
+	end)
+
+	ToggleButtonHolder.MouseButton2Click:Connect(function()
+		MenuHolder.Visible = not MenuHolder.Visible
+		ButtonsMenuInner.Visible = not ButtonsMenuInner.Visible
+	end)
+
+
+	MobileOpenMenu.MouseButton1Click:Connect(function()
+		MenuHolder.Visible = not MenuHolder.Visible
+		ButtonsMenuInner.Visible = not ButtonsMenuInner.Visible
+	end)
+
+	MobileCloseMenu.MouseButton1Click:Connect(function()
+		MenuHolder.Visible = not MenuHolder.Visible
+		ButtonsMenuInner.Visible = not ButtonsMenuInner.Visible
+	end)
+
+	ToggleButtonOnClicked()
+end
 end
 
 return Library
