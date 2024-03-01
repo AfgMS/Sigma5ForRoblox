@@ -574,14 +574,12 @@ function Library:createTabs(parentFrame, tabName)
 				newButton.Text = "       " .. options.name
 				AddArrayList(options.name)
 				playContinuousSound(soundIds.OnEnabled)
-				playContinuousSound(soundIds.OnEnabledOriginal)
 			else
 				Library:tween(newButton, {BackgroundColor3 = Color3.fromRGB(255, 255, 255)})
 				Library:tween(newButton, {TextColor3 = Color3.fromRGB(15, 15, 15)})
 				newButton.Text = "     " .. options.name
 				RemoveArraylist(options.name)
 				playContinuousSound(soundIds.OnDisabled)
-				playContinuousSound(soundIds.OnDisabledOriginal)
 			end
 		end
 
