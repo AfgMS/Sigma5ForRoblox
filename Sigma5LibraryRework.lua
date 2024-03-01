@@ -77,7 +77,7 @@ function Library:CreateTabs(Name)
 	ScrollingHolder.ZIndex = 3
 	ScrollingHolder.Position = UDim2.new(0, 0, 0, 40)
 	ScrollingHolder.Name = "ScrollingPart"
-	ScrollingHolder.Visible = false
+	ScrollingHolder.Visible = true
 
 	local ScrollForToggle = Instance.new("ScrollingFrame", ScrollingHolder)
 	ScrollForToggle.Active = true
