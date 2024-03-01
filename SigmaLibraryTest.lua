@@ -1,6 +1,6 @@
 local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/AfgMS/Sigma5ForRoblox/main/Sigma5LibraryRework.lua", true))()
 
-Library:CreateCore()
+Library:createScreenGui()
 
 local TestOne = Library:CreateTabs("Abror")
 local TestTwo = Library:CreateTabs("Ebrer")
