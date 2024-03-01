@@ -3,7 +3,7 @@ local Lightning = game:GetService("Lighting")
 local Font = game:GetService("TextService")
 
 local Library = {}
-Library.TabsWidth = {}
+Library.TabsWidth = 15
 local SoundHolder = {}
 
 local SoundList = {
