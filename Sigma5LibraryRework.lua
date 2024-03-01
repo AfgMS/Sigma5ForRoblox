@@ -47,9 +47,9 @@ function Library:CreateCore()
 	return ScreenGui
 end
 
-function Library:CreateTabs(parentFrame, Name)
+function Library:CreateTabs(Name)
 
-	local TabsHolder = Instance.new("Frame", parentFrame)
+	local TabsHolder = Instance.new("Frame", CoreGui:WaitForChild("sigma5"))
 	TabsHolder.BorderSizePixel = 0
 	TabsHolder.BackgroundColor3 = Color3.fromRGB(250, 250, 250)
 	TabsHolder.BackgroundTransparency = 0.050
@@ -103,7 +103,7 @@ function Library:CreateTabs(parentFrame, Name)
 	local UIListLayout = Instance.new("UIListLayout", ScrollForToggle)
 	UIListLayout.SortOrder = Enum.SortOrder.LayoutOrder
 
-	local MobileSupportUI = Instance.new("TextButton", parentFrame)
+	local MobileSupportUI = Instance.new("TextButton", CoreGui:WaitForChild("sigma5"))
 	MobileSupportUI.BorderSizePixel = 0
 	MobileSupportUI.BackgroundColor3 = Color3.fromRGB(235, 235, 235)
 	MobileSupportUI.TextSize = 8
@@ -121,7 +121,7 @@ function Library:CreateTabs(parentFrame, Name)
 	MobileCornerSupport.CornerRadius = UDim.new(0, 8)
 
 	MobileSupportUI.MouseButton1Click:Connect(function()
-		for _, tab in pairs(parentFrame:GetChildren()) do
+		for _, tab in pairs(CoreGui:WaitForChild("sigma5"):GetChildren()) do
 			if TabsHolder and TabsHolder:IsA("Frame") then
 				TabsHolder.Visible = not TabsHolder.Visible
 				BlurEffect.Enabled = not BlurEffect.Enabled
