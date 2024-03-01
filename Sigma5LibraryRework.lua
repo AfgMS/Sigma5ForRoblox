@@ -15,6 +15,15 @@ local SoundList = {
 	OnErrorOriginal = {}
 }
 
+function Library:Valid(defaults, advance)
+	for i, v in pairs(defaults) do
+		if advance[i] == nil then
+			advance[i] = v
+		end
+	end
+	return advance
+end
+
 function PlaySound(soundId)
 	local sound = Instance.new("Sound", game.Workspace)
 	sound.SoundId = "rbxassetid://" .. soundId
@@ -77,7 +86,7 @@ function Library:CreateTabs(Name)
 	ScrollingHolder.ZIndex = 3
 	ScrollingHolder.Position = UDim2.new(0, 0, 0, 40)
 	ScrollingHolder.Name = "ScrollingPart"
-	ScrollingHolder.Visible = true
+	ScrollingHolder.Visible = false
 
 	local ScrollForToggle = Instance.new("ScrollingFrame", ScrollingHolder)
 	ScrollForToggle.Active = true
@@ -136,7 +145,12 @@ function Library:CreateTabs(Name)
 		warn("Reached the maximum number of tabs. Cannot create more tabs.")
 	end
 
-function Library:CreateToggles(Name, Description, callback)
+function Library:CreateToggles(advance)
+	advance = Library:Valid({
+		Name = "Invalid",
+		Description = "Invalid",
+		
+	}, advance or {})
 	
 	local ToggleButton = {
 		Enabled = false
@@ -152,9 +166,9 @@ function Library:CreateToggles(Name, Description, callback)
 	ToggleButtonHolder.TextColor3 = Color3.fromRGB(15, 15, 15)
 	ToggleButtonHolder.Size = UDim2.new(1, 0, 0, 20)
 	ToggleButtonHolder.BorderColor3 = Color3.fromRGB(0, 0, 0)
-	ToggleButtonHolder.Text = "     " .. Name
+	ToggleButtonHolder.Text = "     " .. advance.Name
 	ToggleButtonHolder.ZIndex = 3
-	ToggleButtonHolder.Name = "Toggle Button For" .. Name
+	ToggleButtonHolder.Name = "Toggle Button For" .. advance.Name
 	ToggleButtonHolder.Position = UDim2.new(0, 3, 0, 0)
 	ToggleButtonHolder.AutoButtonColor = false
 	ToggleButtonHolder.TextTransparency = 0.250
@@ -189,7 +203,7 @@ function Library:CreateToggles(Name, Description, callback)
 	MenuHolderCorner.CornerRadius = UDim.new(0, 8)
 
 	local ButtonsMenuTitleText = Instance.new("TextLabel", MenuHolder)
-	ButtonsMenuTitleText.Name = "Menu For" .. Name
+	ButtonsMenuTitleText.Name = "Menu For" .. advance.Name
 	ButtonsMenuTitleText.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
 	ButtonsMenuTitleText.BackgroundTransparency = 1.000
 	ButtonsMenuTitleText.BorderColor3 = Color3.fromRGB(0, 0, 0)
@@ -197,7 +211,7 @@ function Library:CreateToggles(Name, Description, callback)
 	ButtonsMenuTitleText.Position = UDim2.new(0, 0, 0, -52)
 	ButtonsMenuTitleText.Size = UDim2.new(0, 200, 0, 50)
 	ButtonsMenuTitleText.Font = Enum.Font.Roboto
-	ButtonsMenuTitleText.Text = Name
+	ButtonsMenuTitleText.Text = advance.Name
 	ButtonsMenuTitleText.TextColor3 = Color3.fromRGB(255, 255, 255)
 	ButtonsMenuTitleText.TextSize = 30.000
 	ButtonsMenuTitleText.TextXAlignment = Enum.TextXAlignment.Left
@@ -215,12 +229,10 @@ function Library:CreateToggles(Name, Description, callback)
 	MobileCloseMenu.Text = "x"
 	MobileCloseMenu.BackgroundTransparency = 1
 	MobileCloseMenu.ZIndex = 4
-	MobileCloseMenu.Name = "CloseMobileSupport"
 	MobileCloseMenu.Position = UDim2.new(0, 290, 0, -52)
 	MobileCloseMenu.AutoButtonColor = false
 
 	local ButtonsMenuInner = Instance.new("ScrollingFrame", MenuHolder)
-	ButtonsMenuInner.Name = "ScrollHolder"
 	ButtonsMenuInner.Active = true
 	ButtonsMenuInner.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
 	ButtonsMenuInner.BackgroundTransparency = 1.000
@@ -235,14 +247,14 @@ function Library:CreateToggles(Name, Description, callback)
 	UIListLayout.SortOrder = Enum.SortOrder.LayoutOrder
 
 	local ButtonsMenuTitle = Instance.new("TextLabel", ButtonsMenuInner)
-	ButtonsMenuTitle.Name = "Info for" .. Name
+	ButtonsMenuTitle.Name = "Info for" .. advance.Name
 	ButtonsMenuTitle.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
 	ButtonsMenuTitle.BackgroundTransparency = 1.000
 	ButtonsMenuTitle.BorderColor3 = Color3.fromRGB(0, 0, 0)
 	ButtonsMenuTitle.BorderSizePixel = 0
 	ButtonsMenuTitle.Size = UDim2.new(1, 0, 0, 35)
 	ButtonsMenuTitle.Font = Enum.Font.Roboto
-	ButtonsMenuTitle.Text = "      " .. Description
+	ButtonsMenuTitle.Text = "      " .. advance.Description
 	ButtonsMenuTitle.TextColor3 = Color3.fromRGB(85, 85, 85)
 	ButtonsMenuTitle.TextSize = 13
 	ButtonsMenuTitle.TextWrapped = true
@@ -254,13 +266,13 @@ function Library:CreateToggles(Name, Description, callback)
 		if ToggleButton.Enabled then
 			ToggleButtonHolder.BackgroundColor3 = Color3.fromRGB(115, 185, 255)
 			ToggleButtonHolder.TextColor3 = Color3.fromRGB(255, 255, 255)
-			ToggleButtonHolder.Text = "       " .. Name
+			ToggleButtonHolder.Text = "       " .. advance.Name
 			PlaySound(SoundList.OnEnabled)
 			PlaySound(SoundList.OnErrorOriginal)
 		else
 			ToggleButtonHolder.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
 			ToggleButtonHolder.TextColor3 = Color3.fromRGB(15, 15, 15)
-			ToggleButtonHolder.Text = "     " .. Name
+			ToggleButtonHolder.Text = "     " .. advance.Name
 			PlaySound(SoundList.OnDisabled)
 			PlaySound(SoundList.OnDisabledOriginal)
 		end
@@ -270,8 +282,8 @@ function Library:CreateToggles(Name, Description, callback)
 		ToggleButton.Enabled = not ToggleButton.Enabled
 		ToggleButtonOnClicked()
 
-		if callback then
-			callback(ToggleButton.Enabled)
+		if advance.callback then
+			advance.callback(ToggleButton.Enabled)
 		end
 	end)
 
@@ -292,7 +304,8 @@ function Library:CreateToggles(Name, Description, callback)
 	end)
 
 	ToggleButtonOnClicked()
-end
+	return ToggleButton
+	end
 end
 
 return Library
