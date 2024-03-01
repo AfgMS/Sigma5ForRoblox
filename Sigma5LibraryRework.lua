@@ -57,7 +57,7 @@ function Library:CreateTabs(Name)
 	TabsHolder.BorderColor3 = Color3.fromRGB(0, 0, 0)
 	TabsHolder.ZIndex = 3
 	TabsHolder.Position = UDim2.new(0, 25, 0, 10)
-	TabsHolder.Name = "Tabs For" .. Name
+	TabsHolder.Name = "TabsVHolder"
 	TabsHolder.Visible = false
 
 	local TabsNameHolder = Instance.new("TextLabel", TabsHolder)
@@ -122,12 +122,10 @@ function Library:CreateTabs(Name)
 
 	MobileSupportUI.MouseButton1Click:Connect(function()
 		for _, tab in pairs(CoreGui:WaitForChild("sigma5"):GetChildren()) do
-			if tab.Name == "Tabs For" .. Name and tab:IsA("Frame") then
-				TabsHolder.Visible = not TabsHolder.Visible
+			if tab.Name == "TabsVHolder" and tab:IsA("Frame") then
+				tab.Visible = not tab.Visible
 				BlurEffect.Enabled = not BlurEffect.Enabled
-				if ScrollingHolder then
-					ScrollingHolder.Visible = not ScrollingHolder.Visible
-				end
+				ScrollingHolder.Visible = not ScrollingHolder.Visible
 			end
 		end
 	end)
