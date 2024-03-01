@@ -29,8 +29,12 @@ function Library:tween(object, properties)
 end
 
 local soundIds = {
-	enabled = 3318713980,
-	disabled = 3318714899
+	OnEnabled = 3318713980,
+	OnEnabledOriginal = 14393273745,
+	OnDisabled = 3318714899,
+	OnDisabledOriginal = 14393278136,
+	OnError = 9066167010,
+	OnErrorOriginal = {}
 }
 
 function playContinuousSound(soundId)
@@ -322,7 +326,7 @@ World.ZIndex = 1
 World.TextColor3 = Color3.fromRGB(255, 255, 255)
 World.TextSize = 14
 World.TextXAlignment = Enum.TextXAlignment.Left
-	
+
 local BlurUI = Instance.new("BlurEffect")
 BlurUI.Parent = Lighting
 BlurUI.Size = 28
@@ -338,7 +342,7 @@ end
 function Library:createTabs(parentFrame, tabName)
 	local TAB = {}
 	TAB.Buttons = {}
-	
+
 	TAB.Tabs = Instance.new("Frame", parentFrame)
 	TAB.Tabs.BorderSizePixel = 0
 	TAB.Tabs.BackgroundColor3 = Color3.fromRGB(250, 250, 250)
@@ -349,7 +353,7 @@ function Library:createTabs(parentFrame, tabName)
 	TAB.Tabs.Position = UDim2.new(0, 25, 0, 10)
 	TAB.Tabs.Name = "Tabs"
 	TAB.Tabs.Visible = false
-	
+
 	TAB.TabsName = Instance.new("TextLabel", TAB.Tabs)
 	TAB.TabsName.BorderSizePixel = 0
 	TAB.TabsName.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
@@ -366,7 +370,7 @@ function Library:createTabs(parentFrame, tabName)
 	TAB.TabsName.Position = UDim2.new(0, 0, 0, 0)
 	TAB.TabsName.TextStrokeTransparency = 0.990
 	TAB.TabsName.BackgroundTransparency = 1.000
-	
+
 	TAB.ScrollingPart = Instance.new("Frame", TAB.Tabs)
 	TAB.ScrollingPart.BorderSizePixel = 0
 	TAB.ScrollingPart.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
@@ -406,13 +410,13 @@ function Library:createTabs(parentFrame, tabName)
 	MobileSupportUI.Position = UDim2.new(0.963096738, 0, 0.351765305, 0)
 	MobileSupportUI.AutoButtonColor = false
 	MobileSupportUI.TextTransparency = 0.250
-	
+
 	local MobileCornerSupport = Instance.new("UICorner", MobileSupportUI)
 	MobileCornerSupport.CornerRadius = UDim.new(0, 8)
-	
+
 	MobileSupportUI.MouseButton1Click:Connect(function()
 		for _, tab in pairs(parentFrame:GetChildren()) do
-		if tab.Name == "Tabs" and tab:IsA("Frame") then
+			if tab.Name == "Tabs" and tab:IsA("Frame") then
 				tab.Visible = not tab.Visible
 				BlurUI.Enabled = not BlurUI.Enabled
 				if tab.ScrollingPart then
@@ -423,14 +427,14 @@ function Library:createTabs(parentFrame, tabName)
 	end)
 
 
-		game:GetService("UserInputService").InputBegan:Connect(function(input, gameProcessedEvent)
-			if input.KeyCode == Enum.KeyCode.V and not gameProcessedEvent then
-				TAB.Tabs.Visible = not TAB.Tabs.Visible
-				TAB.ScrollingPart.Visible = not TAB.ScrollingPart.Visible
-				BlurUI.Enabled = not BlurUI.Enabled
-			end
-		end)
-	
+	game:GetService("UserInputService").InputBegan:Connect(function(input, gameProcessedEvent)
+		if input.KeyCode == Enum.KeyCode.V and not gameProcessedEvent then
+			TAB.Tabs.Visible = not TAB.Tabs.Visible
+			TAB.ScrollingPart.Visible = not TAB.ScrollingPart.Visible
+			BlurUI.Enabled = not BlurUI.Enabled
+		end
+	end)
+
 	if Library.totalWidth < 10 * TAB.Tabs.Size.X.Offset then
 		local newX = UDim2.new(0, Library.totalWidth * 1.03, 0, 0)
 		Library.totalWidth = Library.totalWidth + TAB.Tabs.Size.X.Offset
@@ -440,7 +444,7 @@ function Library:createTabs(parentFrame, tabName)
 		warn("Reached the maximum number of tabs. Cannot create more tabs.")
 		createnotification("Sigma", "You can't add more tabs", 5, true)
 	end
-	
+
 	function TAB:ToggleButton(options)
 		options = Library:validate({
 			name = "Error404",
@@ -486,96 +490,98 @@ function Library:createTabs(parentFrame, tabName)
 		openmenu.TextTransparency = 0.250
 
 		-- RightClickStuff
-		
-local ButtonsMenuFrame = Instance.new("Frame", CoreGui.Sigma)
-ButtonsMenuFrame.Name = "Holder"
-ButtonsMenuFrame.BackgroundColor3 = Color3.fromRGB(250, 250, 250)
-ButtonsMenuFrame.BorderColor3 = Color3.fromRGB(0, 0, 0)
-ButtonsMenuFrame.BorderSizePixel = 0
-ButtonsMenuFrame.Position = UDim2.new(0.497, -155, 0.521, -148)
-ButtonsMenuFrame.Size = UDim2.new(0, 325, 0, 295)
-ButtonsMenuFrame.ZIndex = 4
-ButtonsMenuFrame.Visible = false
-		
-local ButtonsMenuFrameCorner = Instance.new("UICorner", ButtonsMenuFrame)
-ButtonsMenuFrameCorner.CornerRadius = UDim.new(0, 8)
 
-local ButtonsMenuTitleText = Instance.new("TextLabel", ButtonsMenuFrame)
-ButtonsMenuTitleText.Name = "Menu For" .. options.name
-ButtonsMenuTitleText.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-ButtonsMenuTitleText.BackgroundTransparency = 1.000
-ButtonsMenuTitleText.BorderColor3 = Color3.fromRGB(0, 0, 0)
-ButtonsMenuTitleText.BorderSizePixel = 0
-ButtonsMenuTitleText.Position = UDim2.new(0, 0, 0, -52)
-ButtonsMenuTitleText.Size = UDim2.new(0, 200, 0, 50)
-ButtonsMenuTitleText.Font = Enum.Font.Roboto
-ButtonsMenuTitleText.Text = options.name
-ButtonsMenuTitleText.TextColor3 = Color3.fromRGB(255, 255, 255)
-ButtonsMenuTitleText.TextSize = 30.000
-ButtonsMenuTitleText.TextXAlignment = Enum.TextXAlignment.Left
-ButtonsMenuTitleText.Visible = true
-ButtonsMenuTitleText.ZIndex = 4
+		local ButtonsMenuFrame = Instance.new("Frame", CoreGui.Sigma)
+		ButtonsMenuFrame.Name = "Holder"
+		ButtonsMenuFrame.BackgroundColor3 = Color3.fromRGB(250, 250, 250)
+		ButtonsMenuFrame.BorderColor3 = Color3.fromRGB(0, 0, 0)
+		ButtonsMenuFrame.BorderSizePixel = 0
+		ButtonsMenuFrame.Position = UDim2.new(0.497, -155, 0.521, -148)
+		ButtonsMenuFrame.Size = UDim2.new(0, 325, 0, 295)
+		ButtonsMenuFrame.ZIndex = 4
+		ButtonsMenuFrame.Visible = false
 
-local CloseButtonsMenuFrame = Instance.new("TextButton", ButtonsMenuFrame)
-CloseButtonsMenuFrame.BorderSizePixel = 0
-CloseButtonsMenuFrame.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-CloseButtonsMenuFrame.Font = Enum.Font.Roboto
-CloseButtonsMenuFrame.TextScaled  = true
-CloseButtonsMenuFrame.TextColor3 = Color3.fromRGB(255, 255, 255)
-CloseButtonsMenuFrame.Size = UDim2.new(0, 45, 0, 45)
-CloseButtonsMenuFrame.BorderColor3 = Color3.fromRGB(0, 0, 0)
-CloseButtonsMenuFrame.Text = "x"
-CloseButtonsMenuFrame.BackgroundTransparency = 1
-CloseButtonsMenuFrame.ZIndex = 4
-CloseButtonsMenuFrame.Name = "CloseMobileSupport"
-CloseButtonsMenuFrame.Position = UDim2.new(0, 290, 0, -52)
-CloseButtonsMenuFrame.AutoButtonColor = false
+		local ButtonsMenuFrameCorner = Instance.new("UICorner", ButtonsMenuFrame)
+		ButtonsMenuFrameCorner.CornerRadius = UDim.new(0, 8)
 
-local ButtonsMenuInner = Instance.new("ScrollingFrame", ButtonsMenuFrame)
-ButtonsMenuInner.Name = "ScrollHolder"
-ButtonsMenuInner.Active = true
-ButtonsMenuInner.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-ButtonsMenuInner.BackgroundTransparency = 1.000
-ButtonsMenuInner.BorderColor3 = Color3.fromRGB(0, 0, 0)
-ButtonsMenuInner.BorderSizePixel = 0
-ButtonsMenuInner.Size = UDim2.new(1, 0, 1, 0)
-ButtonsMenuInner.ScrollBarThickness = 0
-ButtonsMenuInner.Visible = false
-ButtonsMenuInner.ZIndex = 4
+		local ButtonsMenuTitleText = Instance.new("TextLabel", ButtonsMenuFrame)
+		ButtonsMenuTitleText.Name = "Menu For" .. options.name
+		ButtonsMenuTitleText.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+		ButtonsMenuTitleText.BackgroundTransparency = 1.000
+		ButtonsMenuTitleText.BorderColor3 = Color3.fromRGB(0, 0, 0)
+		ButtonsMenuTitleText.BorderSizePixel = 0
+		ButtonsMenuTitleText.Position = UDim2.new(0, 0, 0, -52)
+		ButtonsMenuTitleText.Size = UDim2.new(0, 200, 0, 50)
+		ButtonsMenuTitleText.Font = Enum.Font.Roboto
+		ButtonsMenuTitleText.Text = options.name
+		ButtonsMenuTitleText.TextColor3 = Color3.fromRGB(255, 255, 255)
+		ButtonsMenuTitleText.TextSize = 30.000
+		ButtonsMenuTitleText.TextXAlignment = Enum.TextXAlignment.Left
+		ButtonsMenuTitleText.Visible = true
+		ButtonsMenuTitleText.ZIndex = 4
 
-local UIListLayout = Instance.new("UIListLayout", ButtonsMenuInner)
-UIListLayout.SortOrder = Enum.SortOrder.LayoutOrder
+		local CloseButtonsMenuFrame = Instance.new("TextButton", ButtonsMenuFrame)
+		CloseButtonsMenuFrame.BorderSizePixel = 0
+		CloseButtonsMenuFrame.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+		CloseButtonsMenuFrame.Font = Enum.Font.Roboto
+		CloseButtonsMenuFrame.TextScaled  = true
+		CloseButtonsMenuFrame.TextColor3 = Color3.fromRGB(255, 255, 255)
+		CloseButtonsMenuFrame.Size = UDim2.new(0, 45, 0, 45)
+		CloseButtonsMenuFrame.BorderColor3 = Color3.fromRGB(0, 0, 0)
+		CloseButtonsMenuFrame.Text = "x"
+		CloseButtonsMenuFrame.BackgroundTransparency = 1
+		CloseButtonsMenuFrame.ZIndex = 4
+		CloseButtonsMenuFrame.Name = "CloseMobileSupport"
+		CloseButtonsMenuFrame.Position = UDim2.new(0, 290, 0, -52)
+		CloseButtonsMenuFrame.AutoButtonColor = false
 
-local ButtonsMenuTitle = Instance.new("TextLabel", ButtonsMenuInner)
-ButtonsMenuTitle.Name = "Info for" ..options.name
-ButtonsMenuTitle.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-ButtonsMenuTitle.BackgroundTransparency = 1.000
-ButtonsMenuTitle.BorderColor3 = Color3.fromRGB(0, 0, 0)
-ButtonsMenuTitle.BorderSizePixel = 0
-ButtonsMenuTitle.Size = UDim2.new(1, 0, 0, 35)
-ButtonsMenuTitle.Font = Enum.Font.Roboto
-ButtonsMenuTitle.Text = "      " .. options.info
-ButtonsMenuTitle.TextColor3 = Color3.fromRGB(85, 85, 85)
-ButtonsMenuTitle.TextSize = 13
-ButtonsMenuTitle.TextWrapped = true
-ButtonsMenuTitle.TextXAlignment = Enum.TextXAlignment.Left
-ButtonsMenuTitle.Visible = true
-ButtonsMenuTitle.ZIndex = 4
-ToggleButton.MenuFrame = ButtonsMenuFrame
-		
+		local ButtonsMenuInner = Instance.new("ScrollingFrame", ButtonsMenuFrame)
+		ButtonsMenuInner.Name = "ScrollHolder"
+		ButtonsMenuInner.Active = true
+		ButtonsMenuInner.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+		ButtonsMenuInner.BackgroundTransparency = 1.000
+		ButtonsMenuInner.BorderColor3 = Color3.fromRGB(0, 0, 0)
+		ButtonsMenuInner.BorderSizePixel = 0
+		ButtonsMenuInner.Size = UDim2.new(1, 0, 1, 0)
+		ButtonsMenuInner.ScrollBarThickness = 0
+		ButtonsMenuInner.Visible = false
+		ButtonsMenuInner.ZIndex = 4
+
+		local UIListLayout = Instance.new("UIListLayout", ButtonsMenuInner)
+		UIListLayout.SortOrder = Enum.SortOrder.LayoutOrder
+
+		local ButtonsMenuTitle = Instance.new("TextLabel", ButtonsMenuInner)
+		ButtonsMenuTitle.Name = "Info for" ..options.name
+		ButtonsMenuTitle.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+		ButtonsMenuTitle.BackgroundTransparency = 1.000
+		ButtonsMenuTitle.BorderColor3 = Color3.fromRGB(0, 0, 0)
+		ButtonsMenuTitle.BorderSizePixel = 0
+		ButtonsMenuTitle.Size = UDim2.new(1, 0, 0, 35)
+		ButtonsMenuTitle.Font = Enum.Font.Roboto
+		ButtonsMenuTitle.Text = "      " .. options.info
+		ButtonsMenuTitle.TextColor3 = Color3.fromRGB(85, 85, 85)
+		ButtonsMenuTitle.TextSize = 13
+		ButtonsMenuTitle.TextWrapped = true
+		ButtonsMenuTitle.TextXAlignment = Enum.TextXAlignment.Left
+		ButtonsMenuTitle.Visible = true
+		ButtonsMenuTitle.ZIndex = 4
+		ToggleButton.MenuFrame = ButtonsMenuFrame
+
 		local function updateColors()
 			if ToggleButton.Enabled then
 				Library:tween(newButton, {BackgroundColor3 = Color3.fromRGB(115, 185, 255)})
 				Library:tween(newButton, {TextColor3 = Color3.fromRGB(255, 255, 255)})
 				newButton.Text = "       " .. options.name
 				AddArrayList(options.name)
-				playContinuousSound(soundIds.enabled)
+				playContinuousSound(soundIds.OnEnabled)
+				playContinuousSound(soundIds.OnEnabledOriginal)
 			else
 				Library:tween(newButton, {BackgroundColor3 = Color3.fromRGB(255, 255, 255)})
 				Library:tween(newButton, {TextColor3 = Color3.fromRGB(15, 15, 15)})
 				newButton.Text = "     " .. options.name
 				RemoveArraylist(options.name)
-				playContinuousSound(soundIds.disabled)
+				playContinuousSound(soundIds.OnDisabled)
+				playContinuousSound(soundIds.OnDisabledOriginal)
 			end
 		end
 
@@ -598,7 +604,7 @@ ToggleButton.MenuFrame = ButtonsMenuFrame
 			ButtonsMenuFrame.Visible = not ButtonsMenuFrame.Visible
 			ButtonsMenuInner.Visible = not ButtonsMenuInner.Visible
 		end)
-		
+
 		CloseButtonsMenuFrame.MouseButton1Click:Connect(function()
 			ButtonsMenuFrame.Visible = not ButtonsMenuFrame.Visible
 		end)
@@ -617,7 +623,7 @@ ToggleButton.MenuFrame = ButtonsMenuFrame
 			local Slider = {}
 			local Percent
 			local MouseDown = false
-			
+
 			local SliderNameLabel = Instance.new("TextLabel", ButtonsMenuInner)
 			SliderNameLabel.Name = "Slider For" .. options.title
 			SliderNameLabel.Size = UDim2.new(1, 0, 0, 30)
@@ -682,39 +688,39 @@ ToggleButton.MenuFrame = ButtonsMenuFrame
 
 			local UICorner = Instance.new("UICorner", UISliderButton)
 			UICorner.CornerRadius = UDim.new(1, 0)
-			
-local function Update(input)
-    MouseDown = true
-    repeat
-        task.wait()
 
-        local inputPosition
-        if input.UserInputType == Enum.UserInputType.MouseMovement then
-            inputPosition = input.Position
-        elseif input.UserInputType == Enum.UserInputType.Touch then
-            inputPosition = input.Position
-        end
+			local function Update(input)
+				MouseDown = true
+				repeat
+					task.wait()
 
-        if inputPosition then
-            Percent = math.clamp((inputPosition.X - SliderBack.AbsolutePosition.X) / SliderBack.AbsoluteSize.X, 0, 1)
-            local sliderValue = math.round(Percent * 100)
-            SliderValueLabel.Text = sliderValue
-            SliderFill.Size = UDim2.fromScale(Percent, 1)
+					local inputPosition
+					if input.UserInputType == Enum.UserInputType.MouseMovement then
+						inputPosition = input.Position
+					elseif input.UserInputType == Enum.UserInputType.Touch then
+						inputPosition = input.Position
+					end
 
-            options.callback(sliderValue)
-        end
-    until not MouseDown
-end
+					if inputPosition then
+						Percent = math.clamp((inputPosition.X - SliderBack.AbsolutePosition.X) / SliderBack.AbsoluteSize.X, 0, 1)
+						local sliderValue = math.round(Percent * 100)
+						SliderValueLabel.Text = sliderValue
+						SliderFill.Size = UDim2.fromScale(Percent, 1)
 
-    UISliderButton.MouseButton1Down:Connect(function()
-        Update(game:GetService("UserInputService").InputChanged:Wait())
-    end)
+						options.callback(sliderValue)
+					end
+				until not MouseDown
+			end
 
-    game:GetService("UserInputService").InputEnded:Connect(function(input)
-        if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
-            MouseDown = false
-        end
-    end)
+			UISliderButton.MouseButton1Down:Connect(function()
+				Update(game:GetService("UserInputService").InputChanged:Wait())
+			end)
+
+			game:GetService("UserInputService").InputEnded:Connect(function(input)
+				if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+					MouseDown = false
+				end
+			end)
 			function ToggleButton:ToggleButtonInsideUI(options)
 				options = Library:validate({
 					name = "Error404",
@@ -725,35 +731,35 @@ end
 					Enabled = false
 				}
 
-			local newToggle = Instance.new("TextLabel", ButtonsMenuInner)
-			newToggle.Name = "MiniToggle For" .. options.name
-			newToggle.Size = UDim2.new(1, 0, 0, 30)
-			newToggle.Position = UDim2.new(0, 0, 0, 0)
-			newToggle.Text = "      " .. options.name
-			newToggle.TextColor3 = Color3.fromRGB(0, 0, 0)
-			newToggle.TextSize = 15
-			newToggle.Font = Enum.Font.Roboto
-			newToggle.BackgroundTransparency = 1
-			newToggle.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-			newToggle.ZIndex = 5
-			newToggle.TextXAlignment = Enum.TextXAlignment.Left
-				
-			local newToggleThingy = Instance.new("TextButton", newToggle)
-			newToggleThingy.BorderSizePixel = 0
-			newToggleThingy.BackgroundColor3 = Color3.fromRGB(235, 235, 235)
-			newToggleThingy.TextSize = 5
-			newToggleThingy.TextColor3 = Color3.fromRGB(255, 255, 255)
-			newToggleThingy.Size = UDim2.new(0, 15, 0, 15)
-			newToggleThingy.BorderColor3 = Color3.fromRGB(0, 0, 0)
-			newToggleThingy.Text = " "
-			newToggleThingy.ZIndex = 5
-			newToggleThingy.Name = "Checkmark"
-			newToggleThingy.Position = UDim2.new(0, 285, 0, 8)
-			newToggleThingy.AutoButtonColor = false
-			newToggleThingy.TextTransparency = 0.250
-				
-			local newToggleThingyCorner = Instance.new("UICorner", newToggleThingy)
-			newToggleThingyCorner.CornerRadius = UDim.new(1, 0)
+				local newToggle = Instance.new("TextLabel", ButtonsMenuInner)
+				newToggle.Name = "MiniToggle For" .. options.name
+				newToggle.Size = UDim2.new(1, 0, 0, 30)
+				newToggle.Position = UDim2.new(0, 0, 0, 0)
+				newToggle.Text = "      " .. options.name
+				newToggle.TextColor3 = Color3.fromRGB(0, 0, 0)
+				newToggle.TextSize = 15
+				newToggle.Font = Enum.Font.Roboto
+				newToggle.BackgroundTransparency = 1
+				newToggle.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+				newToggle.ZIndex = 5
+				newToggle.TextXAlignment = Enum.TextXAlignment.Left
+
+				local newToggleThingy = Instance.new("TextButton", newToggle)
+				newToggleThingy.BorderSizePixel = 0
+				newToggleThingy.BackgroundColor3 = Color3.fromRGB(235, 235, 235)
+				newToggleThingy.TextSize = 5
+				newToggleThingy.TextColor3 = Color3.fromRGB(255, 255, 255)
+				newToggleThingy.Size = UDim2.new(0, 15, 0, 15)
+				newToggleThingy.BorderColor3 = Color3.fromRGB(0, 0, 0)
+				newToggleThingy.Text = " "
+				newToggleThingy.ZIndex = 5
+				newToggleThingy.Name = "Checkmark"
+				newToggleThingy.Position = UDim2.new(0, 285, 0, 8)
+				newToggleThingy.AutoButtonColor = false
+				newToggleThingy.TextTransparency = 0.250
+
+				local newToggleThingyCorner = Instance.new("UICorner", newToggleThingy)
+				newToggleThingyCorner.CornerRadius = UDim.new(1, 0)
 
 				local function UpdateCheckMark()
 					if ToggleButtonInsideUI.Enabled then
@@ -788,7 +794,7 @@ end
 						List = options.list or {},
 						Selected = options.Default or "",
 					}
-					
+
 					local DropdownName = Instance.new("TextLabel", ButtonsMenuInner)
 					DropdownName.Name = "Dropdown For" .. options.name
 					DropdownName.Size = UDim2.new(1, 0, 0, 30)
@@ -801,7 +807,7 @@ end
 					DropdownName.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
 					DropdownName.ZIndex = 5
 					DropdownName.TextXAlignment = Enum.TextXAlignment.Left
-					
+
 					local DropdownHolders = Instance.new("TextButton", DropdownName)
 					DropdownHolders.BorderSizePixel = 0
 					DropdownHolders.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
@@ -813,7 +819,7 @@ end
 					DropdownHolders.Name = "DropdownHolder"
 					DropdownHolders.ZIndex = 5
 					DropdownHolders.TextXAlignment = Enum.TextXAlignment.Left
-					
+
 					local DropdownMenu = Instance.new("Frame", DropdownHolders)
 					DropdownMenu.BorderSizePixel = 0
 					DropdownMenu.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
@@ -827,7 +833,7 @@ end
 
 					local DropdownMenuListHolder = Instance.new("UIListLayout", DropdownMenu)
 					DropdownMenuListHolder.SortOrder = Enum.SortOrder.LayoutOrder
-				
+
 					for _, item in ipairs(Dropdown.List) do
 						local DropdownOption = Instance.new("TextButton", DropdownMenu)
 						DropdownOption.BorderSizePixel = 0
@@ -841,7 +847,7 @@ end
 						DropdownOption.Name = item
 						DropdownOption.ZIndex = 5
 						DropdownOption.TextXAlignment = Enum.TextXAlignment.Left
-						
+
 						DropdownOption.MouseButton1Click:Connect(function()
 							Dropdown.Selected = item
 							DropdownHolders.Text = "  " .. item
