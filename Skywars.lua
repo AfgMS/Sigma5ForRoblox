@@ -1,4 +1,4 @@
-local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/AfgMS/SigmaJello4Roblox/main/SigmaLibrary.lua", true))()
+local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/AfgMS/Sigma5ForRoblox/main/SigmaLibrary.lua", true))()
 local CoreGui = game:WaitForChild("CoreGui")
 local Player = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
@@ -6,28 +6,6 @@ local localPlayer = game.Players.LocalPlayer
 local Camera = game:GetService("Workspace").CurrentCamera
 local UserInputService = game:GetService("UserInputService")
 local Lighting = game:GetService("Lighting")
---Functions
-local function LibraryCheck()
-    local SigmaCheck = CoreGui:FindFirstChild("Sigma")
-    local SigmaVisualCheck = CoreGui:FindFirstChild("SigmaVisualStuff")
-    
-    if not SigmaCheck then
-        print("Error: Sigma ScreenGui not found in CoreGui.")
-    elseif SigmaCheck then
-        print("Debug: SigmaCheck Found")
-    elseif not SigmaVisualCheck then
-        print("Error: SigmaVisualStuff ScreenGui not found in CoreGui.")
-    elseif SigmaVisualCheck then
-        print("Debug: SigmaVisualCheck Found")
-        local ArraylistCheck = SigmaVisualCheck:FindFirstChild("ArrayListHolder")
-        if not ArraylistCheck then
-            print("Error: ArrayList Holder not found in SigmaVisualStuff.")
-        elseif ArraylistCheck then
-            print("Debug: ArrayList Found")
-            return
-        end
-    end
-end
 
 local function GetNearestPlr(range)
     local nearestPlayer
@@ -46,10 +24,9 @@ local function GetNearestPlr(range)
 
     return nearestPlayer
 end
+
 --CreatingUI
 Library:createScreenGui()
-task.wait()
-LibraryCheck()
 --Tabs
 local GuiTab = Library:createTabs(CoreGui.Sigma, "Gui")
 local CombatTab = Library:createTabs(CoreGui.Sigma, "Combat")
@@ -119,6 +96,36 @@ local StartAimingRangeCustom = Aimbot:Slider({
         StartAimingRange = val
     end
 })
+--AutoQuit
+local LowHealthValue
+local function CheckHealth()
+    while wait(0.01) do
+        if localPlayer.Character and localPlayer.Character:FindFirstChild("Humanoid") and localPlayer.Character.Humanoid.Health < LowHealthValue then
+            localPlayer:Kick("AutoQuit")
+        end
+    end
+end
+local AutoQuit = CombatTab:ToggleButton({
+    name = "AutoQuit",
+    info = "Automatically quit the game",
+    callback = function(enabled)
+        if enabled then
+            LowHealthValue = 3
+            CheckHealth()
+        else
+            LowHealthValue = nil
+        end
+    end
+})
+local CustomLowHealth = AutoQuit:Slider({
+    title = "HealthMin",
+    min = 0.11,
+    max = 100,
+    default = 0.11,
+    callback = function(value)
+        LowHealthValue = value
+    end
+})
 --KillAura
 local StartAttackingRange
 local StartRotatingRange
@@ -153,48 +160,24 @@ local StartAttackingRangeCustom = KillAura:Slider({
         StartRotatingRange = value
     end
 })
-local RotationsCheck = KillAura:ToggleButtonInsideUI({
+local Rotations = KillAura:ToggleButtonInsideUI({
     name = "Rotations",
     callback = function(enabled)
         if enabled then
             StartRotatingRange = 20
-            while enabled do
+            while task.wait(0.01) do
                 local NearestPlayer = GetNearestPlr(StartRotatingRange)
                 if NearestPlayer then
-                    local character = localPlayer.Character
-                    if character and character:FindFirstChild("HumanoidRootPart") then
-                        local direction = (NearestPlayer.Character.HumanoidRootPart.Position - character.HumanoidRootPart.Position).unit
+                    if localPlayer.Character and localPlayer.Character:FindFirstChild("HumanoidRootPart") then
+                        local direction = (NearestPlayer.Character.HumanoidRootPart.Position - localPlayer.Character.HumanoidRootPart.Position).unit
                         local lookVector = Vector3.new(direction.X, 0, direction.Z).unit
-                        local newCFrame = CFrame.new(character.HumanoidRootPart.Position, character.HumanoidRootPart.Position + lookVector)
-                        character:SetPrimaryPartCFrame(newCFrame)
+                        local newCFrame = CFrame.new(localPlayer.Character.HumanoidRootPart.Position, localPlayer.Character.HumanoidRootPart.Position + lookVector)
+                        localPlayer.Character:SetPrimaryPartCFrame(newCFrame)
                     end
                 end
-                wait(0.01)
             end
         else
             StartRotatingRange = 0
         end
     end
 })
---TPAura
-local NearestPlrTP
-local OriginalPos = localPlayer.Character.Position
-local TPAura = CombatTab:ToggleButton({
-    name = "TPAura",
-    info = "Beta Testing",
-    callback = function(enabled)
-        if enabled then
-            NearestPlrTP = 58
-            while enabled do
-                local NearestPlayer = GetNearestPlr(NearestPlrTP)
-                if NearestPlayer then
-                    localPlayer.Character.Position = NearestPlayer.Character.Position  -- Corrected the spelling of "Position"
-                    wait(0.73)
-                    localPlayer.Character.Position = OriginalPos
-                end
-                wait(3)
-            end
-        end
-    end
-})
-
