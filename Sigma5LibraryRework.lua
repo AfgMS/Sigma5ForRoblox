@@ -59,7 +59,7 @@ function Library:CreateTabs(Name)
 	TabsHolder.Position = UDim2.new(0, 25, 0, 10)
 	TabsHolder.Name = "Tabs For" .. Name
 	TabsHolder.Visible = false
-	
+
 	local TabsNameHolder = Instance.new("TextLabel", TabsHolder)
 	TabsNameHolder.BorderSizePixel = 0
 	TabsNameHolder.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
@@ -122,7 +122,7 @@ function Library:CreateTabs(Name)
 
 	MobileSupportUI.MouseButton1Click:Connect(function()
 		for _, tab in pairs(CoreGui:WaitForChild("sigma5"):GetChildren()) do
-			if TabsHolder and TabsHolder:IsA("Frame") then
+			if tab.Name == "Tabs For" .. Name and tab:IsA("Frame") then
 				TabsHolder.Visible = not TabsHolder.Visible
 				BlurEffect.Enabled = not BlurEffect.Enabled
 				if ScrollingHolder then
@@ -148,7 +148,7 @@ function Library:CreateTabs(Name)
 	else
 		warn("Reached the maximum number of tabs. Cannot create more tabs.")
 	end
-	
+
 end
 
 return Library
