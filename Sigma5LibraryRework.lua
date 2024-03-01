@@ -116,17 +116,13 @@ function Library:CreateTabs(Name)
 			if tab.Name == "TabsVHolder" and tab:IsA("Frame") then
 				tab.Visible = not tab.Visible
 				BlurEffect.Enabled = not BlurEffect.Enabled
-				if ScrollingHolder then
-					ScrollingHolder.Visible = not ScrollingHolder.Visible
 				end
 			end
-		end
-	end)
+		end)
 
 	game:GetService("UserInputService").InputBegan:Connect(function(input, gameProcessedEvent)
 		if input.KeyCode == Enum.KeyCode.V and not gameProcessedEvent then
 			TabsHolder.Visible = not TabsHolder.Visible
-			ScrollingHolder.Visible = not ScrollingHolder.Visible
 			BlurEffect.Enabled = not BlurEffect.Enabled
 		end
 	end)
