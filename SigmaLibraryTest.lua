@@ -6,14 +6,10 @@ local TestOne = Library:CreateTabs("Abror")
 local TestTwo = Library:CreateTabs("Ebrer")
 local TestThree = Library:CreateTabs("Bebek")
 
-local TestButton1 = TestOne:CreateToggles({
-    Name = "AbrurBebek",
-    Description = "Quack",
+local wth = TestOne:ToggleButton({
+    name = "ee",
+    info = "wth",
     callback = function(enabled)
-        if enabled then
-            print("hello")
-        else
-            print("Bye")
-        end
+        print("ello")
     end
 })
