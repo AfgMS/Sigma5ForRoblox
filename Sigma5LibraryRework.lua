@@ -125,7 +125,9 @@ function Library:CreateTabs(Name)
 			if tab.Name == "TabsVHolder" and tab:IsA("Frame") then
 				tab.Visible = not tab.Visible
 				BlurEffect.Enabled = not BlurEffect.Enabled
-				ScrollingHolder.Visible = not ScrollingHolder.Visible
+				if ScrollingHolder then
+					ScrollingHolder.Visible = not ScrollingHolder.Visible
+				end
 			end
 		end
 	end)
