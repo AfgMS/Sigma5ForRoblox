@@ -1,4 +1,4 @@
-local SkywarsGithub = "https://raw.githubusercontent.com/AfgMS/Sigma5ForRoblox/main/Skywars.lua"
+local BedwarsGithub = "https://raw.githubusercontent.com/AfgMS/Sigma5ForRoblox/main/Bedwars.lua"
 
 local function GithubUpdateCheck(url, filePath)
     local content = game:HttpGet(url)
@@ -21,8 +21,8 @@ if not isfolder("sigma5") and not isfolder("sigma5/profiles") then
     makefolder("sigma5/profiles")
 end
 
-GithubUpdateCheck(SkywarsGithub, "Sigma5/Skywars.lua")
-if game.PlaceId == 8542275097 or game.PlaceId == 8768229691 then
-    print("Loaded Skywars.lua...")
-    loadfile("profiles/Skywars.lua")()
+
+GithubUpdateCheck(BedwarsGithub, "sigma5/profiles/Bedwars.lua")
+if game.PlaceId == 6872274481 or game.PlaceId == 8560631822 or game.PlaceId == 8444591321 then
+    loadfile("sigma5/profiles/Bedwars.lua")()
 end
