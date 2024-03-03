@@ -375,6 +375,7 @@ local AutoGGToggle = GamePlay:ToggleButtonInsideUI({
     end
 })
 --AutoSprint
+local StopSprinting = SprintCont.stopSprinting
 local AutoSprint = PlayerTab:ToggleButton({
     name = "AutoSprint",
     info = "Automatically Sprint",
@@ -389,9 +390,14 @@ local AutoSprint = PlayerTab:ToggleButton({
                 until not enabled
             end)
         else
-            if SprintCont.sprinting then
-                SprintCont:stopSprinting()
-            end
+            spawn(function()
+                repeat
+                    task.wait()
+                until StopSprinting
+                if StopSprinting then
+                    SprintCont:stopSprinting()
+                end
+            end)
         end
     end
 })
