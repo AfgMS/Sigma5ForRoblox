@@ -69,6 +69,18 @@ local MeleeRank = {
     [7] = { Name = "rageblade", Rank = 7 },
 }
 
+local ToolRank = {
+    [1] = { Name = "shears", Rank = 1 },
+    [2] = { Name = "wood_pickaxe", Rank = 2 },
+    [3] = { Name = "wood_axe", Rank = 3 },
+    [4] = { Name = "stone_pickaxe", Rank = 4 },
+    [5] = { Name = "stone_axe", Rank = 5 },
+    [6] = { Name = "iron_pickaxe", Rank = 6 },
+    [7] = { Name = "iron_axe", Rank = 7 },
+    [8] = { Name = "diamond_pickaxe", Rank = 8 },
+    [9] = { Name = "diamond_axe", Rank = 9 },
+}
+
 function GetAttackPos(plrpos, nearpost, val)
     local newPos = (nearpost - plrpos).Unit * math.min(val, (nearpost - plrpos).Magnitude) + plrpos
     return newPos
@@ -430,11 +442,13 @@ local Speed = PlayerTab:ToggleButton({
 local raycastParams = RaycastParams.new()
 raycastParams.IgnoreWater = true
 local function getBed()
+    local beds = {}
     for _, v in pairs(game.Workspace:GetChildren()) do
         if v.Name == "bed" and v.Covers.BrickColor ~= localPlayer.Team.TeamColor then
-            return v
+            table.insert(beds, v)
         end
     end
+    return beds
 end
 local function DamageBed(bed)
     local raycastResult = workspace:Raycast(bed.Position + Vector3.new(0, 24, 0), Vector3.new(0, -27, 0), raycastParams)
