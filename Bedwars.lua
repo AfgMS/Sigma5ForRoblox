@@ -327,7 +327,7 @@ local Fullbright = RenderTab:ToggleButton({
         end
     end
 })
---GamePlay
+--[[
 local AutoQueue = false
 local AutoGG = false
 
@@ -374,6 +374,7 @@ local AutoGGToggle = GamePlay:ToggleButtonInsideUI({
         AutoGG = not AutoGG
     end
 })
+--]]
 --AutoSprint
 local StopSprinting = SprintCont.stopSprinting
 local AutoSprint = PlayerTab:ToggleButton({
@@ -393,10 +394,10 @@ local AutoSprint = PlayerTab:ToggleButton({
             spawn(function()
                 repeat
                     task.wait()
-                until StopSprinting
-                if StopSprinting then
-                    SprintCont:stopSprinting()
-                end
+                    if StopSprinting then
+                        SprintCont:stopSprinting()
+                    end
+                until enabled
             end)
         end
     end
