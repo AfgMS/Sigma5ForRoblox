@@ -104,15 +104,22 @@ local function GetMelee()
     return bestsword
 end
 
-local function GetBlock()
-    local SelectedBlock = nil
+local function GetTool()
+    local besttool = nil
+    local bestrank = 0
     for i, v in pairs(localPlayer.Character.InventoryFolder.Value:GetChildren()) do
-        if v.Name:match("wool") then
-            SelectedBlock = v
-            break
+        if v.Name:match("shears") or v.Name:match("pickaxe") or v.Name:match("axe") then
+            for _, data in pairs(ToolRank) do
+                if data["Name"] == v.Name then
+                    if bestrank <= data["Rank"] then
+                        bestrank = data["Rank"]
+                        besttool = v
+                    end
+                end
+            end
         end
     end
-    return SelectedBlock
+    return besttool
 end
 
 --CreatingUI
@@ -470,10 +477,11 @@ local function DamageBed(bed)
                 ["hitNormal"] = Vector3.new(math.round(NearestBed.Position.X / 3), math.round(NearestBed.Position.Y / 3), math.round(NearestBed.Position.Z / 3))
             })
         else
-            warn("BlockHit is nil, unable to invoke server")
+            warn("bedwars blockhit broke?")
         end
     end
 end
+local Tool = GetTool()
 local Nuker = WorldTab:ToggleButton({
     name = "Nuker",
     info = "Auto bed break",
@@ -483,6 +491,7 @@ local Nuker = WorldTab:ToggleButton({
                 task.wait()
                 local Beds = getBed()
                 if Beds then
+                    SetHotbar(Tool)
                     for _, v in pairs(Beds) do
                         if localPlayer.Character then
                             if (v.Position - localPlayer.Character.PrimaryPart.Position).Magnitude < 28.5 then
