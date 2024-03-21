@@ -17,7 +17,6 @@ local SwordCont = KnitClient.Controllers.SwordController
 local BlockHit = ReplicatedStorage.rbxts_include.node_modules["@easy-games"]["block-engine"].node_modules["@rbxts"].net.out._NetManaged.DamageBlock
 
 local TeamCheck = false
-
 local function GetNearestPlr(range)
     local nearestPlayer
     local nearestDistance = math.huge
@@ -69,7 +68,7 @@ local MeleeRank = {
     [7] = { Name = "rageblade", Rank = 7 },
 }
 
-local ToolRank = {
+--[[ local ToolRank = {
     [1] = { Name = "shears", Rank = 1 },
     [2] = { Name = "wood_pickaxe", Rank = 2 },
     [3] = { Name = "wood_axe", Rank = 3 },
@@ -80,7 +79,7 @@ local ToolRank = {
     [8] = { Name = "diamond_pickaxe", Rank = 8 },
     [9] = { Name = "diamond_axe", Rank = 9 },
 }
-
+--]]
 function GetAttackPos(plrpos, nearpost, val)
     local newPos = (nearpost - plrpos).Unit * math.min(val, (nearpost - plrpos).Magnitude) + plrpos
     return newPos
@@ -104,7 +103,7 @@ local function GetMelee()
     return bestsword
 end
 
-local function GetTool()
+--[[local function GetTool()
     local besttool = nil
     local bestrank = 0
     for i, v in pairs(localPlayer.Character.InventoryFolder.Value:GetChildren()) do
@@ -121,7 +120,7 @@ local function GetTool()
     end
     return besttool
 end
-
+--]]
 --CreatingUI
 Library:createScreenGui()
 --Tabs
@@ -358,7 +357,7 @@ local Fullbright = RenderTab:ToggleButton({
         end
     end
 })
---[[
+--Gameplay
 local AutoQueue = false
 local AutoGG = false
 
@@ -405,7 +404,6 @@ local AutoGGToggle = GamePlay:ToggleButtonInsideUI({
         AutoGG = not AutoGG
     end
 })
---]]
 --AutoSprint
 local StopSprinting = SprintCont.stopSprinting
 local AutoSprint = PlayerTab:ToggleButton({
@@ -445,6 +443,23 @@ local Speed = PlayerTab:ToggleButton({
         end
     end
 })
+--AntiVanish
+local AntiVanish = WorldTab:ToggleButton({
+    name = "AntiVanish",
+    info = "Staff detector",
+    callback = function(enabled)
+        if enabled then
+            repeat
+                task.wait()
+                local maxPlayers = game.MaxPlayers
+                local currentPlayers = #game.Players:GetPlayers()
+                if currentPlayers >= maxPlayers then
+                    createnotification("AntiVanish", "Someone vanished", 1, true)
+                end
+            until not enabled
+        end
+    end
+})
 --Nuker
 local raycastParams = RaycastParams.new()
 raycastParams.IgnoreWater = true
@@ -467,7 +482,8 @@ local function DamageBed(bed)
             end
         end
         NearestBed.Color = Color3.fromRGB(255, 255, 255)
-        NearestBed.Transparency = 0.75
+        NearestBed.Transparency = 0.73
+        NearestBed.Material = "Neon"
         if BlockHit then
             BlockHit:InvokeServer({
                 ["blockRef"] = {
@@ -481,17 +497,18 @@ local function DamageBed(bed)
         end
     end
 end
-local Tool = GetTool()
+-- local Tool = GetTool()
 local Nuker = WorldTab:ToggleButton({
     name = "Nuker",
     info = "Auto bed break",
     callback = function(enabled)
         if enabled then
+            local Beds = getBed()
+            spawn(function()
             repeat
                 task.wait()
-                local Beds = getBed()
                 if Beds then
-                    SetHotbar(Tool)
+                    -- SetHotbar(Tool)
                     for _, v in pairs(Beds) do
                         if localPlayer.Character then
                             if (v.Position - localPlayer.Character.PrimaryPart.Position).Magnitude < 28.5 then
