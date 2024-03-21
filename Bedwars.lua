@@ -415,36 +415,51 @@ local YPos = localPlayer.Character:FindFirstChild("HumanoidRootPart").Position.Y
 local XPos = localPlayer.Character:FindFirstChild("HumanoidRootPart").Position.X
 local ZPos = localPlayer.Character:FindFirstChild("HumanoidRootPart").Position.Z
 
-local function GetScaffoldPos(vec)
-    local BedwarsBlockPos = Vector3.new(math.floor((vec.X / 3) + 0.5) * 3, math.floor((vec.Y / 3) + 0.5) * 3, math.floor((vec.Z / 3) + 0.5) * 3)
-    local NewPos = (Vector3.new(0, 0, 0) - BedwarsBlockPos)
+local OldPos = Vector3.new(0, 0, 0)
+local function GetScaffoldPos(vec, diagonalenabled)
+    local RealPos = Vector3.new(math.floor((vec.X / 3) + 0.5) * 3, math.floor((vec.Y / 3) + 0.5) * 3, math.floor((vec.Z / 3) + 0.5) * 3)
+    local NewPos = (OldPos - RealPos)
     if localPlayer.Character then
         local AnglePos = math.deg(math.atan2(-localPlayer.Character:FindFirstChild("Humanoid").MoveDirection.X, -localPlayer.Character:FindFirstChild("Humanoid").MoveDirection.Z))
-        return NewPos
+        local DiagonalMode = (AnglePos >= 130 and AnglePos <= 150) or (AnglePos <= -35 and AnglePos >= -50) or (AnglePos >= 35 and AnglePos <= 50) or (AnglePos <= -130 and AnglePos >= -150)
+        if DiagonalMode and ((NewPos.X == 0 and NewPos.Z ~= 0) or (NewPos.X ~= 0 and NewPos.Z == 0)) and diagonalenabled then
+            return OldPos
+        end
     end
+    return NewPos
 end
 
+local RepeatScaffold
 local Scaffold = PlayerTab:ToggleButton({
     name = "Scaffold",
     info = "Automatically place block under you",
     callback = function(enabled)
         if enabled then
-            spawn(function()
-                repeat
-                    task.wait()
-                    local BlockPos = GetScaffoldPos((localPlayer.Character:FindFirstChild("Head").Position) + Vector3.new(1, -math.floor(localPlayer.Character:FindFirstChild("Humanoid").HipHeight * 3), 0) + localPlayer.Character:FindFirstChild("Humanoid").MoveDirection)
-                    local ScaffoldRequirement = {
-                        [1] = {
-                            ["blockType"] = GetBlock(),
-                            ["blockData"] = 0,
-                            ["position"] = BlockPos
+            if localPlayer and localPlayer.Character then
+                spawn(function()
+                    RepeatScaffold = game:GetService("RunService").Heartbeat:Connect(function(step)
+                        if not localPlayer or not localPlayer.Character then 
+                            RepeatScaffold:Disconnect() 
+                            return 
+                        end
+                        local BlockPos = GetScaffoldPos((localPlayer.Character:FindFirstChild("Head").Position) + Vector3.new(1, -math.floor(localPlayer.Character:FindFirstChild("Humanoid").HipHeight * 3), 0) + localPlayer.Character:FindFirstChild("Humanoid").MoveDirection)
+                        
+                        local ScaffoldRequirement = {
+                            [1] = {
+                                ["blockType"] = GetBlock(),
+                                ["blockData"] = 0,
+                                ["position"] = BlockPos
+                            }
                         }
-                    }
-
-                    game:GetService("ReplicatedStorage").rbxts_include.node_modules:FindFirstChild("@easy-games"):FindFirstChild("block-engine").node_modules:FindFirstChild("@rbxts").net.out._NetManaged.PlaceBlock:InvokeServer(unpack(ScaffoldRequirement)) -- Unpacked ScaffoldRequirement
-                until not enabled
-            end)
+                        
+                        game:GetService("ReplicatedStorage").rbxts_include.node_modules:FindFirstChild("@easy-games"):FindFirstChild("block-engine").node_modules:FindFirstChild("@rbxts").net.out._NetManaged.PlaceBlock:InvokeServer(unpack(ScaffoldRequirement))
+                    end)
+                end)
+            end
+        else
+            if RepeatScaffold then
+                RepeatScaffold:Disconnect()
+            end
         end
     end
 })
-            
