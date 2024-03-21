@@ -443,7 +443,7 @@ local Speed = PlayerTab:ToggleButton({
         end
     end
 })
---AntiVanish
+--[[
 local AntiVanish = WorldTab:ToggleButton({
     name = "AntiVanish",
     info = "Staff detector",
@@ -460,6 +460,7 @@ local AntiVanish = WorldTab:ToggleButton({
         end
     end
 })
+--]]
 --Nuker
 local raycastParams = RaycastParams.new()
 raycastParams.IgnoreWater = true
