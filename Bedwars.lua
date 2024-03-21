@@ -415,21 +415,14 @@ local AutoSprint = PlayerTab:ToggleButton({
 })
 --Scaffold
 local function GetScaffoldPos()
-    if localPlayer.Character then
-        local charPos = localPlayer.Character:FindFirstChild("HumanoidRootPart").Position
-        local hipHeight = localPlayer.Character:FindFirstChild("Humanoid").HipHeight
-        local headPos = localPlayer.Character:FindFirstChild("Head").Position
-        local moveDir = localPlayer.Character:FindFirstChild("Humanoid").MoveDirection
-
-        local blockPos = Vector3.new(math.floor(charPos.X / 3 + 0.5) * 3,
-                                     math.floor((charPos.Y - hipHeight) / 3 + 0.5) * 3,
-                                     math.floor(charPos.Z / 3 + 0.5) * 3)
-        
-        blockPos = blockPos + moveDir * 3
-        
-        return blockPos
+    local ScaffoldHeight = 3
+    local HumanoidRootPart = localPlayer.Character:FindFirstChild("HumanoidRootPart")
+    if not HumanoidRootPart then
+        return nil
     end
+    return HumanoidRootPart.Position - Vector3.new(0, ScaffoldHeight, 0)
 end
+
 local RepeatScaffold
 local Scaffold = PlayerTab:ToggleButton({
     name = "Scaffold",
@@ -445,16 +438,17 @@ local Scaffold = PlayerTab:ToggleButton({
                         end
                         
                         local BlockPos = GetScaffoldPos()
-                        
-                        local ScaffoldRequirement = {
-                            [1] = {
-                                ["blockType"] = GetBlock(),
-                                ["blockData"] = 0,
-                                ["position"] = BlockPos
+                        if BlockPos then
+                            local ScaffoldRequirement = {
+                                [1] = {
+                                    ["blockType"] = GetBlock(),
+                                    ["blockData"] = 0,
+                                    ["position"] = BlockPos
+                                }
                             }
-                        }
                         
-                        game:GetService("ReplicatedStorage").rbxts_include.node_modules:FindFirstChild("@easy-games"):FindFirstChild("block-engine").node_modules:FindFirstChild("@rbxts").net.out._NetManaged.PlaceBlock:InvokeServer(unpack(ScaffoldRequirement))
+                            game:GetService("ReplicatedStorage").rbxts_include.node_modules:FindFirstChild("@easy-games"):FindFirstChild("block-engine").node_modules:FindFirstChild("@rbxts").net.out._NetManaged.PlaceBlock:InvokeServer(unpack(ScaffoldRequirement))
+                        end
                     end)
                 end)
             end
