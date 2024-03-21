@@ -14,6 +14,7 @@ local ClientStore = require(localPlayer.PlayerScripts.TS.ui.store).ClientStore
 local KnockbackCont = debug.getupvalue(require(ReplicatedStorage.TS.damage["knockback-util"]).KnockbackUtil.calculateKnockbackVelocity, 1)
 local SprintCont = KnitClient.Controllers.SprintController
 local SwordCont = KnitClient.Controllers.SwordController
+local BlockHit = ReplicatedStorage.rbxts_include.node_modules["@easy-games"]["block-engine"].node_modules["@rbxts"].net.out._NetManaged.DamageBlock
 
 local TeamCheck = false
 
@@ -414,3 +415,69 @@ local AutoSprint = PlayerTab:ToggleButton({
     end
 })
 --Speed
+local Speed = PlayerTab:ToggleButton({
+    name = "Speed",
+    info = "speed goes brrr",
+    callback = function(enabled)
+        if enabled then
+            localPlayer.Character:FindFirstChild("Humanoid").WalkSpeed = 22
+        else
+            localPlayer.Character:FindFirstChild("Humanoid").WalkSpeed = 16
+        end
+    end
+})
+--Nuker
+local raycastParams = RaycastParams.new()
+raycastParams.IgnoreWater = true
+local function getBed()
+    for _, v in pairs(game.Workspace:GetChildren()) do
+        if v.Name == "bed" and v.Covers.BrickColor ~= localPlayer.Team.TeamColor then
+            return v
+        end
+    end
+end
+local function DamageBed(bed)
+    local raycastResult = workspace:Raycast(bed.Position + Vector3.new(0, 24, 0), Vector3.new(0, -27, 0), raycastParams)
+    if raycastResult then
+        local NearestBed = raycastResult.Instance
+        for _, v in pairs(NearestBed:GetChildren()) do
+            if v:IsA("Texture") then
+                v:Destroy()
+            end
+        end
+        NearestBed.Color = Color3.fromRGB(255, 255, 255)
+        NearestBed.Transparency = 0.75
+        if BlockHit then
+            BlockHit:InvokeServer({
+                ["blockRef"] = {
+                    ["blockPosition"] = Vector3.new(math.round(NearestBed.Position.X / 3), math.round(NearestBed.Position.Y / 3), math.round(NearestBed.Position.Z / 3))
+                },
+                ["hitPosition"] = Vector3.new(math.round(NearestBed.Position.X / 3), math.round(NearestBed.Position.Y / 3), math.round(NearestBed.Position.Z / 3)),
+                ["hitNormal"] = Vector3.new(math.round(NearestBed.Position.X / 3), math.round(NearestBed.Position.Y / 3), math.round(NearestBed.Position.Z / 3))
+            })
+        else
+            warn("BlockHit is nil, unable to invoke server")
+        end
+    end
+end
+local Nuker = WorldTab:ToggleButton({
+    name = "Nuker",
+    info = "Auto bed break",
+    callback = function(enabled)
+        if enabled then
+            repeat
+                task.wait()
+                local Beds = getBed()
+                if Beds then
+                    for _, v in pairs(Beds) do
+                        if localPlayer.Character then
+                            if (v.Position - localPlayer.Character.PrimaryPart.Position).Magnitude < 28.5 then
+                                DamageBed(v)
+                            end
+                        end
+                    end
+                end
+            until not enabled()
+        end
+    end
+})
