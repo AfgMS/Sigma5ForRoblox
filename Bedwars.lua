@@ -414,24 +414,22 @@ local AutoSprint = PlayerTab:ToggleButton({
     end
 })
 --Scaffold
-local YPos = localPlayer.Character:FindFirstChild("HumanoidRootPart").Position.Y
-local XPos = localPlayer.Character:FindFirstChild("HumanoidRootPart").Position.X
-local ZPos = localPlayer.Character:FindFirstChild("HumanoidRootPart").Position.Z
-
-local OldPos = Vector3.new(0, 0, 0)
-local function GetScaffoldPos(vec, diagonalenabled)
-    local RealPos = Vector3.new(math.floor((vec.X / 3) + 0.5) * 3, math.floor((vec.Y / 3) + 0.5) * 3, math.floor((vec.Z / 3) + 0.5) * 3)
-    local NewPos = (OldPos - RealPos)
+local function GetScaffoldPos()
     if localPlayer.Character then
-        local AnglePos = math.deg(math.atan2(-localPlayer.Character:FindFirstChild("Humanoid").MoveDirection.X, -localPlayer.Character:FindFirstChild("Humanoid").MoveDirection.Z))
-        local DiagonalMode = (AnglePos >= 130 and AnglePos <= 150) or (AnglePos <= -35 and AnglePos >= -50) or (AnglePos >= 35 and AnglePos <= 50) or (AnglePos <= -130 and AnglePos >= -150)
-        if DiagonalMode and ((NewPos.X == 0 and NewPos.Z ~= 0) or (NewPos.X ~= 0 and NewPos.Z == 0)) and diagonalenabled then
-            return OldPos
-        end
-    end
-    return NewPos
-end
+        local charPos = localPlayer.Character:FindFirstChild("HumanoidRootPart").Position
+        local hipHeight = localPlayer.Character:FindFirstChild("Humanoid").HipHeight
+        local headPos = localPlayer.Character:FindFirstChild("Head").Position
+        local moveDir = localPlayer.Character:FindFirstChild("Humanoid").MoveDirection
 
+        local blockPos = Vector3.new(math.floor(charPos.X / 3 + 0.5) * 3,
+                                     math.floor((charPos.Y - hipHeight) / 3 + 0.5) * 3,
+                                     math.floor(charPos.Z / 3 + 0.5) * 3)
+        
+        blockPos = blockPos + moveDir * 3
+        
+        return blockPos
+    end
+end
 local RepeatScaffold
 local Scaffold = PlayerTab:ToggleButton({
     name = "Scaffold",
@@ -445,7 +443,8 @@ local Scaffold = PlayerTab:ToggleButton({
                             RepeatScaffold:Disconnect() 
                             return 
                         end
-                        local BlockPos = GetScaffoldPos((localPlayer.Character:FindFirstChild("Head").Position) + Vector3.new(1, -math.floor(localPlayer.Character:FindFirstChild("Humanoid").HipHeight * 3), 0) + localPlayer.Character:FindFirstChild("Humanoid").MoveDirection)
+                        
+                        local BlockPos = GetScaffoldPos()
                         
                         local ScaffoldRequirement = {
                             [1] = {
