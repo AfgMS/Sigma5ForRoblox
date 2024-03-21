@@ -6,6 +6,7 @@ local localPlayer = game.Players.LocalPlayer
 local TeamsService = game:GetService("Teams")
 local Camera = game:GetService("Workspace").CurrentCamera
 local UserInputService = game:GetService("UserInputService")
+local TweenService = game:GetService("TweenService")
 local Lighting = game:GetService("Lighting")
 
 local KnitClient = debug.getupvalue(require(localPlayer.PlayerScripts.TS.knit).setup, 6)
@@ -14,9 +15,10 @@ local ClientStore = require(localPlayer.PlayerScripts.TS.ui.store).ClientStore
 local KnockbackCont = debug.getupvalue(require(ReplicatedStorage.TS.damage["knockback-util"]).KnockbackUtil.calculateKnockbackVelocity, 1)
 local SprintCont = KnitClient.Controllers.SprintController
 local SwordCont = KnitClient.Controllers.SwordController
+local ViewmodelCont = KnitClient.Controllers.ViewmodelController
+local OrigC0 = ReplicatedStorage.Assets.Viewmodel.RightHand.RightWrist.C0
 
 local TeamCheck = false
-
 local function GetNearestPlr(range)
     local nearestPlayer
     local nearestDistance = math.huge
@@ -67,6 +69,15 @@ local MeleeRank = {
     [6] = { Name = "emerald_sword", Rank = 6 },
     [7] = { Name = "rageblade", Rank = 7 },
 }
+
+local function PlayAnim(anim)
+	for i, v in ipairs(anim) do
+		local TweeINFO = TweenInfo.new(v.Time)
+		local TweenAnim = TweenService:Create(Camera.Viewmodel.RightHand.RightWrist, TweeINFO, {C0 = OrigC0 * v.CFrame})
+		TweenAnim:Play()
+		task.wait(v.Time - 0.01)
+	end
+end
 
 function GetAttackPos(plrpos, nearpost, val)
     local newPos = (nearpost - plrpos).Unit * math.min(val, (nearpost - plrpos).Magnitude) + plrpos
@@ -221,6 +232,12 @@ local CustomLowHealth = AutoQuit:Slider({
     end
 })
 --KillAura
+local Animations = {
+	Sigma = {
+		{CFrame = CFrame.new(0.2, 0, -1.3) * CFrame.Angles(math.rad(111), math.rad(111), math.rad(130)), Time = 0.16},
+		{CFrame = CFrame.new(0, -0.2, -1.7) * CFrame.Angles(math.rad(30), math.rad(111), math.rad(190)), Time = 0.16},
+	}
+}
 local KillAuraRange
 local RotationsRange
 local AutoSword = false
@@ -242,7 +259,7 @@ local KillAura = CombatTab:ToggleButton({
             end
             if SwordSwing then
                 if NearestPlayer then
-                    SwordCont:swingSwordAtMouse()
+                    PlayAnimation(Animations.Sigma)
                 else
                     SwordSwing = false
                 end
