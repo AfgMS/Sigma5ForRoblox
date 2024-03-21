@@ -91,6 +91,14 @@ local function GetMelee()
     return bestsword
 end
 
+local function GetBlock()
+    for i, v in pairs(localPlayer.Character.InventoryFolder.Value:GetChildren()) do
+        if v.itemType.block ~= nil or v.itemType:find("wool") then
+            return v.itemType
+        end
+    end
+end
+
 --CreatingUI
 Library:createScreenGui()
 --Tabs
@@ -402,3 +410,41 @@ local AutoSprint = PlayerTab:ToggleButton({
         end
     end
 })
+--Scaffold
+local YPos = localPlayer.Character:FindFirstChild("HumanoidRootPart").Position.Y
+local XPos = localPlayer.Character:FindFirstChild("HumanoidRootPart").Position.X
+local ZPos = localPlayer.Character:FindFirstChild("HumanoidRootPart").Position.Z
+
+local function GetScaffoldPos(vec)
+    local BedwarsBlockPos = Vector3.new(math.floor((vec.X / 3) + 0.5) * 3, math.floor((vec.Y / 3) + 0.5) * 3, math.floor((vec.Z / 3) + 0.5) * 3)
+    local NewPos = (Vector3.new(0, 0, 0) - BedwarsBlockPos)
+    if localPlayer.Character then
+        local AnglePos = math.deg(math.atan2(-localPlayer.Character:FindFirstChild("Humanoid").MoveDirection.X, -localPlayer.Character:FindFirstChild("Humanoid").MoveDirection.Z))
+        return NewPos
+    end
+end
+
+local Scaffold = PlayerTab:ToggleButton({
+    name = "Scaffold",
+    info = "Automatically place block under you",
+    callback = function(enabled)
+        if enabled then
+            spawn(function()
+                repeat
+                    task.wait()
+                    local BlockPos = GetScaffoldPos((localPlayer.Character:FindFirstChild("Head").Position) + Vector3.new(1, -math.floor(localPlayer.Character:FindFirstChild("Humanoid").HipHeight * 3), 0) + localPlayer.Character:FindFirstChild("Humanoid").MoveDirection)
+                    local ScaffoldRequirement = {
+                        [1] = {
+                            ["blockType"] = GetBlock(),
+                            ["blockData"] = 0,
+                            ["position"] = BlockPos
+                        }
+                    }
+
+                    game:GetService("ReplicatedStorage").rbxts_include.node_modules:FindFirstChild("@easy-games"):FindFirstChild("block-engine").node_modules:FindFirstChild("@rbxts").net.out._NetManaged.PlaceBlock:InvokeServer(unpack(ScaffoldRequirement)) -- Unpacked ScaffoldRequirement
+                until not enabled
+            end)
+        end
+    end
+})
+            
