@@ -92,11 +92,14 @@ local function GetMelee()
 end
 
 local function GetBlock()
+    local SelectedBlock = nil
     for i, v in pairs(localPlayer.Character.InventoryFolder.Value:GetChildren()) do
-        if v.itemType.block ~= nil or v.itemType:find("wool") then
-            return v.itemType
+        if v.Name:match("wool") then
+            SelectedBlock = v
+            break
         end
     end
+    return SelectedBlock
 end
 
 --CreatingUI
