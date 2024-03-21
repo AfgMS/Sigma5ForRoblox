@@ -240,14 +240,13 @@ local KillAura = CombatTab:ToggleButton({
                     AutoSword = false
                 end
             end
-	if SwordSwing then
-            if NearestPlayer then
-            if localPlayer.Character:FindFirstChild("HandInvItem").Value == Sword then
-            SwordCont:swingSwordAtMouse()
-	else
-            SwordSwing = false
-		end
-	end
+            if SwordSwing then
+                if NearestPlayer then
+                    SwordCont:swingSwordAtMouse()
+                else
+                    SwordSwing = false
+                end
+            end
             if NearestPlayer then
                 while task.wait(0.01) do
                     ReplicatedStorage.rbxts_include.node_modules:FindFirstChild("@rbxts").net.out._NetManaged.SwordHit:FireServer({
