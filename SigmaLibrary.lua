@@ -74,7 +74,7 @@ Right.BorderSizePixel = 0
 Right.Position = UDim2.new(0.842202961, 0, 0, 0)
 Right.Size = UDim2.new(0, 255, 1, 0)
 
-local function CreateNotification(NotificationName, NotificationText, NotificationDuration, Fired)
+function CreateNotification(NotificationName, NotificationText, NotificationDuration, Fired)
 
 	local Notification = Instance.new("Frame", Right)
 	Notification.BackgroundColor3 = Color3.fromRGB(45, 45, 45)
