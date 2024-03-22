@@ -81,7 +81,7 @@ function CreateNotification(NotificationName, NotificationText, NotificationDura
 	Notification.BackgroundTransparency = 0.150
 	Notification.BorderColor3 = Color3.fromRGB(0, 0, 0)
 	Notification.BorderSizePixel = 0
-	Notification.Position = UDim2.new(0, 255, 0, 715)
+	Notification.Position = UDim2.new(0, 130, 0, 285)
 	--PosFired = {0, 15},{0, 715}
 	--PosOld = {0, 255},{0, 715}
 	Notification.Size = UDim2.new(0, 238, 0, 55)
@@ -145,11 +145,11 @@ function CreateNotification(NotificationName, NotificationText, NotificationDura
 	if Fired then
 		Notification.Visible = true
 		wait()
-		Notification:TweenPosition(UDim2.new(0, 15, 0, 715), Enum.EasingDirection.In, Enum.EasingStyle.Quart, 0.8)
+		Notification:TweenPosition(UDim2.new(0, -115, 0, 285), Enum.EasingDirection.In, Enum.EasingStyle.Quart, 0.8)
 
 		wait(NotificationDuration)
 
-		Notification:TweenPosition(UDim2.new(0, 255, 0, 715), Enum.EasingDirection.Out, Enum.EasingStyle.Quart, 0.8)
+		Notification:TweenPosition(UDim2.new(0, 130, 0, 285), Enum.EasingDirection.Out, Enum.EasingStyle.Quart, 0.8)
 		wait()
 		Notification.Visible = false
 	end
