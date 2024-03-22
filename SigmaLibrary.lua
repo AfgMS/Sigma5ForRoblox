@@ -52,93 +52,107 @@ function playContinuousSound(soundId)
 end
 
 --Sigma5Visual
-local ScreenGuitwo = Instance.new("ScreenGui")
-ScreenGuitwo.Parent = game:WaitForChild("CoreGui")
-ScreenGuitwo.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
-ScreenGuitwo.Name = "SigmaVisualStuff"
-ScreenGuitwo.ResetOnSpawn = false
+local Sigma5KeybindSupport = Instance.new("ScreenGui", CoreGui)
+Sigma5KeybindSupport.ResetOnSpawn = false
 
-function createnotification(title, text, delay2, toggled)
-	local function createFrame()
-		if ScreenGuitwo:FindFirstChild("Background") then
-			ScreenGuitwo:FindFirstChild("Background"):Destroy()
-		end
+local SigmaVisualHolder = Instance.new("ScreenGui", CoreGui)
+SigmaVisualHolder.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+SigmaVisualHolder.ResetOnSpawn = false
 
-		local Background = Instance.new("Frame")
-		Background.Name = "Background"
-		Background.Parent = ScreenGuitwo
-		Background.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
-		Background.BorderSizePixel = 0
-		Background.BackgroundTransparency = 0.35
-		Background.Position = UDim2.new(1, -220, 1, -85)
-		Background.Size = UDim2.new(0, 215, 0, 55)
+local Left = Instance.new("Frame", SigmaVisualHolder)
+Left.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+Left.BackgroundTransparency = 1
+Left.BorderColor3 = Color3.fromRGB(0, 0, 0)
+Left.BorderSizePixel = 0
+Left.Size = UDim2.new(0, 255, 1, 0)
 
-		local TextLabel = Instance.new("TextLabel")
-		TextLabel.Parent = Background
-		TextLabel.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-		TextLabel.BackgroundTransparency = 1.000
-		TextLabel.BorderColor3 = Color3.fromRGB(0, 0, 0)
-		TextLabel.BorderSizePixel = 0
-		TextLabel.Position = UDim2.new(0, 55, 0, 25)
-		TextLabel.Size = UDim2.new(0, 155, 0, 25)
-		TextLabel.Font = Enum.Font.Roboto
-		TextLabel.Text = text
-		TextLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
-		TextLabel.TextSize = 15.000
-		TextLabel.TextXAlignment = Enum.TextXAlignment.Left
+local Right = Instance.new("Frame", SigmaVisualHolder)
+Right.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+Right.BackgroundTransparency = 1
+Right.BorderColor3 = Color3.fromRGB(0, 0, 0)
+Right.BorderSizePixel = 0
+Right.Position = UDim2.new(0.842202961, 0, 0, 0)
+Right.Size = UDim2.new(0, 255, 1, 0)
 
-		local TextLabel_2 = Instance.new("TextLabel")
-		TextLabel_2.Parent = Background
-		TextLabel_2.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-		TextLabel_2.BackgroundTransparency = 1.000
-		TextLabel_2.BorderColor3 = Color3.fromRGB(0, 0, 0)
-		TextLabel_2.BorderSizePixel = 0
-		TextLabel_2.Position = UDim2.new(0, 55, 0, 5)
-		TextLabel_2.Size = UDim2.new(0, 155, 0, 25)
-		TextLabel_2.Font = Enum.Font.Roboto
-		TextLabel_2.Text = title
-		TextLabel_2.TextColor3 = Color3.fromRGB(255, 255, 255)
-		TextLabel_2.TextSize = 20.000
-		TextLabel_2.TextXAlignment = Enum.TextXAlignment.Left
+local function CreateNotification(NotificationName, NotificationText, NotificationDuration, Fired)
 
-		local ImageLabel = Instance.new("ImageLabel")
-		ImageLabel.AnchorPoint = Vector2.new(0, 1)
-		ImageLabel.Parent = Background
-		ImageLabel.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-		ImageLabel.BackgroundTransparency = 1.000
-		ImageLabel.BorderColor3 = Color3.fromRGB(0, 0, 0)
-		ImageLabel.BorderSizePixel = 0
-		ImageLabel.Position = UDim2.new(0, 10, 0, 45)
-		ImageLabel.Size = UDim2.new(0, 35, 0, 35)
-		ImageLabel.Image = "rbxassetid://7733964719"
+	local Notification = Instance.new("Frame", Right)
+	Notification.BackgroundColor3 = Color3.fromRGB(45, 45, 45)
+	Notification.BackgroundTransparency = 0.150
+	Notification.BorderColor3 = Color3.fromRGB(0, 0, 0)
+	Notification.BorderSizePixel = 0
+	Notification.Position = UDim2.new(0, 255, 0, 715)
+	--PosFired = {0, 15},{0, 715}
+	--PosOld = {0, 255},{0, 715}
+	Notification.Size = UDim2.new(0, 238, 0, 55)
+	Notification.Visible = false
 
-		local textSizeX = math.max(TextLabel.TextBounds.X, TextLabel_2.TextBounds.X) + 60
-		Background.Size = UDim2.new(0, 215, 0, 55)
+	local WarningIcon = Instance.new("ImageLabel", Notification)
+	WarningIcon.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+	WarningIcon.BackgroundTransparency = 1.000
+	WarningIcon.BorderColor3 = Color3.fromRGB(0, 0, 0)
+	WarningIcon.BorderSizePixel = 0
+	WarningIcon.Position = UDim2.new(0, 10, 0, 13)
+	WarningIcon.Size = UDim2.new(0, 30, 0, 30)
+	WarningIcon.Image = "http://www.roblox.com/asset/?id=16826468454"
+	WarningIcon.ScaleType = Enum.ScaleType.Fit
 
-		if toggled then
-			Background.Position = UDim2.new(1, -textSizeX - 10, 1, -70)
-			Background:TweenPosition(UDim2.new(1, -220, 1, -85), Enum.EasingDirection.Out, Enum.EasingStyle.Quart, 0.5)
-		end
+	local Name = Instance.new("TextLabel", Notification)
+	Name.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+	Name.BackgroundTransparency = 1.000
+	Name.BorderColor3 = Color3.fromRGB(0, 0, 0)
+	Name.BorderSizePixel = 0
+	Name.Position = UDim2.new(0, 58, 0, 0)
+	Name.Size = UDim2.new(0, 183, 0, 35)
+	Name.Font = Enum.Font.SourceSans
+	Name.Text = NotificationName
+	Name.TextColor3 = Color3.fromRGB(255, 255, 255)
+	Name.TextSize = 20.000
+	Name.TextXAlignment = Enum.TextXAlignment.Left
 
-		wait(delay2)
+	local Text = Instance.new("TextLabel", Notification)
+	Text.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+	Text.BackgroundTransparency = 1.000
+	Text.BorderColor3 = Color3.fromRGB(0, 0, 0)
+	Text.BorderSizePixel = 0
+	Text.Position = UDim2.new(0, 57, 0, 20)
+	Text.Size = UDim2.new(0, 183, 0, 35)
+	Text.Font = Enum.Font.SourceSans
+	Text.Text = NotificationText
+	Text.TextColor3 = Color3.fromRGB(255, 255, 255)
+	Text.TextSize = 15.000
+	Text.TextXAlignment = Enum.TextXAlignment.Left
 
-		if Background then
-			Background:TweenPosition(UDim2.new(1, -260, 1, -70), Enum.EasingDirection.In, Enum.EasingStyle.Quart, 0.5, false, function()
-				Background:Destroy()
-			end)
-		end
+	local ShadowHolder = Instance.new("Frame", Notification)
+	ShadowHolder.BackgroundTransparency = 1.000
+	ShadowHolder.BorderSizePixel = 0
+	ShadowHolder.Size = UDim2.new(1, 0, 1, 0)
+	ShadowHolder.ZIndex = 0
+
+	local Shadow = Instance.new("ImageLabel", ShadowHolder)
+	Shadow.AnchorPoint = Vector2.new(0.5, 0.5)
+	Shadow.BackgroundTransparency = 1.000
+	Shadow.BorderSizePixel = 0
+	Shadow.Position = UDim2.new(0.5, 0, 0.5, 0)
+	Shadow.Size = UDim2.new(1, 47, 1, 47)
+	Shadow.ZIndex = 0
+	Shadow.Image = "rbxassetid://6015897843"
+	Shadow.ImageColor3 = Color3.fromRGB(0, 0, 0)
+	Shadow.ImageTransparency = 0.500
+	Shadow.ScaleType = Enum.ScaleType.Slice
+	Shadow.SliceCenter = Rect.new(49, 49, 450, 450)
+
+	if Fired then
+		Notification.Visible = true
+		wait()
+		Notification:TweenPosition(UDim2.new(0, 15, 0, 715), Enum.EasingDirection.In, Enum.EasingStyle.Quart, 0.8)
+
+		wait(NotificationDuration)
+
+		Notification:TweenPosition(UDim2.new(0, 255, 0, 715), Enum.EasingDirection.Out, Enum.EasingStyle.Quart, 0.8)
+		wait()
+		Notification.Visible = false
 	end
-
-	local function checkGameLoaded()
-		if game:IsLoaded() then
-			createFrame()
-		else
-			game.Loaded:Wait()
-			createFrame()
-		end
-	end
-
-	checkGameLoaded()
 end
 
 local HolderArrayList = Instance.new("Frame")
@@ -149,7 +163,7 @@ HolderArrayList.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
 HolderArrayList.BorderColor3 = Color3.fromRGB(0, 0, 0)
 HolderArrayList.Size = UDim2.new(0, 195, 0, 550)
 HolderArrayList.Position = UDim2.new(1, -210, 0, 0)
-HolderArrayList.Parent = ScreenGuitwo
+HolderArrayList.Parent = Right
 
 local TheListThingy = Instance.new("UIListLayout")
 TheListThingy.Padding = UDim.new(0, -10)
@@ -176,7 +190,7 @@ local function AddArrayList(name)
 end
 
 local function RemoveArraylist(name)
-	local children = ScreenGuitwo:GetChildren()
+	local children = Right:GetChildren()
 	for _, child in ipairs(children) do
 		if child:IsA("Frame") and child.Name == "ArrayListHolder" then
 			local label = child:FindFirstChild(name)
@@ -190,7 +204,7 @@ end
 
 local LeftHolder = Instance.new("Frame")
 LeftHolder.Name = "LeftHolder"
-LeftHolder.Parent = ScreenGuitwo
+LeftHolder.Parent = Left
 LeftHolder.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
 LeftHolder.BackgroundTransparency = 1
 LeftHolder.BorderColor3 = Color3.fromRGB(0, 0, 0)
@@ -442,7 +456,7 @@ function Library:createTabs(parentFrame, tabName)
 		TAB.Tabs.Position = newX
 	else
 		warn("Reached the maximum number of tabs. Cannot create more tabs.")
-		createnotification("Sigma", "You can't add more tabs", 5, true)
+		CreateNotification("Sigma5", "Limit Reached", 3, true)
 	end
 
 	function TAB:ToggleButton(options)
