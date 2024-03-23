@@ -252,8 +252,8 @@ local KillAura = CombatTab:ToggleButton({
                     AutoSword = false
                 end
             end
-            while enabled do
-                if NearestPlayer and isAlive(NearestPlayer) and isAlive(localPlayer) then
+            if NearestPlayer and isAlive(NearestPlayer) and isAlive(localPlayer) then
+                while task.wait(0.01) do
                     ReplicatedStorage.rbxts_include.node_modules:FindFirstChild("@rbxts").net.out._NetManaged.SwordHit:FireServer({
                         ["entityInstance"] = NearestPlayer.Character,
                         ["chargedAttack"] = {
@@ -269,9 +269,10 @@ local KillAura = CombatTab:ToggleButton({
                         },
                         ["weapon"] = Sword
                     })
-                    wait(1)
                 end
             end
+        else
+            KillAuraRange = 0
         end
     end
 })
@@ -459,22 +460,28 @@ local function HitBed(bed)
     end
 end
 
+local BedHitDelay
 local Nuker = WorldTab:ToggleButton({
     name = "Nuker",
     info = "Auto bed break",
     callback = function(enabled)
         if enabled then
-            while enabled do
-                if isAlive(localPlayer) then
-                    local nearestBed = GetBed(28.5)
-                    if nearestBed then
-                        while true do
-                            HitBed(nearestBed)
-                            wait(0.98)
+            BedHitDelay = 0.72
+            spawn(function()
+                repeat
+                    task.wait(BedHitDelay)
+                    if localPlayer.Character then
+                        local nearestBed = GetBed(28.5)
+                        if nearestBed then
+                            while true do
+                                HitBed(nearestBed)
+                                wait()
+                            end
                         end
                     end
-                end
-            end
+                    BedHitDelay = 86000
+                until not enabled
+            end)
         end
     end
 })
