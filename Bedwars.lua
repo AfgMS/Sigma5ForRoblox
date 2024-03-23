@@ -145,7 +145,7 @@ end
 --CreatingUI
 Library:createScreenGui()
 --Tabs
-local GuiTab = Library:createTabs(CoreGui.Sigma, "Gui")
+local GuiTab = Library:createTabs(CoreGui.Sigma5, "Gui")
 local CombatTab = Library:createTabs(CoreGui.Sigma, "Combat")
 local RenderTab = Library:createTabs(CoreGui.Sigma, "Render")
 local PlayerTab = Library:createTabs(CoreGui.Sigma, "Player")
