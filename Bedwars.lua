@@ -243,16 +243,16 @@ local KillAura = CombatTab:ToggleButton({
     callback = function(enabled)
         if enabled then
             KillAuraRange = 20
-            while enabled do -- Move the loop inside the enabled check
-                local NearestPlayer = GetNearestPlr(KillAuraRange)
-                local Sword = GetMelee()
-                if AutoSword then
-                    if NearestPlayer then
-                        SetHotbar(Sword)
-                    else
-                        AutoSword = false
-                    end
+            local NearestPlayer = GetNearestPlr(KillAuraRange)
+            local Sword = GetMelee()
+            if AutoSword then
+                if NearestPlayer then
+                    SetHotbar(Sword)
+                else
+                    AutoSword = false
                 end
+            end
+            while enabled do
                 if NearestPlayer and isAlive(NearestPlayer) and isAlive(localPlayer) then
                     ReplicatedStorage.rbxts_include.node_modules:FindFirstChild("@rbxts").net.out._NetManaged.SwordHit:FireServer({
                         ["entityInstance"] = NearestPlayer.Character,
@@ -459,28 +459,22 @@ local function HitBed(bed)
     end
 end
 
-local BedHitDelay
 local Nuker = WorldTab:ToggleButton({
     name = "Nuker",
     info = "Auto bed break",
     callback = function(enabled)
         if enabled then
-            BedHitDelay = 0.72
-            spawn(function()
-                repeat
-                    task.wait(BedHitDelay)
-                    if localPlayer.Character then
-                        local nearestBed = GetBed(28.5)
-                        if nearestBed then
-                            while true do
-                                HitBed(nearestBed)
-                                wait()
-                            end
+            while enabled do
+                if isAlive(localPlayer) then
+                    local nearestBed = GetBed(28.5)
+                    if nearestBed then
+                        while true do
+                            HitBed(nearestBed)
+                            task.wait()
                         end
                     end
-                    BedHitDelay = 86000
-                until not enabled
-            end)
+                end
+            end
         end
     end
 })
