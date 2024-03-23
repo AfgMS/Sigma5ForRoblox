@@ -1,3 +1,4 @@
+--NotHm.. on youtube, and nothm_ on discord
 local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/AfgMS/SigmaJello4Roblox/main/SigmaLibrary.lua", true))()
 local CoreGui = game:WaitForChild("CoreGui")
 local Player = game:GetService("Players")
@@ -5,6 +6,7 @@ local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local localPlayer = game.Players.LocalPlayer
 local TeamsService = game:GetService("Teams")
 local Camera = game:GetService("Workspace").CurrentCamera
+local TweenService = game:GetService("TweenService")
 local UserInputService = game:GetService("UserInputService")
 local Lighting = game:GetService("Lighting")
 
@@ -35,6 +37,24 @@ local function GetNearestPlr(range)
     end
 
     return nearestPlayer
+end
+
+local function GetBed(range)
+    local nearestBed
+    local nearestDistance = math.huge
+    local localPlayer = game.Players.LocalPlayer
+
+    for _, v in pairs(game.Workspace:GetChildren()) do
+        if v.Name == "bed" and v.Covers.BrickColor ~= localPlayer.Team.TeamColor then
+            local distance = (v.Position - localPlayer.Character.HumanoidRootPart.Position).magnitude
+            if distance < nearestDistance and distance <= range then
+                nearestBed = v
+                nearestDistance = distance
+            end
+        end
+    end
+    
+    return nearestBed
 end
 
 local function GetMatchState()
@@ -68,7 +88,7 @@ local MeleeRank = {
     [7] = { Name = "rageblade", Rank = 7 },
 }
 
---[[ local ToolRank = {
+local ToolRank = {
     [1] = { Name = "shears", Rank = 1 },
     [2] = { Name = "wood_pickaxe", Rank = 2 },
     [3] = { Name = "wood_axe", Rank = 3 },
@@ -79,7 +99,7 @@ local MeleeRank = {
     [8] = { Name = "diamond_pickaxe", Rank = 8 },
     [9] = { Name = "diamond_axe", Rank = 9 },
 }
---]]
+
 function GetAttackPos(plrpos, nearpost, val)
     local newPos = (nearpost - plrpos).Unit * math.min(val, (nearpost - plrpos).Magnitude) + plrpos
     return newPos
@@ -103,7 +123,8 @@ local function GetMelee()
     return bestsword
 end
 
---[[local function GetTool()
+--[[
+local function GetTool()
     local besttool = nil
     local bestrank = 0
     for i, v in pairs(localPlayer.Character.InventoryFolder.Value:GetChildren()) do
@@ -130,7 +151,7 @@ local RenderTab = Library:createTabs(CoreGui.Sigma, "Render")
 local PlayerTab = Library:createTabs(CoreGui.Sigma, "Player")
 local WorldTab = Library:createTabs(CoreGui.Sigma, "World")
 --Notification
-createnotification("Sigma5", "Loaded Successfully", 1, true)
+CreateNotification("Loader", "Loaded Successfully", 3, true)
 --ActiveMods
 local ActiveMods = GuiTab:ToggleButton({
     name = "ActiveMods",
@@ -243,7 +264,6 @@ local CustomLowHealth = AutoQuit:Slider({
 local KillAuraRange
 local RotationsRange
 local AutoSword = false
-local SwordSwing = true
 local KillAura = CombatTab:ToggleButton({
     name = "KillAura",
     info = "Automatically attacks players",
@@ -257,13 +277,6 @@ local KillAura = CombatTab:ToggleButton({
                     SetHotbar(Sword)
                 else
                     AutoSword = false
-                end
-            end
-            if SwordSwing then
-                if NearestPlayer then
-                    SwordCont:swingSwordAtMouse()
-                else
-                    SwordSwing = false
                 end
             end
             if NearestPlayer then
@@ -327,12 +340,6 @@ local Rotations = KillAura:ToggleButtonInsideUI({
         end
     end
 })
-local Swing = KillAura:ToggleButtonInsideUI({
-    name = "Swing",
-    callback = function(enabled)
-        SwordSwing = not SwordSwing
-    end
-})
 --Teams
 local Teams = CombatTab:ToggleButton({
     name = "Teams",
@@ -360,7 +367,7 @@ local Fullbright = RenderTab:ToggleButton({
 --Gameplay
 local AutoQueue = false
 local AutoGG = false
-
+local ActionDelay = 1
 local GamePlay = PlayerTab:ToggleButton({
     name = "GamePlay",
     info = "Makes your experience better",
@@ -368,14 +375,14 @@ local GamePlay = PlayerTab:ToggleButton({
         if enabled then
             if AutoQueue then
                 repeat
-                    task.wait(3)
+                    task.wait(ActionDelay)
                 until GetMatchState() == 2 or not enabled
                 ReplicatedStorage:FindFirstChild("events-@easy-games/lobby:shared/event/lobby-events@getEvents.Events").joinQueue:FireServer({["queueType"] = getQueueType()})
             end
 
             if AutoGG then
                 repeat
-                    task.wait(1)
+                    task.wait(ActionDelay)
                 until GetMatchState() == 2 or not enabled
                 ReplicatedStorage.DefaultChatSystemChatEvents.SayMessageRequest:FireServer("GG", "All")
             end
@@ -385,11 +392,12 @@ local GamePlay = PlayerTab:ToggleButton({
     end
 })
 local GamePlayFix = GamePlay:Slider({
-    title = "??",
+    title = "Delay",
     min = 0,
-    max = 0,
-    default = 0,
+    max = 100,
+    default = 1,
     callback = function(val)
+        ActionDelay = val
     end
 })
 local AutoQueueToggle = GamePlay:ToggleButtonInsideUI({
@@ -443,82 +451,157 @@ local Speed = PlayerTab:ToggleButton({
         end
     end
 })
---[[
+--AntiVanish
 local AntiVanish = WorldTab:ToggleButton({
     name = "AntiVanish",
     info = "Staff detector",
     callback = function(enabled)
         if enabled then
-            repeat
-                task.wait()
-                local maxPlayers = game.MaxPlayers
-                local currentPlayers = #game.Players:GetPlayers()
-                if currentPlayers >= maxPlayers then
-                    createnotification("AntiVanish", "Someone vanished", 1, true)
+            game.Players.PlayerAdded:Connect(function(player)
+                if not player:IsFriendsWith(game.Players.LocalPlayer.UserId) and GetMatchState() ~= 0 then
+                    CreateNotification("AntiVanish", "Someone just vanished", 5, true)
                 end
-            until not enabled
+            end)
+            
+            for i, player in pairs(game.Players:GetPlayers()) do
+                if player:IsInGroup(5774246) and player:GetRankInGroup(5774246) >= 2 then
+                    CreateNotification("AntiVanish", "Someone just vanished", 5, true)
+                end
+            end
         end
     end
 })
---]]
 --Nuker
 local raycastParams = RaycastParams.new()
 raycastParams.IgnoreWater = true
-local function getBed()
-    local beds = {}
-    for _, v in pairs(game.Workspace:GetChildren()) do
-        if v.Name == "bed" and v.Covers.BrickColor ~= localPlayer.Team.TeamColor then
-            table.insert(beds, v)
-        end
-    end
-    return beds
-end
-local function DamageBed(bed)
-    local raycastResult = workspace:Raycast(bed.Position + Vector3.new(0, 24, 0), Vector3.new(0, -27, 0), raycastParams)
+
+local function HitBed(bed)
+    local raycastResult = workspace:Raycast(bed.Position + Vector3.new(0, 13, 0), Vector3.new(0, -16, 0), raycastParams)
     if raycastResult then
-        local NearestBed = raycastResult.Instance
-        for _, v in pairs(NearestBed:GetChildren()) do
-            if v:IsA("Texture") then
-                v:Destroy()
-            end
-        end
-        NearestBed.Color = Color3.fromRGB(255, 255, 255)
-        NearestBed.Transparency = 0.73
-        NearestBed.Material = "Neon"
-        if BlockHit then
-            BlockHit:InvokeServer({
-                ["blockRef"] = {
-                    ["blockPosition"] = Vector3.new(math.round(NearestBed.Position.X / 3), math.round(NearestBed.Position.Y / 3), math.round(NearestBed.Position.Z / 3))
-                },
-                ["hitPosition"] = Vector3.new(math.round(NearestBed.Position.X / 3), math.round(NearestBed.Position.Y / 3), math.round(NearestBed.Position.Z / 3)),
-                ["hitNormal"] = Vector3.new(math.round(NearestBed.Position.X / 3), math.round(NearestBed.Position.Y / 3), math.round(NearestBed.Position.Z / 3))
-            })
-        else
-            warn("bedwars blockhit broke?")
-        end
+        local nearestBed = raycastResult.Instance
+        nearestBed.Color = Color3.fromRGB(255, 255, 255)
+        nearestBed.Transparency = 0.48
+
+        BlockHit:InvokeServer({
+            ["blockRef"] = {
+                ["blockPosition"] = Vector3.new(math.round(nearestBed.Position.X / 3), math.round(nearestBed.Position.Y / 3), math.round(nearestBed.Position.Z / 3))
+            },
+            ["hitPosition"] = Vector3.new(math.round(nearestBed.Position.X / 3), math.round(nearestBed.Position.Y / 3), math.round(nearestBed.Position.Z / 3)),
+            ["hitNormal"] = Vector3.new(math.round(nearestBed.Position.X / 3), math.round(nearestBed.Position.Y / 3), math.round(nearestBed.Position.Z / 3))
+        })
     end
 end
+
 -- local Tool = GetTool()
 local Nuker = WorldTab:ToggleButton({
     name = "Nuker",
     info = "Auto bed break",
     callback = function(enabled)
         if enabled then
-            local Beds = getBed()
             spawn(function()
-            repeat
-                task.wait()
-                if Beds then
-                    -- SetHotbar(Tool)
-                    for _, v in pairs(Beds) do
-                        if localPlayer.Character then
-                            if (v.Position - localPlayer.Character.PrimaryPart.Position).Magnitude < 28.5 then
-                                DamageBed(v)
+                repeat
+                    task.wait()
+                    if localPlayer.Character then
+                        local nearestBed = GetBed(28.5)
+                        if nearestBed then
+                            -- SetHotbar(Tool)
+                            while true do
+                                HitBed(nearestBed)
+                                wait()
                             end
                         end
                     end
-                end
-            until not enabled()
+                until not enabled
+            end)
         end
     end
 })
+--[[
+local antivoidpart = nil
+local oldpos = nil
+
+local function UpdateOldPosition()
+    if localPlayer.Character and localPlayer.Character:FindFirstChild("HumanoidRootPart") then
+        local rootPart = localPlayer.Character.HumanoidRootPart
+        local newPosition = rootPart.Position
+        if antivoidpart and newPosition.Y > antivoidpart.Position.Y then
+            oldpos = newPosition
+        else
+            oldpos = nil
+        end
+    else
+        oldpos = nil
+    end
+end
+
+local function CreatePlatform()
+    antivoidpart = Instance.new("Part", game.Workspace)
+    antivoidpart.Transparency = 0.75
+    antivoidpart.CanCollide = true
+    antivoidpart.BrickColor = BrickColor.new(255, 255, 255)
+    antivoidpart.Size = Vector3.new(999999, 3, 999999)
+    antivoidpart.Anchored = true
+    antivoidpart.Position = localPlayer.Character:FindFirstChild("HumanoidRootPart").Position - Vector3.new(0, 18, 0)
+    antivoidpart.Name = "antivoidpart"
+
+    antivoidpart.Touched:Connect(function(hit)
+        local parent = hit.Parent
+        if parent and parent:FindFirstChild("HumanoidRootPart") and oldpos then
+            if localPlayer.Character:FindFirstChild("HumanoidRootPart") then
+                local character = localPlayer.Character
+                local humanoidRootPart = character:FindFirstChild("HumanoidRootPart")
+                if humanoidRootPart then
+                    local playerPos = humanoidRootPart.Position
+                    if playerPos.Y < oldpos.Y then
+                        local tweenInfo = TweenInfo.new(0.83, Enum.EasingStyle.Linear, Enum.EasingDirection.InOut)
+                        local tween = TweenService:Create(character, tweenInfo, {PrimaryPartCFrame = CFrame.new(Vector3.new(character.PrimaryPart.Position.X, oldpos.Y, character.PrimaryPart.Position.Z))})
+                        tween:Play()
+                        local ray = Ray.new(humanoidRootPart.Position, Vector3.new(0, -100, 0))
+                        local hitPart, hitPos = workspace:FindPartOnRay(ray)
+                        if hitPart then
+                            local destination = hitPos + Vector3.new(0, character.PrimaryPart.Size.Y / 2, 0)
+                            local distance = (destination - humanoidRootPart.Position).Magnitude
+                            local tween = TweenService:Create(character, TweenInfo.new(distance / 50, Enum.EasingStyle.Linear), {PrimaryPartCFrame = CFrame.new(destination)})
+                            tween:Play()
+                        end
+                    end
+                end
+            end
+        end
+    end)
+
+    return antivoidpart
+end
+
+local AntiVoid = WorldTab:ToggleButton({
+    name = "AntiVoid",
+    info = "Prevents falling into the void",
+    callback = function(enabled)
+        if enabled then
+            UpdateOldPosition()
+            CreatePlatform()
+        else
+            if antivoidpart then
+                antivoidpart:Destroy()
+                antivoidpart = nil
+            end
+        end
+    end
+})
+
+local function CheckIfInAir()
+    while true do
+        wait(3)
+        if localPlayer.Character and localPlayer.Character:FindFirstChild("Humanoid") then
+            local humanoid = localPlayer.Character.Humanoid
+            if humanoid:GetState() == Enum.HumanoidStateType.Physics then
+                oldpos = nil
+            else
+                UpdateOldPosition()
+            end
+        end
+    end
+end
+
+spawn(CheckIfInAir)
+--]]
