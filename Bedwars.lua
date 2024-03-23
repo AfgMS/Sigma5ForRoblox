@@ -269,7 +269,7 @@ local KillAura = CombatTab:ToggleButton({
                         },
                         ["weapon"] = Sword
                     })
-                    task.wait()
+                    wait(1)
                 end
             end
         end
@@ -470,7 +470,7 @@ local Nuker = WorldTab:ToggleButton({
                     if nearestBed then
                         while true do
                             HitBed(nearestBed)
-                            task.wait()
+                            wait(0.98)
                         end
                     end
                 end
