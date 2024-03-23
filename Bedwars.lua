@@ -160,7 +160,7 @@ local ActiveMods = GuiTab:ToggleButton({
     name = "ActiveMods",
     info = "Render active mods",
     callback = function(enabled)
-        CoreGui.SigmaVisualStuff.ArrayListHolder.Visible = not CoreGui.SigmaVisualStuff.ArrayListHolder.Visible
+        CoreGui.Sigma5Visual.Right.ArrayListHolder.Visible = not CoreGui.Sigma5Visual.Right.ArrayListHolder.Visible
     end
 })
 --TabGUI
@@ -168,7 +168,7 @@ local TabGUI = GuiTab:ToggleButton({
     name = "TabGUI",
     info = "Just decorations",
     callback = function(enabled)
-        CoreGui.SigmaVisualStuff.LeftHolder.TabHolder.Visible = not CoreGui.SigmaVisualStuff.LeftHolder.TabHolder.Visible
+        CoreGui.Sigma5Visual.Right.TabHolder.Visible = not CoreGui.Sigma5Visual.Right.TabHolder.Visible
     end
 })
 --DeleteGui
@@ -482,9 +482,8 @@ local function HitBed(bed)
     local raycastResult = workspace:Raycast(bed.Position + Vector3.new(0, 13, 0), Vector3.new(0, -16, 0), raycastParams)
     if raycastResult then
         local nearestBed = raycastResult.Instance
-        local nearestBedTexture = nearestbed:FindFirstChildWhichIsA("Texture")
         nearestBed.Transparency = 0.48
-        nearestBedTexture.Color3 = Color3.fromRGB(255, 255, 255)
+        nearestBed.Color3 = Color3.fromRGB(255, 255, 255)
         
         BlockHit:InvokeServer({
             ["blockRef"] = {
