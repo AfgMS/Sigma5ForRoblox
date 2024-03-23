@@ -1,12 +1,18 @@
---Sigma5ForMobile
+--ImportantStuff
 local TweenService = game:GetService("TweenService")
 local CoreGui = game:GetService("CoreGui")
 local UserInputService = game:GetService("UserInputService")
 local Font = game:GetService("TextService")
+local Mouse = game.Players.LocalPlayer:GetMouse()
+local localplayer = game.Players.LocalPlayer
 local TouchInput = game:GetService("TouchInputService")
 local Lighting = game:GetService("Lighting")
 
+--ImportantUIStuff
 local Library = {}
+local soundObjects = {}
+Library.totalWidth = 15
+
 function Library:validate(defaults, options)
 	for i, v in pairs(defaults) do
 		if options[i] == nil then
@@ -16,13 +22,13 @@ function Library:validate(defaults, options)
 	return options
 end
 
-function Library:FadeEffect(object, properties)
+function Library:tween(object, properties)
 	local tweenInfo = TweenInfo.new(properties.time or 0.10, properties.easingStyle or Enum.EasingStyle.Quad, properties.easingDirection or Enum.EasingDirection.Out)
 	local tween = TweenService:Create(object, tweenInfo, properties)
 	tween:Play()
 end
 
-local SoundList = {
+local soundIds = {
 	OnEnabled = 3318713980,
 	OnEnabledOriginal = 14393273745,
 	OnDisabled = 3318714899,
@@ -31,38 +37,48 @@ local SoundList = {
 	OnErrorOriginal = {}
 }
 
-function PlaySound(id)
-	local sound = Instance.new("Sound", game.Workspace)
-	sound.SoundId = "rbxassetid://" .. id
+function playContinuousSound(soundId)
+	local sound = Instance.new("Sound")
+	sound.SoundId = "rbxassetid://" .. soundId
+	sound.Parent = game.Workspace
 	sound:Play()
 
+	soundObjects[sound] = true
+
 	sound.Ended:Connect(function()
+		soundObjects[sound] = nil
 		sound:Destroy()
 	end)
 end
 
-local SigmaVisual = Instance.new("ScreenGui")
-SigmaVisual.ResetOnSpawn = false
-SigmaVisual.Name = "Sigma5Visual"
+--Sigma5Visual
+local Sigma5KeybindSupport = Instance.new("ScreenGui", CoreGui)
+Sigma5KeybindSupport.Name = "Sigma5Keybind"
+Sigma5KeybindSupport.ResetOnSpawn = false
 
-local LeftHolder = Instance.new("Frame", SigmaVisual)
-LeftHolder.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-LeftHolder.BackgroundTransparency = 1
-LeftHolder.BorderColor3 = Color3.fromRGB(0, 0, 0)
-LeftHolder.BorderSizePixel = 0
-LeftHolder.Size = UDim2.new(0, 255, 1, 0)
+local SigmaVisualHolder = Instance.new("ScreenGui", CoreGui)
+SigmaVisualHolder.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+SigmaVisualHolder.Name = "Sigma5Visual"
+SigmaVisualHolder.ResetOnSpawn = false
 
-local RightHolder = Instance.new("Frame", SigmaVisual)
-RightHolder.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-RightHolder.BackgroundTransparency = 1
-RightHolder.BorderColor3 = Color3.fromRGB(0, 0, 0)
-RightHolder.BorderSizePixel = 0
-RightHolder.Position = UDim2.new(0.842202961, 0, 0, 0)
-RightHolder.Size = UDim2.new(0, 255, 1, 0)
+local Left = Instance.new("Frame", SigmaVisualHolder)
+Left.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+Left.BackgroundTransparency = 1
+Left.BorderColor3 = Color3.fromRGB(0, 0, 0)
+Left.BorderSizePixel = 0
+Left.Size = UDim2.new(0, 255, 1, 0)
+
+local Right = Instance.new("Frame", SigmaVisualHolder)
+Right.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+Right.BackgroundTransparency = 1
+Right.BorderColor3 = Color3.fromRGB(0, 0, 0)
+Right.BorderSizePixel = 0
+Right.Position = UDim2.new(0.842202961, 0, 0, 0)
+Right.Size = UDim2.new(0, 255, 1, 0)
 
 function CreateNotification(NotificationName, NotificationText, NotificationDuration, Fired)
 
-	local Notification = Instance.new("Frame", RightHolder)
+	local Notification = Instance.new("Frame", Right)
 	Notification.BackgroundColor3 = Color3.fromRGB(45, 45, 45)
 	Notification.BackgroundTransparency = 0.150
 	Notification.BorderColor3 = Color3.fromRGB(0, 0, 0)
@@ -141,7 +157,7 @@ function CreateNotification(NotificationName, NotificationText, NotificationDura
 	end
 end
 
-local HolderArrayList = Instance.new("Frame", RightHolder)
+local HolderArrayList = Instance.new("Frame")
 HolderArrayList.Name = "ArrayListHolder"
 HolderArrayList.Visible = false
 HolderArrayList.BackgroundTransparency = 1
@@ -149,10 +165,12 @@ HolderArrayList.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
 HolderArrayList.BorderColor3 = Color3.fromRGB(0, 0, 0)
 HolderArrayList.Size = UDim2.new(0, 195, 0, 550)
 HolderArrayList.Position = UDim2.new(1, -210, 0, 0)
+HolderArrayList.Parent = Right
 
-local TheListThingy = Instance.new("UIListLayout", HolderArrayList)
+local TheListThingy = Instance.new("UIListLayout")
 TheListThingy.Padding = UDim.new(0, -10)
 TheListThingy.SortOrder = Enum.SortOrder.LayoutOrder
+TheListThingy.Parent = HolderArrayList
 
 local function AddArrayList(name)
 	local ModulesName = Instance.new("TextLabel")
@@ -174,7 +192,7 @@ local function AddArrayList(name)
 end
 
 local function RemoveArraylist(name)
-	local children = RightHolder:GetChildren()
+	local children = Right:GetChildren()
 	for _, child in ipairs(children) do
 		if child:IsA("Frame") and child.Name == "ArrayListHolder" then
 			local label = child:FindFirstChild(name)
@@ -188,7 +206,7 @@ end
 
 local SigmaTittle = Instance.new("TextLabel")
 SigmaTittle.Name = "SigmaTittle"
-SigmaTittle.Parent = LeftHolder
+SigmaTittle.Parent = Left
 SigmaTittle.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
 SigmaTittle.BackgroundTransparency = 1.000
 SigmaTittle.BorderColor3 = Color3.fromRGB(0, 0, 0)
@@ -226,7 +244,7 @@ Jello.TextXAlignment = Enum.TextXAlignment.Left
 
 local TabHolder = Instance.new("Frame")
 TabHolder.Name = "TabHolder"
-TabHolder.Parent = LeftHolder
+TabHolder.Parent = Left
 TabHolder.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
 TabHolder.BackgroundTransparency = 1.000
 TabHolder.BorderColor3 = Color3.fromRGB(0, 0, 0)
@@ -513,7 +531,7 @@ function Library:createTabs(parentFrame, tabName)
 		CloseButtonsMenuFrame.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
 		CloseButtonsMenuFrame.Font = Enum.Font.Roboto
 		CloseButtonsMenuFrame.TextScaled  = true
-		CloseButtonsMenuFrame.TextColor3 = Color3.fromRGB(0, 0, 0)
+		CloseButtonsMenuFrame.TextColor3 = Color3.fromRGB(255, 255, 255)
 		CloseButtonsMenuFrame.Size = UDim2.new(0, 45, 0, 45)
 		CloseButtonsMenuFrame.BorderColor3 = Color3.fromRGB(0, 0, 0)
 		CloseButtonsMenuFrame.Text = "x"
@@ -557,17 +575,17 @@ function Library:createTabs(parentFrame, tabName)
 
 		local function updateColors()
 			if ToggleButton.Enabled then
-				Library:FadeEffect(newButton, {BackgroundColor3 = Color3.fromRGB(115, 185, 255)})
-				Library:FadeEffect(newButton, {TextColor3 = Color3.fromRGB(255, 255, 255)})
+				Library:tween(newButton, {BackgroundColor3 = Color3.fromRGB(115, 185, 255)})
+				Library:tween(newButton, {TextColor3 = Color3.fromRGB(255, 255, 255)})
 				newButton.Text = "       " .. options.name
 				AddArrayList(options.name)
-				PlaySound(SoundList.OnEnabled)
+				playContinuousSound(soundIds.OnEnabled)
 			else
-				Library:FadeEffect(newButton, {BackgroundColor3 = Color3.fromRGB(255, 255, 255)})
-				Library:FadeEffect(newButton, {TextColor3 = Color3.fromRGB(15, 15, 15)})
+				Library:tween(newButton, {BackgroundColor3 = Color3.fromRGB(255, 255, 255)})
+				Library:tween(newButton, {TextColor3 = Color3.fromRGB(15, 15, 15)})
 				newButton.Text = "     " .. options.name
 				RemoveArraylist(options.name)
-				PlaySound(SoundList.OnDisabled)
+				playContinuousSound(soundIds.OnDisabled)
 			end
 		end
 
@@ -587,13 +605,12 @@ function Library:createTabs(parentFrame, tabName)
 
 
 		openmenu.MouseButton1Click:Connect(function()
-			ButtonsMenuFrame.Visible = true
-			ButtonsMenuInner.Visible = true
+			ButtonsMenuFrame.Visible = not ButtonsMenuFrame.Visible
+			ButtonsMenuInner.Visible = not ButtonsMenuInner.Visible
 		end)
 
 		CloseButtonsMenuFrame.MouseButton1Click:Connect(function()
-			ButtonsMenuFrame.Visible = true
-			ButtonsMenuInner.Visible = true
+			ButtonsMenuFrame.Visible = not ButtonsMenuFrame.Visible
 		end)
 
 		updateColors()
