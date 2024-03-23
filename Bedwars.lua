@@ -234,6 +234,7 @@ local CustomLowHealth = AutoQuit:Slider({
     end
 })
 --KillAura
+--KillAura
 local KillAuraRange
 local RotationsRange
 local AutoSword = false
@@ -253,7 +254,7 @@ local KillAura = CombatTab:ToggleButton({
                 end
             end
             if NearestPlayer and isAlive(NearestPlayer) and isAlive(localPlayer) then
-                while task.wait(0.01) do
+                while enabled do
                     ReplicatedStorage.rbxts_include.node_modules:FindFirstChild("@rbxts").net.out._NetManaged.SwordHit:FireServer({
                         ["entityInstance"] = NearestPlayer.Character,
                         ["chargedAttack"] = {
@@ -269,10 +270,9 @@ local KillAura = CombatTab:ToggleButton({
                         },
                         ["weapon"] = Sword
                     })
+                    task.wait()
                 end
             end
-        else
-            KillAuraRange = 0
         end
     end
 })
