@@ -92,19 +92,6 @@ local MeleeRank = {
     [6] = { Name = "emerald_sword", Rank = 6 },
     [7] = { Name = "rageblade", Rank = 7 },
 }
-
-local ToolRank = {
-    [1] = { Name = "shears", Rank = 1 },
-    [2] = { Name = "wood_pickaxe", Rank = 2 },
-    [3] = { Name = "wood_axe", Rank = 3 },
-    [4] = { Name = "stone_pickaxe", Rank = 4 },
-    [5] = { Name = "stone_axe", Rank = 5 },
-    [6] = { Name = "iron_pickaxe", Rank = 6 },
-    [7] = { Name = "iron_axe", Rank = 7 },
-    [8] = { Name = "diamond_pickaxe", Rank = 8 },
-    [9] = { Name = "diamond_axe", Rank = 9 },
-}
-
 function GetAttackPos(plrpos, nearpost, val)
     local newPos = (nearpost - plrpos).Unit * math.min(val, (nearpost - plrpos).Magnitude) + plrpos
     return newPos
@@ -126,24 +113,6 @@ local function GetMelee()
         end
     end
     return bestsword
-end
-
-local function GetTool()
-    local besttool = nil
-    local bestrank = 0
-    for i, v in pairs(localPlayer.Character.InventoryFolder.Value:GetChildren()) do
-        if v.Name:match("shears") or v.Name:match("pickaxe") or v.Name:match("axe") then
-            for _, data in pairs(ToolRank) do
-                if data["Name"] == v.Name then
-                    if bestrank <= data["Rank"] then
-                        bestrank = data["Rank"]
-                        besttool = v
-                    end
-                end
-            end
-        end
-    end
-    return besttool
 end
 --CreatingUI
 Library:createScreenGui()
@@ -196,9 +165,9 @@ local Aimbot = CombatTab:ToggleButton({
             AimbotRange = 20
             while enabled do
                 local NearestPlayer = GetNearestPlr(AimbotRange)
-                if NearestPlayer then
+                if NearestPlayer and isAlive(NearestPlayer) and isAlive(localPlayer) then
                     local direction = (NearestPlayer.Character.HumanoidRootPart.Position - Camera.CFrame.Position).unit
-                    local newLookAt = CFrame.new(Camera.CFrame.Position, NearestPlayer.Character.HumanoidRootPart.Position)
+                    local newLookAt = CFrame.new(Camera.CFrame.Position, Camera.CFrame.Position + direction)
                     Camera.CFrame = newLookAt
                 end
                 wait(0.01)
@@ -282,7 +251,7 @@ local KillAura = CombatTab:ToggleButton({
                     AutoSword = false
                 end
             end
-            if NearestPlayer then
+            if NearestPlayer and isAlive(NearestPlayer) and isAlive(localPlayer) then
                 while task.wait(0.01) do
                     ReplicatedStorage.rbxts_include.node_modules:FindFirstChild("@rbxts").net.out._NetManaged.SwordHit:FireServer({
                         ["entityInstance"] = NearestPlayer.Character,
@@ -329,13 +298,11 @@ local Rotations = KillAura:ToggleButtonInsideUI({
             RotationsRange = 20
             while task.wait(0.01) do
                 local NearestPlayer = GetNearestPlr(RotationsRange)
-                if NearestPlayer then
-                    if localPlayer.Character and localPlayer.Character:FindFirstChild("HumanoidRootPart") then
-                        local direction = (NearestPlayer.Character.HumanoidRootPart.Position - localPlayer.Character.HumanoidRootPart.Position).unit
-                        local lookVector = Vector3.new(direction.X, 0, direction.Z).unit
-                        local newCFrame = CFrame.new(localPlayer.Character.HumanoidRootPart.Position, localPlayer.Character.HumanoidRootPart.Position + lookVector)
-                        localPlayer.Character:SetPrimaryPartCFrame(newCFrame)
-                    end
+                if NearestPlayer and isAlive(NearestPlayer) and isAlive(localPlayer) then
+                    local direction = (NearestPlayer.Character.HumanoidRootPart.Position - localPlayer.Character.HumanoidRootPart.Position).unit
+                    local lookVector = Vector3.new(direction.X, 0, direction.Z).unit
+                    local newCFrame = CFrame.new(localPlayer.Character.HumanoidRootPart.Position, localPlayer.Character.HumanoidRootPart.Position + lookVector)
+                    localPlayer.Character:SetPrimaryPartCFrame(newCFrame)
                 end
             end
         else
@@ -492,25 +459,26 @@ local function HitBed(bed)
     end
 end
 
-local Tool = GetTool()
+local BedHitDelay
 local Nuker = WorldTab:ToggleButton({
     name = "Nuker",
     info = "Auto bed break",
     callback = function(enabled)
         if enabled then
+            BedHitDelay = 0.72
             spawn(function()
                 repeat
-                    task.wait()
+                    task.wait(BedHitDelay)
                     if localPlayer.Character then
                         local nearestBed = GetBed(28.5)
                         if nearestBed then
-                            -- SetHotbar(Tool)
                             while true do
                                 HitBed(nearestBed)
                                 wait()
                             end
                         end
                     end
+                    BedHitDelay = 86000
                 until not enabled
             end)
         end
