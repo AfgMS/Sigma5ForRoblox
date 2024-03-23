@@ -52,10 +52,6 @@ function playContinuousSound(soundId)
 end
 
 --Sigma5Visual
-local Sigma5KeybindSupport = Instance.new("ScreenGui", CoreGui)
-Sigma5KeybindSupport.Name = "Sigma5Keybind"
-Sigma5KeybindSupport.ResetOnSpawn = false
-
 local SigmaVisualHolder = Instance.new("ScreenGui", CoreGui)
 SigmaVisualHolder.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
 SigmaVisualHolder.Name = "Sigma5Visual"
