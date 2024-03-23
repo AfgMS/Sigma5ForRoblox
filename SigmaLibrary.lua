@@ -204,19 +204,9 @@ local function RemoveArraylist(name)
 	end
 end
 
-local LeftHolder = Instance.new("Frame")
-LeftHolder.Name = "LeftHolder"
-LeftHolder.Parent = Left
-LeftHolder.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-LeftHolder.BackgroundTransparency = 1
-LeftHolder.BorderColor3 = Color3.fromRGB(0, 0, 0)
-LeftHolder.BorderSizePixel = 0
-LeftHolder.Visible = true
-LeftHolder.Size = UDim2.new(0, 245, 1, 0)
-
 local SigmaTittle = Instance.new("TextLabel")
 SigmaTittle.Name = "SigmaTittle"
-SigmaTittle.Parent = LeftHolder
+SigmaTittle.Parent = Left
 SigmaTittle.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
 SigmaTittle.BackgroundTransparency = 1.000
 SigmaTittle.BorderColor3 = Color3.fromRGB(0, 0, 0)
