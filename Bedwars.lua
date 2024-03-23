@@ -146,10 +146,10 @@ end
 Library:createScreenGui()
 --Tabs
 local GuiTab = Library:createTabs(CoreGui.Sigma5, "Gui")
-local CombatTab = Library:createTabs(CoreGui.Sigma, "Combat")
-local RenderTab = Library:createTabs(CoreGui.Sigma, "Render")
-local PlayerTab = Library:createTabs(CoreGui.Sigma, "Player")
-local WorldTab = Library:createTabs(CoreGui.Sigma, "World")
+local CombatTab = Library:createTabs(CoreGui.Sigma5, "Combat")
+local RenderTab = Library:createTabs(CoreGui.Sigma5, "Render")
+local PlayerTab = Library:createTabs(CoreGui.Sigma5, "Player")
+local WorldTab = Library:createTabs(CoreGui.Sigma5, "World")
 --Notification
 CreateNotification("Loader", "Loaded Successfully", 3, true)
 --ActiveMods
