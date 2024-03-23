@@ -22,27 +22,23 @@ local function isAlive(player)
     return player and player.Character and player.Character:FindFirstChild("Humanoid") and player.Character:FindFirstChild("Humanoid").Health > 0
 end
 
-local function GetNearestPlr(range)
-    local nearestPlayer
-    local nearestDistance = math.huge
+local TeamCheck = false
+local function getnearestplr(distance)
     local localPlayer = game.Players.LocalPlayer
+    local nearest = {}
     
     for _, player in ipairs(game.Players:GetPlayers()) do
-        if isAlive(player) and player ~= localPlayer and isAlive(localPlayer) then
+        if isAlive(player) and player ~= localPlayer then
             if not TeamCheck or player.Team ~= localPlayer.Team then
-                local playerHRP = player.Character and player.Character:FindFirstChild("HumanoidRootPart")
-                local localHRP = localPlayer.Character and localPlayer.Character:FindFirstChild("HumanoidRootPart")
-                if playerHRP and localHRP then
-                    local distance = (playerHRP.Position - localHRP.Position).magnitude
-                    if distance < nearestDistance and distance <= range then
-                        nearestPlayer = player
-                        nearestDistance = distance
-                    end
+                local playerDistance = (player.Character.PrimaryPart.Position - localPlayer.Character.PrimaryPart.Position).Magnitude
+                if playerDistance <= distance then
+                    table.insert(nearest, player)
                 end
             end
         end
     end
-    return nearestPlayer
+    
+    return nearest
 end
 
 local function GetBed(range)
@@ -164,7 +160,7 @@ local Aimbot = CombatTab:ToggleButton({
         if enabled then
             AimbotRange = 20
             while enabled do
-                local NearestPlayer = GetNearestPlr(AimbotRange)
+                local NearestPlayer = getnearestplr(AimbotRange)
                 if NearestPlayer and isAlive(NearestPlayer) and isAlive(localPlayer) then
                     local direction = (NearestPlayer.Character.HumanoidRootPart.Position - Camera.CFrame.Position).unit
                     local newLookAt = CFrame.new(Camera.CFrame.Position, Camera.CFrame.Position + direction)
@@ -242,7 +238,7 @@ local KillAura = CombatTab:ToggleButton({
     callback = function(enabled)
         if enabled then
             KillAuraRange = 20
-            local NearestPlayer = GetNearestPlr(KillAuraRange)
+            local NearestPlayer = getnearestplr(KillAuraRange)
             local Sword = GetMelee()
             if AutoSword then
                 if NearestPlayer then
@@ -297,7 +293,7 @@ local Rotations = KillAura:ToggleButtonInsideUI({
         if enabled then
             RotationsRange = 20
             while task.wait(0.01) do
-                local NearestPlayer = GetNearestPlr(RotationsRange)
+                local NearestPlayer = getnearestplr(RotationsRange)
                 if NearestPlayer and isAlive(NearestPlayer) and isAlive(localPlayer) then
                     local direction = (NearestPlayer.Character.HumanoidRootPart.Position - localPlayer.Character.HumanoidRootPart.Position).unit
                     local lookVector = Vector3.new(direction.X, 0, direction.Z).unit
