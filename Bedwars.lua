@@ -176,9 +176,9 @@ local DeleteGui = GuiTab:ToggleButton({
     callback = function(enabled)
         if enabled then
             BlurEffect:Destroy()
-            CoreGui.Sigma:Destroy()
+            CoreGui.Sigma5:Destroy()
             print("Destroyed Main")
-            CoreGui.SigmaVisualStuff:Destroy()
+            CoreGui.Sigma5Visual:Destroy()
             print("Destroyed Notif")
         end
     end
