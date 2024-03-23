@@ -160,7 +160,7 @@ local ActiveMods = GuiTab:ToggleButton({
     name = "ActiveMods",
     info = "Render active mods",
     callback = function(enabled)
-        CoreGui.Sigma5Visual.Right.ArrayListHolder.Visible = not CoreGui.Sigma5Visual.Right.ArrayListHolder.Visible
+        CoreGui.SigmaVisualStuff.ArrayListHolder.Visible = not CoreGui.SigmaVisualStuff.ArrayListHolder.Visible
     end
 })
 --TabGUI
@@ -168,7 +168,7 @@ local TabGUI = GuiTab:ToggleButton({
     name = "TabGUI",
     info = "Just decorations",
     callback = function(enabled)
-        CoreGui.Sigma5Visual.Right.TabHolder.Visible = not CoreGui.Sigma5Visual.Right.TabHolder.Visible
+        CoreGui.SigmaVisualStuff.LeftHolder.TabHolder.Visible = not CoreGui.SigmaVisualStuff.LeftHolder.TabHolder.Visible
     end
 })
 --DeleteGui
