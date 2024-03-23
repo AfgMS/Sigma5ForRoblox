@@ -22,6 +22,7 @@ local function isAlive(player)
     return player and player.Character and player.Character:FindFirstChild("Humanoid") and player.Character:FindFirstChild("Humanoid").Health > 0
 end
 
+local TeamCheck = false
 local function GetNearestPlr(range)
     local nearestPlayer
     local nearestDistance = math.huge
