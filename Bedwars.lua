@@ -18,24 +18,30 @@ local SprintCont = KnitClient.Controllers.SprintController
 local SwordCont = KnitClient.Controllers.SwordController
 local BlockHit = ReplicatedStorage.rbxts_include.node_modules["@easy-games"]["block-engine"].node_modules["@rbxts"].net.out._NetManaged.DamageBlock
 
-local TeamCheck = false
+local function isAlive(player)
+    return player and player.Character and player.Character:FindFirstChild("HumanoidRootPart") and player.Character:FindFirstChild("Humanoid") and player.Character:FindFirstChild("Humanoid").Health > 0
+end
+
 local function GetNearestPlr(range)
     local nearestPlayer
     local nearestDistance = math.huge
     local localPlayer = game.Players.LocalPlayer
-
+    
     for _, player in ipairs(game.Players:GetPlayers()) do
-        if player ~= localPlayer and player.Character and player.Character:FindFirstChild("HumanoidRootPart") then
+        if isAlive(player) and player ~= localPlayer and isAlive(localPlayer) then
             if not TeamCheck or player.Team ~= localPlayer.Team then
-                local distance = (player.Character.HumanoidRootPart.Position - localPlayer.Character.HumanoidRootPart.Position).magnitude
-                if distance < nearestDistance and distance <= range then
-                    nearestPlayer = player
-                    nearestDistance = distance
+                local playerHRP = player.Character and player.Character:FindFirstChild("HumanoidRootPart")
+                local localHRP = localPlayer.Character and localPlayer.Character:FindFirstChild("HumanoidRootPart")
+                if playerHRP and localHRP then
+                    local distance = (playerHRP.Position - localHRP.Position).magnitude
+                    if distance < nearestDistance and distance <= range then
+                        nearestPlayer = player
+                        nearestDistance = distance
+                    end
                 end
             end
         end
     end
-
     return nearestPlayer
 end
 
@@ -53,7 +59,6 @@ local function GetBed(range)
             end
         end
     end
-    
     return nearestBed
 end
 
@@ -123,7 +128,6 @@ local function GetMelee()
     return bestsword
 end
 
---[[
 local function GetTool()
     local besttool = nil
     local bestrank = 0
@@ -141,7 +145,6 @@ local function GetTool()
     end
     return besttool
 end
---]]
 --CreatingUI
 Library:createScreenGui()
 --Tabs
@@ -479,9 +482,10 @@ local function HitBed(bed)
     local raycastResult = workspace:Raycast(bed.Position + Vector3.new(0, 13, 0), Vector3.new(0, -16, 0), raycastParams)
     if raycastResult then
         local nearestBed = raycastResult.Instance
-        nearestBed.Color = Color3.fromRGB(255, 255, 255)
+        local nearestBedTexture = nearestbed:FindFirstChildWhichIsA("Texture")
         nearestBed.Transparency = 0.48
-
+        nearestBedTexture.Color3 = Color3.fromRGB(255, 255, 255)
+        
         BlockHit:InvokeServer({
             ["blockRef"] = {
                 ["blockPosition"] = Vector3.new(math.round(nearestBed.Position.X / 3), math.round(nearestBed.Position.Y / 3), math.round(nearestBed.Position.Z / 3))
@@ -492,7 +496,7 @@ local function HitBed(bed)
     end
 end
 
--- local Tool = GetTool()
+local Tool = GetTool()
 local Nuker = WorldTab:ToggleButton({
     name = "Nuker",
     info = "Auto bed break",
