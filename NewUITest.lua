@@ -135,7 +135,8 @@ function CreateNotification(NotificationName, NotificationText, NotificationDura
 	end
 end
 
-function Library:CreateCore()
+function Library:CreateCore(Fired)
+	if Fired then
 	local Sigma5 = Instance.new("ScreenGui")
 	Sigma5.ResetOnSpawn = false
 	Sigma5.Name = "sigma5"
@@ -154,6 +155,7 @@ function Library:CreateCore()
 	local TabPadding = Instance.new("UIPadding", TabsHolder)
 	TabPadding.PaddingLeft = UDim.new(0, 18)
 	TabPadding.PaddingTop = UDim.new(0, 18)
+end
 end
 
 function CreateTab(tabName)
