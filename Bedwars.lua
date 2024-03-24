@@ -235,6 +235,7 @@ local CustomLowHealth = AutoQuit:Slider({
 	end
 })
 --KillAura
+local HitDelay
 local RotateCharacter = false
 local AutoSword = false
 local KillAura = CombatTab:ToggleButton({
@@ -242,6 +243,7 @@ local KillAura = CombatTab:ToggleButton({
     info = "Automatically attacks players",
     callback = function(enabled)
         if enabled then
+            HitDelay = 0.03
             local NearestPlayer = GetNearestPlr(20)
             local Sword = GetMelee()
             if AutoSword then
@@ -263,35 +265,33 @@ local KillAura = CombatTab:ToggleButton({
                 end
                 task.wait()
             end
-            spawn(function()
-                while enabled do
-                    if not isAlive(localPlayer) then
-                        repeat task.wait() until isAlive(localPlayer)
-                    end
-                    if NearestPlayer then
-                        if not isAlive(NearestPlayer) then
-                            repeat task.wait() until isAlive(NearestPlayer)
-                        end
-                        ReplicatedStorage.rbxts_include.node_modules:FindFirstChild("@rbxts").net.out._NetManaged.SwordHit:FireServer({
-                            ["entityInstance"] = NearestPlayer.Character,
-                            ["chargedAttack"] = {
-                                ["chargeRatio"] = 1
-                            },
-                            ["validate"] = {
-                                ["raycast"] = {
-                                    ["cursorDirection"] = Value2Vector(Ray.new(game.Workspace.CurrentCamera.CFrame.Position, NearestPlayer.Character:FindFirstChild("HumanoidRootPart").Position).Unit.Direction),
-                                    ["cameraPosition"] = Value2Vector(NearestPlayer.Character:FindFirstChild("HumanoidRootPart").Position),
-                                },
-                                ["selfPosition"] = Value2Vector(GetAttackPos(localPlayer.Character:FindFirstChild("HumanoidRootPart").Position, NearestPlayer.Character:FindFirstChild("HumanoidRootPart").Position, 2)),
-                                ["targetPosition"] = Value2Vector(NearestPlayer.Character.HumanoidRootPart.Position),
-                            },
-                            ["weapon"] = Sword
-                        })
-                    end
-                    task.wait(0.01)
+            repeat
+                if not isAlive(localPlayer) then
+                    repeat task.wait() until isAlive(localPlayer)
                 end
-            until not enabled
-            end)
+                if NearestPlayer then
+                    if not isAlive(NearestPlayer) then
+                        repeat task.wait() until isAlive(NearestPlayer)
+                    end
+                    ReplicatedStorage.rbxts_include.node_modules:FindFirstChild("@rbxts").net.out._NetManaged.SwordHit:FireServer({
+                        ["entityInstance"] = NearestPlayer.Character,
+                        ["chargedAttack"] = {
+                            ["chargeRatio"] = 1
+                        },
+                        ["validate"] = {
+                            ["raycast"] = {
+                                ["cursorDirection"] = Value2Vector(Ray.new(game.Workspace.CurrentCamera.CFrame.Position, NearestPlayer.Character:FindFirstChild("HumanoidRootPart").Position).Unit.Direction),
+                                ["cameraPosition"] = Value2Vector(NearestPlayer.Character:FindFirstChild("HumanoidRootPart").Position),
+                            },
+                            ["selfPosition"] = Value2Vector(GetAttackPos(localPlayer.Character:FindFirstChild("HumanoidRootPart").Position, NearestPlayer.Character:FindFirstChild("HumanoidRootPart").Position, 2)),
+                            ["targetPosition"] = Value2Vector(NearestPlayer.Character.HumanoidRootPart.Position),
+                        },
+                        ["weapon"] = Sword
+                    })
+                end
+                task.wait(HitDelay)
+	else
+            HitDelay = 86000
         end
     end
 })
