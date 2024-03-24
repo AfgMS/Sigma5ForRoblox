@@ -71,7 +71,7 @@ Right.BackgroundTransparency = 1
 Right.BorderColor3 = Color3.fromRGB(0, 0, 0)
 Right.BorderSizePixel = 0
 Right.Name = "RightSide"
-Right.Position = UDim2.new(0.842202961, 0, 0, 0)
+Right.Position = UDim2.new(0, 575, 0, 0)
 Right.Size = UDim2.new(0, 255, 1, 0)
 
 function CreateNotification(NotificationName, NotificationText, NotificationDuration, Fired)
