@@ -162,7 +162,7 @@ HolderArrayList.BackgroundTransparency = 1
 HolderArrayList.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
 HolderArrayList.BorderColor3 = Color3.fromRGB(0, 0, 0)
 HolderArrayList.Size = UDim2.new(0, 195, 0, 550)
-HolderArrayList.Position = UDim2.new(1, -210, 0, 0)
+HolderArrayList.Position = UDim2.new(0, 0, 0, 0)
 HolderArrayList.Parent = Right
 
 local TheListThingy = Instance.new("UIListLayout")
