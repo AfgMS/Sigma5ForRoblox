@@ -246,25 +246,23 @@ local KillAura = CombatTab:ToggleButton({
                     AutoSword = false
                 end
             end
-            if RotateCharacter then
+            while RotateCharacter do
+                if not isAlive(localPlayer) then
+                    repeat task.wait() until isAlive(localPlayer)
+                end
+                if NearestPlayer and isAlive(NearestPlayer) then
+                    local direction = (NearestPlayer.Character.HumanoidRootPart.Position - localPlayer.Character.HumanoidRootPart.Position).unit
+                    local lookVector = Vector3.new(direction.X, 0, direction.Z).unit
+                    local newCFrame = CFrame.new(localPlayer.Character.HumanoidRootPart.Position, localPlayer.Character.HumanoidRootPart.Position + lookVector)
+                    localPlayer.Character:SetPrimaryPartCFrame(newCFrame)
+                end
+                task.wait()
+            end
+            spawn(function()
                 repeat
                     if not isAlive(localPlayer) then
                         repeat task.wait() until isAlive(localPlayer)
                     end
-                    if NearestPlayer and isAlive(NearestPlayer) then
-                        local direction = (NearestPlayer.Character.HumanoidRootPart.Position - localPlayer.Character.HumanoidRootPart.Position).unit
-                        local lookVector = Vector3.new(direction.X, 0, direction.Z).unit
-                        local newCFrame = CFrame.new(localPlayer.Character.HumanoidRootPart.Position, localPlayer.Character.HumanoidRootPart.Position + lookVector)
-                        localPlayer.Character:SetPrimaryPartCFrame(newCFrame)
-                    end
-                    task.wait()
-                until not RotateCharacter
-            end
-            if not isAlive(localPlayer) then
-                repeat task.wait() until isAlive(localPlayer)
-            end
-            spawn(function()
-                repeat
                     if NearestPlayer then
                         if not isAlive(NearestPlayer) then
                             repeat task.wait() until isAlive(NearestPlayer)
@@ -285,7 +283,7 @@ local KillAura = CombatTab:ToggleButton({
                             ["weapon"] = Sword
                         })
                     end
-                    task.wait()
+                    task.wait(0.03)
                 until not enabled
             end)
         end
