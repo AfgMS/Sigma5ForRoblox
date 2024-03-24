@@ -62,6 +62,7 @@ Left.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
 Left.BackgroundTransparency = 1
 Left.BorderColor3 = Color3.fromRGB(0, 0, 0)
 Left.BorderSizePixel = 0
+Left.Name = "LeftSide"
 Left.Size = UDim2.new(0, 255, 1, 0)
 
 local Right = Instance.new("Frame", SigmaVisualHolder)
@@ -69,6 +70,7 @@ Right.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
 Right.BackgroundTransparency = 1
 Right.BorderColor3 = Color3.fromRGB(0, 0, 0)
 Right.BorderSizePixel = 0
+Right.Name = "RightSide"
 Right.Position = UDim2.new(0.842202961, 0, 0, 0)
 Right.Size = UDim2.new(0, 255, 1, 0)
 
