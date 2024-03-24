@@ -84,6 +84,11 @@ local function Value2Vector(vec)
 	return { value = vec }
 end
 
+function GetAttackPos(plrpos, nearpost, val)
+    local newPos = (nearpost - plrpos).Unit * math.min(val, (nearpost - plrpos).Magnitude) + plrpos
+    return newPos
+end
+
 local MeleeRank = {
 	[1] = { Name = "wood_sword", Rank = 1 },
 	[2] = { Name = "stone_sword", Rank = 2 },
@@ -277,7 +282,7 @@ local KillAura = CombatTab:ToggleButton({
                                     ["cursorDirection"] = Value2Vector(Ray.new(game.Workspace.CurrentCamera.CFrame.Position, NearestPlayer.Character:FindFirstChild("HumanoidRootPart").Position).Unit.Direction),
                                     ["cameraPosition"] = Value2Vector(NearestPlayer.Character:FindFirstChild("HumanoidRootPart").Position),
                                 },
-                                ["selfPosition"] = Value2Vector((NearestPlayer.Character.HumanoidRootPart.Position - localPlayer.Character.HumanoidRootPart.Position).Unit * math.min(20, (NearestPlayer.Character.HumanoidRootPart.Position - localPlayer.Character.HumanoidRootPart.Position).Magnitude) + localPlayer.Character.HumanoidRootPart.Position),
+                                ["selfPosition"] = Value2Vector(GetAttackPos(localPlayer.Character:FindFirstChild("HumanoidRootPart").Position, NearestPlayer.Character:FindFirstChild("HumanoidRootPart").Position, 2)),
                                 ["targetPosition"] = Value2Vector(NearestPlayer.Character.HumanoidRootPart.Position),
                             },
                             ["weapon"] = Sword
