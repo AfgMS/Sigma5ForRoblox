@@ -259,7 +259,7 @@ local KillAura = CombatTab:ToggleButton({
                 task.wait()
             end
             spawn(function()
-                repeat
+                while enabled do
                     if not isAlive(localPlayer) then
                         repeat task.wait() until isAlive(localPlayer)
                     end
@@ -277,14 +277,15 @@ local KillAura = CombatTab:ToggleButton({
                                     ["cursorDirection"] = Value2Vector(Ray.new(game.Workspace.CurrentCamera.CFrame.Position, NearestPlayer.Character:FindFirstChild("HumanoidRootPart").Position).Unit.Direction),
                                     ["cameraPosition"] = Value2Vector(NearestPlayer.Character:FindFirstChild("HumanoidRootPart").Position),
                                 },
-                                ["selfPosition"] = Value2Vector((localPlayer.Character:FindFirstChild("HumanoidRootPart").Position - NearestPlayer.Character:FindFirstChild("HumanoidRootPart").Position).Unit * math.min(20, (localPlayer.Character:FindFirstChild("HumanoidRootPart").Position - NearestPlayer.Character:FindFirstChild("HumanoidRootPart").Position).Magnitude) + localPlayer.Character:FindFirstChild("HumanoidRootPart").Position),
+                                ["selfPosition"] = Value2Vector((NearestPlayer.Character.HumanoidRootPart.Position - localPlayer.Character.HumanoidRootPart.Position).Unit * math.min(20, (NearestPlayer.Character.HumanoidRootPart.Position - localPlayer.Character.HumanoidRootPart.Position).Magnitude) + localPlayer.Character.HumanoidRootPart.Position),
                                 ["targetPosition"] = Value2Vector(NearestPlayer.Character.HumanoidRootPart.Position),
                             },
                             ["weapon"] = Sword
                         })
                     end
-                    task.wait(0.03)
-                until not enabled
+                    task.wait(0.01)
+                end
+            until not enabled
             end)
         end
     end
