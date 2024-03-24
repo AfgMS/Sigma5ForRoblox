@@ -230,6 +230,7 @@ local CustomLowHealth = AutoQuit:Slider({
 	end
 })
 --KillAura
+local HitDelay = 0.01
 local RotateCharacter = false
 local AutoSword = false
 local KillAura = CombatTab:ToggleButton({
@@ -260,11 +261,10 @@ local KillAura = CombatTab:ToggleButton({
                     task.wait()
                 until not RotateCharacter
             end
-            repeat
-                task.wait(0.52)
-                if not isAlive(localPlayer) then
-                    repeat task.wait() until isAlive(localPlayer)
-                end
+            if not isAlive(localPlayer) then
+                repeat task.wait() until isAlive(localPlayer)
+            end
+            while task.wait(HitDelay) do
                 if NearestPlayer and isAlive(NearestPlayer) then
                     ReplicatedStorage.rbxts_include.node_modules:FindFirstChild("@rbxts").net.out._NetManaged.SwordHit:FireServer({
                         ["entityInstance"] = NearestPlayer.Character,
@@ -281,8 +281,10 @@ local KillAura = CombatTab:ToggleButton({
                         },
                         ["weapon"] = Sword
                     })
+                else
+                    HitDelay = 86000
                 end
-            until not enabled
+            end
         end
     end
 })
