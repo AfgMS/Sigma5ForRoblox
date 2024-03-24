@@ -230,7 +230,6 @@ local CustomLowHealth = AutoQuit:Slider({
 	end
 })
 --KillAura
-local HitDelay = 0.01
 local RotateCharacter = false
 local AutoSword = false
 local KillAura = CombatTab:ToggleButton({
@@ -264,27 +263,31 @@ local KillAura = CombatTab:ToggleButton({
             if not isAlive(localPlayer) then
                 repeat task.wait() until isAlive(localPlayer)
             end
-            while task.wait(HitDelay) do
-                if NearestPlayer and isAlive(NearestPlayer) then
-                    ReplicatedStorage.rbxts_include.node_modules:FindFirstChild("@rbxts").net.out._NetManaged.SwordHit:FireServer({
-                        ["entityInstance"] = NearestPlayer.Character,
-                        ["chargedAttack"] = {
-                            ["chargeRatio"] = 1
-                        },
-                        ["validate"] = {
-                            ["raycast"] = {
-                                ["cursorDirection"] = Value2Vector(Ray.new(game.Workspace.CurrentCamera.CFrame.Position, NearestPlayer.Character:FindFirstChild("HumanoidRootPart").Position).Unit.Direction),
-                                ["cameraPosition"] = Value2Vector(NearestPlayer.Character:FindFirstChild("HumanoidRootPart").Position),
+            spawn(function()
+                repeat
+                    if NearestPlayer then
+                        if not isAlive(NearestPlayer) then
+                            repeat task.wait() until isAlive(NearestPlayer)
+                        end
+                        ReplicatedStorage.rbxts_include.node_modules:FindFirstChild("@rbxts").net.out._NetManaged.SwordHit:FireServer({
+                            ["entityInstance"] = NearestPlayer.Character,
+                            ["chargedAttack"] = {
+                                ["chargeRatio"] = 1
                             },
-                            ["selfPosition"] = Value2Vector(((localPlayer.Character:FindFirstChild("HumanoidRootPart") or Vector3.new()).Position - (NearestPlayer.Character:FindFirstChild("HumanoidRootPart") or Vector3.new()).Position).Unit * math.min(20, ((localPlayer.Character:FindFirstChild("HumanoidRootPart") or Vector3.new()).Position - (NearestPlayer.Character:FindFirstChild("HumanoidRootPart") or Vector3.new()).Position).Magnitude) + (localPlayer.Character:FindFirstChild("HumanoidRootPart") or Vector3.new()).Position),
-                            ["targetPosition"] = Value2Vector(NearestPlayer.Character.HumanoidRootPart.Position),
-                        },
-                        ["weapon"] = Sword
-                    })
-                else
-                    HitDelay = 86000
-                end
-            end
+                            ["validate"] = {
+                                ["raycast"] = {
+                                    ["cursorDirection"] = Value2Vector(Ray.new(game.Workspace.CurrentCamera.CFrame.Position, NearestPlayer.Character:FindFirstChild("HumanoidRootPart").Position).Unit.Direction),
+                                    ["cameraPosition"] = Value2Vector(NearestPlayer.Character:FindFirstChild("HumanoidRootPart").Position),
+                                },
+                                ["selfPosition"] = Value2Vector(((localPlayer.Character:FindFirstChild("HumanoidRootPart") or Vector3.new()).Position - (NearestPlayer.Character:FindFirstChild("HumanoidRootPart") or Vector3.new()).Position).Unit * math.min(20, ((localPlayer.Character:FindFirstChild("HumanoidRootPart") or Vector3.new()).Position - (NearestPlayer.Character:FindFirstChild("HumanoidRootPart") or Vector3.new()).Position).Magnitude) + (localPlayer.Character:FindFirstChild("HumanoidRootPart") or Vector3.new()).Position),
+                                ["targetPosition"] = Value2Vector(NearestPlayer.Character.HumanoidRootPart.Position),
+                            },
+                            ["weapon"] = Sword
+                        })
+                    end
+                    task.wait()
+                until not enabled
+            end)
         end
     end
 })
