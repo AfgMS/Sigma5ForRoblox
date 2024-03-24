@@ -274,7 +274,7 @@ local KillAura = CombatTab:ToggleButton({
 								["cursorDirection"] = Value2Vector(Ray.new(game.Workspace.CurrentCamera.CFrame.Position, NearestPlayer.Character:FindFirstChild("HumanoidRootPart").Position).Unit.Direction),
 								["cameraPosition"] = Value2Vector(NearestPlayer.Character:FindFirstChild("HumanoidRootPart").Position),
 							},
-							["selfPosition"] = Value2Vector(localPlayer.Character:FindFirstChild("HumanoidRootPart").Position + ((localPlayer.Character:FindFirstChild("HumanoidRootPart").Position - NearestPlayer.Character:FindFirstChild("HumanoidRootPart").Position).Magnitude > 14 and (CFrame.lookAt(localPlayer.Character:FindFirstChild("HumanoidRootPart").Position, NearestPlayer.Character:FindFirstChild("HumanoidRootPart").Position).LookVector * 4) or Vector3.new(0, 0, 0))) * math.min(20,(localPlayer.Character:FindFirstChild("HumanoidRootPart").Position - NearestPlayer.Character:FindFirstChild("HumanoidRootPart").Position).Magnitude) + localPlayer.Character:FindFirstChild("HumanoidRootPart").Position,
+							["selfPosition"] = Value2Vector(((localPlayer.Character:FindFirstChild("HumanoidRootPart") or Vector3.new()).Position - (NearestPlayer.Character:FindFirstChild("HumanoidRootPart") or Vector3.new()).Position).Unit * math.min(20, ((localPlayer.Character:FindFirstChild("HumanoidRootPart") or Vector3.new()).Position - (NearestPlayer.Character:FindFirstChild("HumanoidRootPart") or Vector3.new()).Position).Magnitude) + (localPlayer.Character:FindFirstChild("HumanoidRootPart") or Vector3.new()).Position),
 							["targetPosition"] = Value2Vector(NearestPlayer.Character.HumanoidRootPart.Position),
 						},
 						["weapon"] = Sword
