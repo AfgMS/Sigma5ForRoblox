@@ -218,7 +218,7 @@ local AutoQuit = CombatTab:ToggleButton({
                 while enabled do
                     if localPlayer.Character:FindFirstChild("Humanoid").Health < MaxHealth then
                         CreateNotification("AutoQuit", "You are getting kicked", 3, true)
-                        task.wait(3)
+                        task.wait(2)
                         localPlayer:Kick("AutoQuit Triggered")
                     end
                     task.wait()
