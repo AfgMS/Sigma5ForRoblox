@@ -73,18 +73,17 @@ local function getQueueType()
 end
 
 local function SetHotbar(item)
-	if localPlayer.Character:FindFirstChild("HandInvItem").Value ~= item then
-		local Inventories = game:GetService("ReplicatedStorage").Inventories:FindFirstChild(localPlayer.Name):FindFirstChild(item)
-
-		ReplicatedStorage.rbxts_include.node_modules:FindFirstChild("@rbxts").net.out._NetManaged.SetInvItem:InvokeServer({["hand"] = item})
-	end
+    local Inventories = ReplicatedStorage.Inventories:FindFirstChild(localPlayer.Name):FindFirstChild(item)
+    if Inventories then
+        ReplicatedStorage.rbxts_include.node_modules:FindFirstChild("@rbxts").net.out._NetManaged.SetInvItem:InvokeServer({["hand"] = item})
+    end
 end
 
 local function Value2Vector(vec)
 	return { value = vec }
 end
 
-function GetAttackPos(plrpos, nearpost, val)
+local function GetAttackPos(plrpos, nearpost, val)
     local newPos = (nearpost - plrpos).Unit * math.min(val, (nearpost - plrpos).Magnitude) + plrpos
     return newPos
 end
@@ -100,21 +99,22 @@ local MeleeRank = {
 }
 
 local function GetMelee()
-	local bestsword = nil
-	local bestrank = 0
-	for i, v in pairs(localPlayer.Character.InventoryFolder.Value:GetChildren()) do
-		if v.Name:match("sword") or v.Name:match("blade") then
-			for _, data in pairs(MeleeRank) do
-				if data["Name"] == v.Name then
-					if bestrank <= data["Rank"] then
-						bestrank = data["Rank"]
-						bestsword = v
-					end
-				end
-			end
-		end
-	end
-	return bestsword
+    local bestsword = nil
+    local bestrank = 0
+    
+    for i, v in pairs(localPlayer.Character.InventoryFolder.Value:GetChildren()) do
+        if v.Name:match("sword") or v.Name:match("blade") then
+            for _, data in pairs(MeleeRank) do
+                if data["Name"] == v.Name then
+                    if bestrank <= data["Rank"] then
+                        bestrank = data["Rank"]
+                        bestsword = v
+                    end
+                end
+            end
+        end
+    end
+    return bestsword
 end
 --CreatingUI
 Library:createScreenGui()
@@ -128,192 +128,211 @@ local WorldTab = Library:createTabs(CoreGui.Sigma5, "World")
 CreateNotification("Loader", "Loaded Successfully", 3, true)
 --ActiveMods
 local ActiveMods = GuiTab:ToggleButton({
-	name = "ActiveMods",
-	info = "Render active mods",
-	callback = function(enabled)
-		CoreGui.Sigma5Visual.RightSide.ArrayListHolder.Visible = not CoreGui.Sigma5Visual.RightSide.ArrayListHolder.Visible
-	end
+    name = "ActiveMods",
+    info = "Render active mods",
+    callback = function(enabled)
+        CoreGui.Sigma5Visual.RightSide.ArrayListHolder.Visible = not CoreGui.Sigma5Visual.RightSide.ArrayListHolder.Visible
+    end
 })
 --TabGUI
 local TabGUI = GuiTab:ToggleButton({
-	name = "TabGUI",
-	info = "Just decorations",
-	callback = function(enabled)
-		CoreGui.Sigma5Visual.LeftSide.TabHolder.Visible = not CoreGui.Sigma5Visual.LeftSide.TabHolder.Visible
-	end
+    name = "TabGUI",
+    info = "Just decorations",
+    callback = function(enabled)
+        CoreGui.Sigma5Visual.LeftSide.TabHolder.Visible = not CoreGui.Sigma5Visual.LeftSide.TabHolder.Visible
+    end
 })
 --DeleteGui
 local BlurEffect = Lighting:FindFirstChild("Blur")
 local DeleteGui = GuiTab:ToggleButton({
-	name = "DeleteGUI",
-	info = "Does not uninject",
-	callback = function(enabled)
-		if enabled then
-			BlurEffect:Destroy()
-			CoreGui.Sigma5:Destroy()
-			print("Destroyed Main")
-			CoreGui.Sigma5Visual:Destroy()
-			print("Destroyed Notif")
-		end
-	end
+    name = "DeleteGUI",
+    info = "Does not uninject",
+    callback = function(enabled)
+        if enabled then
+            BlurEffect:Destroy()
+            CoreGui.Sigma5:Destroy()
+            print("Destroyed Main")
+            CoreGui.Sigma5Visual:Destroy()
+            print("Destroyed Notif")
+        end
+    end
 })
 --Aimbot
-local AimbotRange
+local aimbotDistance
 local Aimbot = CombatTab:ToggleButton({
-	name = "Aimbot",
-	info = "Automatically aim at players",
-	callback = function(enabled)
-		if enabled then
-			AimbotRange = 20
-			while enabled do
-				local NearestPlayer = GetNearestPlr(AimbotRange)
-				if NearestPlayer and isAlive(NearestPlayer) and isAlive(localPlayer) then
-					local direction = (NearestPlayer.Character.HumanoidRootPart.Position - Camera.CFrame.Position).unit
-					local newLookAt = CFrame.new(Camera.CFrame.Position, Camera.CFrame.Position + direction)
-					Camera.CFrame = newLookAt
-				end
-				wait(0.01)
-			end
-		else
-			AimbotRange = 0
-		end
-	end
+    name = "Aimbot",
+    info = "Automatically aim at players",
+    callback = function(enabled)
+        if enabled then
+            aimbotDistance = 20
+            while task.wait(0.01) do
+                if not isAlive(localPlayer) then repeat task.wait() until isAlive(localPlayer) end
+                local Target = GetNearestPlr(aimbotDistance)
+                if Target then
+                    if not isAlive(Target) then repeat task.wait() until isAlive(Target) end
+                    local CameraDirection = (Target.Character.HumanoidRootPart.Position - Camera.CFrame.Position).unit
+                    local newLookAt = CFrame.new(Camera.CFrame.Position, Camera.CFrame.Position + CameraDirection)
+                    Camera.CFrame = newLookAt
+                end
+            end
+        else
+            aimbotDistance = 0
+        end
+    end
 })
-local AimbotRangeCustom = Aimbot:Slider({
-	title = "Range",
-	min = 0,
-	max = 20,
-	default = 20,
-	callback = function(val)
-		AimbotRange = val
-	end
+local Customdistance = Aimbot:Slider({
+    title = "Distance",
+    min = 0,
+    max = 100,
+    default = 20,
+    callback = function(val)
+        aimbotDistance = val
+    end
 })
 --AntiKnockback
 local OriginalH = KnockbackCont.kbDirectionStrength
 local OriginalY = KnockbackCont.kbUpwardStrength
 local AntiKnockback = CombatTab:ToggleButton({
-	name = "AntiKnockback",
-	info = "Prevent you from taking knockback",
-	callback = function(enabled)
-		if enabled then
-			KnockbackCont.kbDirectionStrength = 0
-			KnockbackCont.kbUpwardStrength = 0
-		else
-			KnockbackCont.kbDirectionStrength = OriginalH
-			KnockbackCont.kbUpwardStrength = OriginalY
-		end
-	end
+    name = "AntiKnockback",
+    info = "Prevent you from taking knockback",
+    callback = function(enabled)
+        if enabled then
+            KnockbackCont.kbDirectionStrength = 0
+            KnockbackCont.kbUpwardStrength = 0
+        else
+            KnockbackCont.kbDirectionStrength = OriginalH
+            KnockbackCont.kbUpwardStrength = OriginalY
+        end
+    end
 })
 --AutoQuit
-local LowHealthValue
-local function CheckHealth()
-	while wait(0.01) do
-		if localPlayer.Character and localPlayer.Character:FindFirstChild("Humanoid") and localPlayer.Character.Humanoid.Health < LowHealthValue then
-			localPlayer:Kick("AutoQuit")
-		end
-	end
-end
+local MaxHealth
 local AutoQuit = CombatTab:ToggleButton({
-	name = "AutoQuit",
-	info = "Automatically quit the game",
-	callback = function(enabled)
-		if enabled then
-			LowHealthValue = 3
-			CheckHealth()
-		else
-			LowHealthValue = nil
-		end
-	end
-})
-local CustomLowHealth = AutoQuit:Slider({
-	title = "HealthMin",
-	min = 0.11,
-	max = 100,
-	default = 0.11,
-	callback = function(value)
-		LowHealthValue = value
-	end
+    name = "AutoQuit",
+    info = "Automatically quit the game",
+    callback = function(enabled)
+        if enabled then
+            MaxHealth = 0.11
+            if localPlayer and isAlive(localPlayer) then
+                while task.wait(0.01) do
+                    if localPlayer.Character:FindFirstChild("Humanoid").Health < MaxHealth then
+                        localPlayer:Kick("AutoQuit Triggered")
+                    end
+                end
+            else
+                MaxHealth = nil
+            end
+        end
+    end
 })
 --KillAura
 local HitDelay
-local RotateCharacter = false
+local AutoRotate = false
 local AutoSword = false
+local TargetHighlight = false
+local Sword = GetMelee()
 local KillAura = CombatTab:ToggleButton({
     name = "KillAura",
-    info = "Automatically attacks players",
+    info = "Attack the nearest player",
     callback = function(enabled)
         if enabled then
-            HitDelay = 0.03
-            local NearestPlayer = GetNearestPlr(20)
-            local Sword = GetMelee()
-            if AutoSword then
-                if NearestPlayer then
+            local Target = GetNearestPlr(20)
+            HitDelay = 0.01
+            if AutoSword then --AutoSword
+                if not isAlive(localPlayer) then repeat task.wait() until isAlive(localPlayer) end
+                if Target then
+                    if not isAlive(Target) then repeat task.wait() until isAlive(Target) end
                     SetHotbar(Sword)
                 else
                     AutoSword = false
                 end
             end
-            while RotateCharacter do
-                if not isAlive(localPlayer) then
-                    repeat task.wait() until isAlive(localPlayer)
-                end
-                if NearestPlayer and isAlive(NearestPlayer) then
-                    local direction = (NearestPlayer.Character.HumanoidRootPart.Position - localPlayer.Character.HumanoidRootPart.Position).unit
-                    local lookVector = Vector3.new(direction.X, 0, direction.Z).unit
-                    local newCFrame = CFrame.new(localPlayer.Character.HumanoidRootPart.Position, localPlayer.Character.HumanoidRootPart.Position + lookVector)
-                    localPlayer.Character:SetPrimaryPartCFrame(newCFrame)
-                end
-                task.wait()
-            end
-            repeat
-                if not isAlive(localPlayer) then
-                    repeat task.wait() until isAlive(localPlayer)
-                end
-                if NearestPlayer then
-                    if not isAlive(NearestPlayer) then
-                        repeat task.wait() until isAlive(NearestPlayer)
+            
+            if AutoRotate then --Rotations
+                if not isAlive(localPlayer) then repeat task.wait() until isAlive(localPlayer) end
+                if Target then
+                    if not isAlive(Target) then repeat task.wait() until isAlive(Target) end
+                    while true do
+                        local direction = (Target.Character.HumanoidRootPart.Position - localPlayer.Character.HumanoidRootPart.Position).unit
+                        local lookVector = Vector3.new(direction.X, 0, direction.Z).unit
+                        local newCFrame = CFrame.new(localPlayer.Character.HumanoidRootPart.Position, localPlayer.Character.HumanoidRootPart.Position + lookVector)
+                        localPlayer.Character:SetPrimaryPartCFrame(newCFrame)
+                        task.wait(0.01)
                     end
-                    ReplicatedStorage.rbxts_include.node_modules:FindFirstChild("@rbxts").net.out._NetManaged.SwordHit:FireServer({
-                        ["entityInstance"] = NearestPlayer.Character,
-                        ["chargedAttack"] = {
-                            ["chargeRatio"] = 1
-                        },
-                        ["validate"] = {
-                            ["raycast"] = {
-                                ["cursorDirection"] = Value2Vector(Ray.new(game.Workspace.CurrentCamera.CFrame.Position, NearestPlayer.Character:FindFirstChild("HumanoidRootPart").Position).Unit.Direction),
-                                ["cameraPosition"] = Value2Vector(NearestPlayer.Character:FindFirstChild("HumanoidRootPart").Position),
-                            },
-                            ["selfPosition"] = Value2Vector(GetAttackPos(localPlayer.Character:FindFirstChild("HumanoidRootPart").Position, NearestPlayer.Character:FindFirstChild("HumanoidRootPart").Position, 2)),
-                            ["targetPosition"] = Value2Vector(NearestPlayer.Character.HumanoidRootPart.Position),
-                        },
-                        ["weapon"] = Sword
-                    })
                 end
-                task.wait(HitDelay)
-	else
-            HitDelay = 86000
+            end
+            
+            if TargetHighlight then
+                if not isAlive(localPlayer) then repeat task.wait() until isAlive(localPlayer) end
+                local TempFolder = Instance.new("Folder", game.Workspace)
+                local Highlight = Instance.new("BoxHandleAdornment", TempFolder)
+                if Target then
+                    if not isAlive(Target) then
+                        Highlight.Parent = TempFolder
+                        Highlight.Adornee = nil
+                    elseif isAlive(Target) then
+                        Highlight.Parent = Target.Character
+                        Highlight.Adornee = Target.Character
+                        Highlight.Color3 = Color3.fromRGB(255, 255, 255)
+                    else
+                        Highlight.Parent = TempFolder
+                        Highlight.Adornee = nil
+                    end
+                end
+            end
+        end
+
+        while task.wait(HitDelay) do --KillAura
+            if not isAlive(localPlayer) then repeat task.wait() until isAlive(localPlayer) end
+            local Target = GetNearestPlr(20)
+            if Target then
+                if not isAlive(Target) then repeat task.wait() until isAlive(Target) end
+                ReplicatedStorage.rbxts_include.node_modules:FindFirstChild("@rbxts").net.out._NetManaged.SwordHit:FireServer({
+                    ["entityInstance"] = Target.Character,
+                    ["chargedAttack"] = {
+                        ["chargeRatio"] = 1
+                    },
+                    ["validate"] = {
+                        ["raycast"] = {
+                            ["cursorDirection"] = Value2Vector(Ray.new(game.Workspace.CurrentCamera.CFrame.Position, Target.Character:FindFirstChild("HumanoidRootPart").Position).Unit.Direction),
+                            ["cameraPosition"] = Value2Vector(Target.Character:FindFirstChild("HumanoidRootPart").Position),
+                        },
+                        ["selfPosition"] = Value2Vector((localPlayer.Character:FindFirstChild("HumanoidRootPart").Position - Target.Character:FindFirstChild("HumanoidRootPart").Position).Unit * math.min(2, (localPlayer.Character:FindFirstChild("HumanoidRootPart").Position - Target.Character:FindFirstChild("HumanoidRootPart").Position).Magnitude) + Target.Character:FindFirstChild("HumanoidRootPart").Position),
+                        ["targetPosition"] = Value2Vector(Target.Character.HumanoidRootPart.Position),
+                    },
+                    ["weapon"] = Sword
+                })
+            else
+                HitDelay = 86000
+            end
         end
     end
 })
-local KillAuraRangeCustom = KillAura:Slider({
-	title = "???",
-	min = 0,
-	max = 0,
-	default = 0,
-	callback = function(value)
-	end
+local UnknownSlider0 = KillAura:Slider({
+    title = "???",
+    min = 0,
+    max = 0,
+    default = 0,
+    callback = function(value)
+    end
 })
-local AutoWeapon = KillAura:ToggleButtonInsideUI({
-	name = "AutoWeapon",
-	callback = function(enabled)
-		AutoSword = not AutoSword
-	end
+local AutoMelee = KillAura:ToggleButtonInsideUI({
+    name = "AutoSword",
+    callback = function(enabled)
+        AutoSword = not AutoSword
+    end
 })
-local Rotations = KillAura:ToggleButtonInsideUI({
-	name = "Rotations",
-	callback = function(enabled)
-		RotateCharacter = not RotateCharacter
-	end
+local MinecraftRotation = KillAura:ToggleButtonInsideUI({
+    name = "Rotate",
+    callback = function(enabled)
+        AutoRotate = not AutoRotate
+    end
+})
+local TargetESP = KillAura:ToggleButtonInsideUI({
+    name = "TargetESP",
+    callback = function(enabled)
+        TargetHighlight = not TargetHighlight
+    end
 })
 --Teams
 local Teams = CombatTab:ToggleButton({
