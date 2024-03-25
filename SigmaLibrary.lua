@@ -145,7 +145,7 @@ function CreateNotification(NotificationName, NotificationText, NotificationDura
 	if Fired then
 		Notification.Visible = true
 		wait()
-		Notification:TweenPosition(UDim2.new(0, -115, 0, 285), Enum.EasingDirection.In, Enum.EasingStyle.Quart, 0.8)
+		Notification:TweenPosition(UDim2.new(0, -105, 0, 285), Enum.EasingDirection.In, Enum.EasingStyle.Quart, 0.8)
 
 		wait(NotificationDuration)
 
