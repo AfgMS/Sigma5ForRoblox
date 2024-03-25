@@ -270,10 +270,8 @@ local KillAura = CombatTab:ToggleButton({
                 task.wait()
             end
 
-                    if not isAlive(localPlayer) then 
-                        repeat task.wait() until isAlive(localPlayer) 
-                    end
             while enabled do --KillAura
+		if isAlive(localPlayer) then
                 if Target then
                     if not isAlive(Target) then 
                         repeat task.wait() until isAlive(Target) 
@@ -430,16 +428,27 @@ local Speed = PlayerTab:ToggleButton({
     callback = function(enabled)
         if enabled then
             local speedModifier = 1.5
-            game:GetService("RunService").Stepped:Connect(function()
-                if localPlayer.Character and localPlayer.Character:FindFirstChild("Humanoid") then
-                    local humanoid = localPlayer.Character.Humanoid
-                    humanoid:SetStateEnabled(Enum.HumanoidStateType.Seated, false)
-                    humanoid:ChangeState(Enum.HumanoidStateType.Physics, false)
-                    humanoid:Move(Vector3.new(0, 0, speedModifier))
+            local function ChangeSpeed(character)
+                if character and character:FindFirstChild("Humanoid") then
+                    local humanoid = character.Humanoid
+                    local velocity = humanoid.RootPart.Velocity
+                    local newVelocity = velocity.Unit * speedModifier
+                    humanoid.RootPart.Velocity = newVelocity
                 end
-            end)
+            end
+            
+            local function SpeedLoop()
+                while enabled do
+                    if localPlayer.Character then
+                        ChangeSpeed(localPlayer.Character)
+                    end
+                    task.wait() -- Adjust the frequency if needed
+                end
+            end
+            
+            coroutine.wrap(SpeedLoop)()
         else
-            game:GetService("RunService"):UnbindFromRenderStep("SpeedBypass")
+            CreateNotification("Speed", "Reset character to disable speed", 5, true)
         end
     end
 })
