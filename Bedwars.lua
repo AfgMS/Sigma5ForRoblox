@@ -217,6 +217,8 @@ local AutoQuit = CombatTab:ToggleButton({
             if localPlayer and isAlive(localPlayer) then
                 while enabled do
                     if localPlayer.Character:FindFirstChild("Humanoid").Health < MaxHealth then
+                        CreateNotification("AutoQuit", "You are getting kicked", 3, true)
+                        task.wait(3)
                         localPlayer:Kick("AutoQuit Triggered")
                     end
                     task.wait()
@@ -271,7 +273,9 @@ local KillAura = CombatTab:ToggleButton({
             end
 
             while enabled do --KillAura
-		if isAlive(localPlayer) then
+                if not isAlive(localPlayer) then
+                    repeat task.wait() until isAlive(localPlayer)
+                end
                 if Target then
                     if not isAlive(Target) then 
                         repeat task.wait() until isAlive(Target) 
@@ -427,28 +431,9 @@ local Speed = PlayerTab:ToggleButton({
     info = "Speed goes brrr",
     callback = function(enabled)
         if enabled then
-            local speedModifier = 1.5
-            local function ChangeSpeed(character)
-                if character and character:FindFirstChild("Humanoid") then
-                    local humanoid = character.Humanoid
-                    local velocity = humanoid.RootPart.Velocity
-                    local newVelocity = velocity.Unit * speedModifier
-                    humanoid.RootPart.Velocity = newVelocity
-                end
-            end
-            
-            local function SpeedLoop()
-                while enabled do
-                    if localPlayer.Character then
-                        ChangeSpeed(localPlayer.Character)
-                    end
-                    task.wait() -- Adjust the frequency if needed
-                end
-            end
-            
-            coroutine.wrap(SpeedLoop)()
+            localPlayer.Character:FindFirstChild("Humanoid").WalkSpeed = 23
         else
-            CreateNotification("Speed", "Reset character to disable speed", 5, true)
+            localPlayer.Character:FindFirstChild("Humanoid").WalkSpeed = 16
         end
     end
 })
