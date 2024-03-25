@@ -80,6 +80,26 @@ local function SetHotbar(item)
     end
 end
 
+local function PlayAnimation(id)
+    local animator = localPlayer.Character:FindFirstChildOfClass("Animator")
+    if animator then
+        local animation = Instance.new("Animation")
+        animation.AnimationId = "rbxassetid://" .. id
+        animator:LoadAnimation(animation):Play()
+    end
+end
+
+local function PlaySound(soundId)
+    local sound = Instance.new("Sound")
+    sound.SoundId = "rbxassetid://" .. soundId
+    sound.Parent = game.Workspace
+    sound:Play()
+
+    sound.Ended:Connect(function()
+        sound:Destroy()
+    end)
+end
+
 local function Value2Vector(vec)
 	return { value = vec }
 end
@@ -93,15 +113,6 @@ local MeleeRank = {
 	[6] = { Name = "emerald_sword", Rank = 6 },
 	[7] = { Name = "rageblade", Rank = 7 },
 }
-
-local function PlayAnimation(id) 
-    if isAlive(localPlayer) then 
-        local Animation = Instance.new("Animation")
-        Animation.AnimationId = id
-        local Animator = localPlayer.Character.Humanoid.Animator
-        Animator:LoadAnimation(Animation):Play()
-    end
-end
 
 local function GetMelee()
     local bestsword = nil
@@ -252,12 +263,14 @@ local KillAura = CombatTab:ToggleButton({
         if enabled then
             local Target = GetNearestPlr(20)
             HitDelay = 0.01
-		
+
             if AutoSword then --AutoSword
+                task.wait()
                 if not isAlive(localPlayer) then 
                     repeat task.wait() until isAlive(localPlayer) 
                 end
                 if Target then
+                    task.wait()
                     if not isAlive(Target) then 
                         repeat task.wait() until isAlive(Target) 
                     end
@@ -268,10 +281,12 @@ local KillAura = CombatTab:ToggleButton({
             end
 
             while AutoRotate do --Rotations
+                task.wait()
                 if not isAlive(localPlayer) then 
                     repeat task.wait() until isAlive(localPlayer) 
                 end
                 if Target then
+                    task.wait()
                     if not isAlive(Target) then
                         repeat task.wait() until isAlive(Target)
                     end
@@ -284,23 +299,27 @@ local KillAura = CombatTab:ToggleButton({
             end
 
             while SwordSwing do
+                task.wait()
                 if not isAlive(localPlayer) then 
                     repeat task.wait() until isAlive(localPlayer) 
                 end
                 if Target then
+                    task.wait()
                     if not isAlive(Target) then 
                         repeat task.wait() until isAlive(Target) 
                     end
-                    PlayAnimation("rbxassetid://4947108314")
+                    PlayAnimation(4947108314)
+                    PlaySound(6760544639)
                 end
-                task.wait()
+                task.wait(1)
             end
 
-            repeat
+            while enabled do --KillAura
                 if not isAlive(localPlayer) then
                     repeat task.wait() until isAlive(localPlayer)
                 end
                 if Target then
+                    task.wait()
                     if not isAlive(Target) then 
                         repeat task.wait() until isAlive(Target) 
                     end
@@ -321,7 +340,7 @@ local KillAura = CombatTab:ToggleButton({
                     })
                 end
                 task.wait(HitDelay)
-            until not enabled
+            end
         else
             HitDelay = 86000
         end
@@ -347,7 +366,7 @@ local MinecraftRotation = KillAura:ToggleButtonInsideUI({
         AutoRotate = not AutoRotate
     end
 })
-local SwordSwingAnim = KillAura:ToggleButtonInsideUI({
+local SwordStuff = KillAura:ToggleButtonInsideUI({
     name = "Swing",
     callback = function(enabled)
         SwordSwing = not SwordSwing
