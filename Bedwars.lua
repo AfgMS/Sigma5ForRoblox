@@ -72,14 +72,14 @@ local function getQueueType()
 	return MatchState.Game.queueType or "bedwars_test"
 end
 
---[[
 local function SetHotbar(item)
-    local Inventories = ReplicatedStorage.Inventories:FindFirstChild(localPlayer.Name):FindFirstChild(item)
-    if Inventories then
+    if localPlayer.Character:FindFirstChild("HandInvItem").Value ~= item then
+        local Inventories = game:GetService("ReplicatedStorage").Inventories:FindFirstChild(localPlayer.Name):FindFirstChild(item)
+
         ReplicatedStorage.rbxts_include.node_modules:FindFirstChild("@rbxts").net.out._NetManaged.SetInvItem:InvokeServer({["hand"] = item})
     end
 end
---]]
+
 local function Value2Vector(vec)
 	return { value = vec }
 end
@@ -240,12 +240,11 @@ local KillAura = CombatTab:ToggleButton({
             local Target = GetNearestPlr(20)
             HitDelay = 0.01
 
-            --[[ 
             if AutoSword then --AutoSword
-                if not isAlive(localPlayer) then 
-                    repeat task.wait() until isAlive(localPlayer) 
-                end
                 if Target then
+                    if not isAlive(localPlayer) then 
+                        repeat task.wait() until isAlive(localPlayer) 
+                    end
                     if not isAlive(Target) then 
                         repeat task.wait() until isAlive(Target) 
                     end
@@ -254,13 +253,12 @@ local KillAura = CombatTab:ToggleButton({
                     AutoSword = false
                 end
             end
-            --]]
 
             while AutoRotate do --Rotations
-                if not isAlive(localPlayer) then 
-                    repeat task.wait() until isAlive(localPlayer) 
-                end
                 if Target then
+                    if not isAlive(localPlayer) then 
+                        repeat task.wait() until isAlive(localPlayer) 
+                    end
                     if not isAlive(Target) then
                         repeat task.wait() until isAlive(Target)
                     end
@@ -273,11 +271,11 @@ local KillAura = CombatTab:ToggleButton({
             end
 
             while enabled do --KillAura
-                if not isAlive(localPlayer) then 
-                    repeat task.wait() until isAlive(localPlayer) 
-                end
                 local Target = GetNearestPlr(20)
                 if Target then
+                    if not isAlive(localPlayer) then 
+                        repeat task.wait() until isAlive(localPlayer) 
+                    end
                     if not isAlive(Target) then 
                         repeat task.wait() until isAlive(Target) 
                     end
@@ -312,14 +310,12 @@ local UnknownSlider0 = KillAura:Slider({
     callback = function(value)
     end
 })
---[[
 local AutoMelee = KillAura:ToggleButtonInsideUI({
     name = "AutoSword",
     callback = function(enabled)
         AutoSword = not AutoSword
     end
 })
---]]
 local MinecraftRotation = KillAura:ToggleButtonInsideUI({
     name = "Rotate",
     callback = function(enabled)
@@ -481,7 +477,7 @@ local function HitBed(bed)
             end
         end
         nearestBed.Transparency = 0.75
-        nearestBed.Color3 = Color3.fromRGB(255, 255, 255) -- Color3.fromRGB to set the color properly
+        nearestBed.Color = Color3.fromRGB(255, 255, 255)
         BlockHit:InvokeServer({
             ["blockRef"] = {
                 ["blockPosition"] = Vector3.new(math.round(nearestBed.Position.X / 3), math.round(nearestBed.Position.Y / 3), math.round(nearestBed.Position.Z / 3))
@@ -515,20 +511,9 @@ local Nuker = WorldTab:ToggleButton({
 })
 --AntiVoid
 local antivoidpart = nil
-local oldpos = nil
-
-local function UpdateOldPosition()
-    if localPlayer.Character and localPlayer.Character:FindFirstChild("HumanoidRootPart") then
-        local rootPart = localPlayer.Character.HumanoidRootPart
-        oldpos = rootPart.Position
-    else
-        oldpos = nil
-    end
-end
-
-local function CreatePlatform()
+local function AntiVoidTest()
     antivoidpart = Instance.new("Part", game.Workspace)
-    antivoidpart.Transparency = 0.75
+    antivoidpart.Transparency = 0.38
     antivoidpart.CanCollide = true
     antivoidpart.BrickColor = BrickColor.new(255, 255, 255)
     antivoidpart.Size = Vector3.new(999999, 3, 999999)
@@ -537,41 +522,23 @@ local function CreatePlatform()
     antivoidpart.Name = "antivoidpart"
 
     antivoidpart.Touched:Connect(function(hit)
-        local parent = hit.Parent
-        if parent and parent:FindFirstChild("HumanoidRootPart") and oldpos then
-            if localPlayer.Character:FindFirstChild("HumanoidRootPart") then
-                local character = localPlayer.Character
-                local humanoidRootPart = character:FindFirstChild("HumanoidRootPart")
-                if humanoidRootPart then
-                    local playerPos = humanoidRootPart.Position
-                    if playerPos.Y < oldpos.Y then
-                        local tweenInfo = TweenInfo.new(0.83, Enum.EasingStyle.Linear, Enum.EasingDirection.InOut)
-                        local tween = TweenService:Create(character, tweenInfo, {PrimaryPartCFrame = CFrame.new(Vector3.new(character.PrimaryPart.Position.X, oldpos.Y, character.PrimaryPart.Position.Z))})
-                        tween:Play()
-                        local ray = Ray.new(humanoidRootPart.Position, Vector3.new(0, -100, 0))
-                        local hitPart, hitPos = workspace:FindPartOnRay(ray)
-                        if hitPart then
-                            local destination = hitPos + Vector3.new(0, character.PrimaryPart.Size.Y / 2, 0)
-                            local distance = (destination - humanoidRootPart.Position).Magnitude
-                            local tween = TweenService:Create(character, TweenInfo.new(distance / 50, Enum.EasingStyle.Linear), {PrimaryPartCFrame = CFrame.new(destination)})
-                            tween:Play()
-                        end
-                    end
-                end
+        local player = hit.Parent
+        if player and isAlive(player) then
+            local humanoid = player:FindFirstChild("Humanoid")
+            if humanoid then
+                humanoid.PlatformStand = true
+                wait(0.48)
+                humanoid.PlatformStand = false
             end
         end
     end)
-
-    return antivoidpart
 end
-
 local AntiVoid = WorldTab:ToggleButton({
     name = "AntiVoid",
     info = "Prevents falling into the void",
     callback = function(enabled)
         if enabled then
-            UpdateOldPosition()
-            CreatePlatform()
+            AntiVoidTest()
         else
             if antivoidpart then
                 antivoidpart:Destroy()
