@@ -1,4 +1,4 @@
---NotHm.. on youtube, and nothm_ on discord
+--Sigma5ForRoblox
 local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/AfgMS/SigmaJello4Roblox/main/SigmaLibrary.lua", true))()
 local CoreGui = game:WaitForChild("CoreGui")
 local Player = game:GetService("Players")
@@ -72,20 +72,16 @@ local function getQueueType()
 	return MatchState.Game.queueType or "bedwars_test"
 end
 
+--[[
 local function SetHotbar(item)
     local Inventories = ReplicatedStorage.Inventories:FindFirstChild(localPlayer.Name):FindFirstChild(item)
     if Inventories then
         ReplicatedStorage.rbxts_include.node_modules:FindFirstChild("@rbxts").net.out._NetManaged.SetInvItem:InvokeServer({["hand"] = item})
     end
 end
-
+--]]
 local function Value2Vector(vec)
 	return { value = vec }
-end
-
-local function GetAttackPos(plrpos, nearpost, val)
-    local newPos = (nearpost - plrpos).Unit * math.min(val, (nearpost - plrpos).Magnitude) + plrpos
-    return newPos
 end
 
 local MeleeRank = {
@@ -165,15 +161,20 @@ local Aimbot = CombatTab:ToggleButton({
     callback = function(enabled)
         if enabled then
             aimbotDistance = 20
-            while task.wait(0.01) do
-                if not isAlive(localPlayer) then repeat task.wait() until isAlive(localPlayer) end
-                local Target = GetNearestPlr(aimbotDistance)
+            while enabled do
+		local Target = GetNearestPlr(aimbotDistance)
+                if not isAlive(localPlayer) then
+                    repeat task.wait() until isAlive(localPlayer)
+                end
                 if Target then
-                    if not isAlive(Target) then repeat task.wait() until isAlive(Target) end
+                    if not isAlive(Target) then
+                        repeat task.wait() until isAlive(Target)
+                    end
                     local CameraDirection = (Target.Character.HumanoidRootPart.Position - Camera.CFrame.Position).unit
                     local newLookAt = CFrame.new(Camera.CFrame.Position, Camera.CFrame.Position + CameraDirection)
                     Camera.CFrame = newLookAt
                 end
+                task.wait()
             end
         else
             aimbotDistance = 0
@@ -214,14 +215,15 @@ local AutoQuit = CombatTab:ToggleButton({
         if enabled then
             MaxHealth = 0.11
             if localPlayer and isAlive(localPlayer) then
-                while task.wait(0.01) do
+                while enabled do
                     if localPlayer.Character:FindFirstChild("Humanoid").Health < MaxHealth then
                         localPlayer:Kick("AutoQuit Triggered")
                     end
+                    task.wait()
                 end
-            else
-                MaxHealth = nil
             end
+        else
+            MaxHealth = nil
         end
     end
 })
@@ -229,7 +231,6 @@ local AutoQuit = CombatTab:ToggleButton({
 local HitDelay
 local AutoRotate = false
 local AutoSword = false
-local TargetHighlight = false
 local Sword = GetMelee()
 local KillAura = CombatTab:ToggleButton({
     name = "KillAura",
@@ -238,73 +239,68 @@ local KillAura = CombatTab:ToggleButton({
         if enabled then
             local Target = GetNearestPlr(20)
             HitDelay = 0.01
+
+            --[[ 
             if AutoSword then --AutoSword
-                if not isAlive(localPlayer) then repeat task.wait() until isAlive(localPlayer) end
+                if not isAlive(localPlayer) then 
+                    repeat task.wait() until isAlive(localPlayer) 
+                end
                 if Target then
-                    if not isAlive(Target) then repeat task.wait() until isAlive(Target) end
+                    if not isAlive(Target) then 
+                        repeat task.wait() until isAlive(Target) 
+                    end
                     SetHotbar(Sword)
                 else
                     AutoSword = false
                 end
             end
-            
-            if AutoRotate then --Rotations
-                if not isAlive(localPlayer) then repeat task.wait() until isAlive(localPlayer) end
-                if Target then
-                    if not isAlive(Target) then repeat task.wait() until isAlive(Target) end
-                    while true do
-                        local direction = (Target.Character.HumanoidRootPart.Position - localPlayer.Character.HumanoidRootPart.Position).unit
-                        local lookVector = Vector3.new(direction.X, 0, direction.Z).unit
-                        local newCFrame = CFrame.new(localPlayer.Character.HumanoidRootPart.Position, localPlayer.Character.HumanoidRootPart.Position + lookVector)
-                        localPlayer.Character:SetPrimaryPartCFrame(newCFrame)
-                        task.wait(0.01)
-                    end
+            --]]
+
+            while AutoRotate do --Rotations
+                if not isAlive(localPlayer) then 
+                    repeat task.wait() until isAlive(localPlayer) 
                 end
-            end
-            
-            if TargetHighlight then
-                if not isAlive(localPlayer) then repeat task.wait() until isAlive(localPlayer) end
-                local TempFolder = Instance.new("Folder", game.Workspace)
-                local Highlight = Instance.new("BoxHandleAdornment", TempFolder)
                 if Target then
                     if not isAlive(Target) then
-                        Highlight.Parent = TempFolder
-                        Highlight.Adornee = nil
-                    elseif isAlive(Target) then
-                        Highlight.Parent = Target.Character
-                        Highlight.Adornee = Target.Character
-                        Highlight.Color3 = Color3.fromRGB(255, 255, 255)
-                    else
-                        Highlight.Parent = TempFolder
-                        Highlight.Adornee = nil
+                        repeat task.wait() until isAlive(Target)
                     end
+                    local direction = (Target.Character.HumanoidRootPart.Position - localPlayer.Character.HumanoidRootPart.Position).unit
+                    local lookVector = Vector3.new(direction.X, 0, direction.Z).unit
+                    local newCFrame = CFrame.new(localPlayer.Character.HumanoidRootPart.Position, localPlayer.Character.HumanoidRootPart.Position + lookVector)
+                    localPlayer.Character:SetPrimaryPartCFrame(newCFrame)
                 end
+                task.wait()
             end
-        end
 
-        while task.wait(HitDelay) do --KillAura
-            if not isAlive(localPlayer) then repeat task.wait() until isAlive(localPlayer) end
-            local Target = GetNearestPlr(20)
-            if Target then
-                if not isAlive(Target) then repeat task.wait() until isAlive(Target) end
-                ReplicatedStorage.rbxts_include.node_modules:FindFirstChild("@rbxts").net.out._NetManaged.SwordHit:FireServer({
-                    ["entityInstance"] = Target.Character,
-                    ["chargedAttack"] = {
-                        ["chargeRatio"] = 1
-                    },
-                    ["validate"] = {
-                        ["raycast"] = {
-                            ["cursorDirection"] = Value2Vector(Ray.new(game.Workspace.CurrentCamera.CFrame.Position, Target.Character:FindFirstChild("HumanoidRootPart").Position).Unit.Direction),
-                            ["cameraPosition"] = Value2Vector(Target.Character:FindFirstChild("HumanoidRootPart").Position),
+            while enabled do --KillAura
+                if not isAlive(localPlayer) then 
+                    repeat task.wait() until isAlive(localPlayer) 
+                end
+                local Target = GetNearestPlr(20)
+                if Target then
+                    if not isAlive(Target) then 
+                        repeat task.wait() until isAlive(Target) 
+                    end
+                    ReplicatedStorage.rbxts_include.node_modules:FindFirstChild("@rbxts").net.out._NetManaged.SwordHit:FireServer({
+                        ["entityInstance"] = Target.Character,
+                        ["chargedAttack"] = {
+                            ["chargeRatio"] = 1
                         },
-                        ["selfPosition"] = Value2Vector((localPlayer.Character:FindFirstChild("HumanoidRootPart").Position - Target.Character:FindFirstChild("HumanoidRootPart").Position).Unit * math.min(2, (localPlayer.Character:FindFirstChild("HumanoidRootPart").Position - Target.Character:FindFirstChild("HumanoidRootPart").Position).Magnitude) + Target.Character:FindFirstChild("HumanoidRootPart").Position),
-                        ["targetPosition"] = Value2Vector(Target.Character.HumanoidRootPart.Position),
-                    },
-                    ["weapon"] = Sword
-                })
-            else
-                HitDelay = 86000
+                        ["validate"] = {
+                            ["raycast"] = {
+                                ["cursorDirection"] = Value2Vector(Ray.new(game.Workspace.CurrentCamera.CFrame.Position, Target.Character:FindFirstChild("HumanoidRootPart").Position).Unit.Direction),
+                                ["cameraPosition"] = Value2Vector(Target.Character:FindFirstChild("HumanoidRootPart").Position),
+                            },
+                            ["selfPosition"] = Value2Vector((localPlayer.Character:FindFirstChild("HumanoidRootPart").Position - Target.Character:FindFirstChild("HumanoidRootPart").Position).Unit * math.min(2, (localPlayer.Character:FindFirstChild("HumanoidRootPart").Position - Target.Character:FindFirstChild("HumanoidRootPart").Position).Magnitude) + Target.Character:FindFirstChild("HumanoidRootPart").Position),
+                            ["targetPosition"] = Value2Vector(Target.Character.HumanoidRootPart.Position),
+                        },
+                        ["weapon"] = Sword
+                    })
+                end
+                task.wait(HitDelay)
             end
+        else
+            HitDelay = 86000
         end
     end
 })
@@ -316,211 +312,215 @@ local UnknownSlider0 = KillAura:Slider({
     callback = function(value)
     end
 })
+--[[
 local AutoMelee = KillAura:ToggleButtonInsideUI({
     name = "AutoSword",
     callback = function(enabled)
         AutoSword = not AutoSword
     end
 })
+--]]
 local MinecraftRotation = KillAura:ToggleButtonInsideUI({
     name = "Rotate",
     callback = function(enabled)
         AutoRotate = not AutoRotate
     end
 })
-local TargetESP = KillAura:ToggleButtonInsideUI({
-    name = "TargetESP",
-    callback = function(enabled)
-        TargetHighlight = not TargetHighlight
-    end
-})
 --Teams
 local Teams = CombatTab:ToggleButton({
-	name = "Teams",
-	info = "Avoid combat modules to target your teammate",
-	callback = function(enabled)
-		TeamCheck = not TeamCheck
-	end
+    name = "Teams",
+    info = "Avoid combat modules targeting your teammate",
+    callback = function(enabled)
+        TeamCheck = enabled
+    end
 })
 --Fullbright
 local originalAmbient = Lighting.Ambient
 local originalOutdoor = Lighting.OutdoorAmbient
 local Fullbright = RenderTab:ToggleButton({
-	name = "Fullbright",
-	info = "Makes you see in the dark",
-	callback = function(enabled)
-		if enabled then
-			Lighting.Ambient = Color3.new(1, 1, 1)
-			Lighting.OutdoorAmbient = Color3.new(1, 1, 1)
-		else
-			Lighting.Ambient = originalAmbient
-			Lighting.OutdoorAmbient = originalOutdoor
-		end
-	end
+    name = "Fullbright",
+    info = "Enhances visibility in the dark",
+    callback = function(enabled)
+        if enabled then
+            Lighting.Ambient = Color3.new(1, 1, 1)
+            Lighting.OutdoorAmbient = Color3.new(1, 1, 1)
+        else
+            Lighting.Ambient = originalAmbient
+            Lighting.OutdoorAmbient = originalOutdoor
+        end
+    end
 })
 --Gameplay
 local AutoQueue = false
 local AutoGG = false
 local ActionDelay = 1
 local GamePlay = PlayerTab:ToggleButton({
-	name = "GamePlay",
-	info = "Makes your experience better",
-	callback = function(enabled)
-		if enabled then
-			if AutoQueue then
-				repeat
-					task.wait(ActionDelay)
-				until GetMatchState() == 2 or not enabled
-				ReplicatedStorage:FindFirstChild("events-@easy-games/lobby:shared/event/lobby-events@getEvents.Events").joinQueue:FireServer({["queueType"] = getQueueType()})
-			end
+    name = "GamePlay",
+    info = "Makes your experience better",
+    callback = function(enabled)
+        if enabled then
+            if AutoQueue then
+                spawn(function()
+                    repeat
+                        task.wait(ActionDelay)
+                    until GetMatchState() == 2 or not enabled
+                    ReplicatedStorage:FindFirstChild("events-@easy-games/lobby:shared/event/lobby-events@getEvents.Events").joinQueue:FireServer({["queueType"] = getQueueType()})
+                end)
+            end
 
-			if AutoGG then
-				repeat
-					task.wait(ActionDelay)
-				until GetMatchState() == 2 or not enabled
-				ReplicatedStorage.DefaultChatSystemChatEvents.SayMessageRequest:FireServer("GG", "All")
-			end
-		else
-			AutoQueue, AutoGG = false, false
-		end
-	end
+            if AutoGG then
+                spawn(function()
+                    repeat
+                        task.wait(ActionDelay)
+                    until GetMatchState() == 2 or not enabled
+                    ReplicatedStorage.DefaultChatSystemChatEvents.SayMessageRequest:FireServer("GG", "All")
+                end)
+            end
+        else
+            AutoQueue, AutoGG = false, false
+        end
+    end
 })
 local GamePlayFix = GamePlay:Slider({
-	title = "Delay",
-	min = 0,
-	max = 100,
-	default = 1,
-	callback = function(val)
-		ActionDelay = val
-	end
+    title = "Delay",
+    min = 0,
+    max = 100,
+    default = 1,
+    callback = function(val)
+        ActionDelay = val
+    end
 })
 local AutoQueueToggle = GamePlay:ToggleButtonInsideUI({
-	name = "AutoQueue",
-	callback = function(enabled)
-		AutoQueue = not AutoQueue
-	end
+    name = "AutoQueue",
+    callback = function(enabled)
+        AutoQueue = enabled
+    end
 })
 local AutoGGToggle = GamePlay:ToggleButtonInsideUI({
-	name = "AutoGG",
-	callback = function(enabled)
-		AutoGG = not AutoGG
-	end
+    name = "AutoGG",
+    callback = function(enabled)
+        AutoGG = enabled
+    end
 })
 --AutoSprint
-local StopSprinting = SprintCont.stopSprinting
 local AutoSprint = PlayerTab:ToggleButton({
-	name = "AutoSprint",
-	info = "Automatically Sprint",
-	callback = function(enabled)
-		if enabled then
-			spawn(function()
-				repeat
-					task.wait()
-					if not SprintCont.sprinting then
-						SprintCont:startSprinting()
-					end
-				until not enabled
-			end)
-		else
-			spawn(function()
-				repeat
-					task.wait()
-					if StopSprinting then
-						SprintCont:stopSprinting()
-					end
-				until enabled
-			end)
-		end
-	end
+    name = "AutoSprint",
+    info = "Automatically Sprint",
+    callback = function(enabled)
+        if enabled then
+            spawn(function()
+                while enabled do
+                    task.wait()
+                    if not SprintCont.sprinting then
+                        SprintCont:startSprinting()
+                    end
+                end
+            end)
+        else
+            spawn(function()
+                while not enabled do
+                    task.wait()
+                    if SprintCont.sprinting then
+                        SprintCont:stopSprinting()
+                    end
+                end
+            end)
+        end
+    end
 })
 --Speed
 local Speed = PlayerTab:ToggleButton({
-	name = "Speed",
-	info = "speed goes brrr",
-	callback = function(enabled)
-		if enabled then
-			localPlayer.Character:FindFirstChild("Humanoid").WalkSpeed = 22
-		else
-			localPlayer.Character:FindFirstChild("Humanoid").WalkSpeed = 16
-		end
-	end
+    name = "Speed",
+    info = "Speed goes brrr",
+    callback = function(enabled)
+        if enabled then
+            local speedModifier = 1.5
+            game:GetService("RunService").Stepped:Connect(function()
+                if localPlayer.Character and localPlayer.Character:FindFirstChild("Humanoid") then
+                    local humanoid = localPlayer.Character.Humanoid
+                    humanoid:SetStateEnabled(Enum.HumanoidStateType.Seated, false)
+                    humanoid:ChangeState(Enum.HumanoidStateType.Physics, false)
+                    humanoid:Move(Vector3.new(0, 0, speedModifier))
+                end
+            end)
+        else
+            game:GetService("RunService"):UnbindFromRenderStep("SpeedBypass")
+        end
+    end
 })
 --AntiVanish
 local AntiVanish = WorldTab:ToggleButton({
-	name = "AntiVanish",
-	info = "Staff detector",
-	callback = function(enabled)
-		if enabled then
-			game.Players.PlayerAdded:Connect(function(player)
-				if not player:IsFriendsWith(game.Players.LocalPlayer.UserId) and GetMatchState() ~= 0 then
-					CreateNotification("AntiVanish", "Someone just vanished", 5, true)
-				end
-			end)
+    name = "AntiVanish",
+    info = "Staff detector",
+    callback = function(enabled)
+        if enabled then
+            game.Players.PlayerAdded:Connect(function(player)
+                if not player:IsFriendsWith(game.Players.LocalPlayer.UserId) and GetMatchState() ~= 0 then
+                    CreateNotification("AntiVanish", "Someone just vanished", 5, true)
+                end
+            end)
 
-			for i, player in pairs(game.Players:GetPlayers()) do
-				if player:IsInGroup(5774246) and player:GetRankInGroup(5774246) >= 2 then
-					CreateNotification("AntiVanish", "Someone just vanished", 5, true)
-				end
-			end
-		end
-	end
+            for i, player in pairs(game.Players:GetPlayers()) do
+                if player:IsInGroup(5774246) and player:GetRankInGroup(5774246) >= 2 then
+                    CreateNotification("AntiVanish", "Someone just vanished", 5, true)
+                end
+            end
+        end
+    end
 })
 --Nuker
 local raycastParams = RaycastParams.new()
 raycastParams.IgnoreWater = true
-
 local function HitBed(bed)
-	local raycastResult = workspace:Raycast(bed.Position + Vector3.new(0, 13, 0), Vector3.new(0, -16, 0), raycastParams)
-	if raycastResult then
-		local nearestBed = raycastResult.Instance
-		BlockHit:InvokeServer({
-			["blockRef"] = {
-				["blockPosition"] = Vector3.new(math.round(nearestBed.Position.X / 3), math.round(nearestBed.Position.Y / 3), math.round(nearestBed.Position.Z / 3))
-			},
-			["hitPosition"] = Vector3.new(math.round(nearestBed.Position.X / 3), math.round(nearestBed.Position.Y / 3), math.round(nearestBed.Position.Z / 3)),
-			["hitNormal"] = Vector3.new(math.round(nearestBed.Position.X / 3), math.round(nearestBed.Position.Y / 3), math.round(nearestBed.Position.Z / 3))
-		})
-	end
+    local raycastResult = workspace:Raycast(bed.Position + Vector3.new(0, 13, 0), Vector3.new(0, -16, 0), raycastParams)
+    if raycastResult then
+        local nearestBed = raycastResult.Instance
+        for i, v in pairs(nearestBed:GetChildren()) do
+            if v:IsA("Texture") then
+                v:Destroy()
+            end
+        end
+        nearestBed.Transparency = 0.75
+        nearestBed.Color3 = Color3.fromRGB(255, 255, 255) -- Color3.fromRGB to set the color properly
+        BlockHit:InvokeServer({
+            ["blockRef"] = {
+                ["blockPosition"] = Vector3.new(math.round(nearestBed.Position.X / 3), math.round(nearestBed.Position.Y / 3), math.round(nearestBed.Position.Z / 3))
+            },
+            ["hitPosition"] = Vector3.new(math.round(nearestBed.Position.X / 3), math.round(nearestBed.Position.Y / 3), math.round(nearestBed.Position.Z / 3)),
+            ["hitNormal"] = Vector3.new(math.round(nearestBed.Position.X / 3), math.round(nearestBed.Position.Y / 3), math.round(nearestBed.Position.Z / 3))
+        })
+    end
 end
-
 local BedHitDelay
 local Nuker = WorldTab:ToggleButton({
-	name = "Nuker",
-	info = "Auto bed break",
-	callback = function(enabled)
-		if enabled then
-			BedHitDelay = 0.72
-			spawn(function()
-				repeat
-					task.wait(BedHitDelay)
-					if localPlayer.Character then
-						local nearestBed = GetBed(28.5)
-						if nearestBed then
-							while true do
-								HitBed(nearestBed)
-								wait()
-							end
-						end
-					end
-					BedHitDelay = 86000
-				until not enabled
-			end)
-		end
-	end
+    name = "Nuker",
+    info = "Auto bed break",
+    callback = function(enabled)
+        if enabled then
+            BedHitDelay = 0.82
+            while enabled do
+                if not isAlive(localPlayer) then 
+                    repeat task.wait() until isAlive(localPlayer) 
+                end
+                local nearestBed = GetBed(28.3)
+                if nearestBed then
+                    HitBed(nearestBed)
+                end
+                task.wait(BedHitDelay)
+            end
+        else
+            BedHitDelay = 86000
+        end
+    end
 })
---[[
+--AntiVoid
 local antivoidpart = nil
 local oldpos = nil
 
 local function UpdateOldPosition()
     if localPlayer.Character and localPlayer.Character:FindFirstChild("HumanoidRootPart") then
         local rootPart = localPlayer.Character.HumanoidRootPart
-        local newPosition = rootPart.Position
-        if antivoidpart and newPosition.Y > antivoidpart.Position.Y then
-            oldpos = newPosition
-        else
-            oldpos = nil
-        end
+        oldpos = rootPart.Position
     else
         oldpos = nil
     end
@@ -580,20 +580,3 @@ local AntiVoid = WorldTab:ToggleButton({
         end
     end
 })
-
-local function CheckIfInAir()
-    while true do
-        wait(3)
-        if localPlayer.Character and localPlayer.Character:FindFirstChild("Humanoid") then
-            local humanoid = localPlayer.Character.Humanoid
-            if humanoid:GetState() == Enum.HumanoidStateType.Physics then
-                oldpos = nil
-            else
-                UpdateOldPosition()
-            end
-        end
-    end
-end
-
-spawn(CheckIfInAir)
---]]
