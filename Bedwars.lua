@@ -311,7 +311,7 @@ local KillAura = CombatTab:ToggleButton({
                     PlayAnimation(4947108314)
                     PlaySound(6760544639)
                 end
-                task.wait(1)
+                task.wait(3.4)
             end
 
             while enabled do --KillAura
