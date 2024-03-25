@@ -250,78 +250,18 @@ local AutoQuit = CombatTab:ToggleButton({
     end
 })
 --KillAura
-local HitDelay
-local AutoRotate = false
-local AutoSword = false
-local SwordSwing = false
+local Target = GetNearestPlr(20)
 local Sword = GetMelee()
 
 local KillAura = CombatTab:ToggleButton({
     name = "KillAura",
-    info = "Attack the nearest player",
+    info = "Attack the nearby player",
     callback = function(enabled)
         if enabled then
-            local Target = GetNearestPlr(20)
-            HitDelay = 0.01
-
-            if AutoSword then --AutoSword
-                task.wait()
-                if not isAlive(localPlayer) then 
-                    repeat task.wait() until isAlive(localPlayer) 
-                end
-                if Target then
-                    task.wait()
-                    if not isAlive(Target) then 
-                        repeat task.wait() until isAlive(Target) 
-                    end
-                    SetHotbar(Sword)
-                else
-                    AutoSword = false
-                end
-            end
-
-            while AutoRotate do --Rotations
-                task.wait()
-                if not isAlive(localPlayer) then 
-                    repeat task.wait() until isAlive(localPlayer) 
-                end
-                if Target then
-                    task.wait()
+            while enabled do
+                if Target and isAlive(localPlayer) then
                     if not isAlive(Target) then
                         repeat task.wait() until isAlive(Target)
-                    end
-                    local direction = (Target.Character.HumanoidRootPart.Position - localPlayer.Character.HumanoidRootPart.Position).unit
-                    local lookVector = Vector3.new(direction.X, 0, direction.Z).unit
-                    local newCFrame = CFrame.new(localPlayer.Character.HumanoidRootPart.Position, localPlayer.Character.HumanoidRootPart.Position + lookVector)
-                    localPlayer.Character:SetPrimaryPartCFrame(newCFrame)
-                end
-                task.wait()
-            end
-
-            while SwordSwing do
-                task.wait()
-                if not isAlive(localPlayer) then 
-                    repeat task.wait() until isAlive(localPlayer) 
-                end
-                if Target then
-                    task.wait()
-                    if not isAlive(Target) then 
-                        repeat task.wait() until isAlive(Target) 
-                    end
-                    PlayAnimation(4947108314)
-                    PlaySound(6760544639)
-                end
-                task.wait(3.4)
-            end
-
-            while enabled do --KillAura
-                if not isAlive(localPlayer) then
-                    repeat task.wait() until isAlive(localPlayer)
-                end
-                if Target then
-                    task.wait()
-                    if not isAlive(Target) then 
-                        repeat task.wait() until isAlive(Target) 
                     end
                     ReplicatedStorage.rbxts_include.node_modules:FindFirstChild("@rbxts").net.out._NetManaged.SwordHit:FireServer({
                         ["entityInstance"] = Target.Character,
@@ -339,13 +279,12 @@ local KillAura = CombatTab:ToggleButton({
                         ["weapon"] = Sword
                     })
                 end
-                task.wait(HitDelay)
+                task.wait(0.03)
             end
-        else
-            HitDelay = 86000
         end
     end
 })
+
 local UnknownSlider0 = KillAura:Slider({
     title = "???",
     min = 0,
@@ -354,24 +293,61 @@ local UnknownSlider0 = KillAura:Slider({
     callback = function(value)
     end
 })
-local AutoMelee = KillAura:ToggleButtonInsideUI({
+
+local AutoSword = KillAura:ToggleButtonInsideUI({
     name = "AutoSword",
     callback = function(enabled)
-        AutoSword = not AutoSword
+        if enabled then
+            if Target and isAlive(localPlayer) then 
+                if not isAlive(Target) then
+                    repeat task.wait() until isAlive(Target)
+                end
+                SetHotbar(Sword)
+            else
+                not enabled or enabled == "false"
+            end
+        end
     end
 })
-local MinecraftRotation = KillAura:ToggleButtonInsideUI({
-    name = "Rotate",
+
+local Rotation = KillAura:ToggleButtonInsideUI({
+    name = "Rotation",
     callback = function(enabled)
-        AutoRotate = not AutoRotate
+        if enabled then
+            while enabled do
+                if Target and isAlive(localPlayer) then
+                    if not isAlive(Target) then
+                        repeat task.wait() until isAlive(Target)
+                    end
+                    local direction = (Target.Character.HumanoidRootPart.Position - localPlayer.Character.HumanoidRootPart.Position).unit
+                    local lookVector = Vector3.new(direction.X, 0, direction.Z).unit
+                    local newCFrame = CFrame.new(localPlayer.Character.HumanoidRootPart.Position, localPlayer.Character.HumanoidRootPart.Position + lookVector)
+                    localPlayer.Character:SetPrimaryPartCFrame(newCFrame)
+                end
+                task.wait(0.01)
+            end
+        end
     end
 })
-local SwordStuff = KillAura:ToggleButtonInsideUI({
-    name = "Swing",
+
+local SwordVisual = KillAura:ToggleButtonInsideUI({
+    name = "SwingNSound",
     callback = function(enabled)
-        SwordSwing = not SwordSwing
+        if enabled then
+            if Target and isAlive(localPlayer) then
+                if not isAlive(Target) then
+                    repeat task.wait() until isAlive(Target)
+                end
+                while enabled do
+                    PlayAnimation(4947108314)
+                    PlaySound(6760544639)
+                    task.wait(1)
+                end
+            end
+        end
     end
 })
+
 --Teams
 local Teams = CombatTab:ToggleButton({
     name = "Teams",
