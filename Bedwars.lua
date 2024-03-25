@@ -270,12 +270,11 @@ local KillAura = CombatTab:ToggleButton({
                 task.wait()
             end
 
-            while enabled do --KillAura
-                local Target = GetNearestPlr(20)
-                if Target then
                     if not isAlive(localPlayer) then 
                         repeat task.wait() until isAlive(localPlayer) 
                     end
+            while enabled do --KillAura
+                if Target then
                     if not isAlive(Target) then 
                         repeat task.wait() until isAlive(Target) 
                     end
