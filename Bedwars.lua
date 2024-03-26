@@ -252,39 +252,76 @@ local AutoQuit = CombatTab:ToggleButton({
 --KillAura
 local Target = GetNearestPlr(20)
 local Sword = GetMelee()
-
+local KillAuraAutoSword = false
+local KillAuraRotation = false
+local KillAuraSwingNSound = false
 local KillAura = CombatTab:ToggleButton({
     name = "KillAura",
     info = "Attack the nearby player",
     callback = function(enabled)
         if enabled then
-            while enabled do
-                if Target and isAlive(localPlayer) then
-                    if not isAlive(Target) then
-                        repeat task.wait() until isAlive(Target)
+            spawn(function()
+                repeat
+                    if KillAuraAutoSword then
+                        if Target and isAlive(localPlayer) then
+                            SetHotbar(Sword)
+                        else
+                            KillAuraAutoSword = false
+                        end
                     end
-                    ReplicatedStorage.rbxts_include.node_modules:FindFirstChild("@rbxts").net.out._NetManaged.SwordHit:FireServer({
-                        ["entityInstance"] = Target.Character,
-                        ["chargedAttack"] = {
-                            ["chargeRatio"] = 1
-                        },
-                        ["validate"] = {
-                            ["raycast"] = {
-                                ["cursorDirection"] = Value2Vector(Ray.new(game.Workspace.CurrentCamera.CFrame.Position, Target.Character:FindFirstChild("HumanoidRootPart").Position).Unit.Direction),
-                                ["cameraPosition"] = Value2Vector(Target.Character:FindFirstChild("HumanoidRootPart").Position),
+                    if KillAuraRotation then
+                        while KillAuraRotation do
+                            if Target and isAlive(localPlayer) then
+                                if not isAlive(Target) then
+                                    repeat task.wait() until isAlive(Target)
+                                end
+                                local direction = (Target.Character.HumanoidRootPart.Position - localPlayer.Character.HumanoidRootPart.Position).unit
+                                local lookVector = Vector3.new(direction.X, 0, direction.Z).unit
+                                local newCFrame = CFrame.new(localPlayer.Character.HumanoidRootPart.Position, localPlayer.Character.HumanoidRootPart.Position + lookVector)
+                                localPlayer.Character:SetPrimaryPartCFrame(newCFrame)
+                            end
+                            task.wait()
+                        end
+                    end
+                    if KillAuraSwingNSound then
+                        while KillAuraSwingNSound do
+                            if Target and isAlive(localPlayer) then
+                                if not isAlive(Target) then
+                                    repeat task.wait() until isAlive(Target)
+                                end
+                                PlayAnimation(4947108314)
+                                PlaySound(6760544639)
+                                task.wait(1.3)
+                            end
+                        end
+                    end
+
+                    if Target and isAlive(localPlayer) then
+                        if not isAlive(Target) then
+                            repeat task.wait() until isAlive(Target)
+                        end
+                        ReplicatedStorage.rbxts_include.node_modules:FindFirstChild("@rbxts").net.out._NetManaged.SwordHit:FireServer({
+                            ["entityInstance"] = Target.Character,
+                            ["chargedAttack"] = {
+                                ["chargeRatio"] = 1
                             },
-                            ["selfPosition"] = Value2Vector((localPlayer.Character:FindFirstChild("HumanoidRootPart").Position - Target.Character:FindFirstChild("HumanoidRootPart").Position).Unit * math.min(2, (localPlayer.Character:FindFirstChild("HumanoidRootPart").Position - Target.Character:FindFirstChild("HumanoidRootPart").Position).Magnitude) + Target.Character:FindFirstChild("HumanoidRootPart").Position),
-                            ["targetPosition"] = Value2Vector(Target.Character.HumanoidRootPart.Position),
-                        },
-                        ["weapon"] = Sword
-                    })
-                end
-                task.wait(0.03)
-            end
+                            ["validate"] = {
+                                ["raycast"] = {
+                                    ["cursorDirection"] = Value2Vector(Ray.new(game.Workspace.CurrentCamera.CFrame.Position, Target.Character:FindFirstChild("HumanoidRootPart").Position).Unit.Direction),
+                                    ["cameraPosition"] = Value2Vector(Target.Character:FindFirstChild("HumanoidRootPart").Position),
+                                },
+                                ["selfPosition"] = Value2Vector((localPlayer.Character:FindFirstChild("HumanoidRootPart").Position - Target.Character:FindFirstChild("HumanoidRootPart").Position).Unit * math.min(2, (localPlayer.Character:FindFirstChild("HumanoidRootPart").Position - Target.Character:FindFirstChild("HumanoidRootPart").Position).Magnitude) + Target.Character:FindFirstChild("HumanoidRootPart").Position),
+                                ["targetPosition"] = Value2Vector(Target.Character.HumanoidRootPart.Position),
+                            },
+                            ["weapon"] = Sword
+                        })
+                    end
+                    task.wait(0.03)
+                until not enabled or not KillAura.Enabled
+            end)
         end
     end
 })
-
 local UnknownSlider0 = KillAura:Slider({
     title = "???",
     min = 0,
@@ -293,61 +330,24 @@ local UnknownSlider0 = KillAura:Slider({
     callback = function(value)
     end
 })
-
 local AutoSword = KillAura:ToggleButtonInsideUI({
     name = "AutoSword",
     callback = function(enabled)
-        if enabled then
-            if Target and isAlive(localPlayer) then 
-                if not isAlive(Target) then
-                    repeat task.wait() until isAlive(Target)
-                end
-                SetHotbar(Sword)
-            else
-                not enabled or enabled == "false"
-            end
-        end
+        KillAuraAutoSword = not KillAuraAutoSword
     end
 })
-
 local Rotation = KillAura:ToggleButtonInsideUI({
     name = "Rotation",
     callback = function(enabled)
-        if enabled then
-            while enabled do
-                if Target and isAlive(localPlayer) then
-                    if not isAlive(Target) then
-                        repeat task.wait() until isAlive(Target)
-                    end
-                    local direction = (Target.Character.HumanoidRootPart.Position - localPlayer.Character.HumanoidRootPart.Position).unit
-                    local lookVector = Vector3.new(direction.X, 0, direction.Z).unit
-                    local newCFrame = CFrame.new(localPlayer.Character.HumanoidRootPart.Position, localPlayer.Character.HumanoidRootPart.Position + lookVector)
-                    localPlayer.Character:SetPrimaryPartCFrame(newCFrame)
-                end
-                task.wait(0.01)
-            end
-        end
+        KillAuraRotation = not KillAuraRotation
     end
 })
-
 local SwordVisual = KillAura:ToggleButtonInsideUI({
     name = "SwingNSound",
     callback = function(enabled)
-        if enabled then
-            if Target and isAlive(localPlayer) then
-                if not isAlive(Target) then
-                    repeat task.wait() until isAlive(Target)
-                end
-                while enabled do
-                    PlayAnimation(4947108314)
-                    PlaySound(6760544639)
-                    task.wait(1)
-                end
-            end
-        end
+        KillAuraSwingNSound = not KillAuraSwingNSound
     end
 })
-
 --Teams
 local Teams = CombatTab:ToggleButton({
     name = "Teams",
