@@ -22,6 +22,19 @@ local function isAlive(player)
 	return player and player.Character and player.Character:FindFirstChild("Humanoid") and player.Character:FindFirstChild("Humanoid").Health > 0
 end
 
+local function isNetworkOwner(part)
+    local success, result = pcall(function()
+        return gethiddenproperty(part, "NetworkOwnershipRule")
+    end)
+    
+    if success and result == Enum.NetworkOwnership.Manual then 
+        sethiddenproperty(part, "NetworkOwnershipRule", Enum.NetworkOwnership.Automatic)
+        networkOwnerSwitchTime = tick() + 8
+    end
+    
+    return networkOwnerSwitchTime <= tick()
+end
+
 local TeamCheck = false
 local function GetNearestPlr(range)
 	local nearestPlayer
@@ -460,6 +473,43 @@ local Speed = PlayerTab:ToggleButton({
         else
             localPlayer.Character:FindFirstChild("Humanoid").WalkSpeed = 16
         end
+    end
+})
+--Fly
+local FlyAutoDisable = false
+local Fly = RenderTab:ToggleButton({
+    name = "Fly",
+    info = "Temp fly gravity",
+    callback = function(enabled)
+        if enabled then
+            game.Workspace.Gravity = 0
+            if FlyAutoDisable then
+                if Fly.Enabled then
+                    task.wait(2.3)
+                    Fly.Enabled = false
+                end
+                if isNetworkOwner(localPlayer.Character:FindFirstChild("HumanoidRootPart")) then
+                    Fly.Enabled = false
+                    CreateNotification("Fly", "You got flagged", 3, true)
+                else
+                    game.Workspace.Gravity = 192.6
+                end
+            end
+        end
+    end
+})
+local UnknownSlider1 = Fly:Slider({
+    title = "???",
+    min = 0,
+    max = 0,
+    default = 0,
+    callback = function(value)
+    end
+})
+local FlyAutoDisableCD = Fly:ToggleButtonInsideUI({
+    name = "AutoDisable",
+    callback = function(enabled)
+        FlyAutoDisable = not FlyAutoDisable
     end
 })
 --AntiVanish
