@@ -476,40 +476,30 @@ local Speed = PlayerTab:ToggleButton({
     end
 })
 --Fly
-local FlyAutoDisable = false
 local Fly = RenderTab:ToggleButton({
     name = "Fly",
     info = "Temp fly gravity",
     callback = function(enabled)
         if enabled then
             game.Workspace.Gravity = 0
-            if FlyAutoDisable then
-                if Fly.Enabled then
-                    task.wait(2.3)
-                    Fly.Enabled = false
+
+            UserInputService.JumpRequest:Connect(function()
+                if isAlive(localPlayer) then
+                    local currentPosition = localPlayer.Character and localPlayer.Character.HumanoidRootPart and localPlayer.Character.HumanoidRootPart.Position
+                    if currentPosition then
+                        currentPosition = currentPosition + Vector3.new(0, 1, 0)
+                        localPlayer.Character.HumanoidRootPart.Position = currentPosition
+                    end
                 end
-                if isNetworkOwner(localPlayer.Character:FindFirstChild("HumanoidRootPart")) then
-                    Fly.Enabled = false
-                    CreateNotification("Fly", "You got flagged", 3, true)
-                else
-                    game.Workspace.Gravity = 192.6
-                end
+            end)
+
+            if isAlive(localPlayer) and isNetworkOwner(localPlayer.Character:FindFirstChild("HumanoidRootPart")) then
+                game.Workspace.Gravity = 192.6
+                CreateNotification("Fly", "You got flagged", 3, true)
+            else
+                game.Workspace.Gravity = 192.6
             end
         end
-    end
-})
-local UnknownSlider1 = Fly:Slider({
-    title = "???",
-    min = 0,
-    max = 0,
-    default = 0,
-    callback = function(value)
-    end
-})
-local FlyAutoDisableCD = Fly:ToggleButtonInsideUI({
-    name = "AutoDisable",
-    callback = function(enabled)
-        FlyAutoDisable = not FlyAutoDisable
     end
 })
 --AntiVanish
