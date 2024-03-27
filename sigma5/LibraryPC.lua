@@ -294,20 +294,19 @@ ActiveModsList.Padding = UDim.new(0, -10)
 ActiveModsList.SortOrder = Enum.SortOrder.LayoutOrder
 
 local function ActiveModsAdd(ModulesName)
-	local ModulesName = Instance.new("TextLabel", ActiveModsHolder)
-	ModulesName.Name = ModulesName
-	ModulesName.TextXAlignment = Enum.TextXAlignment.Right
-	ModulesName.BackgroundTransparency = 1
-	ModulesName.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-	ModulesName.Font = Enum.Font.Roboto
-	ModulesName.TextSize = 15.8
-	ModulesName.Text = ModulesName
-	ModulesName.TextColor3 = Color3.fromRGB(255, 255, 255)
-	ModulesName.Size = UDim2.new(1, 0, 0, 30)
-	ModulesName.ZIndex = 3
-	ModulesName.BorderColor3 = Color3.fromRGB(0, 0, 0)
-
-	ModulesName.LayoutOrder = -#ModulesName
+	local TextLabel = Instance.new("TextLabel", ActiveModsHolder)
+	TextLabel.Name = ModulesName
+	TextLabel.TextXAlignment = Enum.TextXAlignment.Right
+	TextLabel.BackgroundTransparency = 1
+	TextLabel.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+	TextLabel.Font = Enum.Font.Roboto
+	TextLabel.TextSize = 15.8
+	TextLabel.Text = ModulesName
+	TextLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+	TextLabel.Size = UDim2.new(1, 0, 0, 30)
+	TextLabel.ZIndex = 3
+	TextLabel.BorderColor3 = Color3.fromRGB(0, 0, 0)
+	TextLabel.LayoutOrder = -#ModulesName
 end
 
 local function ActiveModsRemove(ModulesName)
