@@ -115,11 +115,11 @@ end
 --CreatingUI
 Library:createScreenGui()
 --Tabs
-local GuiTab = Library:CreateTab("Gui", CoreGui.sigma5.AllTabsHere)
-local CombatTab = Library:CreateTab("Combat", CoreGui.sigma5.AllTabsHere)
-local RenderTab = Library:CreateTab("Render", CoreGui.sigma5.AllTabsHere)
-local PlayerTab = Library:CreateTab("PlayerTab", CoreGui.sigma5.AllTabsHere)
-local WorldTab = Library:CreateTab("World", CoreGui.sigma5.AllTabsHere)
+local GuiTab = Library:CreateTab("Gui")
+local CombatTab = Library:CreateTab("Combat")
+local RenderTab = Library:CreateTab("Render")
+local PlayerTab = Library:CreateTab("PlayerTab")
+local WorldTab = Library:CreateTab("World")
 --ActiveMods
 local ActiveMods = GuiTab:CreateToggle({
 	Name = "ActiveMods",
