@@ -438,7 +438,7 @@ function Library:CreateTab(tabsName)
 		ToggleButtonHolder.AutoButtonColor = false
 		ToggleButtonHolder.TextTransparency = 0.250
 
-		local ToggleSettingHolder = Instance.new("Frame", CoreGui.Sigma5)
+		local ToggleSettingHolder = Instance.new("Frame", CoreGui:FindFirstChild("sigma5"))
 		ToggleSettingHolder.Name = "Holder"
 		ToggleSettingHolder.BackgroundColor3 = Color3.fromRGB(250, 250, 250)
 		ToggleSettingHolder.BorderColor3 = Color3.fromRGB(0, 0, 0)
