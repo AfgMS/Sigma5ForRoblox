@@ -311,16 +311,15 @@ local function ActiveModsAdd(ModulesName)
 end
 
 local function ActiveModsRemove(ModulesName)
-	local children = RightHolder:GetChildren()
-	for _, child in ipairs(children) do
-		if child:IsA("Frame") and child.Name == "ActiveModsHolder" then
-			local label = child:FindFirstChild(ModulesName)
-			if label and label:IsA("TextLabel") then
-				label:Destroy()
-				break
-			end
-		end
-	end
+    ModulesName = tostring(ModulesName)
+    local ActiveModsMain = ActiveModsHolder:GetChildren()
+    for _, child in ipairs(ActiveModsMain) do
+        local label = child:FindFirstChild(ModulesName)
+        if label and label:IsA("TextLabel") then
+            label:Destroy()
+            break
+        end
+    end
 end
 
 --UICore
@@ -504,13 +503,13 @@ function Library:CreateTab(tabsName)
 				Library:FadeEffect(ToggleButtonHolder, {BackgroundColor3 = Color3.fromRGB(115, 185, 255)})
 				Library:FadeEffect(ToggleButtonHolder, {TextColor3 = Color3.fromRGB(255, 255, 255)})
 				ToggleButtonHolder.Text = "       " .. advance.Name
-				--ActiveModsAdd(advance.Name)
+				ActiveModsAdd(advance.Name)
 				PlaySound(soundIds.OnEnabled)
 			else
 				Library:FadeEffect(ToggleButtonHolder, {BackgroundColor3 = Color3.fromRGB(255, 255, 255)})
 				Library:FadeEffect(ToggleButtonHolder, {TextColor3 = Color3.fromRGB(15, 15, 15)})
 				ToggleButtonHolder.Text = "     " .. advance.Name
-				--ActiveModsRemove(advance.Name)
+				ActiveModsRemove(advance.Name)
 				PlaySound(soundIds.OnDisabled)
 			end
 		end
