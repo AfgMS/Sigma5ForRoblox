@@ -335,7 +335,7 @@ function Library:createScreenGui()
 	TabsHolder.AnchorPoint = Vector2.new(0.5, 0.5)
 	TabsHolder.Position = UDim2.new(0.5, 0, 0.5, 0)
 
-	local TabsList = Instance.new("ToggleSettingUIList", TabsHolder)
+	local TabsList = Instance.new("UIListLayout", TabsHolder)
 	TabsList.FillDirection = Enum.FillDirection.Horizontal
 	TabsList.Padding = UDim.new(0, 8)
 
@@ -401,7 +401,7 @@ function Library:CreateTab(tabsName)
 	tabHOLD.TabToggleMenu.CanvasSize = UDim2.new(0, 0, 1, 0)
 	tabHOLD.TabToggleMenu.Name = "ScrollingModules"
 
-	local ToggleUIList = Instance.new("ToggleSettingUIList", tabHOLD.TabToggleMenu)
+	local ToggleUIList = Instance.new("UIListLayout", tabHOLD.TabToggleMenu)
 	ToggleUIList.SortOrder = Enum.SortOrder.LayoutOrder
 
 	game:GetService("UserInputService").InputBegan:Connect(function(input, gameProcessedEvent)
@@ -479,7 +479,7 @@ function Library:CreateTab(tabsName)
 		ToggleSettingScroller.Visible = true
 		ToggleSettingScroller.ZIndex = 4
 
-		local ToggleSettingUIList = Instance.new("ToggleSettingUIList", ToggleSettingScroller)
+		local ToggleSettingUIList = Instance.new("UIListLayout", ToggleSettingScroller)
 		ToggleSettingUIList.SortOrder = Enum.SortOrder.LayoutOrder
 
 		local ToggleSettingDescription = Instance.new("TextLabel", ToggleSettingScroller)
@@ -755,7 +755,7 @@ function Library:CreateTab(tabsName)
 					DropdownMenu.Name = "DropdownMenu"
 					DropdownMenu.ZIndex = 5
 
-					local DropdownMenuListHolder = Instance.new("ToggleSettingUIList", DropdownMenu)
+					local DropdownMenuListHolder = Instance.new("UIListLayout", DropdownMenu)
 					DropdownMenuListHolder.SortOrder = Enum.SortOrder.LayoutOrder
 
 					for _, item in ipairs(Dropdown.List) do
