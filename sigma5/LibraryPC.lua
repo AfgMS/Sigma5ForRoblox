@@ -350,7 +350,7 @@ function Library:CreateTab(tabsName)
 
 	local tabHOLD = {}
 
-	tabHOLD.tabHOLD.TabMainHolder = Instance.new("Frame", CoreGui:WaitForChild("sigma5"):FindFirstChild("TabsHolder"))
+	tabHOLD.TabMainHolder = Instance.new("Frame", CoreGui:WaitForChild("sigma5"):FindFirstChild("TabsHolder"))
 	tabHOLD.TabMainHolder.BorderSizePixel = 0
 	tabHOLD.TabMainHolder.BackgroundColor3 = Color3.fromRGB(250, 250, 250)
 	tabHOLD.TabMainHolder.BackgroundTransparency = 0.050
@@ -361,7 +361,7 @@ function Library:CreateTab(tabsName)
 	tabHOLD.TabMainHolder.Name = "Tabs"
 	tabHOLD.TabMainHolder.Visible = false
 
-	tabHOLD.tabHOLD.TabName = Instance.new("TextLabel", tabHOLD.TabMainHolder)
+	tabHOLD.TabName = Instance.new("TextLabel", tabHOLD.TabMainHolder)
 	tabHOLD.TabName.BorderSizePixel = 0
 	tabHOLD.TabName.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
 	tabHOLD.TabName.TextXAlignment = Enum.TextXAlignment.Left
@@ -378,7 +378,7 @@ function Library:CreateTab(tabsName)
 	tabHOLD.TabName.TextStrokeTransparency = 0.990
 	tabHOLD.TabName.BackgroundTransparency = 1.000
 
-	tabHOLD.tabHOLD.TabScrollingHolder = Instance.new("Frame", tabHOLD.TabMainHolder)
+	tabHOLD.TabScrollingHolder = Instance.new("Frame", tabHOLD.TabMainHolder)
 	tabHOLD.TabScrollingHolder.BorderSizePixel = 0
 	tabHOLD.TabScrollingHolder.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
 	tabHOLD.TabScrollingHolder.BackgroundTransparency = 1.000
@@ -389,7 +389,7 @@ function Library:CreateTab(tabsName)
 	tabHOLD.TabScrollingHolder.Name = "ScrollingPart"
 	--tabHOLD.TabScrollingHolder.Visible = false
 
-	tabHOLD.tabHOLD.TabToggleMenu = Instance.new("ScrollingFrame", tabHOLD.TabScrollingHolder)
+	tabHOLD.TabToggleMenu = Instance.new("ScrollingFrame", tabHOLD.TabScrollingHolder)
 	tabHOLD.TabToggleMenu.Active = true
 	tabHOLD.TabToggleMenu.BorderSizePixel = 0
 	tabHOLD.TabToggleMenu.ZIndex = 3
