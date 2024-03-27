@@ -433,7 +433,7 @@ local Speed = PlayerTab:CreateToggle({
 local Fly = RenderTab:CreateToggle({
 	Name = "Fly",
 	Description = "Temp fly gravity",
-	Bind = "T",
+	Bind = "H",
 	callback = function(enabled)
 		if enabled then
 			game.Workspace.Gravity = 0
