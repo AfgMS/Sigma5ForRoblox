@@ -43,16 +43,291 @@ function PlaySound(soundId)
 	end)
 end
 
+local Sigma5Visual = Instance.new("ScreenGui", CoreGui)
+Sigma5Visual.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+Sigma5Visual.Name = "Sigma5Visual"
+Sigma5Visual.ResetOnSpawn = false
+
 local BlurUI = Instance.new("BlurEffect")
 BlurUI.Parent = Lighting
 BlurUI.Size = 28
 BlurUI.Enabled = false
+--LeftSide
+local LeftHolder = Instance.new("Frame", Sigma5Visual)
+LeftHolder.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+LeftHolder.BackgroundTransparency = 1
+LeftHolder.BorderColor3 = Color3.fromRGB(0, 0, 0)
+LeftHolder.BorderSizePixel = 0
+LeftHolder.Name = "LeftSide"
+LeftHolder.Size = UDim2.new(0, 255, 1, 0)
 
---UILibrary
+local SigmaTittle = Instance.new("TextLabel")
+SigmaTittle.Name = "SigmaTittle"
+SigmaTittle.Parent = LeftHolder
+SigmaTittle.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+SigmaTittle.BackgroundTransparency = 1.000
+SigmaTittle.BorderColor3 = Color3.fromRGB(0, 0, 0)
+SigmaTittle.BorderSizePixel = 0
+SigmaTittle.Position = UDim2.new(0, 15, 0, 0)
+SigmaTittle.Size = UDim2.new(0, 200, 0, 50)
+SigmaTittle.Font = Enum.Font.Roboto
+SigmaTittle.Text = "Sigma"
+SigmaTittle.TextColor3 = Color3.fromRGB(255, 255, 255)
+SigmaTittle.TextSize = 33
+SigmaTittle.TextTransparency = 0.380
+SigmaTittle.Visible = true
+SigmaTittle.ZIndex = 1
+SigmaTittle.TextWrapped = true
+SigmaTittle.TextXAlignment = Enum.TextXAlignment.Left
+
+local Jello = Instance.new("TextLabel")
+Jello.Name = "Jello"
+Jello.Parent = SigmaTittle
+Jello.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+Jello.BackgroundTransparency = 1.000
+Jello.BorderColor3 = Color3.fromRGB(0, 0, 0)
+Jello.BorderSizePixel = 0
+Jello.Position = UDim2.new(0, 0, 0, 33)
+Jello.Size = UDim2.new(0, 125, 0, 25)
+Jello.Font = Enum.Font.Roboto
+Jello.Text = "Jello"
+Jello.TextColor3 = Color3.fromRGB(255, 255, 255)
+Jello.TextSize = 14
+Jello.ZIndex = 1
+Jello.TextStrokeColor3 = Color3.fromRGB(255, 255, 255)
+Jello.TextTransparency = 0.380
+Jello.TextWrapped = true
+Jello.TextXAlignment = Enum.TextXAlignment.Left
+
+local TabHolder = Instance.new("Frame")
+TabHolder.Name = "TabHolder"
+TabHolder.Parent = LeftHolder
+TabHolder.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+TabHolder.BackgroundTransparency = 1.000
+TabHolder.BorderColor3 = Color3.fromRGB(0, 0, 0)
+TabHolder.BorderSizePixel = 0
+TabHolder.ZIndex = 1
+TabHolder.Visible = false
+TabHolder.Position = UDim2.new(0, 15, 0, 60)
+TabHolder.Size = UDim2.new(0, 110, 0, 124)
+
+local UIListLayout = Instance.new("UIListLayout")
+UIListLayout.Parent = TabHolder
+UIListLayout.SortOrder = Enum.SortOrder.LayoutOrder
+
+local Movement = Instance.new("TextLabel")
+Movement.Name = "Movement"
+Movement.Parent = TabHolder
+Movement.ZIndex = 1
+Movement.BackgroundColor3 = Color3.fromRGB(168, 168, 168)
+Movement.BackgroundTransparency = 0.480
+Movement.BorderColor3 = Color3.fromRGB(0, 0, 0)
+Movement.BorderSizePixel = 0
+Movement.Size = UDim2.new(1, 0, 0, 23)
+Movement.Font = Enum.Font.Roboto
+Movement.Text = "     Movement"
+Movement.TextColor3 = Color3.fromRGB(255, 255, 255)
+Movement.TextSize = 14
+Movement.TextXAlignment = Enum.TextXAlignment.Left
+
+local Player = Instance.new("TextLabel")
+Player.Name = "Player"
+Player.ZIndex = 1
+Player.Parent = TabHolder
+Player.BackgroundColor3 = Color3.fromRGB(195, 195, 195)
+Player.BackgroundTransparency = 0.480
+Player.BorderColor3 = Color3.fromRGB(0, 0, 0)
+Player.BorderSizePixel = 0
+Player.Size = UDim2.new(1, 0, 0, 23)
+Player.Font = Enum.Font.Roboto
+Player.Text = "   Player"
+Player.TextColor3 = Color3.fromRGB(255, 255, 255)
+Player.TextSize = 14
+Player.TextXAlignment = Enum.TextXAlignment.Left
+
+local Combat = Instance.new("TextLabel")
+Combat.Name = "Combat"
+Combat.Parent = TabHolder
+Combat.BackgroundColor3 = Color3.fromRGB(195, 195, 195)
+Combat.BackgroundTransparency = 0.480
+Combat.BorderColor3 = Color3.fromRGB(0, 0, 0)
+Combat.BorderSizePixel = 0
+Combat.Size = UDim2.new(1, 0, 0, 23)
+Combat.Font = Enum.Font.Roboto
+Combat.Text = "   Combat"
+Combat.TextColor3 = Color3.fromRGB(255, 255, 255)
+Combat.TextSize = 14
+Combat.ZIndex = 1
+Combat.TextXAlignment = Enum.TextXAlignment.Left
+
+local Render = Instance.new("TextLabel")
+Render.Name = "Render"
+Render.Parent = TabHolder
+Render.BackgroundColor3 = Color3.fromRGB(195, 195, 195)
+Render.BackgroundTransparency = 0.480
+Render.BorderColor3 = Color3.fromRGB(0, 0, 0)
+Render.BorderSizePixel = 0
+Render.Size = UDim2.new(1, 0, 0, 23)
+Render.Font = Enum.Font.Roboto
+Render.Text = "   Render"
+Render.ZIndex = 1
+Render.TextColor3 = Color3.fromRGB(255, 255, 255)
+Render.TextSize = 14
+Render.TextXAlignment = Enum.TextXAlignment.Left
+
+local World = Instance.new("TextLabel")
+World.Name = "World"
+World.Parent = TabHolder
+World.BackgroundColor3 = Color3.fromRGB(195, 195, 195)
+World.BackgroundTransparency = 0.480
+World.BorderColor3 = Color3.fromRGB(0, 0, 0)
+World.BorderSizePixel = 0
+World.Size = UDim2.new(1, 0, 0, 23)
+World.Font = Enum.Font.Roboto
+World.Text = "   World"
+World.ZIndex = 1
+World.TextColor3 = Color3.fromRGB(255, 255, 255)
+World.TextSize = 14
+World.TextXAlignment = Enum.TextXAlignment.Left
+--RightSide
+local RightHolder = Instance.new("Frame", Sigma5Visual)
+RightHolder.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+RightHolder.BackgroundTransparency = 1
+RightHolder.BorderColor3 = Color3.fromRGB(0, 0, 0)
+RightHolder.BorderSizePixel = 0
+RightHolder.Name = "RightSide"
+RightHolder.Position = UDim2.new(0, 575, 0, 0)
+RightHolder.Size = UDim2.new(0, 255, 1, 0)
+
+function CreateNotification(NotificationName, NotificationText, NotificationDuration, Fired)
+
+	local Notification = Instance.new("Frame", RightHolder)
+	Notification.BackgroundColor3 = Color3.fromRGB(45, 45, 45)
+	Notification.BackgroundTransparency = 0.150
+	Notification.BorderColor3 = Color3.fromRGB(0, 0, 0)
+	Notification.BorderSizePixel = 0
+	Notification.Position = UDim2.new(0, 130, 0, 285)
+	--PosFired = {0, 15},{0, 715}
+	--PosOld = {0, 255},{0, 715}
+	Notification.Size = UDim2.new(0, 238, 0, 55)
+	Notification.Visible = false
+
+	local WarningIcon = Instance.new("ImageLabel", Notification)
+	WarningIcon.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+	WarningIcon.BackgroundTransparency = 1.000
+	WarningIcon.BorderColor3 = Color3.fromRGB(0, 0, 0)
+	WarningIcon.BorderSizePixel = 0
+	WarningIcon.Position = UDim2.new(0, 10, 0, 13)
+	WarningIcon.Size = UDim2.new(0, 30, 0, 30)
+	WarningIcon.Image = "http://www.roblox.com/asset/?id=16826468454"
+	WarningIcon.ScaleType = Enum.ScaleType.Fit
+
+	local Name = Instance.new("TextLabel", Notification)
+	Name.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+	Name.BackgroundTransparency = 1.000
+	Name.BorderColor3 = Color3.fromRGB(0, 0, 0)
+	Name.BorderSizePixel = 0
+	Name.Position = UDim2.new(0, 58, 0, 0)
+	Name.Size = UDim2.new(0, 183, 0, 35)
+	Name.Font = Enum.Font.SourceSans
+	Name.Text = NotificationName
+	Name.TextColor3 = Color3.fromRGB(255, 255, 255)
+	Name.TextSize = 20.000
+	Name.TextXAlignment = Enum.TextXAlignment.Left
+
+	local Text = Instance.new("TextLabel", Notification)
+	Text.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+	Text.BackgroundTransparency = 1.000
+	Text.BorderColor3 = Color3.fromRGB(0, 0, 0)
+	Text.BorderSizePixel = 0
+	Text.Position = UDim2.new(0, 57, 0, 20)
+	Text.Size = UDim2.new(0, 183, 0, 35)
+	Text.Font = Enum.Font.SourceSans
+	Text.Text = NotificationText
+	Text.TextColor3 = Color3.fromRGB(255, 255, 255)
+	Text.TextSize = 15.000
+	Text.TextXAlignment = Enum.TextXAlignment.Left
+
+	local ShadowHolder = Instance.new("Frame", Notification)
+	ShadowHolder.BackgroundTransparency = 1.000
+	ShadowHolder.BorderSizePixel = 0
+	ShadowHolder.Size = UDim2.new(1, 0, 1, 0)
+	ShadowHolder.ZIndex = 0
+
+	local Shadow = Instance.new("ImageLabel", ShadowHolder)
+	Shadow.AnchorPoint = Vector2.new(0.5, 0.5)
+	Shadow.BackgroundTransparency = 1.000
+	Shadow.BorderSizePixel = 0
+	Shadow.Position = UDim2.new(0.5, 0, 0.5, 0)
+	Shadow.Size = UDim2.new(1, 47, 1, 47)
+	Shadow.ZIndex = 0
+	Shadow.Image = "rbxassetid://6015897843"
+	Shadow.ImageColor3 = Color3.fromRGB(0, 0, 0)
+	Shadow.ImageTransparency = 0.500
+	Shadow.ScaleType = Enum.ScaleType.Slice
+	Shadow.SliceCenter = Rect.new(49, 49, 450, 450)
+
+	if Fired then
+		Notification.Visible = true
+		wait()
+		Notification:TweenPosition(UDim2.new(0, -45, 0, 285), Enum.EasingDirection.In, Enum.EasingStyle.Quart, 0.8)
+
+		wait(NotificationDuration)
+
+		Notification:TweenPosition(UDim2.new(0, 130, 0, 285), Enum.EasingDirection.Out, Enum.EasingStyle.Quart, 0.8)
+		wait()
+		Notification.Visible = false
+	end
+end
+
+local ActiveModsHolder = Instance.new("Frame", RightHolder)
+ActiveModsHolder.Name = "ActiveModsHolder"
+ActiveModsHolder.Visible = false
+ActiveModsHolder.BackgroundTransparency = 1
+ActiveModsHolder.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+ActiveModsHolder.BorderColor3 = Color3.fromRGB(0, 0, 0)
+ActiveModsHolder.Size = UDim2.new(0, 195, 0, 550)
+ActiveModsHolder.Position = UDim2.new(0, 0, 0, 0)
+
+local ActiveModsList = Instance.new("UIListLayout", ActiveModsHolder)
+ActiveModsList.Padding = UDim.new(0, -10)
+ActiveModsList.SortOrder = Enum.SortOrder.LayoutOrder
+
+local function ActiveModsAdd(ModulesName)
+	local ModulesName = Instance.new("TextLabel", ActiveModsHolder)
+	ModulesName.Name = ModulesName
+	ModulesName.TextXAlignment = Enum.TextXAlignment.Right
+	ModulesName.BackgroundTransparency = 1
+	ModulesName.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+	ModulesName.Font = Enum.Font.Roboto
+	ModulesName.TextSize = 15.8
+	ModulesName.Text = ModulesName
+	ModulesName.TextColor3 = Color3.fromRGB(255, 255, 255)
+	ModulesName.Size = UDim2.new(1, 0, 0, 30)
+	ModulesName.ZIndex = 3
+	ModulesName.BorderColor3 = Color3.fromRGB(0, 0, 0)
+
+	ModulesName.LayoutOrder = -#ModulesName
+end
+
+local function ActiveModsRemove(ModulesName)
+	local children = RightHolder:GetChildren()
+	for _, child in ipairs(children) do
+		if child:IsA("Frame") and child.Name == "ActiveModsHolder" then
+			local label = child:FindFirstChild(ModulesName)
+			if label and label:IsA("TextLabel") then
+				label:Destroy()
+				break
+			end
+		end
+	end
+end
+
+--UICore
 function Library:createScreenGui()
 	local screenGui = Instance.new("ScreenGui", CoreGui)
 	screenGui.Name = "sigma5"
-	
+
 	local TabsHolder = Instance.new("Frame", screenGui)
 	TabsHolder.Transparency = 1
 	TabsHolder.Name = "AllTabsHere"
@@ -67,14 +342,14 @@ function Library:createScreenGui()
 	local TabPadding = Instance.new("UIPadding", TabsHolder)
 	TabPadding.PaddingLeft = UDim.new(0, 18)
 	TabPadding.PaddingTop = UDim.new(0, 18)
-	
+
 	return TabsHolder
 end
 
 function Library:CreateTab(tabsName)
-	
+
 	local tabHOLD = {}
-	
+
 	tabHOLD.tabHOLD.TabMainHolder = Instance.new("Frame", CoreGui:WaitForChild("sigma5"):FindFirstChild("TabsHolder"))
 	tabHOLD.TabMainHolder.BorderSizePixel = 0
 	tabHOLD.TabMainHolder.BackgroundColor3 = Color3.fromRGB(250, 250, 250)
@@ -229,13 +504,13 @@ function Library:CreateTab(tabsName)
 				Library:FadeEffect(ToggleButtonHolder, {BackgroundColor3 = Color3.fromRGB(115, 185, 255)})
 				Library:FadeEffect(ToggleButtonHolder, {TextColor3 = Color3.fromRGB(255, 255, 255)})
 				ToggleButtonHolder.Text = "       " .. advance.Name
-				-- AddArrayList(options.name)
+				ActiveModsAdd(advance.Name)
 				PlaySound(soundIds.OnEnabled)
 			else
 				Library:FadeEffect(ToggleButtonHolder, {BackgroundColor3 = Color3.fromRGB(255, 255, 255)})
 				Library:FadeEffect(ToggleButtonHolder, {TextColor3 = Color3.fromRGB(15, 15, 15)})
 				ToggleButtonHolder.Text = "     " .. advance.Name
-				-- RemoveArraylist(options.name)
+				ActiveModsRemove(advance.Name)
 				PlaySound(soundIds.OnDisabled)
 			end
 		end
@@ -248,11 +523,11 @@ function Library:CreateTab(tabsName)
 				advance.callback(ToggleButton.Enabled)
 			end
 		end)
-		
+
 		ToggleButtonHolder.MouseButton2Click:Connect(function()
 			ToggleSettingHolder.Visible = not ToggleSettingHolder.Visible
 		end)
-		
+
 		game:GetService("UserInputService").InputBegan:Connect(function(input, gameProcessedEvent)
 			if input.KeyCode == Enum.KeyCode[advance.Bind] and not gameProcessedEvent then
 				ToggleButton.Enabled = not ToggleButton.Enabled
@@ -263,7 +538,7 @@ function Library:CreateTab(tabsName)
 				end
 			end
 		end)
-		
+
 		WhenClicked()
 
 		function ToggleButton:CreateSlider(advance)
@@ -409,7 +684,7 @@ function Library:CreateTab(tabsName)
 
 				local MiniToggleCheckmarkCorner = Instance.new("UICorner", MiniToggleCheckmark)
 				MiniToggleCheckmarkCorner.CornerRadius = UDim.new(1, 0)
-				
+
 				local function OnClicked()
 					if MiniToggle.Enabled then
 						Library:FadeEffect(MiniToggleCheckmark, {BackgroundColor3 = Color3.fromRGB(115, 185, 255)})
@@ -512,7 +787,7 @@ function Library:CreateTab(tabsName)
 
 					return Dropdown
 				end
---]]
+--]] --Dropdown, ill just leave it...
 				return MiniToggle
 			end
 
