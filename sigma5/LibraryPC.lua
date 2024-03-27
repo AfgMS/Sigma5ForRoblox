@@ -311,12 +311,9 @@ local function ActiveModsAdd(ModulesName)
 end
 
 local function ActiveModsRemove(ModulesName)
-    ModulesName = tostring(ModulesName)
-    local ActiveModsMain = ActiveModsHolder:GetChildren()
-    for _, child in ipairs(ActiveModsMain) do
-        local label = child:FindFirstChild(ModulesName)
-        if label and label:IsA("TextLabel") then
-            label:Destroy()
+    for _, child in ipairs(ActiveModsHolder:GetChildren()) do
+        if child:IsA("TextLabel") and child.Name == ModulesName then
+            child:Destroy()
             break
         end
     end
