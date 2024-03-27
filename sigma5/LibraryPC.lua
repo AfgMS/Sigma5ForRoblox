@@ -504,13 +504,13 @@ function Library:CreateTab(tabsName)
 				Library:FadeEffect(ToggleButtonHolder, {BackgroundColor3 = Color3.fromRGB(115, 185, 255)})
 				Library:FadeEffect(ToggleButtonHolder, {TextColor3 = Color3.fromRGB(255, 255, 255)})
 				ToggleButtonHolder.Text = "       " .. advance.Name
-				ActiveModsAdd(advance.Name)
+				--ActiveModsAdd(advance.Name)
 				PlaySound(soundIds.OnEnabled)
 			else
 				Library:FadeEffect(ToggleButtonHolder, {BackgroundColor3 = Color3.fromRGB(255, 255, 255)})
 				Library:FadeEffect(ToggleButtonHolder, {TextColor3 = Color3.fromRGB(15, 15, 15)})
 				ToggleButtonHolder.Text = "     " .. advance.Name
-				ActiveModsRemove(advance.Name)
+				--ActiveModsRemove(advance.Name)
 				PlaySound(soundIds.OnDisabled)
 			end
 		end
