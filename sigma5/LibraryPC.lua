@@ -593,7 +593,7 @@ function Library:CreateTab(tabsName)
 
 			local SliderFiller = Instance.new("Frame", SliderBackground)
 			SliderFiller.Name = "SliderFiller"
-			SliderFiller.Size = UDim2.new(advance.MinVal / advance.MaxVal, 0, 1, 0)
+			SliderFiller.Size = UDim2.new(advance.MinVal, 0, 1, 0)
 			SliderFiller.Position = UDim2.new(0, 0, 0, 0)
 			SliderFiller.BorderSizePixel = 0
 			SliderFiller.BackgroundColor3 = Color3.fromRGB(116, 184, 255)
