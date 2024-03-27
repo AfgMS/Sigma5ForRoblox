@@ -346,11 +346,11 @@ function Library:createScreenGui()
 	return TabsHolder
 end
 
-function Library:CreateTab(tabsName, tabParent)
+function Library:CreateTab(tabsName)
 
 	local tabHOLD = {}
 
-	tabHOLD.TabMainHolder = Instance.new("Frame", tabParent)
+	tabHOLD.TabMainHolder = Instance.new("Frame", CoreGui:WaitForChild("sigma5"):FindFirstChild("AllTabsHere"))
 	tabHOLD.TabMainHolder.BorderSizePixel = 0
 	tabHOLD.TabMainHolder.BackgroundColor3 = Color3.fromRGB(250, 250, 250)
 	tabHOLD.TabMainHolder.BackgroundTransparency = 0.050
