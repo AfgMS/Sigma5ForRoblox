@@ -529,7 +529,7 @@ function Library:CreateTab(tabsName)
 		end)
 
 		game:GetService("UserInputService").InputBegan:Connect(function(input, gameProcessedEvent)
-			if input.KeyCode == Enum.KeyCode[advance.Bind] and not gameProcessedEvent then
+			if advance.Bind and input.KeyCode == Enum.KeyCode[advance.Bind] and not gameProcessedEvent then
 				ToggleButton.Enabled = not ToggleButton.Enabled
 				WhenClicked()
 
