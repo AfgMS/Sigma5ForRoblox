@@ -3,9 +3,8 @@ local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/AfgMS
 CreateNotification("Sigma5", "Please Choose!", 3, true)
 
 if game.PlaceId == 6872274481 or game.PlaceId == 8560631822 or game.PlaceId == 8444591321 then
-	local Sigma5Device = Instance.new("ScreenGui")
+	local Sigma5Device = Instance.new("ScreenGui", CoreGui)
 	Sigma5Device.Name = "Sigma5Device"
-	Sigma5Device.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
 	Sigma5Device.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
 
 	local Panel = Instance.new("Frame")
