@@ -1,3 +1,4 @@
+local CoreGui = game:GetService("CoreGui")
 local Sigma5Device
 if game.PlaceId == 6872274481 or game.PlaceId == 8560631822 or game.PlaceId == 8444591321 then
     Sigma5Device = Instance.new("ScreenGui", CoreGui)
