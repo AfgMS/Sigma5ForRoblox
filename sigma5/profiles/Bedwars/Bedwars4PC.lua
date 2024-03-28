@@ -430,17 +430,29 @@ local Speed = PlayerTab:CreateToggle({
 	end
 })
 --Fly
+local Character = localPlayer.Character
+local Humanoid = localPlayer.Character:FindFirstChild("Humanoid")
 local Fly = RenderTab:CreateToggle({
-	Name = "Fly",
-	Description = "Temp fly gravity",
-	Bind = "H",
-	callback = function(enabled)
-		if enabled then
-			game.Workspace.Gravity = 0
-		else
-			game.Workspace.Gravity = 192.6
-		end
-	end
+    Name = "Fly",
+    Description = "Temp fly gravity",
+    Bind = "Y",
+    callback = function(enabled)
+        local localPlayer = game.Players.LocalPlayer
+        if enabled then
+            if Humanoid then
+                Humanoid.PlatformStand = true
+            end
+            local input = game:GetService("UserInputService"):GetMouseDelta()
+            local moveDir = Vector3.new(input.x, 0, input.y).unit * 8
+            if Character then
+                Character:SetPrimaryPartCFrame(Character.PrimaryPart.CFrame + moveDir)
+            end
+        else
+            if Humanoid then
+                Humanoid.PlatformStand = false
+            end
+        end
+    end
 })
 --AntiVanish
 local AntiVanish = WorldTab:CreateToggle({
@@ -493,7 +505,7 @@ local Nuker = WorldTab:CreateToggle({
 	Bind = "Z",
 	callback = function(enabled)
 		if enabled then
-			BedHitDelay = 0.82
+			BedHitDelay = 0.54
 			while enabled do
 				if not isAlive(localPlayer) then 
 					repeat task.wait() until isAlive(localPlayer) 
