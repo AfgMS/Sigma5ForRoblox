@@ -233,12 +233,10 @@ local AutoQuit = CombatTab:CreateToggle({
 	end
 })
 --KillAura
-local KillAuraDistance = nil
+local KillAuraDistance
 local KillAuraAutoSword = false
 local KillAuraRotation = false
 local Sword = GetMelee()
-local Target
-
 local KillAura = CombatTab:CreateToggle({
     Name = "KillAura",
     Description = "Attack the nearby player",
@@ -246,15 +244,11 @@ local KillAura = CombatTab:CreateToggle({
     callback = function(enabled)
         if enabled then
             KillAuraDistance = 20
-            Target = GetNearestPlr(KillAuraDistance)
-            spawn(function()
-                while enabled do
-                    if KillAuraAutoSword then
-                        if Target and isAlive(localPlayer) then
-                            SetHotbar(Sword)
-                        else
-                            KillAuraAutoSword = false
-                        end
+            repeat
+                local Target = GetNearestPlr(KillAuraDistance)
+                if KillAuraAutoSword then
+                    if Target and isAlive(localPlayer) then
+                        SetHotbar(Sword)
                     end
                     if KillAuraRotation then
                         while KillAuraRotation do
@@ -270,10 +264,7 @@ local KillAura = CombatTab:CreateToggle({
                             task.wait()
                         end
                     end
-                    if Target and isAlive(localPlayer) then
-                        if not isAlive(Target) then
-                            repeat task.wait() until isAlive(Target)
-                        end
+                    if Target and isAlive(Target) then
                         ReplicatedStorage.rbxts_include.node_modules:FindFirstChild("@rbxts").net.out._NetManaged.SwordHit:FireServer({
                             ["entityInstance"] = Target.Character,
                             ["chargedAttack"] = {
@@ -289,10 +280,10 @@ local KillAura = CombatTab:CreateToggle({
                             },
                             ["weapon"] = Sword
                         })
+                        task.wait(0.03)
                     end
-                    task.wait(0.03)
                 end
-            end)
+            until not Target
         else
             KillAuraDistance = 0
         end
@@ -436,26 +427,19 @@ local Speed = PlayerTab:CreateToggle({
 	end
 })
 --Fly
-local Character = localPlayer.Character
-local Humanoid = localPlayer.Character:FindFirstChild("Humanoid")
+local startPosition
 local Fly = RenderTab:CreateToggle({
     Name = "Fly",
-    Description = "Temp fly gravity",
     Bind = "Y",
     callback = function(enabled)
-        local localPlayer = game.Players.LocalPlayer
         if enabled then
-            if Humanoid then
-                Humanoid.PlatformStand = true
-            end
-            local input = game:GetService("UserInputService"):GetMouseDelta()
-            local moveDir = Vector3.new(input.x, 0, input.y).unit * 8
-            if Character then
-                Character:SetPrimaryPartCFrame(Character.PrimaryPart.CFrame + moveDir)
-            end
+            game.Workspace.Gravity = 0
+            startPosition = game.Players.LocalPlayer.Character and game.Players.LocalPlayer.Character.HumanoidRootPart.Position
         else
-            if Humanoid then
-                Humanoid.PlatformStand = false
+            game.Workspace.Gravity = 192.6
+            if startPosition then
+                game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(startPosition)
+                startPosition = nil
             end
         end
     end
