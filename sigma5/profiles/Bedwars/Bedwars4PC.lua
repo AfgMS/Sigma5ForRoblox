@@ -118,7 +118,7 @@ Library:createScreenGui()
 local GuiTab = Library:CreateTab("Gui")
 local CombatTab = Library:CreateTab("Combat")
 local RenderTab = Library:CreateTab("Render")
-local PlayerTab = Library:CreateTab("PlayerTab")
+local PlayerTab = Library:CreateTab("Player")
 local WorldTab = Library:CreateTab("World")
 --ActiveMods
 local ActiveMods = GuiTab:CreateToggle({
@@ -233,64 +233,70 @@ local AutoQuit = CombatTab:CreateToggle({
 	end
 })
 --KillAura
-local Target = GetNearestPlr(20)
-local Sword = GetMelee()
+local KillAuraDistance = nil
 local KillAuraAutoSword = false
 local KillAuraRotation = false
+local Sword = GetMelee()
+local Target
+
 local KillAura = CombatTab:CreateToggle({
-	Name = "KillAura",
-	Description = "Attack the nearby player",
-	Bind = "R",
-	callback = function(enabled)
-		if enabled then
-			spawn(function()
-				repeat
-					if KillAuraAutoSword then
-						if Target and isAlive(localPlayer) then
-							SetHotbar(Sword)
-						else
-							KillAuraAutoSword = false
-						end
-					end
-					if KillAuraRotation then
-						while KillAuraRotation do
-							if Target and isAlive(localPlayer) then
-								if not isAlive(Target) then
-									repeat task.wait() until isAlive(Target)
-								end
-								local direction = (Target.Character.HumanoidRootPart.Position - localPlayer.Character.HumanoidRootPart.Position).unit
-								local lookVector = Vector3.new(direction.X, 0, direction.Z).unit
-								local newCFrame = CFrame.new(localPlayer.Character.HumanoidRootPart.Position, localPlayer.Character.HumanoidRootPart.Position + lookVector)
-								localPlayer.Character:SetPrimaryPartCFrame(newCFrame)
-							end
-							task.wait()
-						end
-					end
-					if Target and isAlive(localPlayer) then
-						if not isAlive(Target) then
-							repeat task.wait() until isAlive(Target)
-						end
-						ReplicatedStorage.rbxts_include.node_modules:FindFirstChild("@rbxts").net.out._NetManaged.SwordHit:FireServer({
-							["entityInstance"] = Target.Character,
-							["chargedAttack"] = {
-								["chargeRatio"] = 1
-							},
-							["validate"] = {
-								["raycast"] = {
-									["cursorDirection"] = Value2Vector(Ray.new(game.Workspace.CurrentCamera.CFrame.Position, Target.Character:FindFirstChild("HumanoidRootPart").Position).Unit.Direction),
-									["cameraPosition"] = Value2Vector(Target.Character:FindFirstChild("HumanoidRootPart").Position),
-								},
-								["selfPosition"] = Value2Vector((localPlayer.Character:FindFirstChild("HumanoidRootPart").Position - Target.Character:FindFirstChild("HumanoidRootPart").Position).Unit * math.min(2, (localPlayer.Character:FindFirstChild("HumanoidRootPart").Position - Target.Character:FindFirstChild("HumanoidRootPart").Position).Magnitude) + Target.Character:FindFirstChild("HumanoidRootPart").Position),
-								["targetPosition"] = Value2Vector(Target.Character.HumanoidRootPart.Position),
-							},
-							["weapon"] = Sword
-						})
-					end
-					task.wait(0.03)
-				until not enabled
-			end)
-		end
-	end
+    Name = "KillAura",
+    Description = "Attack the nearby player",
+    Bind = "R",
+    callback = function(enabled)
+        if enabled then
+            KillAuraDistance = 20
+            Target = GetNearestPlr(KillAuraDistance)
+            spawn(function()
+                while enabled do
+                    if KillAuraAutoSword then
+                        if Target and isAlive(localPlayer) then
+                            SetHotbar(Sword)
+                        else
+                            KillAuraAutoSword = false
+                        end
+                    end
+                    if KillAuraRotation then
+                        while KillAuraRotation do
+                            if Target and isAlive(localPlayer) then
+                                if not isAlive(Target) then
+                                    repeat task.wait() until isAlive(Target)
+                                end
+                                local direction = (Target.Character.HumanoidRootPart.Position - localPlayer.Character.HumanoidRootPart.Position).unit
+                                local lookVector = Vector3.new(direction.X, 0, direction.Z).unit
+                                local newCFrame = CFrame.new(localPlayer.Character.HumanoidRootPart.Position, localPlayer.Character.HumanoidRootPart.Position + lookVector)
+                                localPlayer.Character:SetPrimaryPartCFrame(newCFrame)
+                            end
+                            task.wait()
+                        end
+                    end
+                    if Target and isAlive(localPlayer) then
+                        if not isAlive(Target) then
+                            repeat task.wait() until isAlive(Target)
+                        end
+                        ReplicatedStorage.rbxts_include.node_modules:FindFirstChild("@rbxts").net.out._NetManaged.SwordHit:FireServer({
+                            ["entityInstance"] = Target.Character,
+                            ["chargedAttack"] = {
+                                ["chargeRatio"] = 1
+                            },
+                            ["validate"] = {
+                                ["raycast"] = {
+                                    ["cursorDirection"] = Value2Vector(Ray.new(game.Workspace.CurrentCamera.CFrame.Position, Target.Character:FindFirstChild("HumanoidRootPart").Position).Unit.Direction),
+                                    ["cameraPosition"] = Value2Vector(Target.Character:FindFirstChild("HumanoidRootPart").Position),
+                                },
+                                ["selfPosition"] = Value2Vector((localPlayer.Character:FindFirstChild("HumanoidRootPart").Position - Target.Character:FindFirstChild("HumanoidRootPart").Position).Unit * math.min(2, (localPlayer.Character:FindFirstChild("HumanoidRootPart").Position - Target.Character:FindFirstChild("HumanoidRootPart").Position).Magnitude) + Target.Character:FindFirstChild("HumanoidRootPart").Position),
+                                ["targetPosition"] = Value2Vector(Target.Character.HumanoidRootPart.Position),
+                            },
+                            ["weapon"] = Sword
+                        })
+                    end
+                    task.wait(0.03)
+                end
+            end)
+        else
+            KillAuraDistance = 0
+        end
+    end
 })
 local UnknownSlider0 = KillAura:CreateSlider({
 	Name = "???",
