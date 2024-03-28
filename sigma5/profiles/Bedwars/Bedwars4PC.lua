@@ -84,6 +84,24 @@ local function Value2Vector(vec)
 	return { value = vec }
 end
 
+local function DamagePlayer(Target, Sword)
+    ReplicatedStorage.rbxts_include.node_modules:FindFirstChild("@rbxts").net.out._NetManaged.SwordHit:FireServer({
+        ["entityInstance"] = Target.Character,
+        ["chargedAttack"] = {
+            ["chargeRatio"] = 1
+        },
+        ["validate"] = {
+            ["raycast"] = {
+                ["cursorDirection"] = Value2Vector(Ray.new(game.Workspace.CurrentCamera.CFrame.Position, Target.Character:FindFirstChild("HumanoidRootPart").Position).Unit.Direction),
+                ["cameraPosition"] = Value2Vector(Target.Character:FindFirstChild("HumanoidRootPart").Position),
+            },
+            ["selfPosition"] = Value2Vector((localPlayer.Character:FindFirstChild("HumanoidRootPart").Position - Target.Character:FindFirstChild("HumanoidRootPart").Position).Unit * math.min(2, (localPlayer.Character:FindFirstChild("HumanoidRootPart").Position - Target.Character:FindFirstChild("HumanoidRootPart").Position).Magnitude) + Target.Character:FindFirstChild("HumanoidRootPart").Position),
+            ["targetPosition"] = Value2Vector(Target.Character.HumanoidRootPart.Position),
+        },
+        ["weapon"] = Sword
+    })
+end
+
 local MeleeRank = {
 	[1] = { Name = "wood_sword", Rank = 1 },
 	[2] = { Name = "stone_sword", Rank = 2 },
@@ -233,10 +251,12 @@ local AutoQuit = CombatTab:CreateToggle({
 	end
 })
 --KillAura
+local Target
 local KillAuraDistance
 local KillAuraAutoSword = false
 local KillAuraRotation = false
 local Sword = GetMelee()
+
 local KillAura = CombatTab:CreateToggle({
     Name = "KillAura",
     Description = "Attack the nearby player",
@@ -244,46 +264,35 @@ local KillAura = CombatTab:CreateToggle({
     callback = function(enabled)
         if enabled then
             KillAuraDistance = 20
-            repeat
-                local Target = GetNearestPlr(KillAuraDistance)
-                if KillAuraAutoSword then
+            Target = GetNearestPlr(KillAuraDistance)
+            if KillAuraAutoSword then
+                if Target and isAlive(localPlayer) then
+                    SetHotbar(Sword)
+                else
+                    KillAuraAutoSword = false
+                end
+            end
+            if KillAuraRotation then
+                while task.wait(0.01) do
                     if Target and isAlive(localPlayer) then
-                        SetHotbar(Sword)
-                    end
-                    if KillAuraRotation then
-                        while KillAuraRotation do
-                            if Target and isAlive(localPlayer) then
-                                if not isAlive(Target) then
-                                    repeat task.wait() until isAlive(Target)
-                                end
-                                local direction = (Target.Character.HumanoidRootPart.Position - localPlayer.Character.HumanoidRootPart.Position).unit
-                                local lookVector = Vector3.new(direction.X, 0, direction.Z).unit
-                                local newCFrame = CFrame.new(localPlayer.Character.HumanoidRootPart.Position, localPlayer.Character.HumanoidRootPart.Position + lookVector)
-                                localPlayer.Character:SetPrimaryPartCFrame(newCFrame)
-                            end
-                            task.wait()
+                        if not isAlive(Target) then
+                            repeat task.wait() until isAlive(Target)
                         end
-                    end
-                    if Target and isAlive(Target) then
-                        ReplicatedStorage.rbxts_include.node_modules:FindFirstChild("@rbxts").net.out._NetManaged.SwordHit:FireServer({
-                            ["entityInstance"] = Target.Character,
-                            ["chargedAttack"] = {
-                                ["chargeRatio"] = 1
-                            },
-                            ["validate"] = {
-                                ["raycast"] = {
-                                    ["cursorDirection"] = Value2Vector(Ray.new(game.Workspace.CurrentCamera.CFrame.Position, Target.Character:FindFirstChild("HumanoidRootPart").Position).Unit.Direction),
-                                    ["cameraPosition"] = Value2Vector(Target.Character:FindFirstChild("HumanoidRootPart").Position),
-                                },
-                                ["selfPosition"] = Value2Vector((localPlayer.Character:FindFirstChild("HumanoidRootPart").Position - Target.Character:FindFirstChild("HumanoidRootPart").Position).Unit * math.min(2, (localPlayer.Character:FindFirstChild("HumanoidRootPart").Position - Target.Character:FindFirstChild("HumanoidRootPart").Position).Magnitude) + Target.Character:FindFirstChild("HumanoidRootPart").Position),
-                                ["targetPosition"] = Value2Vector(Target.Character.HumanoidRootPart.Position),
-                            },
-                            ["weapon"] = Sword
-                        })
-                        task.wait(0.03)
+                        local direction = (Target.Character.HumanoidRootPart.Position - localPlayer.Character.HumanoidRootPart.Position).unit
+                        local lookVector = Vector3.new(direction.X, 0, direction.Z).unit
+                        local newCFrame = CFrame.new(localPlayer.Character.HumanoidRootPart.Position, localPlayer.Character.HumanoidRootPart.Position + lookVector)
+                        localPlayer.Character:SetPrimaryPartCFrame(newCFrame)
                     end
                 end
-            until not Target
+            end
+            if Target and isAlive(Target) then
+                while task.wait(0.03) do
+                    if not isAlive(Target) then
+                        repeat task.wait() until isAlive(Target)
+                    end
+                    DamagePlayer(Target, Sword)
+                end
+            end
         else
             KillAuraDistance = 0
         end
