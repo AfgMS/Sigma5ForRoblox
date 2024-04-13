@@ -267,12 +267,14 @@ local Target = GetNearestPlr(20)
 local Sword = GetMelee()
 local KillAuraAutoSword = false
 local KillAuraRotation = false
+local KillAuraYesYes = false
 local KillAuraSwingNSound = false
 local KillAura = CombatTab:ToggleButton({
     name = "KillAura",
     info = "Attack the nearby player",
     callback = function(enabled)
         if enabled then
+	KillAuraYesYes = true
             spawn(function()
                 repeat
                     if KillAuraAutoSword then
@@ -308,7 +310,7 @@ local KillAura = CombatTab:ToggleButton({
                             end
                         end
                     end
-
+		while KillAuraYesYes do
                     if Target and isAlive(localPlayer) then
                         if not isAlive(Target) then
                             repeat task.wait() until isAlive(Target)
@@ -330,7 +332,7 @@ local KillAura = CombatTab:ToggleButton({
                         })
                     end
                     task.wait(0.03)
-                until not enabled or not KillAura.Enabled
+                until not KillAuraYesYed
             end)
         end
     end
