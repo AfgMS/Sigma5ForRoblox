@@ -263,54 +263,18 @@ local AutoQuit = CombatTab:ToggleButton({
     end
 })
 --KillAura
-local Target = GetNearestPlr(20)
+local KillAuraRange = 20
+local Target = GetNearestPlr(KillAuraRange)
 local Sword = GetMelee()
-local KillAuraAutoSword = false
-local KillAuraRotation = false
 local KillAuraYesYes = false
-local KillAuraSwingNSound = false
-local KillAura = CombatTab:ToggleButton({
+local KillAura = CombatTab:MiniToggleButton({
     name = "KillAura",
     info = "Attack the nearby player",
     callback = function(enabled)
+        KillAuraYesYes = enabled
         if enabled then
-	KillAuraYesYes = true
             spawn(function()
                 repeat
-                    if KillAuraAutoSword then
-                        if Target and isAlive(localPlayer) then
-                            SetHotbar(Sword)
-                        else
-                            KillAuraAutoSword = false
-                        end
-                    end
-                    if KillAuraRotation then
-                        while KillAuraRotation do
-                            if Target and isAlive(localPlayer) then
-                                if not isAlive(Target) then
-                                    repeat task.wait() until isAlive(Target)
-                                end
-                                local direction = (Target.Character.HumanoidRootPart.Position - localPlayer.Character.HumanoidRootPart.Position).unit
-                                local lookVector = Vector3.new(direction.X, 0, direction.Z).unit
-                                local newCFrame = CFrame.new(localPlayer.Character.HumanoidRootPart.Position, localPlayer.Character.HumanoidRootPart.Position + lookVector)
-                                localPlayer.Character:SetPrimaryPartCFrame(newCFrame)
-                            end
-                            task.wait()
-                        end
-                    end
-                    if KillAuraSwingNSound then
-                        while KillAuraSwingNSound do
-                            if Target and isAlive(localPlayer) then
-                                if not isAlive(Target) then
-                                    repeat task.wait() until isAlive(Target)
-                                end
-                                PlayAnimation(4947108314)
-                                PlaySound(6760544639)
-                                task.wait(1.3)
-                            end
-                        end
-                    end
-		while KillAuraYesYes do
                     if Target and isAlive(localPlayer) then
                         if not isAlive(Target) then
                             repeat task.wait() until isAlive(Target)
@@ -332,35 +296,58 @@ local KillAura = CombatTab:ToggleButton({
                         })
                     end
                     task.wait(0.03)
-                until not KillAuraYesYed
+                until not KillAuraYesYes
             end)
         end
     end
 })
-local UnknownSlider0 = KillAura:Slider({
-    title = "???",
+local KillAuraDistance = KillAura:Slider({
+    title = "Distance",
     min = 0,
-    max = 0,
-    default = 0,
+    max = 100,
+    default = 20,
     callback = function(value)
+        KillAuraRange = value
     end
 })
 local AutoSword = KillAura:ToggleButtonInsideUI({
     name = "AutoSword",
     callback = function(enabled)
-        KillAuraAutoSword = not KillAuraAutoSword
+        while enabled do
+            if Target then
+                SetHotbar(Sword)
+            end
+            task.wait()
+        end
     end
 })
 local Rotation = KillAura:ToggleButtonInsideUI({
     name = "Rotation",
     callback = function(enabled)
-        KillAuraRotation = not KillAuraRotation
+        while enabled do
+            if not isAlive(Target) then
+                repeat task.wait() until isAlive(Target)
+            end
+            local direction = (Target.Character.HumanoidRootPart.Position - localPlayer.Character.HumanoidRootPart.Position).unit
+            local lookVector = Vector3.new(direction.X, 0, direction.Z).unit
+            local newCFrame = CFrame.new(localPlayer.Character.HumanoidRootPart.Position, localPlayer.Character.HumanoidRootPart.Position + lookVector)
+            localPlayer.Character:SetPrimaryPartCFrame(newCFrame)
+            task.wait()
+        end
     end
 })
 local SwordVisual = KillAura:ToggleButtonInsideUI({
     name = "SwingNSound",
     callback = function(enabled)
-        KillAuraSwingNSound = not KillAuraSwingNSound
+        while enabled do
+            if isAlive(localPlayer) then
+                if Target and isAlive(Target) then
+                    PlayAnimation(4947108314)
+                    PlaySound(6760544639)
+                    task.wait(1.18)
+                end
+            end
+        end
     end
 })
 --Teams
