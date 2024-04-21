@@ -343,7 +343,7 @@ local Fullbright = RenderTab:CreateToggle({
 		end
 	end
 })
---ESP
+--[[
 local espdelay = 0.1
 local ESP = RenderTab:CreateToggle({
     Name = "ESP",
@@ -373,6 +373,7 @@ local ESP = RenderTab:CreateToggle({
         end
     end
 })
+--]]
 --Gameplay
 local AutoQueue = false
 local AutoGG = false
@@ -483,21 +484,15 @@ local LongJump = PlayerTab:CreateToggle({
     Bind = "nil",
     callback = function(enabled)
         if enabled then
-            game.Workspace.Gravity = 8
+            game.Workspace.Gravity = 3
             task.wait()
             localPlayer.Character:FindFirstChild("Humanoid"):ChangeState(Enum.HumanoidStateType.Jumping)
             task.wait(0.23)
-            localPlayer.Character:FindFirstChild("HumanoidRootPart").CFrame = localPlayer.Character:FindFirstChild("HumanoidRootPart").CFrame * CFrame.new(0,-0.2,-2.1)
+            localPlayer.Character:FindFirstChild("HumanoidRootPart").CFrame = localPlayer.Character:FindFirstChild("HumanoidRootPart").CFrame * CFrame.new(0,-0.1,-1.3)
             wait(0.8)
-            localPlayer.Character:FindFirstChild("HumanoidRootPart").CFrame = localPlayer.Character:FindFirstChild("HumanoidRootPart").CFrame * CFrame.new(0,-0.5,-2.1)
+            localPlayer.Character:FindFirstChild("HumanoidRootPart").CFrame = localPlayer.Character:FindFirstChild("HumanoidRootPart").CFrame * CFrame.new(0,-0.3,-1.8)
             wait(0.8)
-            localPlayer.Character:FindFirstChild("HumanoidRootPart").CFrame = localPlayer.Character:FindFirstChild("HumanoidRootPart").CFrame * CFrame.new(0,-0.2,-2.1)
-            wait(0.8)
-            localPlayer.Character:FindFirstChild("HumanoidRootPart").CFrame = localPlayer.Character:FindFirstChild("HumanoidRootPart").CFrame * CFrame.new(0,-0.5,-2.1)
-            wait(0.8)
-            localPlayer.Character:FindFirstChild("HumanoidRootPart").CFrame = localPlayer.Character:FindFirstChild("HumanoidRootPart").CFrame * CFrame.new(0,-0.2,-2.1)
-            wait(0.8)
-            localPlayer.Character:FindFirstChild("HumanoidRootPart").CFrame = localPlayer.Character:FindFirstChild("HumanoidRootPart").CFrame * CFrame.new(0,-0.5,-2.1)
+            localPlayer.Character:FindFirstChild("HumanoidRootPart").CFrame = localPlayer.Character:FindFirstChild("HumanoidRootPart").CFrame * CFrame.new(0,-0.1,-1.3)
         else
             game.Workspace.Gravity = 192.6
         end
