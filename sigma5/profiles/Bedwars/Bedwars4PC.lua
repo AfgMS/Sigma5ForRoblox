@@ -479,22 +479,27 @@ local Fly = PlayerTab:CreateToggle({
     end
 })
 --LongJump
+local LibrecrafyLJ = false
+local function oldLongJump()
+    while LibrecrafyLJ do
+        localPlayer.Character:FindFirstChild("HumanoidRootPart").CFrame = CFrame.new(localPlayer.Character:FindFirstChild("HumanoidRootPart").Position + Vector3.new(0, 0.8, 0))
+        wait(0.3)
+        localPlayer.Character:FindFirstChild("HumanoidRootPart").Velocity = localPlayer.Character:FindFirstChild("HumanoidRootPart").CFrame.LookVector * localPlayer.Character:FindFirstChild("Humanoid").JumpPower * 0.8
+        wait(0.8)
+    end
+end
 local LongJump = PlayerTab:CreateToggle({
     Name = "LongJump",
     Bind = "nil",
     callback = function(enabled)
         if enabled then
-            game.Workspace.Gravity = 3
-            task.wait()
+            LibrecrafyLJ = true
+            game.Workspace.Gravity = 13
+            task.wait(0.8)
             localPlayer.Character:FindFirstChild("Humanoid"):ChangeState(Enum.HumanoidStateType.Jumping)
-            task.wait(0.23)
-            localPlayer.Character:FindFirstChild("HumanoidRootPart").CFrame = localPlayer.Character:FindFirstChild("HumanoidRootPart").CFrame * CFrame.new(0,-0.1,-1.3)
-            wait(0.8)
-            localPlayer.Character:FindFirstChild("HumanoidRootPart").CFrame = localPlayer.Character:FindFirstChild("HumanoidRootPart").CFrame * CFrame.new(0,-0.3,-1.8)
-            wait(0.8)
-            localPlayer.Character:FindFirstChild("HumanoidRootPart").CFrame = localPlayer.Character:FindFirstChild("HumanoidRootPart").CFrame * CFrame.new(0,-0.1,-1.3)
-        else
-            game.Workspace.Gravity = 192.6
+            oldLongJump()
+            wait(2)
+            LibrecrafyLJ = false
         end
     end
 })
