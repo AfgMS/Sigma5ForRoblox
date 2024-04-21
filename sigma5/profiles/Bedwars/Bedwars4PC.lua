@@ -442,6 +442,8 @@ local Fly = PlayerTab:CreateToggle({
     callback = function(enabled)
         if enabled then
             game.Workspace.Gravity = 0
+            wait(1.8)
+            CreateNotification("Fly", "Its about to get flagged", 3, true)
         else
             game.Workspace.Gravity = 192.6
         end
