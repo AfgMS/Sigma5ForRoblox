@@ -343,36 +343,6 @@ local Fullbright = RenderTab:CreateToggle({
 		end
 	end
 })
---ESP
-local espdelay = 0.1
-local ESP = RenderTab:CreateToggle({
-    Name = "ESP",
-    Description = "ESP",
-    Bind = nil,
-    callback = function(enabled)
-        if enabled then
-            for _, v in pairs(game.Players:GetPlayers()) do
-                if v ~= localPlayer and isAlive(v) then
-                    while task.wait(espdelay) do
-                        if not isAlive(v) then
-                            repeat task.wait() until isAlive(v)
-                        end
-                        local HighLight = Instance.new("BoxHandleAdornment", v.Character) -- Changed to BoxHandleAdornment for simplicity, assuming you want to highlight the player's entire character
-                        HighLight.Name = "ESP_Highlight"
-                        HighLight.Adornee = v.Character
-                    end
-                end
-            end
-        else
-            espdelay = nil
-            for _, v in pairs(game.Players:GetPlayers()) do
-                if v ~= localPlayer and v:FindFirstChild("ESP_Highlight") then
-                    v:FindFirstChild("ESP_Highlight"):Destroy()
-                end
-            end
-        end
-    end
-})
 --Gameplay
 local AutoQueue = false
 local AutoGG = false
