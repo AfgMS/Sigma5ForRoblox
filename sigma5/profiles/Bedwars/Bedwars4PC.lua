@@ -251,10 +251,8 @@ local AutoQuit = CombatTab:CreateToggle({
 	end
 })
 --KillAura
---KillAura
 local Target
 local KillAuraDistance
-local KillAuraAttackFunc = false
 local KillAuraAutoSword = false
 local KillAuraRotation = false
 local Sword = GetMelee()
@@ -267,7 +265,6 @@ local KillAura = CombatTab:CreateToggle({
         if enabled then
             KillAuraDistance = 20
             Target = GetNearestPlr(KillAuraDistance)
-            KillAuraAttackFunc = true
             if KillAuraAutoSword then
                 if Target and isAlive(localPlayer) then
                     SetHotbar(Sword)
@@ -288,21 +285,15 @@ local KillAura = CombatTab:CreateToggle({
                     end
                 end
             end
-            
-            while KillAuraAttackFunc do
-                if not isAlive(localPlayer) then 
-                    repeat task.wait() until isAlive(localPlayer) 
-                end
-                if Target then
+            if Target and isAlive(Target) then
+                while task.wait(0.03) do
                     if not isAlive(Target) then
                         repeat task.wait() until isAlive(Target)
                     end
                     DamagePlayer(Target, Sword)
                 end
-                task.wait(0.03)
             end
         else
-            KillAuraAttackFunc = false
             KillAuraDistance = 0
         end
     end
