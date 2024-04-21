@@ -436,20 +436,14 @@ local Speed = PlayerTab:CreateToggle({
 	end
 })
 --Fly
-local startPosition
-local Fly = RenderTab:CreateToggle({
+local Fly = PlayerTab:CreateToggle({
     Name = "Fly",
     Bind = "Y",
     callback = function(enabled)
         if enabled then
             game.Workspace.Gravity = 0
-            startPosition = game.Players.LocalPlayer.Character and game.Players.LocalPlayer.Character.HumanoidRootPart.Position
         else
             game.Workspace.Gravity = 192.6
-            if startPosition then
-                game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(startPosition)
-                startPosition = nil
-            end
         end
     end
 })
@@ -520,7 +514,7 @@ local Nuker = WorldTab:CreateToggle({
 		end
 	end
 })
---AntiVoid
+--[[
 local antivoidpart = nil
 local function AntiVoidTest()
 	antivoidpart = Instance.new("Part", game.Workspace)
@@ -559,3 +553,4 @@ local AntiVoid = WorldTab:CreateToggle({
 		end
 	end
 })
+--]]
