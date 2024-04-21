@@ -285,13 +285,18 @@ local KillAura = CombatTab:CreateToggle({
                     end
                 end
             end
-            if Target and isAlive(Target) then
-                while task.wait(0.03) do
+            
+            while enabled do
+                if not isAlive(localPlayer) then 
+                    repeat task.wait() until isAlive(localPlayer) 
+                end
+                if Target then
                     if not isAlive(Target) then
                         repeat task.wait() until isAlive(Target)
                     end
                     DamagePlayer(Target, Sword)
                 end
+                task.wait(0.03)
             end
         else
             KillAuraDistance = 0
@@ -343,7 +348,7 @@ local Fullbright = RenderTab:CreateToggle({
 		end
 	end
 })
---[[
+--ESP
 local espdelay = 0.1
 local ESP = RenderTab:CreateToggle({
     Name = "ESP",
@@ -373,7 +378,6 @@ local ESP = RenderTab:CreateToggle({
         end
     end
 })
---]]
 --Gameplay
 local AutoQueue = false
 local AutoGG = false
@@ -479,27 +483,24 @@ local Fly = PlayerTab:CreateToggle({
     end
 })
 --LongJump
-local LibrecrafyLJ = false
-local function oldLongJump()
-    while LibrecrafyLJ do
-        localPlayer.Character:FindFirstChild("HumanoidRootPart").CFrame = CFrame.new(localPlayer.Character:FindFirstChild("HumanoidRootPart").Position + Vector3.new(0, 0.8, 0))
-        wait(0.3)
-        localPlayer.Character:FindFirstChild("HumanoidRootPart").Velocity = localPlayer.Character:FindFirstChild("HumanoidRootPart").CFrame.LookVector * localPlayer.Character:FindFirstChild("Humanoid").JumpPower * 0.8
-        wait(0.8)
-    end
-end
 local LongJump = PlayerTab:CreateToggle({
     Name = "LongJump",
     Bind = "nil",
     callback = function(enabled)
         if enabled then
-            LibrecrafyLJ = true
-            game.Workspace.Gravity = 13
-            task.wait(0.8)
+            game.Workspace.Gravity = 3
+            task.wait(1.3)
             localPlayer.Character:FindFirstChild("Humanoid"):ChangeState(Enum.HumanoidStateType.Jumping)
-            oldLongJump()
-            wait(2)
-            LibrecrafyLJ = false
+            task.wait(0.23)
+            localPlayer.Character:FindFirstChild("HumanoidRootPart").CFrame = localPlayer.Character:FindFirstChild("HumanoidRootPart").CFrame * CFrame.new(0,-0.1,-1.3)
+            localPlayer.Character:FindFirstChild("Humanoid"):ChangeState(Enum.HumanoidStateType.Jumping)
+            task.wait(0.8)
+            game.Workspace.Gravity = 8
+            localPlayer.Character:FindFirstChild("HumanoidRootPart").CFrame = localPlayer.Character:FindFirstChild("HumanoidRootPart").CFrame * CFrame.new(0,-0.3,-1.8)
+            localPlayer.Character:FindFirstChild("Humanoid"):ChangeState(Enum.HumanoidStateType.Jumping)
+            task.wait(0.8)
+            game.Workspace.Gravity = 192.6
+            localPlayer.Character:FindFirstChild("HumanoidRootPart").CFrame = localPlayer.Character:FindFirstChild("HumanoidRootPart").CFrame * CFrame.new(0,-0.1,-1.3)
         end
     end
 })
