@@ -343,6 +343,36 @@ local Fullbright = RenderTab:CreateToggle({
 		end
 	end
 })
+--ESP
+local espdelay = 0.1
+local ESP = RenderTab:CreateToggle({
+    Name = "ESP",
+    Description = "ESP",
+    Bind = nil,
+    callback = function(enabled)
+        if enabled then
+            for _, v in pairs(game.Players:GetPlayers()) do
+                if v ~= localPlayer and isAlive(v) then
+                    while task.wait(espdelay) do
+                        if not isAlive(v) then
+                            repeat task.wait() until isAlive(v)
+                        end
+                        local HighLight = Instance.new("BoxHandleAdornment", v.Character) -- Changed to BoxHandleAdornment for simplicity, assuming you want to highlight the player's entire character
+                        HighLight.Name = "ESP_Highlight"
+                        HighLight.Adornee = v.Character
+                    end
+                end
+            end
+        else
+            espdelay = nil
+            for _, v in pairs(game.Players:GetPlayers()) do
+                if v ~= localPlayer and v:FindFirstChild("ESP_Highlight") then
+                    v:FindFirstChild("ESP_Highlight"):Destroy()
+                end
+            end
+        end
+    end
+})
 --Gameplay
 local AutoQueue = false
 local AutoGG = false
@@ -458,15 +488,15 @@ local LongJump = PlayerTab:CreateToggle({
             localPlayer.Character:FindFirstChild("Humanoid"):ChangeState(Enum.HumanoidStateType.Jumping)
             task.wait(0.23)
             localPlayer.Character:FindFirstChild("HumanoidRootPart").CFrame = localPlayer.Character:FindFirstChild("HumanoidRootPart").CFrame * CFrame.new(0,-0.2,-2.1)
-            wait(0.3)
+            wait(0.8)
             localPlayer.Character:FindFirstChild("HumanoidRootPart").CFrame = localPlayer.Character:FindFirstChild("HumanoidRootPart").CFrame * CFrame.new(0,-0.5,-2.1)
-            wait(0.3)
+            wait(0.8)
             localPlayer.Character:FindFirstChild("HumanoidRootPart").CFrame = localPlayer.Character:FindFirstChild("HumanoidRootPart").CFrame * CFrame.new(0,-0.2,-2.1)
-            wait(0.3)
+            wait(0.8)
             localPlayer.Character:FindFirstChild("HumanoidRootPart").CFrame = localPlayer.Character:FindFirstChild("HumanoidRootPart").CFrame * CFrame.new(0,-0.5,-2.1)
-            wait(0.3)
+            wait(0.8)
             localPlayer.Character:FindFirstChild("HumanoidRootPart").CFrame = localPlayer.Character:FindFirstChild("HumanoidRootPart").CFrame * CFrame.new(0,-0.2,-2.1)
-            wait(0.3)
+            wait(0.8)
             localPlayer.Character:FindFirstChild("HumanoidRootPart").CFrame = localPlayer.Character:FindFirstChild("HumanoidRootPart").CFrame * CFrame.new(0,-0.5,-2.1)
         else
             game.Workspace.Gravity = 192.6
@@ -540,43 +570,3 @@ local Nuker = WorldTab:CreateToggle({
 		end
 	end
 })
---[[
-local antivoidpart = nil
-local function AntiVoidTest()
-	antivoidpart = Instance.new("Part", game.Workspace)
-	antivoidpart.Transparency = 0.38
-	antivoidpart.CanCollide = true
-	antivoidpart.BrickColor = BrickColor.new(255, 255, 255)
-	antivoidpart.Size = Vector3.new(999999, 3, 999999)
-	antivoidpart.Anchored = true
-	antivoidpart.Position = localPlayer.Character:FindFirstChild("HumanoidRootPart").Position - Vector3.new(0, 18, 0)
-	antivoidpart.Name = "antivoidpart"
-
-	antivoidpart.Touched:Connect(function(hit)
-		local player = hit.Parent
-		if player and isAlive(player) then
-			local humanoid = player:FindFirstChild("Humanoid")
-			if humanoid then
-				humanoid.PlatformStand = true
-				wait(0.48)
-				humanoid.PlatformStand = false
-			end
-		end
-	end)
-end
-local AntiVoid = WorldTab:CreateToggle({
-	Name = "AntiVoid",
-	Description = "Prevents falling into the void",
-	Bind = nil,
-	callback = function(enabled)
-		if enabled then
-			AntiVoidTest()
-		else
-			if antivoidpart then
-				antivoidpart:Destroy()
-				antivoidpart = nil
-			end
-		end
-	end
-})
---]]
