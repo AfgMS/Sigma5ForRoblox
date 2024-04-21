@@ -453,20 +453,22 @@ local LongJump = PlayerTab:CreateToggle({
     Bind = "nil",
     callback = function(enabled)
         if enabled then
-            task.wait(0.1)
-            localPlayer.Character:FindFirstChild("Humanoid").WalkSpeed = 13
-            game.Workspace.Gravity = 23
+            game.Workspace.Gravity = 8
             task.wait()
             localPlayer.Character:FindFirstChild("Humanoid"):ChangeState(Enum.HumanoidStateType.Jumping)
-            task.wait(0.48)
+            task.wait(0.23)
             localPlayer.Character:FindFirstChild("HumanoidRootPart").CFrame = localPlayer.Character:FindFirstChild("HumanoidRootPart").CFrame * CFrame.new(0,-0.2,-2.1)
-            wait(0.5)
+            wait(0.3)
             localPlayer.Character:FindFirstChild("HumanoidRootPart").CFrame = localPlayer.Character:FindFirstChild("HumanoidRootPart").CFrame * CFrame.new(0,-0.5,-2.1)
-            wait(0.5)
-            localPlayer.Character:FindFirstChild("HumanoidRootPart").CFrame = localPlayer.Character:FindFirstChild("HumanoidRootPart").CFrame * CFrame.new(0, 0.2 ,0)
-            wait(0.5)
+            wait(0.3)
+            localPlayer.Character:FindFirstChild("HumanoidRootPart").CFrame = localPlayer.Character:FindFirstChild("HumanoidRootPart").CFrame * CFrame.new(0,-0.2,-2.1)
+            wait(0.3)
+            localPlayer.Character:FindFirstChild("HumanoidRootPart").CFrame = localPlayer.Character:FindFirstChild("HumanoidRootPart").CFrame * CFrame.new(0,-0.5,-2.1)
+            wait(0.3)
+            localPlayer.Character:FindFirstChild("HumanoidRootPart").CFrame = localPlayer.Character:FindFirstChild("HumanoidRootPart").CFrame * CFrame.new(0,-0.2,-2.1)
+            wait(0.3)
+            localPlayer.Character:FindFirstChild("HumanoidRootPart").CFrame = localPlayer.Character:FindFirstChild("HumanoidRootPart").CFrame * CFrame.new(0,-0.5,-2.1)
         else
-            localPlayer.Character:FindFirstChild("Humanoid").WalkSpeed = 16
             game.Workspace.Gravity = 192.6
         end
     end
