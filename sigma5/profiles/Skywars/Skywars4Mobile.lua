@@ -9,7 +9,7 @@ local Player = game:GetService("Players")
 --Functions
 local skywars = {}
 local function getfunctions()
-    local Flamework = require(game:GetService("ReplicatedStorage")["rbxts_include"]["node_modules"]["@flamework"].core.out).Flamework
+    local Flamework = require(ReplicatedStorage["rbxts_include"]["node_modules"]["@flamework"].core.out).Flamework
     repeat task.wait() until Flamework.isInitialized
     local controllers = {}
     local controllerids = {}
@@ -39,17 +39,17 @@ local function getfunctions()
         eventnames[tostring(v)] = controllerevents
     end
     
-    local Events = require(game:GetService("ReplicatedStorage").TS.events).GlobalEvents.client
+    local Events = require(ReplicatedStorage.TS.events).GlobalEvents.client
     
     skywars = {
         ["EventHandler"] = Events,
         ["Events"] = eventnames,
-        ["BlockFunctionHandler"] = require(lplr.PlayerScripts.TS.events).Functions,
+        ["BlockFunctionHandler"] = require(LocalPlayer.PlayerScripts.TS.events).Functions,
         ["HotbarController"] = controllers["HotbarController"],
-        ["BlockUtil"] = require(game:GetService("ReplicatedStorage").TS.util["block-util"]).BlockUtil,
+        ["BlockUtil"] = require(ReplicatedStorage.TS.util["block-util"]).BlockUtil,
         ["ScreenController"] = controllers["ScreenController"],
         ["MeleeController"] = Flamework.resolveDependency(controllerids["MeleeController"]),
-        ["ItemTable"] = require(game:GetService("ReplicatedStorage").TS.item.item).Items,
+        ["ItemTable"] = require(ReplicatedStorage.TS.item.item).Items,
         ["HealthController"] = Flamework.resolveDependency(controllerids["HealthController"])
     }
 end
