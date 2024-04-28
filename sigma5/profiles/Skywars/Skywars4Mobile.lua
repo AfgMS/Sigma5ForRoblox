@@ -415,3 +415,57 @@ local CustomStrafeAngle = TargetStrafe:Slider({
 		StrafeAngle = val
 	end
 })
+--AntiVanish
+local AntiVanish = WorldTab:ToggleButton({
+	name = "AntiVanish",
+	info = "Staff detector",
+	callback = function(enabled)
+		if enabled then
+			for i, player in pairs(game.Players:GetPlayers()) do
+				if player:IsInGroup(8154377) and player:GetRankInGroup(8154377) >= 1 then
+					CreateNotification("AntiVanish", "Someone just vanished", 5, true)
+					if player.UserId == 1162748399 then
+						CreateNotification("AntiVanish", "erpanmand has joined the server", 5, true)
+					end
+				end
+			end
+		end
+	end
+})
+--AntiVoid
+local antivoidpart
+local function AntiVoidTest()
+	antivoidpart = Instance.new("Part", game.Workspace)
+	antivoidpart.Transparency = 0.38
+	antivoidpart.CanCollide = true
+	antivoidpart.BrickColor = BrickColor.new(255, 255, 255)
+	antivoidpart.Size = Vector3.new(999999, 3, 999999)
+	antivoidpart.Anchored = true
+	antivoidpart.Position = LocalPlayer.Character:FindFirstChild("HumanoidRootPart").Position - Vector3.new(0, 18, 0)
+	antivoidpart.Name = "antivoidpart"
+
+	antivoidpart.Touched:Connect(function(other)
+		if other:IsDescendantOf(LocalPlayer.Character) then
+			local humanoid = LocalPlayer.Character:WaitForChild("Humanoid")
+			humanoid:ChangeState(Enum.HumanoidStateType.Jumping)
+			wait(0.28)
+			humanoid:ChangeState(Enum.HumanoidStateType.Jumping)
+			wait(0.28)
+			humanoid:ChangeState(Enum.HumanoidStateType.Jumping)
+		end
+	end)
+end
+local AntiVoid = WorldTab:ToggleButton({
+	name = "AntiVoid",
+	info = "Prevents falling into the void",
+	callback = function(enabled)
+		if enabled then
+			AntiVoidTest()
+		else
+			if antivoidpart then
+				antivoidpart:Destroy()
+				antivoidpart = nil
+			end
+		end
+	end
+})
