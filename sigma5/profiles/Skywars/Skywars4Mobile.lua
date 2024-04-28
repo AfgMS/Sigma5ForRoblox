@@ -73,14 +73,16 @@ local RemoveUI = GuiTab:ToggleButton({
 local DefaultAimPart = "HumRoot"
 local CameraDirection
 local AimbotDistance
+local AimbotDelay
 local Aimbot = CombatTab:ToggleButton({
 	name = "Aimbot",
 	info = "Automatically aim at players",
 	callback = function(enabled)
 		if enabled then
+			AimbotDelay = 0.01
 			AimbotDistance = 20
 			local Target = GetNearest(AimbotDistance)
-			while task.wait(0.01) do
+			while task.wait(AimbotDelay) do
 				if Target then
 					if DefaultAimPart == "Head" then
 						CameraDirection = (Target.Character:WaitForChild("Head").Position - Camera.CFrame.Position).unit
@@ -95,6 +97,7 @@ local Aimbot = CombatTab:ToggleButton({
 			end
 		else
 			AimbotDistance = 0
+			AimbotDelay = 86400
 		end
 	end
 })
@@ -123,19 +126,19 @@ local AimPartModes = Aimbot:Dropdown({
 })
 --KillAura
 local KillAuraDistance
+local KillAuraDelay
+local SilentRotateDelay
 local KillAura = CombatTab:ToggleButton({
 	name = "KillAura",
 	info = "Attack the nearest entity",
 	callback = function(enabled)
 		if enabled then
+			KillAuraDelay = 0.01
 			KillAuraDistance = 20
 			local Target = GetNearest(KillAuraDistance)
-			while task.wait(0.01) do
+			while task.wait(KillAuraDelay) do
 				if Target then
-					local HitRemote = {
-						[1] = Target
-					}
-					game:GetService("ReplicatedStorage"):FindFirstChild("events-Eqz"):FindFirstChild("5c73e2ee-c179-4b60-8be7-ef8e4a7eebaa"):FireServer(unpack(HitRemote))
+					game:GetService("ReplicatedStorage"):FindFirstChild("events-eL9"):FindFirstChild("089f902f-520f-4165-a497-80b7dbd0b7ff"):FireServer(Target)
 				end
 			end
 		else
@@ -156,13 +159,16 @@ local KillAuraSilent = KillAura:ToggleButtonInsideUI({
 	name = "Silent",
 	callback = function(enabled)
 		if enabled then
+			SilentRotateDelay = 0.01
 			local Target = GetNearest(KillAuraDistance)
 			local Direction = (Target.Character:WaitForChild("HumanoidRootPart").Position - LocalPlayer.Character:WaitForChild("HumanoidRootPart").Position).unit
 			local LookAtVector = Vector3.new(Direction.X, 0, Direction.Z).unit
 			local newCFrame = CFrame.new(LocalPlayer.Character:WaitForChild("HumanoidRootPart").Position, LocalPlayer.Character:WaitForChild("HumanoidRootPart").Position + LookAtVector)
-			while task.wait(0.01) do
+			while task.wait(SilentRotateDelay) do
 				LocalPlayer.Character:SetPrimaryPartCFrame(newCFrame)
 			end
+		else
+			SilentRotateDelay = 86400
 		end
 	end
 })
@@ -260,6 +266,7 @@ local VoxelMode = false
 local EasyGGMode = false
 local Bit16Mode = false
 local OldGravity = game.Workspace.Gravity
+
 local function VoxelFly()
 	while VoxelMode do
 		LocalPlayer.Character:WaitForChild("HumanoidRootPart").CFrame = CFrame.new(LocalPlayer.Character:WaitForChild("HumanoidRootPart").Position + Vector3.new(0, 3, 0))
@@ -268,14 +275,12 @@ local function VoxelFly()
 		wait(0.85)
 	end
 end
-
 local function EasyGGFly()
 	while EasyGGMode do
 		LocalPlayer.Character:WaitForChild("HumanoidRootPart").Velocity = LocalPlayer.Character:WaitForChild("HumanoidRootPart").CFrame.LookVector * LocalPlayer.Character:WaitForChild("Humanoid").JumpPower * 2.3
 		wait(3)
 	end
 end
-
 local function Bit16Fly()
 	while Bit16Mode do
 		LocalPlayer.Character:WaitForChild("HumanoidRootPart").Velocity = LocalPlayer.Character:WaitForChild("HumanoidRootPart").CFrame.LookVector * LocalPlayer.Character:WaitForChild("Humanoid").JumpPower * 0.3
@@ -302,12 +307,18 @@ local Fly = PlayerTab:ToggleButton({
 					Bit16Mode = true
 					LocalPlayer.Character:WaitForChild("HumanoidRootPart").CFrame = CFrame.new(LocalPlayer.Character:WaitForChild("HumanoidRootPart").Position + Vector3.new(0, 28, 0))
 					Bit16Fly()
-				else
-					VoxelMode = false
-					EasyGGMode = false
-					Bit16Mode = false
-					game.Workspace.Gravity = 196.2
 				end
+			end
+		else
+			if VoxelMode then
+				VoxelMode = false
+				game.Workspace.Gravity = 196.2
+			elseif EasyGGMode then
+				EasyGGMode = false
+				game.Workspace.Gravity = 196.2
+			elseif Bit16Mode then
+				Bit16Mode = false
+				game.Workspace.Gravity = 196.2
 			end
 		end
 	end
@@ -332,25 +343,6 @@ local FlyModes = Fly:Dropdown({
 	list = {"Voxels", "Easy.GG", "16BitPlay"},
 	callback = function(selectedItem)
 		DefaultFlyMode = selectedItem
-	end
-})
---Disabler
-local Animate = LocalPlayer.Character:WaitForChild("Animate")
-local Disabler = PlayerTab:ToggleButton({
-	name = "Disabler",
-	info = "Get trolled",
-	callback = function(enabled)
-		if enabled then
-			for _, v in pairs(Animate:GetChildren()) do
-				for _, x in pairs(v:GetChildren()) do
-					if x:IsA("Animation") then
-						x.AnimationId = ""
-					end
-				end
-			end
-		else
-			CreateNotification("Disabler", "You can't turn this off", 3, true)
-		end
 	end
 })
 --Speed
