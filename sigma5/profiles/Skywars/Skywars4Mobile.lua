@@ -160,12 +160,12 @@ local KillAuraSilent = KillAura:ToggleButtonInsideUI({
 	callback = function(enabled)
 		if enabled then
 			SilentRotateDelay = 0.01
+			while task.wait(SilentRotateDelay) do
 			local Target = GetNearest(KillAuraDistance)
 			local Direction = (Target.Character:WaitForChild("HumanoidRootPart").Position - LocalPlayer.Character:WaitForChild("HumanoidRootPart").Position).unit
 			local LookAtVector = Vector3.new(Direction.X, 0, Direction.Z).unit
 			local newCFrame = CFrame.new(LocalPlayer.Character:WaitForChild("HumanoidRootPart").Position, LocalPlayer.Character:WaitForChild("HumanoidRootPart").Position + LookAtVector)
-			while task.wait(SilentRotateDelay) do
-				LocalPlayer.Character:SetPrimaryPartCFrame(newCFrame)
+			LocalPlayer.Character:SetPrimaryPartCFrame(newCFrame)
 			end
 		else
 			SilentRotateDelay = 86400
@@ -265,7 +265,6 @@ local DefaultFlyMode = "Easy.GG"
 local VoxelMode = false
 local EasyGGMode = false
 local Bit16Mode = false
-local OldGravity = game.Workspace.Gravity
 
 local function VoxelFly()
 	while VoxelMode do
@@ -275,12 +274,14 @@ local function VoxelFly()
 		wait(0.85)
 	end
 end
+
 local function EasyGGFly()
 	while EasyGGMode do
 		LocalPlayer.Character:WaitForChild("HumanoidRootPart").Velocity = LocalPlayer.Character:WaitForChild("HumanoidRootPart").CFrame.LookVector * LocalPlayer.Character:WaitForChild("Humanoid").JumpPower * 2.3
 		wait(3)
 	end
 end
+
 local function Bit16Fly()
 	while Bit16Mode do
 		LocalPlayer.Character:WaitForChild("HumanoidRootPart").Velocity = LocalPlayer.Character:WaitForChild("HumanoidRootPart").CFrame.LookVector * LocalPlayer.Character:WaitForChild("Humanoid").JumpPower * 0.3
@@ -288,6 +289,7 @@ local function Bit16Fly()
 		LocalPlayer.Character:WaitForChild("HumanoidRootPart").Velocity = LocalPlayer.Character:WaitForChild("HumanoidRootPart").CFrame.LookVector * LocalPlayer.Character:WaitForChild("Humanoid").JumpPower * 0.3
 	end
 end
+
 local Fly = PlayerTab:ToggleButton({
 	name = "Fly",
 	info = "Weeeeeeeee",
@@ -343,6 +345,56 @@ local FlyModes = Fly:Dropdown({
 	list = {"Voxels", "Easy.GG", "16BitPlay"},
 	callback = function(selectedItem)
 		DefaultFlyMode = selectedItem
+	end
+})
+--LongJump
+local DefaultLongJumpMode = "Voxels"
+local VoxelLongMode = false
+local EasyGGLongMode = false
+
+local function VoxelLongJump()
+	while VoxelLongMode do
+		LocalPlayer.Character:WaitForChild("HumanoidRootPart").CFrame = CFrame.new(LocalPlayer.Character:WaitForChild("HumanoidRootPart").Position + Vector3.new(0, 18, 0))
+		wait(0.3)
+		LocalPlayer.Character:WaitForChild("HumanoidRootPart").CFrame = CFrame.new(LocalPlayer.Character:WaitForChild("HumanoidRootPart").Position + Vector3.new(0, -15, 0))
+		wait(0.5)
+		game.Workspace.Gravity = 0
+		LocalPlayer.Character:WaitForChild("HumanoidRootPart").CFrame = CFrame.new(LocalPlayer.Character:WaitForChild("HumanoidRootPart").Position + Vector3.new(25, 8, 0))
+		wait(3)
+		VoxelLongMode = false
+		game.Workspace.Gravity = 192.6
+	end
+end
+
+local function EasyGGLongJump()
+	while EasyGGLongMode do
+		game.Workspace.Gravity = 8
+		LocalPlayer.Character:WaitForChild("Humanoid"):ChangeState(Enum.HumanoidStateType.Jumping)    
+		LocalPlayer.Character:WaitForChild("HumanoidRootPart").Velocity = LocalPlayer.Character:WaitForChild("HumanoidRootPart").CFrame.LookVector * LocalPlayer.Character:WaitForChild("Humanoid").JumpPower * 1.3
+		wait(3)
+		EasyGGLongMode = false
+		game.Workspace.Gravity = 192.6
+	end
+end
+
+local LongJump = PlayerTab:ToggleButton({
+	name = "LongJump",
+	info = "long jumpzzzz",
+	callback = function(enabled)
+		if enabled then
+			if LocalPlayer.Character then
+				if DefaultLongJumpMode == "Voxels" then
+					VoxelLongMode = true
+					VoxelLongJump()
+				elseif DefaultLongJumpMode == "Easy.GG" then
+					EasyGGLongMode = true
+					EasyGGLongJump()
+				end
+			end
+		else
+			VoxelLongMode = false
+			EasyGGLongMode = false
+		end
 	end
 })
 --Speed
@@ -421,12 +473,11 @@ local AntiVanish = WorldTab:ToggleButton({
 	info = "Staff detector",
 	callback = function(enabled)
 		if enabled then
-			for i, player in pairs(game.Players:GetPlayers()) do
+			for _, player in pairs(game.Players:GetPlayers()) do
 				if player:IsInGroup(8154377) and player:GetRankInGroup(8154377) >= 1 then
 					CreateNotification("AntiVanish", "Someone just vanished", 5, true)
-					if player.UserId == 1162748399 then
-						CreateNotification("AntiVanish", "erpanmand has joined the server", 5, true)
-					end
+				elseif player.UserId == 1162748399 and player.Name == "erpanmand" then
+					CreateNotification("AntiVanish", "sigma5 owner inside your server", 5, true)
 				end
 			end
 		end
