@@ -7,6 +7,53 @@ local CoreGui = game:WaitForChild("CoreGui")
 local LocalPlayer = game.Players.LocalPlayer
 local Player = game:GetService("Players")
 --Functions
+local skywars = {}
+local function getfunctions()
+    local Flamework = require(game:GetService("ReplicatedStorage")["rbxts_include"]["node_modules"]["@flamework"].core.out).Flamework
+    repeat task.wait() until Flamework.isInitialized
+    local controllers = {}
+    local controllerids = {}
+    local eventnames = {}
+    
+    for i,v in pairs(debug.getupvalue(Flamework.Testing.patchDependency, 1).idToObj) do
+        controllers[tostring(v)] = v
+        controllerids[tostring(v)] = i 
+        local controllerevents = {}
+        
+        for i2,v2 in pairs(v) do
+            if type(v2) == "function" then
+                local eventsfound = {}
+                
+                for i3,v3 in pairs(debug.getconstants(v2)) do
+                    if tostring(v3):find("-") == 9 then
+                        table.insert(eventsfound, tostring(v3))
+                    end
+                end
+                
+                if #eventsfound > 0 then
+                    controllerevents[i2] = eventsfound
+                end
+            end
+        end
+        
+        eventnames[tostring(v)] = controllerevents
+    end
+    
+    local Events = require(game:GetService("ReplicatedStorage").TS.events).GlobalEvents.client
+    
+    skywars = {
+        ["EventHandler"] = Events,
+        ["Events"] = eventnames,
+        ["BlockFunctionHandler"] = require(lplr.PlayerScripts.TS.events).Functions,
+        ["HotbarController"] = controllers["HotbarController"],
+        ["BlockUtil"] = require(game:GetService("ReplicatedStorage").TS.util["block-util"]).BlockUtil,
+        ["ScreenController"] = controllers["ScreenController"],
+        ["MeleeController"] = Flamework.resolveDependency(controllerids["MeleeController"]),
+        ["ItemTable"] = require(game:GetService("ReplicatedStorage").TS.item.item).Items,
+        ["HealthController"] = Flamework.resolveDependency(controllerids["HealthController"])
+    }
+end
+
 local function GetNearest(range)
 	local nearestPlayer
 	local nearestDistance = math.huge
@@ -29,6 +76,7 @@ local function GetNearest(range)
 end
 --Tabs
 Library:createScreenGui()
+getfunctions()
 local GuiTab = Library:createTabs(CoreGui.Sigma5, "Gui")
 local CombatTab = Library:createTabs(CoreGui.Sigma5, "Combat")
 local RenderTab = Library:createTabs(CoreGui.Sigma5, "Render")
@@ -138,7 +186,7 @@ local KillAura = CombatTab:ToggleButton({
 			local Target = GetNearest(KillAuraDistance)
 			while task.wait(KillAuraDelay) do
 				if Target then
-					game:GetService("ReplicatedStorage"):FindFirstChild("events-eL9"):FindFirstChild("089f902f-520f-4165-a497-80b7dbd0b7ff"):FireServer(Target)
+					skywars["EventHandler"][skywars["Events"].MeleeController.strikeDesktop[1]]:fire(Target)
 				end
 			end
 		else
