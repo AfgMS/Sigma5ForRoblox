@@ -405,12 +405,10 @@ local CustomLongJumpPush = LongJump:Slider({
 	callback = function(val)
 	end
 })
-local LongJumpRage = LongJump:Slider({
-	title = "RageMode",
-	min = 0,
-	max = 100,
-	default = 5,
-	callback = function(val)
+local LongJumpRageMode = LongJump:ToggleButtonInsideUI({
+	name = "RageMode",
+	callback = function()
+		CreateNotification("Sigma5", "This feature is for premium", 3, true)
 	end
 })
 local LongJumpMode = LongJump:Dropdown({
