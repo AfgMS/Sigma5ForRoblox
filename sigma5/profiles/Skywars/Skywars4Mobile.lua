@@ -183,36 +183,36 @@ local Ambience = RenderTab:ToggleButton({
 	end
 })
 --ESP
-local ESPDelay
 local ESPFolder
 local ESP = RenderTab:ToggleButton({
 	name = "ESP",
 	info = "Highlight All Players",
 	callback = function(enabled)
 		if enabled then
-			ESPDelay = 8
-			ESPFolder = Instance.new("Folder", game.Workspace)
-			ESPFolder.Name = "ESPHolder"
-			while true do
-				for _, player in ipairs(game.Players:GetPlayers()) do
-					if player ~= game.Players.LocalPlayer and player.Character then
+			if not ESPFolder then
+				ESPFolder = Instance.new("Folder", game.Workspace)
+				ESPFolder.Name = "ESPHolder"
+			end
+
+			for _, player in pairs(game.Players:GetPlayers()) do
+				if player ~= game.Players.LocalPlayer and player.Character then
+					if not ESPFolder:FindFirstChild(player.Name) then
 						local ESPHighlight = Instance.new("Highlight", ESPFolder)
 						ESPHighlight.Adornee = player.Character
 						ESPHighlight.DepthMode = Enum.HighlightDepthMode.AlwaysOnTop
 						ESPHighlight.Enabled = true
-						ESPHighlight.FillColor = BrickColor.new(255, 255, 255)
+						ESPHighlight.FillColor = Color3.new(255, 255, 255)
 						ESPHighlight.FillTransparency = 0.85
-						ESPHighlight.OutlineColor = BrickColor.new(0, 0, 0)
+						ESPHighlight.OutlineColor = Color3.new(0, 0, 0)
 						ESPHighlight.OutlineTransparency = 0.65
 					end
 				end
-				task.wait(ESPDelay)
 			end
 		else
 			if ESPFolder then
 				ESPFolder:Destroy()
+				ESPFolder = nil
 			end
-			ESPDelay = nil
 		end
 	end
 })
@@ -232,13 +232,13 @@ local Fullbright = RenderTab:ToggleButton({
 		end
 	end
 })
---FOVChanger
+--[[
 local FOVvalue = 90
 local FOVChanger = RenderTab:ToggleButton({
 	name = "FOVChanger",
 	info = "Change your FOV value",
 	callback = function(enabled)
-		while enabled do
+		if enabled then
 			game:GetService("ReplicatedStorage"):FindFirstChild("events-eL9"):FindFirstChild("99700188-ef7b-4d8a-89a6-3ac668d1d734"):FireServer("FieldOfView", FOVvalue)
 			task.wait()
 		end
@@ -253,6 +253,7 @@ local CustomFOV = FOVChanger:Slider({
 		FOVvalue = val
 	end
 })
+--]]
 --PlayerModules
 local DefaultFlyMode = "Easy.GG"
 local VoxelMode = false
@@ -277,7 +278,6 @@ end
 
 local function Bit16Fly()
 	while Bit16Mode do
-		--LocalPlayer.Character:WaitForChild("HumanoidRootPart").CFrame = CFrame.new(LocalPlayer.Character:WaitForChild("HumanoidRootPart").Position + Vector3.new(0, 15, 0))
 		LocalPlayer.Character:WaitForChild("HumanoidRootPart").Velocity = LocalPlayer.Character:WaitForChild("HumanoidRootPart").CFrame.LookVector * LocalPlayer.Character:WaitForChild("Humanoid").JumpPower * 0.3
 		wait(0.8)
 		LocalPlayer.Character:WaitForChild("HumanoidRootPart").Velocity = LocalPlayer.Character:WaitForChild("HumanoidRootPart").CFrame.LookVector * LocalPlayer.Character:WaitForChild("Humanoid").JumpPower * 0.3
@@ -303,10 +303,10 @@ local Fly = PlayerTab:ToggleButton({
 					LocalPlayer.Character:WaitForChild("HumanoidRootPart").CFrame = CFrame.new(LocalPlayer.Character:WaitForChild("HumanoidRootPart").Position + Vector3.new(0, 28, 0))
 					Bit16Fly()
 				else
-					game.Workspace.Gravity = OldGravity
 					VoxelMode = false
 					EasyGGMode = false
 					Bit16Mode = false
+					game.Workspace.Gravity = 196.2
 				end
 			end
 		end
