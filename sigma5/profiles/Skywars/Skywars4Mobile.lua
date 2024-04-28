@@ -116,9 +116,9 @@ local CrazyAimModes = Aimbot:ToggleButtonInsideUI({
 local AimPartModes = Aimbot:Dropdown({
 	name = "AimPart",
 	default = "HumRoot",
-	List = {"Head", "HumRoot", "LowerTorso"},
+	list = {"Head", "HumRoot", "LowerTorso"},
 	callback = function(selectedItem)
-		selectedItem = DefaultAimPart
+		DefaultAimPart = selectedItem
 	end
 })
 --KillAura
@@ -329,9 +329,9 @@ local FlyRageMode = Fly:ToggleButtonInsideUI({
 local FlyModes = Fly:Dropdown({
 	name = "FlyModes",
 	default = "Easy.GG",
-	List = {"Voxels", "Easy.GG", "16BitPlay"},
+	list = {"Voxels", "Easy.GG", "16BitPlay"},
 	callback = function(selectedItem)
-		selectedItem = DefaultFlyMode
+		DefaultFlyMode = selectedItem
 	end
 })
 --Disabler
