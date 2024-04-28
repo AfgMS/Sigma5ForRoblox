@@ -351,9 +351,67 @@ local Speed = PlayerTab:ToggleButton({
 	info = "speedddddedd",
 	callback = function(enabled)
 		if enabled then
-			LocalPlayer.Character:WaitForChild("Humanoid").WalkSpeed = 38
+			LocalPlayer.Character:WaitForChild("Humanoid").WalkSpeed = 43
 		else
 			LocalPlayer.Character:WaitForChild("Humanoid").WalkSpeed = 16
 		end
+	end
+})
+--TargetStrafe
+local StrafeRadius = 8
+local StrafeSpeed = 13
+local StrafeAngle = 0
+local StrafeDelay
+
+local TargetStrafe = PlayerTab:ToggleButton({
+	name = "TargetStrafe",
+	info = "circle around a player",
+	callback = function(enabled)
+		if enabled then
+			StrafeDelay = 0.01
+			local Target = GetNearest(20)
+			while task.wait(StrafeDelay) do
+				StrafeAngle = StrafeAngle + StrafeSpeed
+				local x = math.cos(math.rad(StrafeAngle)) * StrafeRadius
+				local z = math.sin(math.rad(StrafeAngle)) * StrafeRadius
+				local newPosition = Target.Character.PrimaryPart.Position + Vector3.new(x, 0, z)
+
+				LocalPlayer.Character:SetPrimaryPartCFrame(CFrame.new(newPosition, LocalPlayer.Character.PrimaryPart.Position))
+
+				local Direction = (Target.Character:WaitForChild("HumanoidRootPart").Position - LocalPlayer.Character:WaitForChild("HumanoidRootPart").Position).unit
+				local LookAtVector = Vector3.new(Direction.X, 0, Direction.Z).unit
+				local newCFrame = CFrame.new(LocalPlayer.Character:WaitForChild("HumanoidRootPart").Position, LocalPlayer.Character:WaitForChild("HumanoidRootPart").Position + LookAtVector)
+				LocalPlayer.Character:SetPrimaryPartCFrame(newCFrame)
+			end
+		else
+			StrafeDelay = 86400
+		end
+	end
+})
+local CustomStrafeRadius = TargetStrafe:Slider({
+	title = "Radius",
+	min = 0,
+	max = 100,
+	default = 8,
+	callback = function(val)
+		StrafeRadius = val
+	end
+})
+local CustomStrafeSpeed = TargetStrafe:Slider({
+	title = "Speed",
+	min = 0,
+	max = 100,
+	default = 5,
+	callback = function(val)
+		StrafeSpeed = val
+	end
+})
+local CustomStrafeAngle = TargetStrafe:Slider({
+	title = "Angle",
+	min = 0,
+	max = 100,
+	default = 5,
+	callback = function(val)
+		StrafeAngle = val
 	end
 })
