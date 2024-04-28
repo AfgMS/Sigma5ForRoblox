@@ -44,7 +44,7 @@ local function getfunctions()
     skywars = {
         ["EventHandler"] = Events,
         ["Events"] = eventnames,
-        ["BlockFunctionHandler"] = require(LocalPlayer.PlayerScripts.TS.events).Functions,
+        ["BlockFunctionHandler"] = require(LocalPlayer:WaitForChild("PlayerScripts").TS.events).Functions,
         ["HotbarController"] = controllers["HotbarController"],
         ["BlockUtil"] = require(ReplicatedStorage.TS.util["block-util"]).BlockUtil,
         ["ScreenController"] = controllers["ScreenController"],
