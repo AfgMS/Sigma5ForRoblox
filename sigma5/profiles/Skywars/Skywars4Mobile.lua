@@ -29,7 +29,6 @@ local function GetNearest(range)
 end
 --Tabs
 Library:createScreenGui()
-getfunctions()
 local GuiTab = Library:createTabs(CoreGui.Sigma5, "Gui")
 local CombatTab = Library:createTabs(CoreGui.Sigma5, "Combat")
 local RenderTab = Library:createTabs(CoreGui.Sigma5, "Render")
@@ -240,7 +239,7 @@ local Fullbright = RenderTab:ToggleButton({
 		end
 	end
 })
---[[
+--FOVChanger
 local FOVvalue = 90
 local FOVChanger = RenderTab:ToggleButton({
 	name = "FOVChanger",
@@ -261,7 +260,6 @@ local CustomFOV = FOVChanger:Slider({
 		FOVvalue = val
 	end
 })
---]]
 --PlayerModules
 local DefaultFlyMode = "Easy.GG"
 local VoxelMode = false
