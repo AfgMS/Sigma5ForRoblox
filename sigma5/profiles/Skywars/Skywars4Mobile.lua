@@ -397,6 +397,30 @@ local LongJump = PlayerTab:ToggleButton({
 		end
 	end
 })
+local CustomLongJumpPush = LongJump:Slider({
+	title = "LongJumpPower",
+	min = 0,
+	max = 100,
+	default = 8,
+	callback = function(val)
+	end
+})
+local LongJumpRage = LongJump:Slider({
+	title = "RageMode",
+	min = 0,
+	max = 100,
+	default = 5,
+	callback = function(val)
+	end
+})
+local LongJumpMode = LongJump:Dropdown({
+	name = "LongJumpModes",
+	default = "Voxels",
+	list = {"Voxels", "Easy.GG"},
+	callback = function(selectedItem)
+		DefaultLongJumpMode = selectedItem
+	end
+})
 --Speed
 local Speed = PlayerTab:ToggleButton({
 	name = "Speed",
