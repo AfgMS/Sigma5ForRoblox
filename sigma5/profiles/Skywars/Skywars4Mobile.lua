@@ -8,23 +8,23 @@ local LocalPlayer = game.Players.LocalPlayer
 local Player = game:GetService("Players")
 --Functions
 local function GetNearest(range)
-	local nearestPlayer = nil
-	local minDistance = range + 0.01
+	local nearestPlayer
+	local nearestDistance = math.huge
+	local localPlayer = game.Players.LocalPlayer
 
-	if LocalPlayer.Character:WaitForChild("HumanoidRootPart") then
-		for _, player in ipairs(game.Players:GetPlayers()) do
-			if player ~= LocalPlayer and player.Character then
-				if player.Character:FindFirstChild("HumanoidRootPart") then
-					local distance = (player.Character:FindFirstChild("HumanoidRootPart").Position - LocalPlayer.Character:WaitForChild("HumanoidRootPart").Position).magnitude
-					if distance <= range and distance < minDistance then
-						minDistance = distance
-						nearestPlayer = player
-					end
+	for _, player in ipairs(game.Players:GetPlayers()) do
+		if player ~= localPlayer then
+			local playerHRP = player.Character and player.Character:FindFirstChild("HumanoidRootPart")
+			local localHRP = localPlayer.Character and localPlayer.Character:FindFirstChild("HumanoidRootPart")
+			if playerHRP and localHRP then
+				local distance = (playerHRP.Position - localHRP.Position).magnitude
+				if distance < nearestDistance and distance <= range then
+					nearestPlayer = player
+					nearestDistance = distance
 				end
 			end
 		end
 	end
-
 	return nearestPlayer
 end
 --Tabs
@@ -350,6 +350,18 @@ local Disabler = PlayerTab:ToggleButton({
 			end
 		else
 			CreateNotification("Disabler", "You can't turn this off", 3, true)
+		end
+	end
+})
+--Speed
+local Speed = PlayerTab:ToggleButton({
+	name = "Speed",
+	info = "speedddddedd",
+	callback = function(enabled)
+		if enabled then
+			LocalPlayer.Character:WaitForChild("Humanoid").WalkSpeed = 38
+		else
+			LocalPlayer.Character:WaitForChild("Humanoid").WalkSpeed = 16
 		end
 	end
 })
