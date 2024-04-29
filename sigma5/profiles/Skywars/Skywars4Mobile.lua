@@ -228,6 +228,40 @@ local ESP = RenderTab:ToggleButton({
 		end
 	end
 })
+--NameTag
+local NameTag = RenderTab:ToggleButton({
+	name = "NameTag",
+	info = "Modified Nametag",
+	callback = function(enabled)
+		if enabled then
+			for _, player in pairs(game.Players:GetPlayers()) do
+				if player ~= LocalPlayer and player.Character then
+					local NameTagEEE = player.Character:FindFirstChild("Nametag")
+					if NameTagEEE and NameTagEEE:IsA("BillboardGui") then
+						NameTagEEE = NameTagEEE:FindFirstChild("NameTag")
+						if NameTagEEE then
+							NameTagEEE.Size = UDim2.new(35, 0, 15, 0)
+							NameTagEEE.MaxDistance = math.huge
+						end
+					end
+				end
+			end
+		else
+			for _, player in pairs(game.Players:GetPlayers()) do
+				if player ~= LocalPlayer and player.Character then
+					local NameTagEEE = player.Character:FindFirstChild("Nametag")
+					if NameTagEEE and NameTagEEE:IsA("BillboardGui") then
+						NameTagEEE = NameTagEEE:FindFirstChild("NameTag")
+						if NameTagEEE then
+							NameTagEEE.Size = UDim2.new(5, 0, 2, 0)
+							NameTagEEE.MaxDistance = 288
+						end
+					end
+				end
+			end
+		end
+	end
+})
 --Fullbright
 local OldAmbient = Lighting.Ambient
 local OldOutDoor = Lighting.OutdoorAmbient
@@ -426,6 +460,33 @@ local LongJumpMode = LongJump:Dropdown({
 	end
 })
 --]]
+--AutoSprint
+local SprintCont = LocalPlayer.PlayerScripts.TS.controllers["sprinting-controller"]
+local AutoSprint = PlayerTab:ToggleButton({
+	name = "AutoSprint",
+	info = "Automatically Sprint",
+	callback = function(enabled)
+		if enabled then
+			spawn(function()
+				while enabled do
+					task.wait()
+					if not SprintCont.sprinting then
+						SprintCont:startSprinting()
+					end
+				end
+			end)
+		else
+			spawn(function()
+				while not enabled do
+					task.wait()
+					if SprintCont.sprinting then
+						SprintCont:stopSprinting()
+					end
+				end
+			end)
+		end
+	end
+})
 --Speed
 local Speed = PlayerTab:ToggleButton({
 	name = "Speed",
