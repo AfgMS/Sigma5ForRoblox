@@ -460,33 +460,6 @@ local LongJumpMode = LongJump:Dropdown({
 	end
 })
 --]]
---AutoSprint
-local SprintCont = LocalPlayer.PlayerScripts.TS.controllers["sprinting-controller"]
-local AutoSprint = PlayerTab:ToggleButton({
-	name = "AutoSprint",
-	info = "Automatically Sprint",
-	callback = function(enabled)
-		if enabled then
-			spawn(function()
-				while enabled do
-					task.wait()
-					if not SprintCont.sprinting then
-						SprintCont:startSprinting()
-					end
-				end
-			end)
-		else
-			spawn(function()
-				while not enabled do
-					task.wait()
-					if SprintCont.sprinting then
-						SprintCont:stopSprinting()
-					end
-				end
-			end)
-		end
-	end
-})
 --Speed
 local Speed = PlayerTab:ToggleButton({
 	name = "Speed",
@@ -507,12 +480,12 @@ local StrafeDelay
 
 local TargetStrafe = PlayerTab:ToggleButton({
 	name = "TargetStrafe",
-	info = "Circle around a player",
+	info = "circle around a player",
 	callback = function(enabled)
 		if enabled then
-			StrafeDelay = 0.85
-			while enabled do
-				local Target = GetNearest(20)
+			StrafeDelay = 0.01
+			local Target = GetNearest(20)
+			while task.wait(StrafeDelay) do
 				StrafeAngle = StrafeAngle + StrafeSpeed
 				local x = math.cos(math.rad(StrafeAngle)) * StrafeRadius
 				local z = math.sin(math.rad(StrafeAngle)) * StrafeRadius
@@ -524,7 +497,6 @@ local TargetStrafe = PlayerTab:ToggleButton({
 				local LookAtVector = Vector3.new(Direction.X, 0, Direction.Z).unit
 				local newCFrame = CFrame.new(LocalPlayer.Character:WaitForChild("HumanoidRootPart").Position, LocalPlayer.Character:WaitForChild("HumanoidRootPart").Position + LookAtVector)
 				LocalPlayer.Character:SetPrimaryPartCFrame(newCFrame)
-				task.wait(StrafeDelay)
 			end
 		else
 			StrafeDelay = 86400
