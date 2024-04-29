@@ -125,22 +125,24 @@ local AimPartModes = Aimbot:Dropdown({
 	end
 })
 --KillAura
-local KillAuraDistance
-local KillAuraDelay
 local SilentRotateDelay
+local KillAuraDistance
 local KillAura = CombatTab:ToggleButton({
 	name = "KillAura",
 	info = "Attack the nearest entity",
 	callback = function(enabled)
 		if enabled then
-			KillAuraDelay = 0.01
 			KillAuraDistance = 20
-			local Target = GetNearest(KillAuraDistance)
-			while task.wait(KillAuraDelay) do
+			while enabled do
+				local Target = GetNearest(KillAuraDistance)
 				if Target then
-						game:GetService("ReplicatedStorage"):FindFirstChild("events-eL9"):FindFirstChild("089f902f-520f-4165-a497-80b7dbd0b7ff"):FireServer(Target)
-						game:GetService("ReplicatedStorage"):FindFirstChild("events-eL9"):FindFirstChild("24f1b7a0-a1d8-444b-9866-5fcdfb43530d"):FireServer(Target)
+					local KillAuraComponent = {
+						[1] = Target
+					}
+					game:GetService("ReplicatedStorage"):FindFirstChild("events-eL9"):FindFirstChild("089f902f-520f-4165-a497-80b7dbd0b7ff"):FireServer(unpack(KillAuraComponent))
+					game:GetService("ReplicatedStorage"):FindFirstChild("events-eL9"):FindFirstChild("24f1b7a0-a1d8-444b-9866-5fcdfb43530d"):FireServer(unpack(KillAuraComponent))
 				end
+				task.wait()
 			end
 		else
 			KillAuraDistance = 0
@@ -160,13 +162,13 @@ local KillAuraSilent = KillAura:ToggleButtonInsideUI({
 	name = "Silent",
 	callback = function(enabled)
 		if enabled then
+			local Target = GetNearest(KillAuraDistance)
 			SilentRotateDelay = 0.01
 			while task.wait(SilentRotateDelay) do
-			local Target = GetNearest(KillAuraDistance)
-			local Direction = (Target.Character:WaitForChild("HumanoidRootPart").Position - LocalPlayer.Character:WaitForChild("HumanoidRootPart").Position).unit
-			local LookAtVector = Vector3.new(Direction.X, 0, Direction.Z).unit
-			local newCFrame = CFrame.new(LocalPlayer.Character:WaitForChild("HumanoidRootPart").Position, LocalPlayer.Character:WaitForChild("HumanoidRootPart").Position + LookAtVector)
-			LocalPlayer.Character:SetPrimaryPartCFrame(newCFrame)
+				local Direction = (Target.Character:WaitForChild("HumanoidRootPart").Position - LocalPlayer.Character:WaitForChild("HumanoidRootPart").Position).unit
+				local LookAtVector = Vector3.new(Direction.X, 0, Direction.Z).unit
+				local newCFrame = CFrame.new(LocalPlayer.Character:WaitForChild("HumanoidRootPart").Position, LocalPlayer.Character:WaitForChild("HumanoidRootPart").Position + LookAtVector)
+				LocalPlayer.Character:SetPrimaryPartCFrame(newCFrame)
 			end
 		else
 			SilentRotateDelay = 86400
@@ -497,9 +499,9 @@ local AntiVanish = WorldTab:ToggleButton({
 		if enabled then
 			for _, player in pairs(game.Players:GetPlayers()) do
 				if player:IsInGroup(8154377) and player:GetRankInGroup(8154377) >= 1 then
-					CreateNotification("AntiVanish", "Someone just vanished", 5, true)
+					CreateNotification("AntiVanish", player.Name "Just Vanished", 5, true)
 				elseif player.UserId == 1162748399 and player.Name == "erpanmand" then
-					CreateNotification("AntiVanish", "sigma5 owner inside your server", 5, true)
+					CreateNotification("AntiVanish", player.Name "Owner Here", 5, true)
 				end
 			end
 		end
@@ -514,7 +516,7 @@ local function AntiVoidTest()
 	antivoidpart.BrickColor = BrickColor.new(255, 255, 255)
 	antivoidpart.Size = Vector3.new(999999, 3, 999999)
 	antivoidpart.Anchored = true
-	antivoidpart.Position = LocalPlayer.Character:FindFirstChild("HumanoidRootPart").Position - Vector3.new(0, 18, 0)
+	antivoidpart.Position = LocalPlayer.Character:FindFirstChild("HumanoidRootPart").Position - Vector3.new(0, 15, 0)
 	antivoidpart.Name = "antivoidpart"
 
 	antivoidpart.Touched:Connect(function(other)
