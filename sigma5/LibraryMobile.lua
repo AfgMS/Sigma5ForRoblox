@@ -609,6 +609,7 @@ function Library:createTabs(parentFrame, tabName)
 
 		CloseButtonsMenuFrame.MouseButton1Click:Connect(function()
 			ButtonsMenuFrame.Visible = not ButtonsMenuFrame.Visible
+			ButtonsMenuInner.Visible = not ButtonsMenuInner.Visible
 		end)
 
 		updateColors()
