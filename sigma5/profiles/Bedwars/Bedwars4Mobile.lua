@@ -519,24 +519,24 @@ local Bit16Mode = false
 local function VoxelFly()
 	while VoxelMode do
 		LocalPlayer.Character:WaitForChild("HumanoidRootPart").CFrame = CFrame.new(LocalPlayer.Character:WaitForChild("HumanoidRootPart").Position + Vector3.new(0, 3, 0))
-		wait(0.5)
-		LocalPlayer.Character:WaitForChild("HumanoidRootPart").Velocity = LocalPlayer.Character:WaitForChild("HumanoidRootPart").CFrame.LookVector * LocalPlayer.Character:WaitForChild("Humanoid").JumpPower * 1.8
-		wait(0.85)
+		wait(0.10)
+		localPlayer.Character:FindFirstChild("HumanoidRootPart").CFrame = localPlayer.Character:FindFirstChild("HumanoidRootPart").CFrame * CFrame.new(0,-0.1,-1.3)
+		wait(0.18)
 	end
 end
 
 local function EasyGGFly()
 	while EasyGGMode do
-		LocalPlayer.Character:WaitForChild("HumanoidRootPart").Velocity = LocalPlayer.Character:WaitForChild("HumanoidRootPart").CFrame.LookVector * LocalPlayer.Character:WaitForChild("Humanoid").JumpPower * 0.5
-		wait(0.45)
+		localPlayer.Character:FindFirstChild("HumanoidRootPart").CFrame = localPlayer.Character:FindFirstChild("HumanoidRootPart").CFrame * CFrame.new(0,-0.1,-1.5)
+		wait(0.23)
 	end
 end
 
 local function Bit16Fly()
 	while Bit16Mode do
-		LocalPlayer.Character:WaitForChild("HumanoidRootPart").Velocity = LocalPlayer.Character:WaitForChild("HumanoidRootPart").CFrame.LookVector * LocalPlayer.Character:WaitForChild("Humanoid").JumpPower * 0.3
-		wait(0.8)
-		LocalPlayer.Character:WaitForChild("HumanoidRootPart").Velocity = LocalPlayer.Character:WaitForChild("HumanoidRootPart").CFrame.LookVector * LocalPlayer.Character:WaitForChild("Humanoid").JumpPower * 0.3
+		localPlayer.Character:FindFirstChild("HumanoidRootPart").CFrame = localPlayer.Character:FindFirstChild("HumanoidRootPart").CFrame * CFrame.new(0,-0.1,-1.3)
+		wait(0.12)
+		localPlayer.Character:FindFirstChild("HumanoidRootPart").CFrame = localPlayer.Character:FindFirstChild("HumanoidRootPart").CFrame * CFrame.new(0,-0.1,-1.3)
 	end
 end
 
@@ -555,8 +555,11 @@ local Fly = PlayerTab:ToggleButton({
 					EasyGGMode = true
 					EasyGGFly()
 				elseif DefaultFlyMode == "16BitPlay" then
-					game.Workspace.Gravity = 13
 					LocalPlayer.Character:WaitForChild("Humanoid"):ChangeState(Enum.HumanoidStateType.Jumping)
+					task.wait(0.38)
+					game.Workspace.Gravity = 0
+					task.wait(0.3)
+					game.Workspace.Gravity = 3
 					Bit16Mode = true
 					Bit16Fly()
 				end
