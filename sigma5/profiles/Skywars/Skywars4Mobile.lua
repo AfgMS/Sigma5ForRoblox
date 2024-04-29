@@ -13,7 +13,7 @@ local function GetNearest(range)
 	local localPlayer = game.Players.LocalPlayer
 
 	for _, player in ipairs(game.Players:GetPlayers()) do
-		if player ~= localPlayer then
+		if isAlive(player) and player ~= localPlayer and isAlive(localPlayer) then
 			local playerHRP = player.Character and player.Character:FindFirstChild("HumanoidRootPart")
 			local localHRP = localPlayer.Character and localPlayer.Character:FindFirstChild("HumanoidRootPart")
 			if playerHRP and localHRP then
@@ -74,6 +74,8 @@ local DefaultAimPart = "HumRoot"
 local CameraDirection
 local AimbotDistance
 local AimbotDelay
+local CrazyAimModes
+
 local Aimbot = CombatTab:ToggleButton({
 	name = "Aimbot",
 	info = "Automatically aim at players",
@@ -110,10 +112,14 @@ local CustomAimbotDist = Aimbot:Slider({
 		AimbotDistance = val
 	end
 })
-local CrazyAimModes = Aimbot:ToggleButtonInsideUI({
+CrazyAimModes = Aimbot:ToggleButtonInsideUI({
 	name = "CrazyAim",
-	callback = function()
+	callback = function(enabled)
+		if enabled then
 		CreateNotification("Sigma5", "This feature is for premium", 3, true)
+		wait(3)
+		CrazyAimModes.Enabled = false
+		end
 	end
 })
 local AimPartModes = Aimbot:Dropdown({
@@ -164,11 +170,14 @@ local KillAuraSilent = KillAura:ToggleButtonInsideUI({
 		if enabled then
 			local Target = GetNearest(KillAuraDistance)
 			SilentRotateDelay = 0.01
-			while task.wait(SilentRotateDelay) do
-				local Direction = (Target.Character:WaitForChild("HumanoidRootPart").Position - LocalPlayer.Character:WaitForChild("HumanoidRootPart").Position).unit
-				local LookAtVector = Vector3.new(Direction.X, 0, Direction.Z).unit
-				local newCFrame = CFrame.new(LocalPlayer.Character:WaitForChild("HumanoidRootPart").Position, LocalPlayer.Character:WaitForChild("HumanoidRootPart").Position + LookAtVector)
-				LocalPlayer.Character:SetPrimaryPartCFrame(newCFrame)
+			while enabled do
+				if Target then
+					local Direction = (Target.Character:WaitForChild("HumanoidRootPart").Position - LocalPlayer.Character:WaitForChild("HumanoidRootPart").Position).unit
+					local LookAtVector = Vector3.new(Direction.X, 0, Direction.Z).unit
+					local newCFrame = CFrame.new(LocalPlayer.Character:WaitForChild("HumanoidRootPart").Position, LocalPlayer.Character:WaitForChild("HumanoidRootPart").Position + LookAtVector)
+					LocalPlayer.Character:SetPrimaryPartCFrame(newCFrame)
+				end
+				wait(SilentRotateDelay)
 			end
 		else
 			SilentRotateDelay = 86400
@@ -268,7 +277,7 @@ local DefaultFlyMode = "Easy.GG"
 local VoxelMode = false
 local EasyGGMode = false
 local Bit16Mode = false
-
+local FlyRageMode
 local function VoxelFly()
 	while VoxelMode do
 		LocalPlayer.Character:WaitForChild("HumanoidRootPart").CFrame = CFrame.new(LocalPlayer.Character:WaitForChild("HumanoidRootPart").Position + Vector3.new(0, 3, 0))
@@ -336,10 +345,14 @@ local CustomFlyPush = Fly:Slider({
 	callback = function(val)
 	end
 })
-local FlyRageMode = Fly:ToggleButtonInsideUI({
+FlyRageMode = Fly:ToggleButtonInsideUI({
 	name = "RageMode",
-	callback = function()
-		CreateNotification("Sigma5", "This feature is for premium", 3, true)
+	callback = function(enabled)
+		if enabled then
+			CreateNotification("Sigma5", "This feature is for premium", 3, true)
+			wait(3)
+			FlyRageMode.Enabled = false
+		end
 	end
 })
 local FlyModes = Fly:Dropdown({
@@ -502,9 +515,9 @@ local AntiVanish = WorldTab:ToggleButton({
 		if enabled then
 			for _, player in pairs(game.Players:GetPlayers()) do
 				if player:IsInGroup(8154377) and player:GetRankInGroup(8154377) >= 1 then
-					CreateNotification("AntiVanish", player.Name, "Just Vanished", 10, true)
+					CreateNotification("AntiVanish", "Player " .. player.Name .. " Vanished", 10, true)
 				elseif player.UserId == 1162748399 and player.Name == "erpanmand" then
-					CreateNotification("AntiVanish", player.Name, "Owner Here", 5, true)
+					CreateNotification("AntiVanish", "Owner Here", 5, true)
 				end
 			end
 		end
