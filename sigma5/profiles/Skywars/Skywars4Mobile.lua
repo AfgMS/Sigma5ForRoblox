@@ -349,7 +349,7 @@ local FlyModes = Fly:Dropdown({
 		DefaultFlyMode = selectedItem
 	end
 })
---LongJump
+--[[
 local DefaultLongJumpMode = "Voxels"
 local VoxelLongMode = false
 local EasyGGLongMode = false
@@ -421,6 +421,7 @@ local LongJumpMode = LongJump:Dropdown({
 		DefaultLongJumpMode = selectedItem
 	end
 })
+--]]
 --Speed
 local Speed = PlayerTab:ToggleButton({
 	name = "Speed",
@@ -441,12 +442,12 @@ local StrafeDelay
 
 local TargetStrafe = PlayerTab:ToggleButton({
 	name = "TargetStrafe",
-	info = "circle around a player",
+	info = "Circle around a player",
 	callback = function(enabled)
 		if enabled then
-			StrafeDelay = 0.01
-			local Target = GetNearest(38)
-			while task.wait(StrafeDelay) do
+			StrafeDelay = 0.85
+			while enabled do
+				local Target = GetNearest(38)
 				StrafeAngle = StrafeAngle + StrafeSpeed
 				local x = math.cos(math.rad(StrafeAngle)) * StrafeRadius
 				local z = math.sin(math.rad(StrafeAngle)) * StrafeRadius
@@ -458,6 +459,7 @@ local TargetStrafe = PlayerTab:ToggleButton({
 				local LookAtVector = Vector3.new(Direction.X, 0, Direction.Z).unit
 				local newCFrame = CFrame.new(LocalPlayer.Character:WaitForChild("HumanoidRootPart").Position, LocalPlayer.Character:WaitForChild("HumanoidRootPart").Position + LookAtVector)
 				LocalPlayer.Character:SetPrimaryPartCFrame(newCFrame)
+				task.wait(StrafeDelay)
 			end
 		else
 			StrafeDelay = 86400
