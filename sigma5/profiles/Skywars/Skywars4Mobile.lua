@@ -426,13 +426,10 @@ local LongJumpMode = LongJump:Dropdown({
 --Speed
 local Speed = PlayerTab:ToggleButton({
 	name = "Speed",
-	info = "Speeddded",
+	info = "speedddddedd",
 	callback = function(enabled)
 		if enabled then
-			while enabled do
-				LocalPlayer.Character:WaitForChild("Humanoid").WalkSpeed = 43
-				wait()
-			end
+			LocalPlayer.Character:WaitForChild("Humanoid").WalkSpeed = 43
 		else
 			LocalPlayer.Character:WaitForChild("Humanoid").WalkSpeed = 16
 		end
@@ -451,7 +448,7 @@ local TargetStrafe = PlayerTab:ToggleButton({
 		if enabled then
 			StrafeDelay = 0.85
 			while enabled do
-				local Target = GetNearest(StrafeRadius)
+				local Target = GetNearest(20)
 				StrafeAngle = StrafeAngle + StrafeSpeed
 				local x = math.cos(math.rad(StrafeAngle)) * StrafeRadius
 				local z = math.sin(math.rad(StrafeAngle)) * StrafeRadius
@@ -505,9 +502,9 @@ local AntiVanish = WorldTab:ToggleButton({
 		if enabled then
 			for _, player in pairs(game.Players:GetPlayers()) do
 				if player:IsInGroup(8154377) and player:GetRankInGroup(8154377) >= 1 then
-					CreateNotification("AntiVanish", player.Name, "Just Vanished", 5, true)
+					CreateNotification("AntiVanish", player.Name, "Just Vanished", 10, true)
 				elseif player.UserId == 1162748399 and player.Name == "erpanmand" then
-					CreateNotification("AntiVanish", player.Name, "Owner Here", 3, true)
+					CreateNotification("AntiVanish", player.Name, "Owner Here", 5, true)
 				end
 			end
 		end
