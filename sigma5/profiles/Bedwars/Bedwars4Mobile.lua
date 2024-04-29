@@ -88,7 +88,7 @@ local function GetBed(range)
 	local localPlayer = game.Players.LocalPlayer
 
 	for _, v in pairs(game.Workspace:GetChildren()) do
-		if v.Name == "bed" and v.Covers.BrickColor ~= localPlayer.Team.TeamColor then
+		if v.Name == "bed" and v.Blanket.BrickColor ~= localPlayer.Team.TeamColor then
 			local distance = (v.Position - localPlayer.Character.HumanoidRootPart.Position).magnitude
 			if distance < nearestDistance and distance <= range then
 				nearestBed = v
@@ -520,23 +520,23 @@ local function VoxelFly()
 	while VoxelMode do
 		LocalPlayer.Character:WaitForChild("HumanoidRootPart").CFrame = CFrame.new(LocalPlayer.Character:WaitForChild("HumanoidRootPart").Position + Vector3.new(0, 3, 0))
 		wait(0.10)
-		localPlayer.Character:FindFirstChild("HumanoidRootPart").CFrame = localPlayer.Character:FindFirstChild("HumanoidRootPart").CFrame * CFrame.new(0,-0.1,-1.3)
+		LocalPlayer.Character:FindFirstChild("HumanoidRootPart").CFrame = localPlayer.Character:FindFirstChild("HumanoidRootPart").CFrame * CFrame.new(0,-0.1,-1.3)
 		wait(0.18)
 	end
 end
 
 local function EasyGGFly()
 	while EasyGGMode do
-		localPlayer.Character:FindFirstChild("HumanoidRootPart").CFrame = localPlayer.Character:FindFirstChild("HumanoidRootPart").CFrame * CFrame.new(0,-0.1,-1.5)
+		LocalPlayer.Character:FindFirstChild("HumanoidRootPart").CFrame = localPlayer.Character:FindFirstChild("HumanoidRootPart").CFrame * CFrame.new(0,-0.1,-1.5)
 		wait(0.23)
 	end
 end
 
 local function Bit16Fly()
 	while Bit16Mode do
-		localPlayer.Character:FindFirstChild("HumanoidRootPart").CFrame = localPlayer.Character:FindFirstChild("HumanoidRootPart").CFrame * CFrame.new(0,-0.1,-1.3)
+		LocalPlayer.Character:FindFirstChild("HumanoidRootPart").CFrame = localPlayer.Character:FindFirstChild("HumanoidRootPart").CFrame * CFrame.new(0,-0.1,-1.3)
 		wait(0.12)
-		localPlayer.Character:FindFirstChild("HumanoidRootPart").CFrame = localPlayer.Character:FindFirstChild("HumanoidRootPart").CFrame * CFrame.new(0,-0.1,-1.3)
+		LocalPlayer.Character:FindFirstChild("HumanoidRootPart").CFrame = localPlayer.Character:FindFirstChild("HumanoidRootPart").CFrame * CFrame.new(0,-0.1,-1.3)
 	end
 end
 
@@ -556,7 +556,7 @@ local Fly = PlayerTab:ToggleButton({
 					EasyGGFly()
 				elseif DefaultFlyMode == "16BitPlay" then
 					LocalPlayer.Character:WaitForChild("Humanoid"):ChangeState(Enum.HumanoidStateType.Jumping)
-					task.wait(0.38)
+					task.wait(0.32)
 					game.Workspace.Gravity = 0
 					task.wait(0.3)
 					game.Workspace.Gravity = 3
