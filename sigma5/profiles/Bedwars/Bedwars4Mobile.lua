@@ -10,7 +10,7 @@ local Player = game:GetService("Players")
 local VisualFolder = Instance.new("Folder", game.Workspace)
 VisualFolder.Name = "VisualFolder"
 --Functions
-local KnitClient = debug.getupvalue(require(localPlayer.PlayerScripts.TS.knit).setup, 6)
+local KnitClient = debug.getupvalue(require(LocalPlayer.PlayerScripts.TS.knit).setup, 6)
 local ClientStore = require(LocalPlayer.PlayerScripts.TS.ui.store).ClientStore
 local TeamChecks = false
 local function GetNearest(dist)
