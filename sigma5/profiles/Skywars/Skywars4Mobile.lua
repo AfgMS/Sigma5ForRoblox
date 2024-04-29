@@ -10,14 +10,13 @@ local Player = game:GetService("Players")
 local function GetNearest(range)
 	local nearestPlayer
 	local nearestDistance = math.huge
-	local localPlayer = game.Players.LocalPlayer
 
 	for _, player in ipairs(game.Players:GetPlayers()) do
-		if isAlive(player) and player ~= localPlayer and isAlive(localPlayer) then
-			local playerHRP = player.Character and player.Character:FindFirstChild("HumanoidRootPart")
-			local localHRP = localPlayer.Character and localPlayer.Character:FindFirstChild("HumanoidRootPart")
-			if playerHRP and localHRP then
-				local distance = (playerHRP.Position - localHRP.Position).magnitude
+		if player ~= LocalPlayer and player.Character:WaitForChild("HumanoidRootPart") and LocalPlayer.Character:WaitForChild("HumanoidRootPart") then
+			local playerPrimary = player.Character and player.Character:FindFirstChild("HumanoidRootPart")
+			local lplrPrimary = LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart")
+			if playerPrimary and lplrPrimary then
+				local distance = (playerPrimary.Position - lplrPrimary.Position).magnitude
 				if distance < nearestDistance and distance <= range then
 					nearestPlayer = player
 					nearestDistance = distance
@@ -74,7 +73,6 @@ local DefaultAimPart = "HumRoot"
 local CameraDirection
 local AimbotDistance
 local AimbotDelay
-local CrazyAimModes
 
 local Aimbot = CombatTab:ToggleButton({
 	name = "Aimbot",
@@ -112,14 +110,10 @@ local CustomAimbotDist = Aimbot:Slider({
 		AimbotDistance = val
 	end
 })
-CrazyAimModes = Aimbot:ToggleButtonInsideUI({
+local CrazyAimModes = Aimbot:ToggleButtonInsideUI({
 	name = "CrazyAim",
-	callback = function(enabled)
-		if enabled then
+	callback = function()
 		CreateNotification("Sigma5", "This feature is for premium", 3, true)
-		wait(3)
-		CrazyAimModes.Enabled = false
-		end
 	end
 })
 local AimPartModes = Aimbot:Dropdown({
@@ -277,7 +271,7 @@ local DefaultFlyMode = "Easy.GG"
 local VoxelMode = false
 local EasyGGMode = false
 local Bit16Mode = false
-local FlyRageMode
+
 local function VoxelFly()
 	while VoxelMode do
 		LocalPlayer.Character:WaitForChild("HumanoidRootPart").CFrame = CFrame.new(LocalPlayer.Character:WaitForChild("HumanoidRootPart").Position + Vector3.new(0, 3, 0))
@@ -345,14 +339,10 @@ local CustomFlyPush = Fly:Slider({
 	callback = function(val)
 	end
 })
-FlyRageMode = Fly:ToggleButtonInsideUI({
+local FlyRageMode = Fly:ToggleButtonInsideUI({
 	name = "RageMode",
-	callback = function(enabled)
-		if enabled then
-			CreateNotification("Sigma5", "This feature is for premium", 3, true)
-			wait(3)
-			FlyRageMode.Enabled = false
-		end
+	callback = function()
+		CreateNotification("Sigma5", "This feature is for premium", 3, true)
 	end
 })
 local FlyModes = Fly:Dropdown({
