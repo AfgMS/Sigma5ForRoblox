@@ -7,6 +7,52 @@ local CoreGui = game:WaitForChild("CoreGui")
 local LocalPlayer = game.Players.LocalPlayer
 local Player = game:GetService("Players")
 --Functions
+local skywars = {}
+
+local function getfunctions()
+	local Flamework = require(game:GetService("ReplicatedStorage")["rbxts_include"]["node_modules"]["@flamework"].core.out).Flamework
+	repeat task.wait() until Flamework.isInitialized
+
+	local controllers = {}
+	local controllerids = {}
+	local eventnames = {}
+
+	for i, v in pairs(debug.getupvalue(Flamework.Testing.patchDependency, 1).idToObj) do
+		controllers[tostring(v)] = v
+		controllerids[tostring(v)] = i 
+
+		local controllerevents = {}
+		for i2, v2 in pairs(v) do
+			if type(v2) == "function" then
+				local eventsfound = {}
+				for i3, v3 in pairs(debug.getconstants(v2)) do
+					if tostring(v3):find("-") == 9 then
+						table.insert(eventsfound, tostring(v3))
+					end
+				end
+				if #eventsfound > 0 then
+					controllerevents[i2] = eventsfound
+				end
+			end
+		end
+		eventnames[tostring(v)] = controllerevents
+	end
+
+	local Events = require(game:GetService("ReplicatedStorage").TS.events).GlobalEvents.client
+
+	skywars = {
+		["EventHandler"] = Events,
+		["Events"] = eventnames,
+		["BlockFunctionHandler"] = require(LocalPlayer.PlayerScripts.TS.events).Functions,
+		["HotbarController"] = controllers["HotbarController"],
+		["BlockUtil"] = require(game:GetService("ReplicatedStorage").TS.util["block-util"]).BlockUtil,
+		["ScreenController"] = controllers["ScreenController"],
+		["MeleeController"] = Flamework.resolveDependency(controllerids["MeleeController"]),
+		["ItemTable"] = require(game:GetService("ReplicatedStorage").TS.item.item).Items,
+		["HealthController"] = Flamework.resolveDependency(controllerids["HealthController"])
+	}
+end
+
 local function GetNearest(range)
 	local nearestPlayer
 	local nearestDistance = math.huge
@@ -33,6 +79,7 @@ local CombatTab = Library:createTabs(CoreGui.Sigma5, "Combat")
 local RenderTab = Library:createTabs(CoreGui.Sigma5, "Render")
 local PlayerTab = Library:createTabs(CoreGui.Sigma5, "Player")
 local WorldTab = Library:createTabs(CoreGui.Sigma5, "World")
+getfunctions()
 --GuiModules
 local ActiveMods = GuiTab:ToggleButton({
 	name = "ActiveMods",
@@ -73,6 +120,18 @@ local DefaultAimPart = "HumRoot"
 local CameraDirection
 local AimbotDistance
 local AimbotDelay
+local JitterMode = false
+local JitterAmount = 0.8
+
+local function JitterActivated()
+	if JitterMode then
+		return Vector3.new(
+			math.random() * JitterAmount - JitterAmount / 2,
+			math.random() * JitterAmount - JitterAmount / 2,
+			math.random() * JitterAmount - JitterAmount / 2
+		)
+	end
+end
 
 local Aimbot = CombatTab:ToggleButton({
 	name = "Aimbot",
@@ -85,11 +144,11 @@ local Aimbot = CombatTab:ToggleButton({
 			while task.wait(AimbotDelay) do
 				if Target then
 					if DefaultAimPart == "Head" then
-						CameraDirection = (Target.Character:WaitForChild("Head").Position - Camera.CFrame.Position).unit
+						CameraDirection = (Target.Character:WaitForChild("Head").Position - Camera.CFrame.Position).unit + JitterActivated()
 					elseif DefaultAimPart == "HumRoot" then
-						CameraDirection = (Target.Character:WaitForChild("HumanoidRootPart").Position - Camera.CFrame.Position).unit
+						CameraDirection = (Target.Character:WaitForChild("HumanoidRootPart").Position - Camera.CFrame.Position).unit + JitterActivated()
 					elseif DefaultAimPart == "LowerTorso" then
-						CameraDirection = (Target.Character:WaitForChild("LowerTorso").Position - Camera.CFrame.Position).unit
+						CameraDirection = (Target.Character:WaitForChild("LowerTorso").Position - Camera.CFrame.Position).unit + JitterActivated()
 					end
 					local SetLookAt = CFrame.new(Camera.CFrame.Position, Camera.CFrame.Position + CameraDirection)
 					Camera.CFrame = SetLookAt
@@ -110,10 +169,19 @@ local CustomAimbotDist = Aimbot:Slider({
 		AimbotDistance = val
 	end
 })
-local CrazyAimModes = Aimbot:ToggleButtonInsideUI({
-	name = "CrazyAim",
-	callback = function()
-		CreateNotification("Sigma5", "This feature is for premium", 3, true)
+local CustomJitterAmount = Aimbot:Slider({
+	title = "Amount",
+	min = 0,
+	max = 100,
+	default = 20,
+	callback = function(val)
+		JitterAmount = val
+	end
+})
+local JitterAimModes = Aimbot:ToggleButtonInsideUI({
+	name = "Jitter",
+	callback = function(enabled)
+		JitterMode = enabled
 	end
 })
 local AimPartModes = Aimbot:Dropdown({
@@ -136,11 +204,9 @@ local KillAura = CombatTab:ToggleButton({
 			while enabled do
 				local Target = GetNearest(KillAuraDistance)
 				if Target then
-					local KillAuraComponent = {
-						[1] = Target
-					}
-					game:GetService("ReplicatedStorage"):FindFirstChild("events-eL9"):FindFirstChild("089f902f-520f-4165-a497-80b7dbd0b7ff"):FireServer(unpack(KillAuraComponent))
-					game:GetService("ReplicatedStorage"):FindFirstChild("events-eL9"):FindFirstChild("24f1b7a0-a1d8-444b-9866-5fcdfb43530d"):FireServer(unpack(KillAuraComponent))
+					for _, kaTarget in pairs(Target) do
+						skywars["EventHandler"][skywars["Events"].MeleeController.strikeDesktop[1]]:fire(kaTarget)
+					end
 				end
 				task.wait()
 			end
@@ -162,9 +228,9 @@ local KillAuraSilent = KillAura:ToggleButtonInsideUI({
 	name = "Silent",
 	callback = function(enabled)
 		if enabled then
-			local Target = GetNearest(KillAuraDistance)
 			SilentRotateDelay = 0.01
 			while enabled do
+				local Target = GetNearest(KillAuraDistance)
 				if Target then
 					local Direction = (Target.Character:WaitForChild("HumanoidRootPart").Position - LocalPlayer.Character:WaitForChild("HumanoidRootPart").Position).unit
 					local LookAtVector = Vector3.new(Direction.X, 0, Direction.Z).unit
@@ -460,13 +526,40 @@ local LongJumpMode = LongJump:Dropdown({
 	end
 })
 --]]
+--AutoSprint
+local SprintCont = LocalPlayer.PlayerScripts.TS.controllers["sprinting-controller"]
+local AutoSprint = PlayerTab:ToggleButton({
+	name = "AutoSprint",
+	info = "Automatically Sprint",
+	callback = function(enabled)
+		if enabled then
+			spawn(function()
+				while enabled do
+					task.wait()
+					if not SprintCont.sprinting then
+						SprintCont:startSprinting()
+					end
+				end
+			end)
+		else
+			spawn(function()
+				while not enabled do
+					task.wait()
+					if SprintCont.sprinting then
+						SprintCont:stopSprinting()
+					end
+				end
+			end)
+		end
+	end
+})
 --Speed
 local Speed = PlayerTab:ToggleButton({
 	name = "Speed",
 	info = "speedddddedd",
 	callback = function(enabled)
 		if enabled then
-			LocalPlayer.Character:WaitForChild("Humanoid").WalkSpeed = 43
+			LocalPlayer.Character:WaitForChild("Humanoid").WalkSpeed = 52
 		else
 			LocalPlayer.Character:WaitForChild("Humanoid").WalkSpeed = 16
 		end
@@ -477,22 +570,19 @@ local StrafeRadius = 8
 local StrafeSpeed = 13
 local StrafeAngle = 0
 local StrafeDelay
-
 local TargetStrafe = PlayerTab:ToggleButton({
 	name = "TargetStrafe",
 	info = "circle around a player",
 	callback = function(enabled)
 		if enabled then
 			StrafeDelay = 0.01
-			local Target = GetNearest(20)
+			local Target = GetNearest(38)
 			while task.wait(StrafeDelay) do
 				StrafeAngle = StrafeAngle + StrafeSpeed
 				local x = math.cos(math.rad(StrafeAngle)) * StrafeRadius
 				local z = math.sin(math.rad(StrafeAngle)) * StrafeRadius
 				local newPosition = Target.Character.PrimaryPart.Position + Vector3.new(x, 0, z)
-
 				LocalPlayer.Character:SetPrimaryPartCFrame(CFrame.new(newPosition, LocalPlayer.Character.PrimaryPart.Position))
-
 				local Direction = (Target.Character:WaitForChild("HumanoidRootPart").Position - LocalPlayer.Character:WaitForChild("HumanoidRootPart").Position).unit
 				local LookAtVector = Vector3.new(Direction.X, 0, Direction.Z).unit
 				local newCFrame = CFrame.new(LocalPlayer.Character:WaitForChild("HumanoidRootPart").Position, LocalPlayer.Character:WaitForChild("HumanoidRootPart").Position + LookAtVector)
