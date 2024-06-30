@@ -100,7 +100,7 @@ function Library:CreateCore()
 	GUIOpen.BorderColor3 = Color3.fromRGB(0, 0, 0)
 	GUIOpen.BorderSizePixel = 0
 	GUIOpen.Position = UDim2.new(0.970000029, 0, 0.25, 0)
-	GUIOpen.Size = UDim2.new(0.0343909636, 0, 0.0501253121, 0)
+	GUIOpen.Size = UDim2.new(0, 20, 0, 20)
 	GUIOpen.AutoButtonColor = false
 	GUIOpen.Font = Enum.Font.SourceSansLight
 	GUIOpen.LineHeight = 0.000
@@ -110,6 +110,7 @@ function Library:CreateCore()
 	GUIOpen.TextSize = 36.000
 	GUIOpen.TextTransparency = 0.250
 	GUIOpen.TextWrapped = true
+	GUIOpen.TextXAlignment = Enum.TextXAlignment.Center
 	GUIOpen.TextYAlignment = Enum.TextYAlignment.Center
 	table.insert(Core, GUIOpen)
 	
@@ -364,8 +365,8 @@ function Library:CreateCore()
 	SettingOpen.BackgroundTransparency = 0.450
 	SettingOpen.BorderColor3 = Color3.fromRGB(0, 0, 0)
 	SettingOpen.BorderSizePixel = 0
-	SettingOpen.Position = UDim2.new(0.936517894, 0, 0.928771973, 0)
-	SettingOpen.Size = UDim2.new(0.0545759872, 0, 0.0501253121, 0)
+	SettingOpen.Position = UDim2.new(0.915, 0, 0.856, 0)
+	SettingOpen.Size = UDim2.new(0, 60, 0, 40)
 	SettingOpen.Visible = false
 	SettingOpen.AutoButtonColor = false
 	SettingOpen.Font = Enum.Font.SourceSans
