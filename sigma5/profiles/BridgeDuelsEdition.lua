@@ -7,10 +7,15 @@ local Lighting = game:GetService("Lighting")
 
 Library:createScreenGui()
 local GuiTab = Library:createTabs(LocalPlayer.PlayerGui.Sigma5, "Gui")
+wait(3)
 local CombatTab = Library:createTabs(LocalPlayer.PlayerGui.Sigma5, "Combat")
+wait(3)
 local RenderTab = Library:createTabs(LocalPlayer.PlayerGui.Sigma5, "Render")
+wait(3)
 local PlayerTab = Library:createTabs(LocalPlayer.PlayerGui.Sigma5, "Player")
+wait(3)
 local WorldTab = Library:createTabs(LocalPlayer.PlayerGui.Sigma5, "World")
+wait(3)
 
 local function Alive(plr)
     return plr and plr.Character:FindFirstChildOfClass("Humanoid") and plr.Character:FindFirstChildOfClass("Humanoid").Health > 0.11
@@ -51,7 +56,7 @@ local ActiveMods = GuiTab:ToggleButton({
 		CoreGui.Sigma5Visual.RightSide.ArrayListHolder.Visible = not CoreGui.Sigma5Visual.RightSide.ArrayListHolder.Visible
 	end
 })
-
+wait(3)
 -- TabGUI
 local TabGUI = GuiTab:ToggleButton({
 	name = "TabGUI",
@@ -60,7 +65,7 @@ local TabGUI = GuiTab:ToggleButton({
 		CoreGui.Sigma5Visual.LeftSide.TabHolder.Visible = not CoreGui.Sigma5Visual.LeftSide.TabHolder.Visible
 	end
 })
-
+wait(3)
 -- RemoveUI
 local BlurEffect = Lighting:FindFirstChild("Blur")
 local RemoveUI = GuiTab:ToggleButton({
@@ -80,7 +85,7 @@ local RemoveUI = GuiTab:ToggleButton({
 		end
 	end
 })
-
+wait(3)
 -- Aimbot
 local DefaultAimPart = "HumRoot"
 local CameraDirection
@@ -113,7 +118,7 @@ local Aimbot = CombatTab:ToggleButton({
 		end
 	end
 })
-
+wait(3)
 local CustomAimbotDist = Aimbot:Slider({
 	title = "Distance",
 	min = 0,
@@ -123,14 +128,14 @@ local CustomAimbotDist = Aimbot:Slider({
 		AimbotDistance = val
 	end
 })
-
+wait(3)
 local JitterAimMode = Aimbot:ToggleButtonInsideUI({
 	name = "JitterMode",
 	callback = function()
 		CreateNotification("Sigma5", "This feature is for premium", 3, true)
 	end
 })
-
+wait(3)
 local AimPartModes = Aimbot:Dropdown({
 	name = "AimPart",
 	default = "HumRoot",
@@ -139,7 +144,7 @@ local AimPartModes = Aimbot:Dropdown({
 		DefaultAimPart = selectedItem
 	end
 })
-
+wait(3)
 -- AutoQuit
 local MinHealth
 local AutoQuit = CombatTab:ToggleButton({
@@ -163,7 +168,7 @@ local AutoQuit = CombatTab:ToggleButton({
 		end
 	end
 })
-
+wait(3)
 local CustomMinHealth = AutoQuit:Slider({
 	title = "Health",
 	min = 0,
@@ -173,8 +178,7 @@ local CustomMinHealth = AutoQuit:Slider({
 		MinHealth = val
 	end
 })
-
--- KillAura
+wait(3)
 -- KillAura
 local KillAuraDistance = 28
 local KillAuraCritical = true
@@ -218,7 +222,7 @@ local KillAura = CombatTab:ToggleButton({
 		end
 	end
 })
-
+wait(3)
 local CustomKillAuraDistance = KillAura:Slider({
 	title = "Distance",
 	min = 0,
@@ -228,17 +232,18 @@ local CustomKillAuraDistance = KillAura:Slider({
 		KillAuraDistance = val
 	end
 })
-
+wait(3)
 local KillAuraCrit = KillAura:ToggleButtonInsideUI({
 	name = "Critical",
 	callback = function(enabled)
 		KillAuraCritical = enabled
 	end
 })
-
+wait(3)
 local KillAuraBlock = KillAura:ToggleButtonInsideUI({
 	name = "AutoBlock",
 	callback = function(enabled)
 		KillAuraAutoBlock = enabled
 	end
 })
+wait(3)
