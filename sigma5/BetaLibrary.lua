@@ -373,6 +373,7 @@ function Library:CreateCore()
 	ToggleCoreBlurUninject.MouseButton1Click:Connect(function()
 		Library.Uninjected = true
 		UninjectAll()
+		GuiUninject:Destroy()
 	end)
 	
 	local UICorner_69 = Instance.new("UICorner")
