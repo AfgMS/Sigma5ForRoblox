@@ -45,7 +45,7 @@ end
 
 local Sigma5Visual = Instance.new("ScreenGui", CoreGui)
 Sigma5Visual.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
-Sigma5Visual.Name = "Sigma5Visual"
+Sigma5Visual.Name = "Gegegf"
 Sigma5Visual.ResetOnSpawn = false
 
 local BlurUI = Instance.new("BlurEffect")
@@ -353,7 +353,6 @@ function Library:CreateTab(tabsName)
 	tabHOLD.TabMainHolder.BorderColor3 = Color3.fromRGB(0, 0, 0)
 	tabHOLD.TabMainHolder.ZIndex = 3
 	tabHOLD.TabMainHolder.Position = UDim2.new(0, 25, 0, 10)
-	tabHOLD.TabMainHolder.Name = "Tabs"
 	tabHOLD.TabMainHolder.Visible = false
 
 	tabHOLD.TabName = Instance.new("TextLabel", tabHOLD.TabMainHolder)
@@ -428,13 +427,11 @@ function Library:CreateTab(tabsName)
 		ToggleButtonHolder.BorderColor3 = Color3.fromRGB(0, 0, 0)
 		ToggleButtonHolder.Text = "     " .. advance.Name
 		ToggleButtonHolder.ZIndex = 3
-		ToggleButtonHolder.Name = advance.Name
 		ToggleButtonHolder.Position = UDim2.new(0, 3, 0, 0)
 		ToggleButtonHolder.AutoButtonColor = false
 		ToggleButtonHolder.TextTransparency = 0.250
 
 		local ToggleSettingHolder = Instance.new("Frame", CoreGui:FindFirstChild("sigma5"))
-		ToggleSettingHolder.Name = "Holder"
 		ToggleSettingHolder.BackgroundColor3 = Color3.fromRGB(250, 250, 250)
 		ToggleSettingHolder.BorderColor3 = Color3.fromRGB(0, 0, 0)
 		ToggleSettingHolder.BorderSizePixel = 0
@@ -478,7 +475,6 @@ function Library:CreateTab(tabsName)
 		ToggleSettingUIList.SortOrder = Enum.SortOrder.LayoutOrder
 
 		local ToggleSettingDescription = Instance.new("TextLabel", ToggleSettingScroller)
-		ToggleSettingDescription.Name = "Info for" .. advance.Name
 		ToggleSettingDescription.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
 		ToggleSettingDescription.BackgroundTransparency = 1.000
 		ToggleSettingDescription.BorderColor3 = Color3.fromRGB(0, 0, 0)
@@ -549,7 +545,6 @@ function Library:CreateTab(tabsName)
 			local MouseDown = false
 
 			local SlidersNames = Instance.new("TextLabel", ToggleSettingScroller)
-			SlidersNames.Name = "Slider For" .. advance.Name
 			SlidersNames.Size = UDim2.new(1, 0, 0, 30)
 			SlidersNames.Position = UDim2.new(0, 0, 0, 0)
 			SlidersNames.Text = "      " .. advance.Name
@@ -651,7 +646,6 @@ function Library:CreateTab(tabsName)
 				}
 
 				local MiniToggleHolder = Instance.new("TextLabel", ToggleSettingScroller)
-				MiniToggleHolder.Name = "MiniToggle For" .. advance.Name
 				MiniToggleHolder.Size = UDim2.new(1, 0, 0, 30)
 				MiniToggleHolder.Position = UDim2.new(0, 0, 0, 0)
 				MiniToggleHolder.Text = "      " .. advance.Name
