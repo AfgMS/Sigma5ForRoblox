@@ -52,7 +52,7 @@ function playContinuousSound(soundId)
 end
 
 --Sigma5Visual
-local SigmaVisualHolder = Instance.new("ScreenGui", CoreGui)
+local SigmaVisualHolder = Instance.new("ScreenGui", localplayer.PlayerGui)
 SigmaVisualHolder.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
 SigmaVisualHolder.Name = "Sigma5Visual"
 SigmaVisualHolder.ResetOnSpawn = false
@@ -338,7 +338,7 @@ BlurUI.Enabled = false
 
 --UILibrary
 function Library:createScreenGui()
-	local screenGui = Instance.new("ScreenGui", CoreGui)
+	local screenGui = Instance.new("ScreenGui", localplayer.PlayerGui)
 	screenGui.Name = "Sigma5"
 	return screenGui
 end
@@ -495,7 +495,7 @@ function Library:createTabs(parentFrame, tabName)
 
 		-- RightClickStuff
 
-		local ButtonsMenuFrame = Instance.new("Frame", CoreGui.Sigma5)
+		local ButtonsMenuFrame = Instance.new("Frame", localplayer.PlayerGui.Sigma5)
 		ButtonsMenuFrame.Name = "Holder"
 		ButtonsMenuFrame.BackgroundColor3 = Color3.fromRGB(250, 250, 250)
 		ButtonsMenuFrame.BorderColor3 = Color3.fromRGB(0, 0, 0)
