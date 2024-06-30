@@ -96,13 +96,13 @@ function Library:CreateCore()
 	local function UninjectAll()
 		if Library.Uninjected then
 		print("Session Uninjected")
-		wait(2)
+		wait(1)
 		TabsHolder:Destroy()
 		print("Destroyed TabHolder")
-		wait(2)
+		wait(1)
 		BlurFX:Destroy()
 		print("Destroyed Blur")
-		wait(2)
+		wait(1)
 		ScreenGui:Destroy()
 		print("Destroyed All, Uninject Completed..")
 		end
@@ -371,9 +371,9 @@ function Library:CreateCore()
 	ToggleCoreBlurUninject.TextSize = 14.000
 	table.insert(Core, ToggleCoreBlurUninject)
 	ToggleCoreBlurUninject.MouseButton1Click:Connect(function()
+		ToggleCoreBlurUninject.BackgroundColor3 = Color3.fromRGB(110, 185, 255)
 		Library.Uninjected = true
 		UninjectAll()
-		GuiUninject:Destroy()
 	end)
 	
 	local UICorner_69 = Instance.new("UICorner")
