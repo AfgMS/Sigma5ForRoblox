@@ -6,11 +6,11 @@ local Camera = game:GetService("Workspace").CurrentCamera
 local Lighting = game:GetService("Lighting")
 
 Library:createScreenGui()
-local GuiTab = Library:createTabs(CoreGui.Sigma5, "Gui")
-local CombatTab = Library:createTabs(CoreGui.Sigma5, "Combat")
-local RenderTab = Library:createTabs(CoreGui.Sigma5, "Render")
-local PlayerTab = Library:createTabs(CoreGui.Sigma5, "Player")
-local WorldTab = Library:createTabs(CoreGui.Sigma5, "World")
+local GuiTab = Library:createTabs(LocalPlayer.PlayerGui.Sigma5, "Gui")
+local CombatTab = Library:createTabs(LocalPlayer.PlayerGui.Sigma5, "Combat")
+local RenderTab = Library:createTabs(LocalPlayer.PlayerGui.Sigma5, "Render")
+local PlayerTab = Library:createTabs(LocalPlayer.PlayerGui.Sigma5, "Player")
+local WorldTab = Library:createTabs(LocalPlayer.PlayerGui.Sigma5, "World")
 
 local function Alive(plr)
     return plr and plr.Character:FindFirstChildOfClass("Humanoid") and plr.Character:FindFirstChildOfClass("Humanoid").Health > 0.11
