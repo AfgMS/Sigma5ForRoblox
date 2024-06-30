@@ -88,6 +88,7 @@ function Library:CreateCore()
 	TabsHolder.BorderSizePixel = 0
 	TabsHolder.Size = UDim2.new(1, 0, 1, 0)
 	TabsHolder.CanvasSize = UDim2.new(2, 0, 0, 0)
+	TabsHolder.ScrollingDirection = Enum.ScrollingDirection.XY
 	TabsHolder.ScrollBarThickness = 3
 	TabsHolder.Visible = false
 	table.insert(Core, TabsHolder)
@@ -137,8 +138,8 @@ function Library:CreateCore()
 	SettingsHolder.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
 	SettingsHolder.BorderColor3 = Color3.fromRGB(0, 0, 0)
 	SettingsHolder.BorderSizePixel = 0
-	SettingsHolder.Position = UDim2.new(0.82449764, 0, 0.622807026, 0)
-	SettingsHolder.Size = UDim2.new(0.167926118, 0, 0.357142866, 0)
+	SettingsHolder.Position = UDim2.new(0.82, 0, 0.415, 0)
+	SettingsHolder.Size = UDim2.new(0, 135, 0, 185)
 	SettingsHolder.Visible = false
 	SettingsHolder.ZIndex = 2
 	table.insert(Core, SettingsHolder)
