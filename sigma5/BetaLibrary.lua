@@ -74,6 +74,10 @@ function Library:CreateCore()
 	end
 	table.insert(Core, ScreenGui)
 	
+	if Library.Uninjected then
+		ScreenGui:Destroy()
+	end
+	
 	local BlurFX = Instance.new("BlurEffect")
 	BlurFX.Parent = Lighting
 	BlurFX.Size = 25
@@ -359,6 +363,51 @@ function Library:CreateCore()
 		end
 	end)
 	table.insert(Core, CustomKeybindTextbox)
+	
+	local GuiUninject = Instance.new("Frame")
+	GuiUninject.Parent = SettingsList
+	GuiUninject.ZIndex = 2
+	GuiUninject.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+	GuiUninject.BackgroundTransparency = 1.000
+	GuiUninject.BorderColor3 = Color3.fromRGB(0, 0, 0)
+	GuiUninject.BorderSizePixel = 0
+	GuiUninject.Size = UDim2.new(1, 0, 0.0500000007, 0)
+	table.insert(Core, GuiUninject)
+
+	local GuiUninjectTitle = Instance.new("TextLabel")
+	GuiUninjectTitle.Parent = GuiUninject
+	GuiUninjectTitle.ZIndex = 2
+	GuiUninjectTitle.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+	GuiUninjectTitle.BackgroundTransparency = 1.000
+	GuiUninjectTitle.BorderColor3 = Color3.fromRGB(0, 0, 0)
+	GuiUninjectTitle.BorderSizePixel = 0
+	GuiUninjectTitle.Position = UDim2.new(0.0450000018, 0, 0.245000005, 0)
+	GuiUninjectTitle.Size = UDim2.new(0.668749988, 0, 0.456140339, 0)
+	GuiUninjectTitle.Font = Enum.Font.Unknown
+	GuiUninjectTitle.Text = "Background Blur"
+	GuiUninjectTitle.TextColor3 = Color3.fromRGB(0, 0, 0)
+	GuiUninjectTitle.TextScaled = true
+	GuiUninjectTitle.TextSize = 14.000
+	GuiUninjectTitle.TextWrapped = true
+	GuiUninjectTitle.TextXAlignment = Enum.TextXAlignment.Left
+	table.insert(Core, GuiUninjectTitle)
+
+	local ToggleCoreBlurUninject = Instance.new("TextButton")
+	ToggleCoreBlurUninject.Parent = GuiUninject
+	ToggleCoreBlurUninject.ZIndex = 2
+	ToggleCoreBlurUninject.BackgroundColor3 = Color3.fromRGB(238, 238, 238)
+	ToggleCoreBlurUninject.BorderColor3 = Color3.fromRGB(0, 0, 0)
+	ToggleCoreBlurUninject.BorderSizePixel = 0
+	ToggleCoreBlurUninject.Position = UDim2.new(0.899999976, 0, 0.245000005, 0)
+	ToggleCoreBlurUninject.Size = UDim2.new(0.081249997, 0, 0.456140339, 0)
+	ToggleCoreBlurUninject.Font = Enum.Font.SourceSans
+	ToggleCoreBlurUninject.Text = ""
+	ToggleCoreBlurUninject.TextColor3 = Color3.fromRGB(0, 0, 0)
+	ToggleCoreBlurUninject.TextSize = 14.000
+	table.insert(Core, ToggleCoreBlurUninject)
+	ToggleCoreBlurUninject.MouseButton1Click:Connect(function()
+		Library.Uninjected = true
+	end)
 	
 	local SettingOpen = Instance.new("TextButton")
 	SettingOpen.Parent = ScreenGui
