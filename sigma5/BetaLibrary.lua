@@ -92,6 +92,21 @@ function Library:CreateCore()
 	TabsHolder.ScrollBarThickness = 3
 	TabsHolder.Visible = false
 	table.insert(Core, TabsHolder)
+
+	local function UninjectAll()
+		if Library.Uninjected then
+		print("Session Uninjected")
+		wait(2)
+		TabsHolder:Destroy()
+		print("Destroyed TabHolder")
+		wait(2)
+		BlurFX:Destroy()
+		print("Destroyed Blur")
+		wait(2)
+		ScreenGui:Destroy()
+		print("Destroyed All, Uninject Completed..")
+		end
+	end
 	
 	local GUIOpen = Instance.new("TextButton")
 	GUIOpen.Parent = ScreenGui
@@ -357,12 +372,8 @@ function Library:CreateCore()
 	table.insert(Core, ToggleCoreBlurUninject)
 	ToggleCoreBlurUninject.MouseButton1Click:Connect(function()
 		Library.Uninjected = true
-		print("Uninjected Session")
+		UninjectAll()
 	end)
-	
-	if Library.Uninjected then
-		ScreenGui:Destroy()
-	end
 	
 	local UICorner_69 = Instance.new("UICorner")
 	UICorner_69.CornerRadius = UDim.new(1, 0)
