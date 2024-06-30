@@ -64,19 +64,15 @@ function Library:CreateCore()
 	local Core = {}
 	
 	local ScreenGui = Instance.new("ScreenGui")
-	ScreenGui.Name = Library:Spoof(math.random(12, 18))
+	ScreenGui.Name = Library:Spoof(math.random(4, 8))
 	ScreenGui.ResetOnSpawn = false
-	if RunService:IsStudio() or game.PlaceId == 11630038968 then
+	if RunService:IsStudio() --[[ or game.PlaceId == 11630038968 --]] then
 		warn("Unable to use CoreGui")
 		ScreenGui.Parent = LocalPlayer.PlayerGui
 	else
 		ScreenGui.Parent = CoreGui
 	end
 	table.insert(Core, ScreenGui)
-	
-	if Library.Uninjected then
-		ScreenGui:Destroy()
-	end
 	
 	local BlurFX = Instance.new("BlurEffect")
 	BlurFX.Parent = Lighting
@@ -263,52 +259,6 @@ function Library:CreateCore()
 	UICorner_4.Parent = ToggleCoreBlur
 	table.insert(Core, UICorner_4)
 	
-	local CustomName = Instance.new("Frame")
-	CustomName.Parent = SettingsList
-	CustomName.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-	CustomName.BackgroundTransparency = 1.000
-	CustomName.BorderColor3 = Color3.fromRGB(0, 0, 0)
-	CustomName.BorderSizePixel = 0
-	CustomName.ZIndex = 2
-	CustomName.Size = UDim2.new(1, 0, 0.0500000007, 0)
-	table.insert(Core, CustomName)
-	
-	local CustomNameTitle = Instance.new("TextLabel")
-	CustomNameTitle.Parent = CustomName
-	CustomNameTitle.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-	CustomNameTitle.BackgroundTransparency = 1.000
-	CustomNameTitle.BorderColor3 = Color3.fromRGB(0, 0, 0)
-	CustomNameTitle.BorderSizePixel = 0
-	CustomNameTitle.Position = UDim2.new(0.0450000018, 0, 0.245000005, 0)
-	CustomNameTitle.Size = UDim2.new(0.668749988, 0, 0.456140339, 0)
-	CustomNameTitle.Font = Enum.Font.Unknown
-	CustomNameTitle.Text = "Custom Name"
-	CustomNameTitle.TextColor3 = Color3.fromRGB(0, 0, 0)
-	CustomNameTitle.TextScaled = true
-	CustomNameTitle.TextSize = 14.000
-	CustomNameTitle.TextWrapped = true
-	CustomNameTitle.ZIndex = 2
-	CustomNameTitle.TextXAlignment = Enum.TextXAlignment.Left
-	table.insert(Core, CustomNameTitle)
-	
-	local CustomNameTextbox = Instance.new("TextBox")
-	CustomNameTextbox.Parent = CustomName
-	CustomNameTextbox.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-	CustomNameTextbox.BorderColor3 = Color3.fromRGB(0, 0, 0)
-	CustomNameTextbox.BorderSizePixel = 0
-	CustomNameTextbox.Position = UDim2.new(0.621748745, 0, 0.28007862, 0)
-	CustomNameTextbox.Size = UDim2.new(0.375, 0, 0.456140339, 0)
-	CustomNameTextbox.Font = Enum.Font.Unknown
-	CustomNameTextbox.PlaceholderText = "Sigma"
-	CustomNameTextbox.Text = ""
-	CustomNameTextbox.ZIndex = 2
-	CustomNameTextbox.TextColor3 = Color3.fromRGB(0, 0, 0)
-	CustomNameTextbox.TextScaled = true
-	CustomNameTextbox.TextSize = 14.000
-	CustomNameTextbox.TextWrapped = true
-	CustomNameTextbox.TextXAlignment = Enum.TextXAlignment.Left
-	table.insert(Core, CustomNameTextbox)
-	
 	local CustomKeybind = Instance.new("Frame")
 	CustomKeybind.Parent = SettingsList
 	CustomKeybind.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
@@ -384,7 +334,7 @@ function Library:CreateCore()
 	GuiUninjectTitle.Position = UDim2.new(0.0450000018, 0, 0.245000005, 0)
 	GuiUninjectTitle.Size = UDim2.new(0.668749988, 0, 0.456140339, 0)
 	GuiUninjectTitle.Font = Enum.Font.Unknown
-	GuiUninjectTitle.Text = "Background Blur"
+	GuiUninjectTitle.Text = "Uninject"
 	GuiUninjectTitle.TextColor3 = Color3.fromRGB(0, 0, 0)
 	GuiUninjectTitle.TextScaled = true
 	GuiUninjectTitle.TextSize = 14.000
@@ -407,7 +357,17 @@ function Library:CreateCore()
 	table.insert(Core, ToggleCoreBlurUninject)
 	ToggleCoreBlurUninject.MouseButton1Click:Connect(function()
 		Library.Uninjected = true
+		print("Uninjected Session")
 	end)
+	
+	if Library.Uninjected then
+		ScreenGui:Destroy()
+	end
+	
+	local UICorner_69 = Instance.new("UICorner")
+	UICorner_69.CornerRadius = UDim.new(1, 0)
+	UICorner_69.Parent = ToggleCoreBlurUninject
+	table.insert(Core, UICorner_69)
 	
 	local SettingOpen = Instance.new("TextButton")
 	SettingOpen.Parent = ScreenGui
