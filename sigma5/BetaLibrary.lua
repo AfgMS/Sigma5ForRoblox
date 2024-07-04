@@ -64,7 +64,6 @@ function Library:CreateCore()
 	local Core = {}
 	
 	local ScreenGui = Instance.new("ScreenGui")
-	ScreenGui.Name = Library:Spoof(math.random(4, 8))
 	ScreenGui.ResetOnSpawn = false
 	if RunService:IsStudio() --[[ or game.PlaceId == 11630038968 --]] then
 		warn("Unable to use CoreGui")
