@@ -15,12 +15,6 @@ local Tabs = {
 	Misc = Library:CreateTab("Misc")
 }
 
-local Remotes = {
-	AttackPlayerWithSword = ReplicatedStorage.Packages.Knit.Services.ToolService.RF.AttackPlayerWithSword,
-	ToggleBlockSword = ReplicatedStorage.Packages.Knit.Services.ToolService.RF.ToggleBlockSword,
-	BowFire = LocalPlayer.Character.DefaultBow.comm.RF.Fire
-}
-
 local function IsAlive(plr)
 	return plr.Character and plr.Character:FindFirstChildOfClass("Humanoid").Health > 0
 end
@@ -54,21 +48,6 @@ local function GetTool(matchname)
 	return Tool
 end
 
-local function DamagePlayer(player, critical, sword)
-	Remotes.AttackPlayerWithSword:InvokeServer({
-		[1] = player,
-		[2] = critical,
-		[3] = sword
-	})
-end
-
-local function BowFired(position, power)
-	Remotes.BowFire:InvokeServer({
-		[1] = position,
-		[2] = power
-	})
-end
-
 local BowDelay = 5
 local BowDistance = 30
 local BowAura = Tabs.Combat:CrateToggle("BowAura", false, false, function(callback)
@@ -82,7 +61,12 @@ local BowAura = Tabs.Combat:CrateToggle("BowAura", false, false, function(callba
 				print(Bow.Name)
 				while true do
 					wait(BowDelay)
-					BowFired(Target.Character:FindFirstChild("HumanoidRootPart").Position, 2.5)
+					local args = {
+						[1] = Target.Character:FindFirstChild("HumanoidRootPart").Position,
+						[2] = 2.99999999
+					}
+
+					LocalPlayer.Character.DefaultBow.comm.RF.Fire:InvokeServer(unpack(args))
 				end
 			end
 		end
@@ -91,10 +75,26 @@ local BowAura = Tabs.Combat:CrateToggle("BowAura", false, false, function(callba
 	end
 end)
 
-local Criticals = Tabs.Combat:CrateToggle("Criticals", false, false, function(callback)
-	
+local KillAuraCrit = false
+local Criticals = Tabs.Combat:CrateToggle("Criticals", false, true, function(callback)
+	KillAuraCrit = not KillAuraCrit
 end)
 
+local KillAuraDistance = 25
 local KillAura = Tabs.Combat:CrateToggle("KillAura", false, false, function(callback)
-
+	if callback then
+		local Target = GetNearestPlayer(KillAuraDistance)
+		if Target then
+			local Sword = GetTool("Sword")
+			if Sword then
+				local args = {
+					[1] = Target.Character,
+					[2] = KillAuraCrit,
+					[3] = Sword.Name
+				}
+				print(Target.Name)
+				game:GetService("ReplicatedStorage").Packages.Knit.Services.ToolService.RF.AttackPlayerWithSword:InvokeServer(unpack(args))
+			end
+		end
+	end
 end)
