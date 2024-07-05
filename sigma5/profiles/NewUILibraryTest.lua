@@ -1,5 +1,4 @@
---BridgeDuels have some interesting AntiCheat..
-local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/AfgMS/Sigma5ForRoblox/main/sigma5/BetaLibrary.lua", true))()
+local Library = require(game:GetService("ReplicatedStorage"):WaitForChild("Roblox"):WaitForChild("New"):FindFirstChild("Eternal"))
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local Players = game:GetService("Players")
 local LocalPlayer = Players.LocalPlayer
@@ -80,26 +79,24 @@ local Criticals = Tabs.Combat:CrateToggle("Criticals", false, true, function(cal
 	KillAuraCrit = not KillAuraCrit
 end)
 
-local KillAuraDistance = 25
+local KillAuraDistance = 28
 local KillAuraAutoBlock = false
-local KillAuraDelay = 0.75
+local KillAuraDelay = 0.1
 local KillAura = Tabs.Combat:CrateToggle("KillAura", false, false, function(callback)
 	if callback then
-		KillAuraDelay = 0.75
+		KillAuraDelay = 0.1
 		local Target = FindNearestPlayer(KillAuraDistance)
 		if Target then
 			local Sword = GetTool("Sword")
 			if Sword then
 				while true do
 					wait(KillAuraDelay)
-					--[[
 					local args = {
 						[1] = KillAuraAutoBlock,
 						[2] = Sword.Name
 					}
 
 					game:GetService("ReplicatedStorage").Packages.Knit.Services.ToolService.RF.ToggleBlockSword:InvokeServer(unpack(args))
-					--]]
 					local args = {
 						[1] = Target.Character,
 						[2] = KillAuraCrit,
@@ -114,8 +111,7 @@ local KillAura = Tabs.Combat:CrateToggle("KillAura", false, false, function(call
 		KillAuraDelay = 86400
 	end
 end)
---[[
+
 local AutoBlock = Tabs.Combat:CrateToggle("AutoBlock", false, false, function(callback)
 	KillAuraAutoBlock = not KillAuraAutoBlock
 end)
---]]
