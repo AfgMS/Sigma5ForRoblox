@@ -6,8 +6,7 @@ local UserInputService = game:GetService("UserInputService")
 local RunService = game:GetService("RunService")
 
 local Library = {
-	MobileButtons = {},
-	--Uninjected = false
+	MobileButtons = {}
 }
 
 function Spoof(length)
@@ -235,23 +234,6 @@ function Library:CreateCore()
 					callback(Enabled)
 				end
 			end
-			
-			--[[
-			shared.UninjectEternal = function()
-				if Library.Uninjected then
-					Enabled = false
-					
-					if callback then
-						callback(Enabled)
-					end
-					
-					wait(2)
-					
-					ScreenGui:Destroy()
-					print("Successfully Uninjected")
-				end
-			end
-			--]]
 			return ToggleButton
 		end
 		return TabInternal
