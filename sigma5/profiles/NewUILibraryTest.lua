@@ -28,10 +28,11 @@ local Tes3 = Movement:CrateToggle("Test3", false, true, function(callback)
 		print("Unbug 23")
 	end
 end)
-
+--[[
 local Uninject = Movement:CrateToggle("Uninject", false, false, function(callback)
 	if callback then
 		Library.Uninjected = true
 		shared.UninjectEternal()
 	end
 end)
+--]]
