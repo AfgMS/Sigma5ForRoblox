@@ -1,5 +1,4 @@
 --BridgeDuels have some interesting AntiCheat..
-local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/AfgMS/Sigma5ForRoblox/main/sigma5/BetaLibrary.lua", true))()
 Library:CreateCore()
 
 local Combat = Library:CreateTab("Combat")
@@ -38,10 +37,13 @@ local Tes4 = Movement:CrateToggle("Test4", false, false, function(callback)
 	end
 end)
 
+local herbet
 local Tes4 = Player:CrateToggle("Speed", false, false, function(callback)
 	if callback then
-		game.Players.LocalPlayer.Character.Humanoid.WalkSpeed = 85
+		herbet = game:GetService("RunService").RenderStepped:Connect(function(deltaTime)
+			game.Players.LocalPlayer.Character:FindFirstChild("HumanoidRootPart").CFrame = game.Players.LocalPlayer.Character:FindFirstChild("HumanoidRootPart").CFrame * CFrame.new(0, 0, -32 * deltaTime)
+		end)
 	else
-		game.Players.LocalPlayer.Character.Humanoid.WalkSpeed = 23
+		herbet:Disconnect()
 	end
 end)
