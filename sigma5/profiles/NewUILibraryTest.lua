@@ -2,9 +2,17 @@
 local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/AfgMS/Sigma5ForRoblox/main/sigma5/BetaLibrary.lua", true))()
 Library:CreateCore()
 
-Library:CreateTab("Combat")
-Library:CreateTab("Movement")
-Library:CreateTab("Player")
-Library:CreateTab("Render")
-Library:CreateTab("Exploit")
-Library:CreateTab("Misc")
+local Combat = Library:CreateTab("Combat")
+local Movement = Library:CreateTab("Movement")
+
+local Test = Combat:CrateToggle("Yessir", false, false, function(callback)
+	print("eeee")
+end)
+
+local Test = Movement:CrateToggle("Yessir", false, true, function(callback)
+	if callback then
+		print("e")
+	else
+		print("o")
+	end
+end)
