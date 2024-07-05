@@ -62,6 +62,11 @@ function Library:CreateCore()
 	GUIOpen.TextYAlignment = Enum.TextYAlignment.Center
 	table.insert(Core, GUIOpen)
 	
+	local Coerner = Instance.new("UICorner")
+	Coerner.Parent = GUIOpen
+	Coerner.CornerRadius = UDim.new(0, 4)
+	table.insert(Core, Coerner)
+	
 	local UIPadding = Instance.new("UIPadding")
 	UIPadding.Parent = ScreenGui
 	UIPadding.PaddingLeft = UDim.new(0, 25)
@@ -71,10 +76,9 @@ function Library:CreateCore()
 	function Library:CreateTab(TabName)
 		local TabInternal = {SizeY = 0}
 		
-		
 		local Frame = Instance.new("Frame")
 		Frame.Parent = ScreenGui
-		Frame.Name = "MainFrame"
+		Frame.Name = TabName
 		Frame.BackgroundColor3 = Color3.fromRGB(23, 23, 23)
 		Frame.BorderColor3 = Color3.fromRGB(0, 0, 0)
 		Frame.BorderSizePixel = 0
@@ -190,6 +194,22 @@ function Library:CreateCore()
 			UICorner.Parent = Frame_4
 			table.insert(ToggleButton, UICorner)
 			
+			local OpenMenu = Instance.new("TextButton")
+			OpenMenu.Parent = TextButton
+			OpenMenu.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+			OpenMenu.BackgroundTransparency = 1.000
+			OpenMenu.BorderColor3 = Color3.fromRGB(0, 0, 0)
+			OpenMenu.BorderSizePixel = 0
+			OpenMenu.Position = UDim2.new(0.829999983, 0, 0.150999993, 0)
+			OpenMenu.Size = UDim2.new(0, 18, 0, 18)
+			OpenMenu.Font = Enum.Font.SourceSans
+			OpenMenu.Text = "+"
+			OpenMenu.TextColor3 = Color3.fromRGB(255, 255, 255)
+			OpenMenu.TextScaled = true
+			OpenMenu.TextSize = 14.000
+			OpenMenu.TextWrapped = true
+			table.insert(ToggleButton, OpenMenu)
+			
 			local function OnClicked()
 				if Enabled then
 					Frame_4.BackgroundColor3 = Color3.fromRGB(0, 175, 0)
@@ -213,6 +233,21 @@ function Library:CreateCore()
 
 				if callback then
 					callback(Enabled)
+				end
+			end
+			
+			shared.UninjectEternal = function()
+				if Library.Uninjected then
+					Enabled = false
+					
+					if callback then
+						callback(Enabled)
+					end
+					
+					wait(2)
+					
+					ScreenGui:Destroy()
+					print("Successfully Uninjected")
 				end
 			end
 			return ToggleButton
