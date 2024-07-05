@@ -6,7 +6,6 @@ local UserInputService = game:GetService("UserInputService")
 local RunService = game:GetService("RunService")
 
 local Library = {
-	SpoofName = false,
 	MobileButtons = {},
 	Uninjected = false
 }
@@ -49,7 +48,7 @@ function Draggable(object)
 	end)
 end
 
-function Library:Spoof(length)
+function Spoof(length)
 	local Letter = {}
 	for i = 1, length do
 		local RandomLetter = string.char(math.random(97, 122))
@@ -63,18 +62,27 @@ function Library:CreateCore()
 	
 	local ScreenGui= Instance.new("ScreenGui")
 	ScreenGui.ResetOnSpawn = false
-	ScreenGui.Name = Library:Spoof(math.random(4, 8))
+	ScreenGui.Name = Spoof(math.random(8, 12))
 	if RunService:IsStudio() or game.PlaceId == 11630038968 then
 		ScreenGui.Parent = PlayerGui
 		warn("Unable to use CoreGui")
 	else
 		ScreenGui.Parent = CoreGui
 	end
+	table.insert(Core, ScreenGui)
 	
+	local UIListLayout = Instance.new("UIListLayout")
+	UIListLayout.Parent = ScreenGui
+	UIListLayout.FillDirection = Enum.FillDirection.Horizontal
+	UIListLayout.SortOrder = Enum.SortOrder.LayoutOrder
+	UIListLayout.Padding = UDim.new(0, 5)
+	table.insert(Core, UIListLayout)
 	
-	
-	
-	
+	local UIPadding = Instance.new("UIPadding")
+	UIPadding.Parent = ScreenGui
+	UIPadding.PaddingLeft = UDim.new(0, 25)
+	UIPadding.PaddingTop = UDim.new(0, 25)
+	table.insert(Core, UIPadding)
 	
 	return Core
 end
