@@ -10,44 +10,6 @@ local Library = {
 	Uninjected = false
 }
 
-function Draggable(object)
-	local dragging
-	local dragInput
-	local dragStart
-	local startPos
-
-	local function update(input)
-		local delta = input.Position - dragStart
-		object.Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X, startPos.Y.Scale, startPos.Y.Offset + delta.Y)
-	end
-
-	object.InputBegan:Connect(function(input)
-		if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
-			dragging = true
-			dragStart = input.Position
-			startPos = object.Position
-
-			input.Changed:Connect(function()
-				if input.UserInputState == Enum.UserInputState.End then
-					dragging = false
-				end
-			end)
-		end
-	end)
-
-	object.InputChanged:Connect(function(input)
-		if input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch then
-			dragInput = input
-		end
-	end)
-
-	UserInputService.InputChanged:Connect(function(input)
-		if input == dragInput and dragging then
-			update(input)
-		end
-	end)
-end
-
 function Spoof(length)
 	local Letter = {}
 	for i = 1, length do
@@ -84,8 +46,63 @@ function Library:CreateCore()
 	UIPadding.PaddingTop = UDim.new(0, 25)
 	table.insert(Core, UIPadding)
 	
+	function Library:CreateTab(TabName)
+		local TabInternal = {}
+		
+		local Frame = Instance.new("Frame")
+		Frame.Parent = ScreenGui
+		Frame.Name = "MainFrame"
+		Frame.BackgroundColor3 = Color3.fromRGB(23, 23, 23)
+		Frame.BorderColor3 = Color3.fromRGB(0, 0, 0)
+		Frame.BorderSizePixel = 0
+		Frame.Size = UDim2.new(0, 118, 0, 25)
+		table.insert(TabInternal, Frame)
+		
+		local TextLabel = Instance.new("TextLabel")
+		TextLabel.Parent = Frame
+		TextLabel.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+		TextLabel.BackgroundTransparency = 1.000
+		TextLabel.BorderColor3 = Color3.fromRGB(0, 0, 0)
+		TextLabel.BorderSizePixel = 0
+		TextLabel.Size = UDim2.new(1, 0, 1, 0)
+		TextLabel.Font = Enum.Font.SourceSans
+		TextLabel.Name = TabName
+		TextLabel.Text = TabName
+		TextLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+		TextLabel.TextScaled = true
+		TextLabel.TextSize = 14.000
+		TextLabel.TextWrapped = true
+		table.insert(TabInternal, TextLabel)
+		
+		local UITextSizeConstraint = Instance.new("UITextSizeConstraint")
+		UITextSizeConstraint.Parent = TextLabel
+		UITextSizeConstraint.MaxTextSize = 14
+		table.insert(TabInternal, UITextSizeConstraint)
+		
+		local Frame_2 = Instance.new("Frame")
+		Frame_2.Parent = Frame
+		Frame_2.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+		Frame_2.BackgroundTransparency = 1.000
+		Frame_2.BorderColor3 = Color3.fromRGB(0, 0, 0)
+		Frame_2.BorderSizePixel = 0
+		Frame_2.Position = UDim2.new(0, 0, 1.00000024, 0)
+		Frame_2.Size = UDim2.new(1, 0, 0, 211)
+		table.insert(TabInternal, Frame_2)
+		
+		local Frame_3 = Instance.new("Frame")
+		Frame_3.Parent = Frame_2
+		Frame_3.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+		Frame_3.BorderColor3 = Color3.fromRGB(0, 0, 0)
+		Frame_3.BorderSizePixel = 0
+		Frame_3.Position = UDim2.new(0, 0, -0.00473933667, 0)
+		Frame_3.Size = UDim2.new(1, 0, 0.535549045, 0)
+		table.insert(TabInternal, Frame_3)
+		
+		local UIListLayout_2 = Instance.new("UIListLayout")
+		UIListLayout_2.Parent = Frame_3
+		table.insert(TabInternal, UIListLayout_2)
+		return TabInternal
+	end
 	return Core
 end
-
-
 return Library
