@@ -47,6 +47,14 @@ local function GetTool(matchname)
 	return Tool
 end
 
+local function GetPos(Expand)
+	local x = math.round(LocalPlayer.Character.PrimaryPart.Position.X/3)
+	local y = math.round(LocalPlayer.Character.PrimaryPart.Position.Y/3)
+	local z = math.round(LocalPlayer.Character.PrimaryPart.Position.Z/3)
+	local realexpand = Expand + 1
+	return Vector3.new(x, y - 1, z) + (LocalPlayer.Character:FindFirstChild("HumanoidRootPart").CFrame.LookVector * math.round(Expand))
+end
+
 local BowDelay = 3
 local BowDistance = 30
 local BowAura = Tabs.Combat:CrateToggle("BowAura", false, false, function(callback)
@@ -55,9 +63,8 @@ local BowAura = Tabs.Combat:CrateToggle("BowAura", false, false, function(callba
 		local Target = FindNearestPlayer(BowDistance)
 		if Target and IsAlive(Target) then
 			print(Target.Name)
-			local Bow = GetTool("DefaultBow")
+			local Bow = GetTool("Bow")
 			if Bow then
-				print(Bow.Name)
 				while true do
 					wait(BowDelay)
 					local args = {
@@ -65,7 +72,7 @@ local BowAura = Tabs.Combat:CrateToggle("BowAura", false, false, function(callba
 						[2] = 2.99999999
 					}
 
-					LocalPlayer.Character.DefaultBow.comm.RF.Fire:InvokeServer(unpack(args))
+					Bow.comm.RF.Fire:InvokeServer(unpack(args))
 				end
 			end
 		end
@@ -96,13 +103,13 @@ local KillAura = Tabs.Combat:CrateToggle("KillAura", false, false, function(call
 						[2] = Sword.Name
 					}
 
-					game:GetService("ReplicatedStorage").Packages.Knit.Services.ToolService.RF.ToggleBlockSword:InvokeServer(unpack(args))
+					ReplicatedStorage.Packages.Knit.Services.ToolService.RF.ToggleBlockSword:InvokeServer(unpack(args))
 					local args = {
 						[1] = Target.Character,
 						[2] = KillAuraCrit,
 						[3] = Sword.Name
 					}
-					game:GetService("ReplicatedStorage").Packages.Knit.Services.ToolService.RF.AttackPlayerWithSword:InvokeServer(unpack(args))
+					ReplicatedStorage.Packages.Knit.Services.ToolService.RF.AttackPlayerWithSword:InvokeServer(unpack(args))
 					print("Name: " .. Target.Name .. "Health: " .. Target.Character:FindFirstChildOfClass("Humanoid").Health)
 				end
 			end
@@ -114,4 +121,26 @@ end)
 
 local AutoBlock = Tabs.Combat:CrateToggle("AutoBlock", false, false, function(callback)
 	KillAuraAutoBlock = not KillAuraAutoBlock
+end)
+
+local ScaffoldDelay = 0.1
+local ExpandValue = 2
+local Scaffold = Tabs.Player:CrateToggle("Scaffold", false, false, function(callback)
+	if callback then
+		ScaffoldDelay = 0.1
+		local Wool = GetTool("Wool")
+		if Wool then
+			print(Wool.Name)
+			while true do
+				wait(ScaffoldDelay)
+				local args = {
+					[1] = GetPos(ExpandValue)
+				}
+
+				game:GetService("ReplicatedStorage").Packages.Knit.Services.ToolService.RF.PlaceBlock:InvokeServer(unpack(args))
+			end
+		end
+	else
+		ScaffoldDelay = 86400
+	end
 end)
