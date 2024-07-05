@@ -47,100 +47,63 @@ local function GetTool(matchname)
 	return Tool
 end
 
-local function GetPos(Expand)
-	local x = math.round(LocalPlayer.Character.PrimaryPart.Position.X / 3)
-	local y = math.round(LocalPlayer.Character.PrimaryPart.Position.Y / 3)
-	local z = math.round(LocalPlayer.Character.PrimaryPart.Position.Z / 3)
-	local realexpand = Expand + 1
-	return Vector3.new(x, y - 1, z) + (LocalPlayer.Character:FindFirstChild("HumanoidRootPart").CFrame.LookVector * math.round(Expand))
-end
-
-local BowDelay = 3
-local BowDistance = 30
-local BowAura = Tabs.Combat:CreateToggle("BowAura", false, false, function(callback)
+local AutoSwordDistance = 30
+local AutoSword = Tabs.Combat:CrateToggle("AutoSword", false, true, function(callback)
 	if callback then
-		BowDelay = 3
-		local Target = FindNearestPlayer(BowDistance)
+		local Target = FindNearestPlayer(AutoSwordDistance)
 		if Target and IsAlive(Target) then
-			print(Target.Name)
-			local Bow = GetTool("Bow")
-			if Bow then
-				while true do
-					wait(BowDelay)
-					local args = {
-						[1] = Target.Character:FindFirstChild("HumanoidRootPart").Position,
-						[2] = 2.99999999
-					}
-
-					Bow.comm.RF.Fire:InvokeServer(unpack(args))
-				end
+			local Sword = GetTool("Sword")
+			if Sword~= nil then
+				Humanoid:EquipTool(Sword.Name)
 			end
 		end
 	else
-		BowDelay = 86400
+		local Sword = GetTool("Sword")
+		if Sword~= nil then
+			Humanoid:UnequipTools(Sword.Name)
+		end
 	end
 end)
 
-local KillAuraCrit = false
-local Criticals = Tabs.Combat:CreateToggle("Criticals", false, true, function(callback)
-	KillAuraCrit = not KillAuraCrit
+local AutoBlockT = false
+local AutoBlockDistance = 28
+local AutoBlock = Tabs.Combat:CrateToggle("AutoBlock", false, false, function(callback)
+	if callback then
+		AutoBlockT = true
+		local Target = FindNearestPlayer(AutoBlockDistance)
+		if Target and IsAlive(Target) then
+			local Sword = GetTool("Sword")
+			if Sword~= nil then
+				local args = {
+					[1] = AutoBlockT,
+					[2] = Sword.Name
+				}
+
+				ReplicatedStorage.Packages.Knit.Services.ToolService.RF.ToggleBlockSword:InvokeServer(unpack(args))
+			end
+		end
+	else
+		AutoBlockT = false
+	end
 end)
 
-local KillAuraDistance = 28
-local KillAuraAutoBlock = false
-local KillAuraDelay = 0.1
-local KillAura = Tabs.Combat:CreateToggle("KillAura", false, false, function(callback)
+local KillAuraDistance = 25
+local KillAura = Tabs.Combat:CrateToggle("KillAura", false, false, function(callback)
 	if callback then
-		KillAuraDelay = 0.1
 		local Target = FindNearestPlayer(KillAuraDistance)
-		if Target then
+		if Target and IsAlive(Target) then
 			local Sword = GetTool("Sword")
-			if Sword then
-				while true do
-					wait(KillAuraDelay)
-					local args = {
-						[1] = KillAuraAutoBlock,
-						[2] = Sword.Name
-					}
-
-					ReplicatedStorage.Packages.Knit.Services.ToolService.RF.ToggleBlockSword:InvokeServer(unpack(args))
+			if Sword~= nil then
+				repeat
+					task.wait()
 					local args = {
 						[1] = Target.Character,
-						[2] = KillAuraCrit,
+						[2] = true,
 						[3] = Sword.Name
 					}
 					ReplicatedStorage.Packages.Knit.Services.ToolService.RF.AttackPlayerWithSword:InvokeServer(unpack(args))
-					print("Name: " .. Target.Name .. " Health: " .. Target.Character:FindFirstChildOfClass("Humanoid").Health)
-				end
+				until not Sword
 			end
 		end
-	else
-		KillAuraDelay = 86400
-	end
-end)
-
-local AutoBlock = Tabs.Combat:CreateToggle("AutoBlock", false, false, function(callback)
-	KillAuraAutoBlock = not KillAuraAutoBlock
-end)
-
-local ScaffoldDelay = 0.1
-local ExpandValue = 2
-local Scaffold = Tabs.Player:CreateToggle("Scaffold", false, false, function(callback)
-	if callback then
-		ScaffoldDelay = 0.1
-		local Wool = GetTool("Wool")
-		if Wool then
-			print(Wool.Name)
-			while true do
-				wait(ScaffoldDelay)
-				local args = {
-					[1] = GetPos(ExpandValue)
-				}
-
-				game:GetService("ReplicatedStorage").Packages.Knit.Services.ToolService.RF.PlaceBlock:InvokeServer(unpack(args))
-			end
-		end
-	else
-		ScaffoldDelay = 86400
 	end
 end)
