@@ -48,16 +48,16 @@ local function GetTool(matchname)
 end
 
 local function GetPos(Expand)
-	local x = math.round(LocalPlayer.Character.PrimaryPart.Position.X/3)
-	local y = math.round(LocalPlayer.Character.PrimaryPart.Position.Y/3)
-	local z = math.round(LocalPlayer.Character.PrimaryPart.Position.Z/3)
+	local x = math.round(LocalPlayer.Character.PrimaryPart.Position.X / 3)
+	local y = math.round(LocalPlayer.Character.PrimaryPart.Position.Y / 3)
+	local z = math.round(LocalPlayer.Character.PrimaryPart.Position.Z / 3)
 	local realexpand = Expand + 1
 	return Vector3.new(x, y - 1, z) + (LocalPlayer.Character:FindFirstChild("HumanoidRootPart").CFrame.LookVector * math.round(Expand))
 end
 
 local BowDelay = 3
 local BowDistance = 30
-local BowAura = Tabs.Combat:CrateToggle("BowAura", false, false, function(callback)
+local BowAura = Tabs.Combat:CreateToggle("BowAura", false, false, function(callback)
 	if callback then
 		BowDelay = 3
 		local Target = FindNearestPlayer(BowDistance)
@@ -82,14 +82,14 @@ local BowAura = Tabs.Combat:CrateToggle("BowAura", false, false, function(callba
 end)
 
 local KillAuraCrit = false
-local Criticals = Tabs.Combat:CrateToggle("Criticals", false, true, function(callback)
+local Criticals = Tabs.Combat:CreateToggle("Criticals", false, true, function(callback)
 	KillAuraCrit = not KillAuraCrit
 end)
 
 local KillAuraDistance = 28
 local KillAuraAutoBlock = false
 local KillAuraDelay = 0.1
-local KillAura = Tabs.Combat:CrateToggle("KillAura", false, false, function(callback)
+local KillAura = Tabs.Combat:CreateToggle("KillAura", false, false, function(callback)
 	if callback then
 		KillAuraDelay = 0.1
 		local Target = FindNearestPlayer(KillAuraDistance)
@@ -110,7 +110,7 @@ local KillAura = Tabs.Combat:CrateToggle("KillAura", false, false, function(call
 						[3] = Sword.Name
 					}
 					ReplicatedStorage.Packages.Knit.Services.ToolService.RF.AttackPlayerWithSword:InvokeServer(unpack(args))
-					print("Name: " .. Target.Name .. "Health: " .. Target.Character:FindFirstChildOfClass("Humanoid").Health)
+					print("Name: " .. Target.Name .. " Health: " .. Target.Character:FindFirstChildOfClass("Humanoid").Health)
 				end
 			end
 		end
@@ -119,13 +119,13 @@ local KillAura = Tabs.Combat:CrateToggle("KillAura", false, false, function(call
 	end
 end)
 
-local AutoBlock = Tabs.Combat:CrateToggle("AutoBlock", false, false, function(callback)
+local AutoBlock = Tabs.Combat:CreateToggle("AutoBlock", false, false, function(callback)
 	KillAuraAutoBlock = not KillAuraAutoBlock
 end)
 
 local ScaffoldDelay = 0.1
 local ExpandValue = 2
-local Scaffold = Tabs.Player:CrateToggle("Scaffold", false, false, function(callback)
+local Scaffold = Tabs.Player:CreateToggle("Scaffold", false, false, function(callback)
 	if callback then
 		ScaffoldDelay = 0.1
 		local Wool = GetTool("Wool")
