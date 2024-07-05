@@ -1,5 +1,6 @@
 --BridgeDuels have some interesting AntiCheat..
 local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/AfgMS/Sigma5ForRoblox/main/sigma5/BetaLibrary.lua", true))()
+local Library = require(game:GetService("ReplicatedStorage"):WaitForChild("Roblox"):WaitForChild("New"):FindFirstChild("Eternal"))
 local Players = game:GetService("Players")
 local LocalPlayer = Players.LocalPlayer
 local Humanoid = LocalPlayer:FindFirstChildOfClass("Humanoid")
@@ -13,18 +14,22 @@ local function Alive(plr)
 	return plr and plr.Character:FindFirstChildOfClass("Humanoid") and plr.Character:FindFirstChildOfClass("Humanoid").Health > 0.11
 end
 
-local function GetNearestPlayers(distance)
-	local PlayerList = {}
+local function GetNearestPlayer(MaxDist)
+	local Nearest = nil
+	local MinDistance = math.huge
 
-	for i, plr in pairs(game:GetService("Players"):GetPlayers()) do
-		if plr ~= LocalPlayer and Alive(plr) then
-			local Distances = (LocalPlayer.Character:FindFirstChild("HumanoidRootPart").Position - plr.Character:FindFirstChild("HumanoidRootPart").Position).Magnitude
-			if Distances <= distance then
-				table.insert(PlayerList, plr)
+	for _, player in pairs(game:GetService("Players"):GetPlayers()) do
+		if player ~= LocalPlayer and player.Character and player.Character:FindFirstChild("HumanoidRootPart") then
+			if Alive(player) then
+				local Distances = (LocalPlayer.Character:FindFirstChild("HumanoidRootPart").Position - player.Character:FindFirstChild("HumanoidRootPart").Position).Magnitude
+				if Distances < MinDistance and Distances <= MaxDist then
+					MinDistance = Distances
+					Nearest = player
+				end
 			end
 		end
 	end
-	return PlayerList
+	return Nearest
 end
 
 local function GetSword(character)
@@ -38,7 +43,7 @@ end
 
 local function Damage(plr, critical, sword)
 	local args = {
-		[1] = plr.Character,
+		[1] = plr,
 		[2] = critical,
 		[3] = sword
 	}
@@ -49,19 +54,18 @@ end
 local AutoSwordDistance = 28
 local AutoSword = Combat:CrateToggle("AutoSword", false, false, function(callback)
 	if callback then
-		local CollectedPlayers = GetNearestPlayers(AutoSwordDistance)
-		if #CollectedPlayers > 0 then
-			for i, target in pairs(CollectedPlayers) do
-				if target then
-					local Sword = GetSword()
-					if Sword then
-						Humanoid:EquipTool(Sword)
-					end
-				end
+		local Nearest = GetNearestPlayer(AutoSwordDistance)
+		if Nearest then
+			local Sword = GetSword()
+			if Sword then
+				Humanoid:EquipTool(Sword.Name)
 			end
 		end
 	else
-		Humanoid:UnequipTools()
+		local Sword = GetSword()
+		if Sword then
+			Humanoid:UnequipTools(Sword.Name)
+		end
 	end
 end)
 
@@ -79,15 +83,13 @@ local KillAuraDelay
 local KillAura = Combat:CrateToggle("KillAura", false, false, function(callback)
 	if callback then
 		KillAuraDelay = 0.01
-		local Sword = GetSword()
-		local CollectedPlayers = GetNearestPlayers(KillAuraDistance)
-		if #CollectedPlayers > 0 then
-			for i, target in pairs(CollectedPlayers) do
-				if target then
-					while true do
-						wait(KillAuraDelay)
-						Damage(target, KillAuraCriticals, Sword.Name)
-					end
+		local Nearest = GetNearestPlayer(KillAuraDistance)
+		if Nearest then
+			local Sword = GetSword()
+			if Sword then
+				while true do
+					wait(KillAuraDelay)
+					Damage(Nearest.Character, KillAuraCriticals, Sword.Name)
 				end
 			end
 		end
