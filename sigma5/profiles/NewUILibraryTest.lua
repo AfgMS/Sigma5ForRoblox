@@ -19,7 +19,7 @@ local function IsAlive(plr)
 	return plr.Character and plr.Character:FindFirstChildOfClass("Humanoid").Health > 0
 end
 
-local function GetNearestPlayer(MaxDistance)
+local function FindNearestPlayer(distance)
 	local NearestPlayer = nil
 	local MinDistance = math.huge
 
@@ -27,7 +27,7 @@ local function GetNearestPlayer(MaxDistance)
 		if player ~= LocalPlayer and player.Character and player.Character:FindFirstChild("HumanoidRootPart") then
 			if IsAlive(player) then
 				local Distances = (LocalPlayer.Character:FindFirstChild("HumanoidRootPart").Position - player.Character:FindFirstChild("HumanoidRootPart").Position).Magnitude
-				if Distances < MinDistance and Distances <= NearestPlayer then
+				if Distances < MinDistance and Distances <= distance then
 					MinDistance = Distances
 					NearestPlayer = player
 				end
@@ -48,12 +48,12 @@ local function GetTool(matchname)
 	return Tool
 end
 
-local BowDelay = 5
+local BowDelay = 3
 local BowDistance = 30
 local BowAura = Tabs.Combat:CrateToggle("BowAura", false, false, function(callback)
 	if callback then
-		BowDelay = 5
-		local Target = GetNearestPlayer(BowDistance)
+		BowDelay = 3
+		local Target = FindNearestPlayer(BowDistance)
 		if Target and IsAlive(Target) then
 			print(Target.Name)
 			local Bow = GetTool("Bow")
@@ -81,20 +81,38 @@ local Criticals = Tabs.Combat:CrateToggle("Criticals", false, true, function(cal
 end)
 
 local KillAuraDistance = 25
+local KillAuraAutoBlock = false
+local KillAuraDelay = 0.01
 local KillAura = Tabs.Combat:CrateToggle("KillAura", false, false, function(callback)
 	if callback then
-		local Target = GetNearestPlayer(KillAuraDistance)
+		KillAuraDelay = 0.01
+		local Target = FindNearestPlayer(KillAuraDistance)
 		if Target then
 			local Sword = GetTool("Sword")
 			if Sword then
-				local args = {
-					[1] = Target.Character,
-					[2] = KillAuraCrit,
-					[3] = Sword.Name
-				}
-				print(Target.Name)
-				game:GetService("ReplicatedStorage").Packages.Knit.Services.ToolService.RF.AttackPlayerWithSword:InvokeServer(unpack(args))
+				while true do
+					wait(KillAuraDelay)
+					local args = {
+						[1] = Target.Character,
+						[2] = KillAuraCrit,
+						[3] = Sword.Name
+					}
+					game:GetService("ReplicatedStorage").Packages.Knit.Services.ToolService.RF.AttackPlayerWithSword:InvokeServer(unpack(args))
+					local args = {
+						[1] = KillAuraAutoBlock,
+						[2] = Sword.Name
+					}
+
+					game:GetService("ReplicatedStorage").Packages.Knit.Services.ToolService.RF.ToggleBlockSword:InvokeServer(unpack(args))
+					print(Target.Name)
+				end
 			end
 		end
+	else
+		KillAuraDelay = 86400
 	end
+end)
+
+local AutoBlock = Tabs.Combat:CrateToggle("AutoBlock", false, false, function(callback)
+	KillAuraAutoBlock = not KillAuraAutoBlock
 end)
