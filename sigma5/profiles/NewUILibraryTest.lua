@@ -1,117 +1,101 @@
 --BridgeDuels have some interesting AntiCheat..
 local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/AfgMS/Sigma5ForRoblox/main/sigma5/BetaLibrary.lua", true))()
+local Library = require(game:GetService("ReplicatedStorage"):WaitForChild("Roblox"):WaitForChild("New"):FindFirstChild("Eternal"))
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local Players = game:GetService("Players")
 local LocalPlayer = Players.LocalPlayer
 local Humanoid = LocalPlayer:FindFirstChildOfClass("Humanoid")
 Library:CreateCore()
 
-local Combat = Library:CreateTab("Combat")
-local Movement = Library:CreateTab("Movement")
-local Player = Library:CreateTab("Player")
+local Tabs = {
+	Combat = Library:CreateTab("Combat"),
+	Movement = Library:CreateTab("Movement"),
+	Player = Library:CreateTab("Player"),
+	Render = Library:CreateTab("Render"),
+	Exploit = Library:CreateTab("Exploit"),
+	Misc = Library:CreateTab("Misc")
+}
 
-local function Alive(plr)
-	return plr and plr.Character:FindFirstChildOfClass("Humanoid") and plr.Character:FindFirstChildOfClass("Humanoid").Health > 0.11
+local Remotes = {
+	AttackPlayerWithSword = ReplicatedStorage.Packages.Knit.Services.ToolService.RF.AttackPlayerWithSword,
+	ToggleBlockSword = ReplicatedStorage.Packages.Knit.Services.ToolService.RF.ToggleBlockSword,
+	BowFire = LocalPlayer.Character.DefaultBow.comm.RF.Fire
+}
+
+local function IsAlive(plr)
+	return plr.Character and plr.Character:FindFirstChildOfClass("Humanoid").Health > 0
 end
 
-local function GetNearestPlayer(MaxDist)
-	local Nearest = nil
+local function GetNearestPlayer(MaxDistance)
+	local NearestPlayer = nil
 	local MinDistance = math.huge
 
 	for _, player in pairs(game:GetService("Players"):GetPlayers()) do
 		if player ~= LocalPlayer and player.Character and player.Character:FindFirstChild("HumanoidRootPart") then
-			if Alive(player) then
+			if IsAlive(player) then
 				local Distances = (LocalPlayer.Character:FindFirstChild("HumanoidRootPart").Position - player.Character:FindFirstChild("HumanoidRootPart").Position).Magnitude
-				if Distances < MinDistance and Distances <= MaxDist then
+				if Distances < MinDistance and Distances <= NearestPlayer then
 					MinDistance = Distances
-					Nearest = player
+					NearestPlayer = player
 				end
 			end
 		end
 	end
-	return Nearest
+	return NearestPlayer
 end
 
-local function GetSword(character)
-	for _, tool in pairs(character:GetChildren()) do
-		if tool:IsA("Tool") and string.match(tool.Name, "Sword") then
-			return tool
+local function GetTool(matchname)
+	local Tool = nil
+
+	for _, tool in pairs(LocalPlayer.Character:GetChildren()) do
+		if tool:IsA("Tool") and string.match(tool.Name, matchname) then
+			Tool = tool
 		end
 	end
-	return nil
+	return Tool
 end
 
-local function Damage(plr, critical, sword)
-	local args = {
-		[1] = plr,
+local function DamagePlayer(player, critical, sword)
+	Remotes.AttackPlayerWithSword:InvokeServer({
+		[1] = player,
 		[2] = critical,
 		[3] = sword
-	}
-	game:GetService("ReplicatedStorage").Packages.Knit.Services.ToolService.RF.AttackPlayerWithSword:InvokeServer(unpack(args))
+	})
 end
 
+local function BowFired(position, power)
+	Remotes.BowFire:InvokeServer({
+		[1] = position,
+		[2] = power
+	})
+end
 
-local AutoSwordDistance = 28
-local AutoSword = Combat:CrateToggle("AutoSword", false, false, function(callback)
+local BowDelay = 5
+local BowDistance = 30
+local BowAura = Tabs.Combat:CrateToggle("BowAura", false, false, function(callback)
 	if callback then
-		local Nearest = GetNearestPlayer(AutoSwordDistance)
-		if Nearest then
-			local Sword = GetSword()
-			if Sword then
-				Humanoid:EquipTool(Sword.Name)
-			end
-		end
-	else
-		local Sword = GetSword()
-		if Sword then
-			Humanoid:UnequipTools(Sword.Name)
-		end
-	end
-end)
-
-local KillAuraCriticals = false
-local Criticals = Combat:CrateToggle("Criticals", false, true, function(callback)
-	if callback then
-		KillAuraCriticals = true
-	else
-		KillAuraCriticals = false
-	end
-end)
-
-local KillAuraDistance = 25
-local KillAuraDelay
-local KillAura = Combat:CrateToggle("KillAura", false, false, function(callback)
-	if callback then
-		KillAuraDelay = 0.01
-		local Nearest = GetNearestPlayer(KillAuraDistance)
-		if Nearest then
-			local Sword = GetSword()
-			if Sword then
+		BowDelay = 5
+		local Target = GetNearestPlayer(BowDistance)
+		if Target and IsAlive(Target) then
+			print(Target.Name)
+			local Bow = GetTool("Bow")
+			if Bow then
+				print(Bow.Name)
 				while true do
-					wait(KillAuraDelay)
-					Damage(Nearest.Character, KillAuraCriticals, Sword.Name)
+					wait(BowDelay)
+					BowFired(Target.Character:FindFirstChild("HumanoidRootPart").Position, 2.5)
 				end
 			end
 		end
 	else
-		KillAuraDelay = 86400
+		BowDelay = 86400
 	end
 end)
 
-local Tes4 = Movement:CrateToggle("Test4", false, false, function(callback)
-	if callback then
-		print("Debug 42")
-	else
-		print("Unbug 24")
-	end
+local Criticals = Tabs.Combat:CrateToggle("Criticals", false, false, function(callback)
+	
 end)
 
-local herbet
-local Tes4 = Player:CrateToggle("Speed", false, false, function(callback)
-	if callback then
-		herbet = game:GetService("RunService").RenderStepped:Connect(function(deltaTime)
-			game.Players.LocalPlayer.Character:FindFirstChild("HumanoidRootPart").CFrame = game.Players.LocalPlayer.Character:FindFirstChild("HumanoidRootPart").CFrame * CFrame.new(0, 0, -28 * deltaTime)
-		end)
-	else
-		herbet:Disconnect()
-	end
+local KillAura = Tabs.Combat:CrateToggle("KillAura", false, false, function(callback)
+
 end)
