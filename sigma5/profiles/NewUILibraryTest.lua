@@ -1,11 +1,8 @@
 local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/AfgMS/Sigma5ForRoblox/main/sigma5/BetaLibrary.lua", true))()
-local HttpService = game:GetService("HttpService")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local Players = game:GetService("Players")
 local LocalPlayer = Players.LocalPlayer
 local Humanoid = LocalPlayer:FindFirstChildOfClass("Humanoid")
-local FolderName = "Eternal"
-local FileName = FolderName .. "/config.txt"
 Library:CreateCore()
 
 local Tabs = {
@@ -16,41 +13,6 @@ local Tabs = {
 	Exploit = Library:CreateTab("Exploit"),
 	Misc = Library:CreateTab("Misc")
 }
-
-local Settings = {
-	AutoBlockValue = false,
-	CriticalsValue = true,
-	KillAuraValue = false
-}
-
-local function SaveSettings(table, FileName)
-	if not isfolder(FolderName) then
-		makefolder(FolderName)
-	end
-
-	local JsonData = HttpService:JSONEncode(table)
-	writefile(FileName, JsonData)
-end
-
-local function LoadSettings(FileName)
-	if isfile(FileName) then
-		local JsonData = readfile(FileName)
-		local Settings = HttpService:JSONDecode(JsonData)
-		return Settings
-	else
-		warn("File not found!")
-		return nil
-	end
-end
-
-SaveSettings(Settings, FileName)
-
-local LoadedSettings = LoadSettings(FileName)
-if LoadedSettings then
-	for key, value in pairs(LoadedSettings) do
-		print(key, value)
-	end
-end
 
 local function IsAlive(plr)
 	return plr.Character and plr.Character:FindFirstChildOfClass("Humanoid").Health > 0
@@ -87,7 +49,7 @@ end
 
 local AutoBlockT = false
 local AutoBlockDistance = 28
-local AutoBlock = Tabs.Combat:CrateToggle("AutoBlock", false, Settings.AutoBlockValue, function(callback)
+local AutoBlock = Tabs.Combat:CrateToggle("AutoBlock", false, false, function(callback)
 	if callback then
 		AutoBlockT = true
 		local Target = FindNearestPlayer(AutoBlockDistance)
@@ -108,7 +70,7 @@ local AutoBlock = Tabs.Combat:CrateToggle("AutoBlock", false, Settings.AutoBlock
 end)
 
 local KillAuraCritical = false
-local Critical = Tabs.Combat:CrateToggle("Critical", false, Settings.CriticalsValue, function(callback)
+local Critical = Tabs.Combat:CrateToggle("Critical", false, true, function(callback)
 	if callback then
 		KillAuraCritical = true
 	else
@@ -117,12 +79,13 @@ local Critical = Tabs.Combat:CrateToggle("Critical", false, Settings.CriticalsVa
 end)
 
 local KillAuraDistance = 25
-local KillAura = Tabs.Combat:CrateToggle("KillAura", false, Settings.KillAuraValue, function(callback)
+local KillAura = Tabs.Combat:CrateToggle("KillAura", false, false, function(callback)
 	if callback then
 		local Target = FindNearestPlayer(KillAuraDistance)
 		if Target and IsAlive(Target) then
 			local Sword = GetTool("Sword")
 			if Sword~= nil then
+				local SwingAnim = Sword:WaitForChild("Animations"):FindFirstChild("Swing")
 				repeat
 					task.wait()
 					local args = {
@@ -131,6 +94,10 @@ local KillAura = Tabs.Combat:CrateToggle("KillAura", false, Settings.KillAuraVal
 						[3] = Sword.Name
 					}
 					ReplicatedStorage.Packages.Knit.Services.ToolService.RF.AttackPlayerWithSword:InvokeServer(unpack(args))
+					if SwingAnim then
+						Humanoid:LoadAnimation(SwingAnim)
+						SwingAnim:Play()
+					end
 				until not Sword
 			end
 		end
