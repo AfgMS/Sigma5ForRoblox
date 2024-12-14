@@ -1,5 +1,5 @@
 --Services
-local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/AfgMS/Sigma5ForRoblox/main/sigma5/LibraryMobile.lua", true))()
+local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/AfgMS/Sigma5ForRoblox/refs/heads/main/sigma5/LibraryMobile.lua"))()
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local Camera = game:GetService("Workspace").CurrentCamera
 local TeamsService = game:GetService("Teams")
@@ -85,11 +85,11 @@ end
 local function GetBed(range)
 	local nearestBed
 	local nearestDistance = math.huge
-	local localPlayer = game.Players.LocalPlayer
+	local LocalPlayer = game.Players.LocalPlayer
 
 	for _, v in pairs(game.Workspace:GetChildren()) do
-		if v.Name == "bed" and v.Blanket.BrickColor ~= localPlayer.Team.TeamColor then
-			local distance = (v.Position - localPlayer.Character.HumanoidRootPart.Position).magnitude
+		if v.Name == "bed" and v.Blanket.BrickColor ~= LocalPlayer.Team.TeamColor then
+			local distance = (v.Position - LocalPlayer.Character.HumanoidRootPart.Position).magnitude
 			if distance < nearestDistance and distance <= range then
 				nearestBed = v
 				nearestDistance = distance
@@ -187,7 +187,7 @@ local CustomAimbotDist = Aimbot:Slider({
 local JitterAimMode = Aimbot:ToggleButtonInsideUI({
 	name = "JitterMode",
 	callback = function()
-		CreateNotification("Sigma5", "This feature is for premium", 3, true)
+		Library:CreateNotification("Sigma5", "This feature is for premium", 3, true)
 	end
 })
 local AimPartModes = Aimbot:Dropdown({
@@ -226,8 +226,8 @@ local AutoQuit = CombatTab:ToggleButton({
 			if LocalPlayer then
 				while enabled do
 					if LocalPlayer.Character:FindFirstChild("Humanoid").Health < MinHealth then
-						CreateNotification("AutoQuit", "Modules Triggered", 3, true)
-						task.wait(2)
+						Library:CreateNotification("AutoQuit", "Modules Triggered", 3, true)
+						task.wait()
 						LocalPlayer:Kick("You Have Been Banned For Exploiting :trol:")
 					end
 					task.wait()
@@ -256,7 +256,7 @@ local KillAura = CombatTab:ToggleButton({
 	info = "Attack Nearest Player",
 	callback = function(enabled)
 		if enabled then
-			KillAuraDelay = 0.48
+			KillAuraDelay = 0.01
 			KillAuraDistance = 20
 			Sword = GetSword()
 			while enabled do
@@ -520,23 +520,23 @@ local function VoxelFly()
 	while VoxelMode do
 		LocalPlayer.Character:WaitForChild("HumanoidRootPart").CFrame = CFrame.new(LocalPlayer.Character:WaitForChild("HumanoidRootPart").Position + Vector3.new(0, 3, 0))
 		wait(0.10)
-		LocalPlayer.Character:FindFirstChild("HumanoidRootPart").CFrame = localPlayer.Character:FindFirstChild("HumanoidRootPart").CFrame * CFrame.new(0,-0.1,-1.3)
+		LocalPlayer.Character:FindFirstChild("HumanoidRootPart").CFrame = LocalPlayer.Character:FindFirstChild("HumanoidRootPart").CFrame * CFrame.new(0,-0.1,-1.3)
 		wait(0.18)
 	end
 end
 
 local function EasyGGFly()
 	while EasyGGMode do
-		LocalPlayer.Character:FindFirstChild("HumanoidRootPart").CFrame = localPlayer.Character:FindFirstChild("HumanoidRootPart").CFrame * CFrame.new(0,-0.1,-1.5)
+		LocalPlayer.Character:FindFirstChild("HumanoidRootPart").CFrame = LocalPlayer.Character:FindFirstChild("HumanoidRootPart").CFrame * CFrame.new(0,-0.1,-1.5)
 		wait(0.23)
 	end
 end
 
 local function Bit16Fly()
 	while Bit16Mode do
-		LocalPlayer.Character:FindFirstChild("HumanoidRootPart").CFrame = localPlayer.Character:FindFirstChild("HumanoidRootPart").CFrame * CFrame.new(0,-0.1,-1.3)
+		LocalPlayer.Character:FindFirstChild("HumanoidRootPart").CFrame = LocalPlayer.Character:FindFirstChild("HumanoidRootPart").CFrame * CFrame.new(0,-0.1,-1.3)
 		wait(0.12)
-		LocalPlayer.Character:FindFirstChild("HumanoidRootPart").CFrame = localPlayer.Character:FindFirstChild("HumanoidRootPart").CFrame * CFrame.new(0,-0.1,-1.3)
+		LocalPlayer.Character:FindFirstChild("HumanoidRootPart").CFrame = LocalPlayer.Character:FindFirstChild("HumanoidRootPart").CFrame * CFrame.new(0,-0.1,-1.3)
 	end
 end
 
@@ -589,7 +589,7 @@ local CustomFlyPush = Fly:Slider({
 local FlyRageMode = Fly:ToggleButtonInsideUI({
 	name = "RageMode",
 	callback = function()
-		CreateNotification("Sigma5", "This feature is for premium", 3, true)
+		Library:CreateNotification("Sigma5", "This feature is for premium", 3, true)
 	end
 })
 local FlyModes = Fly:Dropdown({
@@ -667,13 +667,13 @@ local AntiVanish = WorldTab:ToggleButton({
 		if enabled then
 			game.Players.PlayerAdded:Connect(function(player)
 				if not player:IsFriendsWith(game.Players.LocalPlayer.UserId) and GetMatchState() ~= 0 then
-					CreateNotification("AntiVanish", "Someone just vanished", 5, true)
+					Library:CreateNotification("AntiVanish", "Someone just vanished", 5, true)
 				end
 			end)
 
 			for i, player in pairs(game.Players:GetPlayers()) do
 				if player:IsInGroup(5774246) and player:GetRankInGroup(5774246) >= 2 then
-					CreateNotification("AntiVanish", "Someone just vanished", 5, true)
+					Library:CreateNotification("AntiVanish", "Someone just vanished", 5, true)
 				end
 			end
 		end
@@ -709,7 +709,7 @@ local Nuker = WorldTab:ToggleButton({
 	info = "Auto bed break",
 	callback = function(enabled)
 		if enabled then
-			BedHitDelay = 0.82
+			BedHitDelay = 0.01
 			while enabled do
 				if not LocalPlayer.Character then 
 					repeat task.wait() until LocalPlayer.Character
