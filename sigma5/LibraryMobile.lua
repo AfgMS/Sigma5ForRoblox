@@ -52,7 +52,7 @@ function playContinuousSound(soundId)
 end
 
 --Sigma5Visual
-local SigmaVisualHolder = Instance.new("ScreenGui", CoreGui)
+local SigmaVisualHolder = Instance.new("ScreenGui", localplayer.PlayerGui)
 SigmaVisualHolder.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
 SigmaVisualHolder.Name = "Sigma5Visual"
 SigmaVisualHolder.ResetOnSpawn = false
@@ -74,7 +74,7 @@ Right.Name = "RightSide"
 Right.Position = UDim2.new(0, 575, 0, 0)
 Right.Size = UDim2.new(0, 255, 1, 0)
 
-function CreateNotification(NotificationName, NotificationText, NotificationDuration, Fired)
+function Library:CreateNotification(NotificationName, NotificationText, NotificationDuration, Fired)
 
 	local Notification = Instance.new("Frame", Right)
 	Notification.BackgroundColor3 = Color3.fromRGB(45, 45, 45)
@@ -338,7 +338,7 @@ BlurUI.Enabled = false
 
 --UILibrary
 function Library:createScreenGui()
-	local screenGui = Instance.new("ScreenGui", CoreGui)
+	local screenGui = Instance.new("ScreenGui", localplayer.PlayerGui)
 	screenGui.Name = "Sigma5"
 	return screenGui
 end
@@ -432,7 +432,7 @@ function Library:createTabs(parentFrame, tabName)
 
 
 	game:GetService("UserInputService").InputBegan:Connect(function(input, gameProcessedEvent)
-		if input.KeyCode == Enum.KeyCode.V and not gameProcessedEvent then
+		if input.KeyCode == Enum.KeyCode.RightShift and not gameProcessedEvent then
 			TAB.Tabs.Visible = not TAB.Tabs.Visible
 			TAB.ScrollingPart.Visible = not TAB.ScrollingPart.Visible
 			BlurUI.Enabled = not BlurUI.Enabled
@@ -446,7 +446,7 @@ function Library:createTabs(parentFrame, tabName)
 		TAB.Tabs.Position = newX
 	else
 		warn("Reached the maximum number of tabs. Cannot create more tabs.")
-		CreateNotification("Sigma5", "Limit Reached", 3, true)
+		Library:CreateNotification("Sigma5", "Limit Reached", 3, true)
 	end
 
 	function TAB:ToggleButton(options)
@@ -495,7 +495,7 @@ function Library:createTabs(parentFrame, tabName)
 
 		-- RightClickStuff
 
-		local ButtonsMenuFrame = Instance.new("Frame", CoreGui.Sigma5)
+		local ButtonsMenuFrame = Instance.new("Frame", localplayer.PlayerGui.Sigma5)
 		ButtonsMenuFrame.Name = "Holder"
 		ButtonsMenuFrame.BackgroundColor3 = Color3.fromRGB(250, 250, 250)
 		ButtonsMenuFrame.BorderColor3 = Color3.fromRGB(0, 0, 0)
