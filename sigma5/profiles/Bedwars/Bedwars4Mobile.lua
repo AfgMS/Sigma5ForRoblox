@@ -4,7 +4,6 @@ local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local Camera = game:GetService("Workspace").CurrentCamera
 local TeamsService = game:GetService("Teams")
 local Lighting = game:GetService("Lighting")
-local CoreGui = game:WaitForChild("CoreGui")
 local LocalPlayer = game.Players.LocalPlayer
 local Player = game:GetService("Players")
 local VisualFolder = Instance.new("Folder", game.Workspace)
@@ -101,18 +100,18 @@ end
 
 --Tabs
 Library:createScreenGui()
-local GuiTab = Library:createTabs(CoreGui.Sigma5, "Gui")
-local CombatTab = Library:createTabs(CoreGui.Sigma5, "Combat")
-local RenderTab = Library:createTabs(CoreGui.Sigma5, "Render")
-local PlayerTab = Library:createTabs(CoreGui.Sigma5, "Player")
-local WorldTab = Library:createTabs(CoreGui.Sigma5, "World")
+local GuiTab = Library:createTabs(LocalPlayer.PlayerGui.Sigma5, "Gui")
+local CombatTab = Library:createTabs(LocalPlayer.PlayerGui.Sigma5, "Combat")
+local RenderTab = Library:createTabs(LocalPlayer.PlayerGui.Sigma5, "Render")
+local PlayerTab = Library:createTabs(LocalPlayer.PlayerGui.Sigma5, "Player")
+local WorldTab = Library:createTabs(LocalPlayer.PlayerGui.Sigma5, "World")
 
 --GuiModules
 local ActiveMods = GuiTab:ToggleButton({
 	name = "ActiveMods",
 	info = "Render active mods",
 	callback = function(enabled)
-		CoreGui.Sigma5Visual.RightSide.ArrayListHolder.Visible = not CoreGui.Sigma5Visual.RightSide.ArrayListHolder.Visible
+		LocalPlayer.PlayerGui.Sigma5Visual.RightSide.ArrayListHolder.Visible = not LocalPlayer.PlayerGui.Sigma5Visual.RightSide.ArrayListHolder.Visible
 	end
 })
 --TabGUI
@@ -120,7 +119,7 @@ local TabGUI = GuiTab:ToggleButton({
 	name = "TabGUI",
 	info = "Just decorations",
 	callback = function(enabled)
-		CoreGui.Sigma5Visual.LeftSide.TabHolder.Visible = not CoreGui.Sigma5Visual.LeftSide.TabHolder.Visible
+		LocalPlayer.PlayerGui.Sigma5Visual.LeftSide.TabHolder.Visible = not LocalPlayer.PlayerGui.Sigma5Visual.LeftSide.TabHolder.Visible
 	end
 })
 --RemoveUI
@@ -133,11 +132,11 @@ local RemoveUI = GuiTab:ToggleButton({
 			if BlurEffect then
 				BlurEffect:Destroy()
 			end
-			if CoreGui:FindFirstChild("Sigma5") then
-				CoreGui.Sigma5:Destroy()
+			if LocalPlayer.PlayerGui:FindFirstChild("Sigma5") then
+				LocalPlayer.PlayerGui.Sigma5:Destroy()
 			end
-			if CoreGui:FindFirstChild("Sigma5Visual") then
-				CoreGui.Sigma5Visual:Destroy()
+			if LocalPlayer.PlayerGui:FindFirstChild("Sigma5Visual") then
+				LocalPlayer.PlayerGui.Sigma5Visual:Destroy()
 			end
 		end
 	end
