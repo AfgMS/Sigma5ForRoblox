@@ -1,4 +1,4 @@
---Old version of sigma that still works on bw...
+--NotHm.. on youtube, and nothm_ on discord
 local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/AfgMS/sigma5ForRoblox/main/sigma5/LibraryPC.lua", true))()
 local CoreGui = game:WaitForChild("CoreGui")
 local Player = game:GetService("Players")
@@ -475,11 +475,17 @@ local AntiVanish = WorldTab:CreateToggle({
 --Nuker
 local raycastParams = RaycastParams.new()
 raycastParams.IgnoreWater = true
-
 local function HitBed(bed)
 	local raycastResult = workspace:Raycast(bed.Position + Vector3.new(0, 13, 0), Vector3.new(0, -16, 0), raycastParams)
 	if raycastResult then
 		local nearestBed = raycastResult.Instance
+		for i, v in pairs(nearestBed:GetChildren()) do
+			if v:IsA("Texture") then
+				v:Destroy()
+			end
+		end
+		nearestBed.Transparency = 0.75
+		nearestBed.Color = Color3.fromRGB(255, 255, 255)
 		BlockHit:InvokeServer({
 			["blockRef"] = {
 				["blockPosition"] = Vector3.new(math.round(nearestBed.Position.X / 3), math.round(nearestBed.Position.Y / 3), math.round(nearestBed.Position.Z / 3))
@@ -489,7 +495,6 @@ local function HitBed(bed)
 		})
 	end
 end
-
 local BedHitDelay
 local Nuker = WorldTab:CreateToggle({
 	Name = "Nuker",
@@ -497,22 +502,19 @@ local Nuker = WorldTab:CreateToggle({
 	Bind = "Z",
 	callback = function(enabled)
 		if enabled then
-			BedHitDelay = 0.72
-			spawn(function()
-				repeat
-					task.wait(BedHitDelay)
-					if localPlayer.Character then
-						local nearestBed = GetBed(28.5)
-						if nearestBed then
-							while true do
-								HitBed(nearestBed)
-								wait()
-							end
-						end
-					end
-					BedHitDelay = 86000
-				until not enabled
-			end)
+			BedHitDelay = 0
+			while enabled do
+				if not isAlive(localPlayer) then 
+					repeat task.wait() until isAlive(localPlayer) 
+				end
+				local nearestBed = GetBed(28.3)
+				if nearestBed then
+					HitBed(nearestBed)
+				end
+				task.wait(BedHitDelay)
+			end
+		else
+			BedHitDelay = 86000
 		end
 	end
 })
