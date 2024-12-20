@@ -88,7 +88,7 @@ local function DamagePlayer(Target, Sword)
     ReplicatedStorage.rbxts_include.node_modules:FindFirstChild("@rbxts").net.out._NetManaged.SwordHit:FireServer({
         ["entityInstance"] = Target.Character,
         ["chargedAttack"] = {
-            ["chargeRatio"] = 1
+            ["chargeRatio"] = 0
         },
         ["validate"] = {
             ["raycast"] = {
@@ -520,7 +520,7 @@ local Nuker = WorldTab:CreateToggle({
 	Bind = "Z",
 	callback = function(enabled)
 		if enabled then
-			BedHitDelay = 0.54
+			BedHitDelay = 0
 			while enabled do
 				if not isAlive(localPlayer) then 
 					repeat task.wait() until isAlive(localPlayer) 
