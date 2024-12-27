@@ -648,6 +648,8 @@ Tabs["Combat"]:CreateToggle({
 --]]
 
 do
+    local oldveloh = kbtable["kbDirectionStrength"]
+    local oldvelov = kbtable["kbUpwardStrength"]
     local velohorizontal = {["Value"] = 0}
     local velovertical = {["Value"] = 0}
     local velocitytog = Tabs["Combat"]:CreateToggle({
@@ -663,8 +665,8 @@ do
                         kbtable["kbUpwardStrength"] = 0
                     end
                 else
-                    kbtable["kbDirectionStrength"] = 100
-                    kbtable["kbUpwardStrength"] = 100
+                    kbtable["kbDirectionStrength"] = oldveloh
+                    kbtable["kbUpwardStrength"] = oldvelov
                     return
                 end
             end)
@@ -822,14 +824,14 @@ function tpreal(t)
     end
 end
 
-local speedvalue = {["Value"] = 45}
+local speedvalue = {["Value"] = 5}
 local connectionnn
 local conectthing
 local longjumpenabled
 local floatdisab
 local speed
 local speeddropdown = {["Value"] = "CFrame"}
-local speedvalueverus = {["Value"] = 80}
+local speedvalueverus = {["Value"] = 23}
 local verusspeeddelay = {["Value"] = 0.5}
 local speedtog = Tabs["Movement"]:CreateToggle({
     ["Name"] = "Speed",
@@ -914,7 +916,7 @@ speedvalue = speedtog:CreateSlider({
     ["Function"] = function() end,
     ["Min"] = 0,
     ["Max"] = 45,
-    ["Default"] = 45,
+    ["Default"] = 5,
     ["Round"] = 0
 })
 speeddropdown = speedtog:CreateDropDown({
@@ -928,7 +930,7 @@ speedvalueverus = speedtog:CreateSlider({
     ["Function"] = function() end,
     ["Min"] = 0,
     ["Max"] = 350,
-    ["Default"] = 80,
+    ["Default"] = 22,
     ["Round"] = 0
 })
 verusspeeddelay = speedtog:CreateSlider({
@@ -1060,7 +1062,7 @@ do
     })
 end
 
-do
+--[[
     local customlongjumpval = false
     Tabs["Movement"]:CreateToggle({
         ["Name"] = "CustomLongJump",
@@ -1102,7 +1104,7 @@ do
             end
         end
     })
-end
+--]]
 
 --[[
     local cloneval = false
@@ -1184,10 +1186,11 @@ end
             end
         end
     })
-]]
+--]]
 
 do
     local flyenabled
+    local oldegayvity = workspace.Gravity
     Tabs["Movement"]:CreateToggle({
         ["Name"] = "Fly",
         ["Keybind"] = nil,
@@ -1203,11 +1206,11 @@ do
                             local SpaceHeld = uis:IsKeyDown(Enum.KeyCode.Space)
                             local ShiftHeld = uis:IsKeyDown(Enum.KeyCode.LeftShift)
                             if SpaceHeld then
-                                clone.HumanoidRootPart.CFrame = clone.HumanoidRootPart.CFrame * CFrame.new(0, 15, 0)
+                                clone.HumanoidRootPart.CFrame = clone.HumanoidRootPart.CFrame * CFrame.new(0, 8, 0)
                                 task.wait()
                             end
                             if ShiftHeld then
-                                clone.HumanoidRootPart.CFrame = clone.HumanoidRootPart.CFrame * CFrame.new(0, -15, 0)
+                                clone.HumanoidRootPart.CFrame = clone.HumanoidRootPart.CFrame * CFrame.new(0, -8, 0)
                                 task.wait()
                             end
                         else
@@ -1228,6 +1231,7 @@ do
                 end)
             else
                 conectthingylol:Disconnect()
+                workspace.Gravity = oldegayvity
             end
         end
     })
@@ -1948,7 +1952,7 @@ Tabs["Exploits"]:CreateToggle({
         end)
     end
 })
-
+--[[
 local shopthingyshopshop = debug.getupvalue(require(game:GetService("ReplicatedStorage").TS.games.bedwars.shop["bedwars-shop"]).BedwarsShop.getShopItem, 2)
 local oldnexttier
 local oldtiered
@@ -1974,7 +1978,7 @@ Tabs["Exploits"]:CreateToggle({
         end
     end
 })
-
+--]]
 --[[local breakallbedsthing
 breakallbedsthing = Tabs["Exploits"]:CreateToggle({
     ["Name"] = "BreakAllBeds",
@@ -2066,7 +2070,7 @@ function getmapname()
 end
 
 local lcmapname = getmapname()
-
+--[[
 Tabs["Player"]:CreateToggle({
     ["Name"] = "NoFall",
     ["Keybind"] = nil,
@@ -2082,7 +2086,7 @@ Tabs["Player"]:CreateToggle({
         end
     end
 })
-
+--]]
 local antivoidpart
 Tabs["Player"]:CreateToggle({
     ["Name"] = "AntiVoid",
@@ -2569,7 +2573,7 @@ Tabs["World"]:CreateToggle({
     end
 })
 
-do
+--[[
 Tabs["World"]:CreateToggle({
     ["Name"] = "BedRekterV2",
     ["Keybind"] = nil,
@@ -2586,7 +2590,7 @@ Tabs["World"]:CreateToggle({
         end
     end
 })
-end
+--]]
 
 Tabs["World"]:CreateToggle({
     ["Name"] = "LowGravity",
