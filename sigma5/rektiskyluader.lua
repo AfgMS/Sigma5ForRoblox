@@ -2478,7 +2478,7 @@ function getbedsxd()
     local beds = {}
     local blocks = game:GetService("Workspace").Map.Worlds[lcmapname].Blocks
     for _,Block in pairs(blocks:GetChildren()) do
-        if Block.Name == "bed" and Block.Covers.BrickColor ~= game.Players.LocalPlayer.Team.TeamColor then
+        if Block.Name == "bed" and Block.Blanket.BrickColor ~= game.Players.LocalPlayer.Team.TeamColor then
             table.insert(beds,Block)
         end
     end
