@@ -1326,6 +1326,7 @@ local function getcustomassetthingylol(path)
 end
 
 local gamesound = require(game:GetService("ReplicatedStorage").TS.sound["game-sound"]).GameSound
+local oldsounds = gamesound
 Tabs["Render"]:CreateToggle({
     ["Name"] = "MCSounds",
     ["Keybind"] = nil,
@@ -1347,7 +1348,6 @@ Tabs["Render"]:CreateToggle({
                     end)
                 end)
             end)
-            local oldsounds = gamesound
             local newsounds = gamesound
             newsounds.UI_CLICK = "rbxassetid://535716488"
             newsounds.PICKUP_ITEM_DROP = getcustomassetfunc("rektsky/sound/mc/pickup.mp3")
