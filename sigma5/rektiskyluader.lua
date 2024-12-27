@@ -318,209 +318,194 @@ local Tabs = {
 -- COMBAT
 
 do
-	local coolanimlol
-	local newthingy
-	local killauracurrentanim
-	local oldbs
-	local conectionkillaura
-	local animspeed = {["Value"] = 0.3}
-	local origC0 = game.ReplicatedStorage.Assets.Viewmodel.RightHand.RightWrist.C0
-	local katog = Tabs["Combat"]:CreateToggle({
-		["Name"] = "KillAura",
-		["Keybind"] = nil,
-		["Callback"] = function(v)
-			local kauraval = v
-			repeat task.wait() until (matchState == 1)
-			spawn(function()
-				if (kauraval) then
-					repeat
-						task.wait()
-						if (not kauraval) then break end
-						if entity.isAlive then
-							pcall(function()
-								for i,v in pairs(game.Players:GetChildren()) do
-									if v.Character and v.Name ~= game.Players.LocalPlayer.Name and v.Character:FindFirstChild("HumanoidRootPart") then
-										local mag = (v.Character.HumanoidRootPart.Position - game.Players.LocalPlayer.Character.HumanoidRootPart.Position).Magnitude
-										if mag <= DistVal["Value"] and v.Team ~= game.Players.LocalPlayer.Team and v.Character:FindFirstChild("Humanoid") then
-											if v.Character.Humanoid.Health > 0 then
-												for k, b in pairs(whiteliststhing) do
-													if v.UserId ~= tonumber(b) then
-														rgfejd = true
-														local GBW = getsword()
-														local selfPosition = lplr.Character.HumanoidRootPart.Position + (DistVal["Value"] > 14 and (lplr.Character.HumanoidRootPart.Position - v.Character.HumanoidRootPart.Position).magnitude > 14 and (CFrame.lookAt(lplr.Character.HumanoidRootPart.Position, v.Character.HumanoidRootPart.Position).lookVector * 4) or Vector3.new(0, 0, 0))
-														local Entity = v.Character
-														local target = v.Character:GetPrimaryPartCFrame().Position
-														local args = {
-															[1] = {
-																["chargedAttack"] = {
-																	["chargeRatio"] = 1
-																},
-																["entityInstance"] = Entity,
-																["validate"] = {
-																	["targetPosition"] = {
-																		["value"] = Vector3.new(Entity:FindFirstChild("HumanoidRootPart").Position.X, Entity:FindFirstChild("HumanoidRootPart").Position.Y, Entity:FindFirstChild("HumanoidRootPart").Position.Z)
-																	},
-																	["raycast"] = {
-																		["cameraPosition"] = {
-																			["value"] = Vector3.new(Entity:FindFirstChild("HumanoidRootPart").Position.X, Entity:FindFirstChild("HumanoidRootPart").Position.Y, Entity:FindFirstChild("HumanoidRootPart").Position.Z)
-																		},
-																		["cursorDirection"] = {
-																			["value"] = Vector3.new(Ray.new(game.Workspace.CurrentCamera.CFrame.Position, Entity:FindFirstChild("HumanoidRootPart").Position).Unit.Direction.X, Ray.new(game.Workspace.CurrentCamera.CFrame.Position, Entity:FindFirstChild("HumanoidRootPart").Position).Unit.Direction.Y, Ray.new(game.Workspace.CurrentCamera.CFrame.Position, Entity:FindFirstChild("HumanoidRootPart").Position).Unit.Direction.Z)
-																		}
-																	},
-																	["selfPosition"] = {
-																		["value"] = Vector3.new((lplr.Character:FindFirstChild("HumanoidRootPart").Position + ((Entity:FindFirstChild("HumanoidRootPart").Position - lplr.Character:FindFirstChild("HumanoidRootPart").Position).Unit * math.min(2, (Entity:FindFirstChild("HumanoidRootPart").Position - lplr.Character:FindFirstChild("HumanoidRootPart").Position).Magnitude))).X, (lplr.Character:FindFirstChild("HumanoidRootPart").Position + ((Entity:FindFirstChild("HumanoidRootPart").Position - lplr.Character:FindFirstChild("HumanoidRootPart").Position).Unit * math.min(2, (Entity:FindFirstChild("HumanoidRootPart").Position - lplr.Character:FindFirstChild("HumanoidRootPart").Position).Magnitude))).Y, (lplr.Character:FindFirstChild("HumanoidRootPart").Position + ((Entity:FindFirstChild("HumanoidRootPart").Position - lplr.Character:FindFirstChild("HumanoidRootPart").Position).Unit * math.min(2, (Entity:FindFirstChild("HumanoidRootPart").Position - lplr.Character:FindFirstChild("HumanoidRootPart").Position).Magnitude))).Z)
-
-																	}
-																},
-																["weapon"] = GBW ~= nil and GBW.tool
-															}
-														}
-														game:GetService("ReplicatedStorage"):WaitForChild("rbxts_include"):WaitForChild("node_modules"):WaitForChild("@rbxts"):WaitForChild("net"):WaitForChild("out"):WaitForChild("_NetManaged"):WaitForChild("SwordHit"):FireServer(unpack(args))
-														if killauraissoundenabled["Value"] then
-															playsound("rbxassetid://6760544639", killaurasoundvalue["Value"])
-														end
-														if killauraisswingenabled["Value"] then         
-															playanimation("rbxassetid://4947108314")
-														end
-														task.wait(3.4)
-													end
-												end
-											end
-										else
-											rgfejd = false
-										end
-									end
-								end 
-							end)
-						end
-					until (not kauraval)
-				else
-					return
-				end
-			end)
-			spawn(function()
-				repeat
-					if (not kauraval) then return end
-					task.wait(animspeed["Value"])
-					local plrthinglopl = GetAllNearestHumanoidToPosition(DistVal["Value"], 1)
-					if plrthinglopl then
-						for i,v in pairs(plrthinglopl) do
-							if v.Character and v.Name ~= game.Players.LocalPlayer.Name and v.Character:FindFirstChild("HumanoidRootPart") then
-								if v.Team ~= tostring(lplr.Team) then
-									if killaurafirstpersonanim["Value"] then
-										pcall(function()
-											if killauraanimval["Value"] == "Cool" then
-												if entity.isAlive and cam.Viewmodel.RightHand.RightWrist and origC0 then
-													for i, v in pairs(autoblockanim) do
-														coolanimlol = game:GetService("TweenService"):Create(cam.Viewmodel.RightHand.RightWrist, TweenInfo.new(v.Time), {C0 = origC0 * v.CFrame})
-														coolanimlol:Play()
-														task.wait(v.Time - 0.01)
-													end
-												end
-											elseif killauraanimval["Value"] == "German" then
-												if entity.isAlive and cam.Viewmodel.RightHand.RightWrist and origC0 then
-													for i, v in pairs(funnyanim) do
-														killauracurrentanim = game:GetService("TweenService"):Create(cam.Viewmodel.RightHand.RightWrist, TweenInfo.new(v.Time), {C0 = origC0 * v.CFrame})
-														killauracurrentanim:Play()
-														task.wait(v.Time - 0.01)
-													end
-												end
-											elseif killauraanimval["Value"] == "Penis" then
-												if entity.isAlive and cam.Viewmodel.RightHand.RightWrist and origC0 then
-													for i, v in pairs(theotherfunnyanim) do
-														killauracurrentanim = game:GetService("TweenService"):Create(cam.Viewmodel.RightHand.RightWrist, TweenInfo.new(v.Time), {C0 = origC0 * v.CFrame})
-														killauracurrentanim:Play()
-														task.wait(v.Time - 0.01)
-													end
-												end
-											elseif killauraanimval["Value"] == "KillMyself" then
-												if entity.isAlive and cam.Viewmodel.RightHand.RightWrist and origC0 then
-													for i, v in pairs(kmsanim) do
-														killauracurrentanim = game:GetService("TweenService"):Create(cam.Viewmodel.RightHand.RightWrist, TweenInfo.new(v.Time), {C0 = origC0 * v.CFrame})
-														killauracurrentanim:Play()
-														task.wait(v.Time - 0.01)
-													end
-												end
-											end    
-										end)
-									end
-								end
+    local oldbs
+    local conectionkillaura
+    local animspeed = {["Value"] = 0.3}
+    local origC0 = game.ReplicatedStorage.Assets.Viewmodel.RightHand.RightWrist.C0
+    local katog = Tabs["Combat"]:CreateToggle({
+        ["Name"] = "KillAura",
+        ["Keybind"] = nil,
+        ["Callback"] = function(v)
+            local kauraval = v
+            repeat task.wait() until (matchState == 1)
+            spawn(function()
+                if (kauraval) then
+                    repeat
+                        task.wait()
+                        if (not kauraval) then break end
+                        if entity.isAlive then
+                            pcall(function()
+                                    for i,v in pairs(game.Players:GetChildren()) do
+					if v.Character and v.Name ~= game.Players.LocalPlayer.Name and v.Character:FindFirstChild("HumanoidRootPart") then
+					    local mag = (v.Character.HumanoidRootPart.Position - game.Players.LocalPlayer.Character.HumanoidRootPart.Position).Magnitude
+					    if mag <= DistVal["Value"] and v.Team ~= game.Players.LocalPlayer.Team and v.Character:FindFirstChild("Humanoid") then
+						if v.Character.Humanoid.Health > 0 then
+						    for k, b in pairs(whiteliststhing) do
+							if v.UserId ~= tonumber(b) then
+							    rgfejd = true
+							    local GBW = getsword()
+							    local selfPosition = lplr.Character.HumanoidRootPart.Position + (DistVal["Value"] > 14 and (lplr.Character.HumanoidRootPart.Position - v.Character.HumanoidRootPart.Position).magnitude > 14 and (CFrame.lookAt(lplr.Character.HumanoidRootPart.Position, v.Character.HumanoidRootPart.Position).lookVector * 4) or Vector3.new(0, 0, 0))
+							    local Entity = v.Character
+							    local target = v.Character:GetPrimaryPartCFrame().Position
+							    attackentitycont:CallServer({
+								["chargedAttack"] = {["chargeRatio"] = 1},
+								["weapon"] = GBW ~= nil and GBW.tool,
+								["entityInstance"] = Entity,
+								["validate"] = {["targetPosition"] = {["value"] = target,
+								    ["hash"] = hvFunc(target)},
+								    ["raycast"] = {
+									["cameraPosition"] = hvFunc(cam.CFrame.Position), 
+									["cursorDirection"] = hvFunc(Ray.new(cam.CFrame.Position, v.Character:GetPrimaryPartCFrame().Position).Unit.Direction)
+								    },
+								    ["selfPosition"] = {["value"] = selfPosition,
+									["hash"] = hvFunc(selfPosition)
+								    }
+								}
+							    })
+							    if killauraissoundenabled["Value"] then
+								playsound("rbxassetid://6760544639", killaurasoundvalue["Value"])
+							    end
+							    if killauraisswingenabled["Value"] then         
+								playanimation("rbxassetid://4947108314")
+							    end
+							    task.wait(3.4)
 							end
+						    end
 						end
-						if killauraanimval["Value"] == "Cool" then
-							if (not rgfejd) then
-								newthingy = game:GetService("TweenService"):Create(cam.Viewmodel.RightHand.RightWrist, TweenInfo.new(0.1), {C0 = origC0})
-								newthingy:Play()
-							end
-						end
-						if killauraanimval["Value"] == "KillMyself" then
-							if (not rgfejd) then
-								sdfsdf = game:GetService("TweenService"):Create(cam.Viewmodel.RightHand.RightWrist, TweenInfo.new(0.1), {C0 = origC0 * CFrame.new(-2.5, -4.5, -0.02) * CFrame.Angles(math.rad(90), math.rad(0), math.rad(-0))})
-								sdfsdf:Play()
-							end
-						end
+					    else
+						rgfejd = false
+					    end
 					end
-				until (not kauraval)
-			end)
-		end
-	})
-	killauraissoundenabled = katog:CreateOptionTog({
-		["Name"] = "Swing Sound",
-		["Default"] = true,
-		["Func"] = function() end
-	})
-	killaurasoundvalue = katog:CreateSlider({
-		["Name"] = "Sound",
-		["Function"] = function() end,
-		["Min"] = 0,
-		["Max"] = 1,
-		["Default"] = 0.2,
-		["Round"] = 1
-	})
-	killauraisswingenabled = katog:CreateOptionTog({
-		["Name"] = "Swing Animation",
-		["Default"] = true,
-		["Func"] = function() end
-	})
-	DistVal = katog:CreateSlider({
-		["Name"] = "Distance",
-		["Function"] = function() end,
-		["Min"] = 1,
-		["Max"] = 20,
-		["Default"] = 20,
-		["Round"] = 1
-	})
-	killaurafirstpersonanim = katog:CreateOptionTog({
-		["Name"] = "Anims (1rs person)",
-		["Default"] = true,
-		["Func"] = function() end
-	})
-	killauraanimval = katog:CreateDropDown({
-		["Name"] = "AnimMode",
-		["Function"] = function(val)
-			if val == "German" then
-				local zdsqzd = game:GetService("TweenService"):Create(cam:WaitForChild("Viewmodel").RightHand.RightWrist, TweenInfo.new(0.1), {C0 = origC0 * CFrame.new(0.5, -0.01, -1.91) * CFrame.Angles(math.rad(-51), math.rad(9), math.rad(56))})
-				zdsqzd:Play()
-			elseif val == "Penis" then
-				local cock = game:GetService("TweenService"):Create(cam:WaitForChild("Viewmodel").RightHand.RightWrist, TweenInfo.new(0.1), {C0 = origC0 * CFrame.new(-1.8, 0.5, -1.01) * CFrame.Angles(math.rad(-90), math.rad(0), math.rad(-90))})
-				cock:Play()
-			elseif val == "KillMyself" then
-				sdfsdf = game:GetService("TweenService"):Create(cam:WaitForChild("Viewmodel").RightHand.RightWrist, TweenInfo.new(0.1), {C0 = origC0 * CFrame.new(-2.5, -4.5, -0.02) * CFrame.Angles(math.rad(90), math.rad(0), math.rad(-0))})
-				sdfsdf:Play()
-			end
-		end,
-		["List"] = {"Cool", "German", "Penis", "KillMyself"},
-		["Default"] = "Cool"
-	})
-	animspeed = katog:CreateSlider({
-		["Name"] = "AnimationSpeed",
-		["Function"] = function() end,
-		["Min"] = 0.1,
-		["Max"] = 0.5,
-		["Default"] = 0.3,
-		["Round"] = 1
-	})
+				    end 
+                            end)
+                        end
+                    until (not kauraval)
+                else
+                    return
+                end
+            end)
+            spawn(function()
+                repeat
+                    if (not kauraval) then return end
+                    task.wait(animspeed["Value"])
+                    local plrthinglopl = GetAllNearestHumanoidToPosition(DistVal["Value"], 1)
+                    if plrthinglopl then
+                        for i,v in pairs(plrthinglopl) do
+                            if v.Character and v.Name ~= game.Players.LocalPlayer.Name and v.Character:FindFirstChild("HumanoidRootPart") then
+                                if v.Team ~= tostring(lplr.Team) then
+                                    if killaurafirstpersonanim["Value"] then
+                                        pcall(function()
+                                            if killauraanimval["Value"] == "Cool" then
+                                                if entity.isAlive and cam.Viewmodel.RightHand.RightWrist and origC0 then
+                                                    for i, v in pairs(autoblockanim) do
+                                                        coolanimlol = game:GetService("TweenService"):Create(cam.Viewmodel.RightHand.RightWrist, TweenInfo.new(v.Time), {C0 = origC0 * v.CFrame})
+                                                        coolanimlol:Play()
+                                                        task.wait(v.Time - 0.01)
+                                                    end
+                                                end
+                                            elseif killauraanimval["Value"] == "German" then
+                                                if entity.isAlive and cam.Viewmodel.RightHand.RightWrist and origC0 then
+                                                    for i, v in pairs(funnyanim) do
+                                                        killauracurrentanim = game:GetService("TweenService"):Create(cam.Viewmodel.RightHand.RightWrist, TweenInfo.new(v.Time), {C0 = origC0 * v.CFrame})
+                                                        killauracurrentanim:Play()
+                                                        task.wait(v.Time - 0.01)
+                                                    end
+                                                end
+                                            elseif killauraanimval["Value"] == "Penis" then
+                                                if entity.isAlive and cam.Viewmodel.RightHand.RightWrist and origC0 then
+                                                    for i, v in pairs(theotherfunnyanim) do
+                                                        killauracurrentanim = game:GetService("TweenService"):Create(cam.Viewmodel.RightHand.RightWrist, TweenInfo.new(v.Time), {C0 = origC0 * v.CFrame})
+                                                        killauracurrentanim:Play()
+                                                        task.wait(v.Time - 0.01)
+                                                    end
+                                                end
+                                            elseif killauraanimval["Value"] == "KillMyself" then
+                                                if entity.isAlive and cam.Viewmodel.RightHand.RightWrist and origC0 then
+                                                    for i, v in pairs(kmsanim) do
+                                                        killauracurrentanim = game:GetService("TweenService"):Create(cam.Viewmodel.RightHand.RightWrist, TweenInfo.new(v.Time), {C0 = origC0 * v.CFrame})
+                                                        killauracurrentanim:Play()
+                                                        task.wait(v.Time - 0.01)
+                                                    end
+                                                end
+                                            end    
+                                        end)
+                                    end
+                                end
+                            end
+                        end
+                        if killauraanimval["Value"] == "Cool" then
+                            if (not rgfejd) then
+                                newthingy = game:GetService("TweenService"):Create(cam.Viewmodel.RightHand.RightWrist, TweenInfo.new(0.1), {C0 = origC0})
+                                newthingy:Play()
+                            end
+                        end
+                        if killauraanimval["Value"] == "KillMyself" then
+                            if (not rgfejd) then
+                                sdfsdf = game:GetService("TweenService"):Create(cam.Viewmodel.RightHand.RightWrist, TweenInfo.new(0.1), {C0 = origC0 * CFrame.new(-2.5, -4.5, -0.02) * CFrame.Angles(math.rad(90), math.rad(0), math.rad(-0))})
+                                sdfsdf:Play()
+                            end
+                        end
+                    end
+                until (not kauraval)
+            end)
+        end
+    })
+    killauraissoundenabled = katog:CreateOptionTog({
+        ["Name"] = "Swing Sound",
+        ["Default"] = true,
+        ["Func"] = function() end
+    })
+    killaurasoundvalue = katog:CreateSlider({
+        ["Name"] = "Sound",
+        ["Function"] = function() end,
+        ["Min"] = 0,
+        ["Max"] = 1,
+        ["Default"] = 0.2,
+        ["Round"] = 1
+    })
+    killauraisswingenabled = katog:CreateOptionTog({
+        ["Name"] = "Swing Animation",
+        ["Default"] = true,
+        ["Func"] = function() end
+    })
+    DistVal = katog:CreateSlider({
+        ["Name"] = "Distance",
+        ["Function"] = function() end,
+        ["Min"] = 1,
+        ["Max"] = 20,
+        ["Default"] = 20,
+        ["Round"] = 1
+    })
+    killaurafirstpersonanim = katog:CreateOptionTog({
+        ["Name"] = "Anims (1rs person)",
+        ["Default"] = true,
+        ["Func"] = function() end
+    })
+    killauraanimval = katog:CreateDropDown({
+        ["Name"] = "AnimMode",
+        ["Function"] = function(val)
+            if val == "German" then
+                zdsqzd = game:GetService("TweenService"):Create(cam:WaitForChild("Viewmodel").RightHand.RightWrist, TweenInfo.new(0.1), {C0 = origC0 * CFrame.new(0.5, -0.01, -1.91) * CFrame.Angles(math.rad(-51), math.rad(9), math.rad(56))})
+                zdsqzd:Play()
+            elseif val == "Penis" then
+                cock = game:GetService("TweenService"):Create(cam:WaitForChild("Viewmodel").RightHand.RightWrist, TweenInfo.new(0.1), {C0 = origC0 * CFrame.new(-1.8, 0.5, -1.01) * CFrame.Angles(math.rad(-90), math.rad(0), math.rad(-90))})
+                cock:Play()
+            elseif val == "KillMyself" then
+                sdfsdf = game:GetService("TweenService"):Create(cam:WaitForChild("Viewmodel").RightHand.RightWrist, TweenInfo.new(0.1), {C0 = origC0 * CFrame.new(-2.5, -4.5, -0.02) * CFrame.Angles(math.rad(90), math.rad(0), math.rad(-0))})
+                sdfsdf:Play()
+            end
+        end,
+        ["List"] = {"Cool", "German", "Penis", "KillMyself"},
+        ["Default"] = "Cool"
+    })
+    animspeed = katog:CreateSlider({
+        ["Name"] = "AnimationSpeed",
+        ["Function"] = function() end,
+        ["Min"] = 0.1,
+        ["Max"] = 0.5,
+        ["Default"] = 0.3,
+        ["Round"] = 1
+    })
 end
 
 
