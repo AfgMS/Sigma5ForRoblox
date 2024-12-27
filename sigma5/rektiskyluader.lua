@@ -24,7 +24,7 @@ end
 
 local getasset = getsynasset or getcustomasset
 
-local ScreenGuitwo = game.CoreGui.RektskyNotificationGui
+local ScreenGuitwo = game.Players.LocalPlayer.PlayerGui.RektskyNotificationGui
 
 local function createnotification(title, text, delay2, toggled)
     spawn(function()
