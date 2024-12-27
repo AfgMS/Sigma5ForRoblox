@@ -80,10 +80,12 @@ local ScreenGui = Instance.new("ScreenGui")
 local optionframe
 local TabsFrame
 ScreenGui.Parent = game.Players.LocalPlayer.PlayerGui
+ScreenGui.ResetOnSpawn = false
 ScreenGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
 local ScreenGuitwo = Instance.new("ScreenGui")
 ScreenGuitwo.Parent = game.Players.LocalPlayer.PlayerGui
 ScreenGuitwo.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+ScreenGuitwo.ResetOnSpawn = false
 ScreenGuitwo.Name = "RektskyNotificationGui"
 local getasset = getsynasset or getcustomasset
 
