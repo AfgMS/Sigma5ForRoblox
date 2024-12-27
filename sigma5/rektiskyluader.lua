@@ -1060,7 +1060,7 @@ do
     })
 end
 
---[[
+do
     local customlongjumpval = false
     Tabs["Movement"]:CreateToggle({
         ["Name"] = "CustomLongJump",
@@ -1102,7 +1102,7 @@ end
             end
         end
     })
-]]
+end
 
 --[[
     local cloneval = false
@@ -1186,7 +1186,7 @@ end
     })
 ]]
 
---[[
+do
     local flyenabled
     Tabs["Movement"]:CreateToggle({
         ["Name"] = "Fly",
@@ -1231,7 +1231,7 @@ end
             end
         end
     })
-]]
+end
 
 -- RENDER
 
@@ -2258,7 +2258,7 @@ do
     })
 end
 
---[[
+do
     local hackdetector = false
     Tabs["Rektsky"]:CreateToggle({
         ["Name"] = "HackerDetector",
@@ -2291,9 +2291,8 @@ end
             end
         end
     })
-]]
+end
 
---[[
     do
         local rainbowenab = {["Value"] = false}
         local rainbowspeed = {["Value"] = 4.5}
@@ -2319,7 +2318,6 @@ end
             ["Round"] = 1
         })
     end
-]]
 
 --[[
 Tabs["Rektsky"]:CreateToggle({
@@ -2476,7 +2474,8 @@ end
 
 function getbedsxd()
     local beds = {}
-    for _,Block in pairs(game.Workspace:GetChildren()) do
+    local blocks = game:GetService("Workspace").Map.Worlds[lcmapname].Blocks
+    for _,Block in pairs(blocks:GetChildren()) do
         if Block.Name == "bed" and Block.Blanket.BrickColor ~= game.Players.LocalPlayer.Team.TeamColor then
             table.insert(beds,Block)
         end
@@ -2570,7 +2569,8 @@ Tabs["World"]:CreateToggle({
     end
 })
 
---[[Tabs["World"]:CreateToggle({
+do
+Tabs["World"]:CreateToggle({
     ["Name"] = "BedRekterV2",
     ["Keybind"] = nil,
     ["Callback"] = function(v)
@@ -2585,7 +2585,8 @@ Tabs["World"]:CreateToggle({
             end)
         end
     end
-})-]]
+})
+end
 
 Tabs["World"]:CreateToggle({
     ["Name"] = "LowGravity",
